@@ -6,6 +6,6 @@ Read the website at https://eyesky93.github.io/ssm/.
 
 This repository contains only the generated public website. Original LyX/LaTeX documents and drafts are kept in a separate private repository.
 
-Comments use this repository's GitHub Discussions through Giscus.
+Social-account comments use Disqus; existing GitHub discussions remain available through Giscus.
 
 Generated files are updated automatically; edit posts in the private writing repository.
