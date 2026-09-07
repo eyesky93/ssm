@@ -7,20 +7,23 @@
   const valid = (value) => typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value);
   let preferences = {};
   let theme;
-  try {
-    const stored = JSON.parse(localStorage.getItem("ssm-colors") || "{}");
-    for (const mode of Object.keys(defaults)) {
-      if (valid(stored?.[mode]?.accent)) preferences[mode] = { accent: stored[mode].accent };
-    }
-  } catch { /* Browser storage is optional. */ }
   try { theme = localStorage.getItem("ssm-theme"); } catch { /* Use the system preference. */ }
   if (theme !== "light" && theme !== "dark") {
     theme = window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
+  try {
+    const stored = JSON.parse(localStorage.getItem("ssm-colors") || "{}");
+    const accent = [stored?.accent, stored?.[theme]?.accent, stored?.light?.accent, stored?.dark?.accent].find(valid);
+    if (accent) {
+      preferences = { accent };
+      // Adopt the current mode's old choice once, then retire both per-mode values.
+      if (!valid(stored?.accent) || stored?.light || stored?.dark) save();
+    }
+  } catch { /* Browser storage is optional. */ }
 
   function colors(mode) {
     const result = { ...defaults[mode] };
-    if (valid(preferences[mode]?.accent)) result.accent = preferences[mode].accent;
+    if (valid(preferences.accent)) result.accent = preferences.accent;
     return result;
   }
 
@@ -84,13 +87,13 @@
     colors,
     reset(mode) {
       if (!Object.hasOwn(defaults, mode)) return;
-      delete preferences[mode];
+      preferences = {};
       save();
       apply(mode);
     },
     set(mode, key, value) {
       if (!Object.hasOwn(defaults, mode) || key !== "accent" || !valid(value)) return;
-      preferences = { ...preferences, [mode]: { accent: value } };
+      preferences = { accent: value };
       save();
       apply(mode);
     },

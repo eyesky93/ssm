@@ -19,6 +19,22 @@ export function selectionUrl(href, selected, initial) {
   return url;
 }
 
+export function chooseRandomPost(paths, currentPath, random = Math.random) {
+  const alternatives = paths.filter((path) => path !== currentPath);
+  const choices = alternatives.length ? alternatives : paths;
+  return choices.length ? choices[Math.floor(random() * choices.length)] : null;
+}
+
+export function initializeRandomPosts(document, window) {
+  document.querySelectorAll("[data-random-posts]").forEach((button) => {
+    const paths = JSON.parse(button.dataset.randomPosts);
+    button.addEventListener("click", () => {
+      const target = chooseRandomPost(paths, window.location.pathname);
+      if (target) window.location.assign(target);
+    });
+  });
+}
+
 export function initializePostBrowser(document, window) {
   const browser = document.querySelector("[data-post-browser]");
   if (!browser) return;
@@ -26,6 +42,7 @@ export function initializePostBrowser(document, window) {
   const cards = [...stream.querySelectorAll("[data-post-tags]")];
   const tagsByCard = new Map(cards.map((card) => [card, JSON.parse(card.dataset.postTags)]));
   const chips = [...document.querySelectorAll("[data-tag-filter]")];
+  const selectorChips = chips.filter((chip) => chip.closest("[data-tag-parent]"));
   const groups = [...browser.querySelectorAll("[data-tag-parent]")];
   const initial = browser.dataset.initialTag;
   const known = new Set(chips.map((chip) => chip.dataset.tagFilter));
@@ -58,7 +75,7 @@ export function initializePostBrowser(document, window) {
       card.hidden = !matchesTag(tagsByCard.get(card), selected);
       if (!card.hidden) count++;
     }
-    for (const chip of chips) {
+    for (const chip of selectorChips) {
       const tag = chip.dataset.tagFilter;
       chip.setAttribute("aria-pressed", String(tag === selected));
       chip.classList.toggle("is-ancestor", Boolean(selected && selected.startsWith(`${tag}:`)));
@@ -91,7 +108,7 @@ export function initializePostBrowser(document, window) {
     if (inline && wasHidden && selected) browser.scrollIntoView({ block: "start" });
   }
 
-  chips.forEach((chip) => chip.addEventListener("click", () => select(selected === chip.dataset.tagFilter ? "" : chip.dataset.tagFilter, chip)));
+  chips.forEach((chip) => chip.addEventListener("click", () => select(selected === chip.dataset.tagFilter && selectorChips.includes(chip) ? "" : chip.dataset.tagFilter, chip)));
   clear.addEventListener("click", () => select("", clear));
   views.forEach((button) => button.addEventListener("click", () => applyView(button.dataset.view, true)));
   window.addEventListener("popstate", () => {
@@ -107,4 +124,7 @@ export function initializePostBrowser(document, window) {
   render();
 }
 
-if (typeof document !== "undefined") initializePostBrowser(document, window);
+if (typeof document !== "undefined") {
+  initializeRandomPosts(document, window);
+  initializePostBrowser(document, window);
+}
