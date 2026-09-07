@@ -77,7 +77,6 @@ export function initializePins(document, window) {
       button.setAttribute("aria-pressed", String(pinned));
       button.setAttribute("aria-label", pinned ? button.dataset.labelUnpin : button.dataset.labelPin);
       button.title = button.getAttribute("aria-label");
-      if (card.classList.contains("post-card")) card.classList.toggle("pinned-card", pinned);
     }
     const focused = document.activeElement;
     document.querySelectorAll(".post-stream").forEach((stream) => {

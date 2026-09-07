@@ -71,7 +71,7 @@
       "code-bg": mix(background, text, 0.055),
       "notice-bg": mix(background, text, 0.055),
       "notice-border": mix(background, text, 0.4), "notice-ink": text,
-      "pinned-bg": mix(background, text, 0.055),
+      "unread-bg": mix(background, text, 0.055),
     };
     for (const [name, value] of Object.entries(tokens)) root.style.setProperty(`--${name}`, value);
     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", background);

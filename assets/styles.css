@@ -16,7 +16,7 @@
   --notice-bg: #f2f2f2;
   --notice-border: #a2a2a2;
   --notice-ink: #171717;
-  --pinned-bg: #f2f2f2;
+  --unread-bg: #f2f2f2;
   --shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
   --serif: Georgia, "Times New Roman", "Noto Serif Hebrew", serif;
   --sans: Inter, "Segoe UI", Arial, "Noto Sans Hebrew", sans-serif;
@@ -40,7 +40,7 @@
   --notice-bg: #0d0d0d;
   --notice-border: #626262;
   --notice-ink: #f5f5f5;
-  --pinned-bg: #0d0d0d;
+  --unread-bg: #0d0d0d;
   --shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
@@ -402,9 +402,9 @@ h3 {
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
 }
 
-.pinned-card {
+.unread-card {
   border-inline-start: 0.32rem solid var(--accent);
-  background: var(--pinned-bg);
+  background: var(--unread-bg);
   box-shadow: var(--shadow);
 }
 
@@ -412,7 +412,7 @@ h3 {
   border-color: var(--line-dark);
 }
 
-.pinned-card:hover {
+.unread-card:hover {
   border-color: var(--accent-strong);
 }
 
@@ -530,12 +530,25 @@ h3 {
   gap: 0.6rem 1.1rem;
 }
 
-.comment-link {
+.read-toggle {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font: inherit;
   color: var(--muted);
   font-weight: 750;
+  text-decoration-line: underline;
   text-decoration-thickness: 0.08em;
   text-underline-offset: 0.15em;
+  cursor: pointer;
 }
+
+.post-navigation { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-block-start: 1.5rem; padding-block: 1rem; border-block-start: 1px solid var(--line); }
+.post-navigation a { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 1px solid var(--line-dark); border-radius: 50%; background: var(--surface); color: var(--ink); }
+.post-navigation a:hover { border-color: var(--accent-strong); color: var(--accent-strong); }
+.post-navigation .post-next { margin-inline-start: auto; }
+.post-navigation svg { width: 1.3rem; height: 1.3rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+[dir="rtl"] .post-navigation svg { transform: scaleX(-1); }
 
 .page-heading {
   padding-block-end: 1.5rem;
