@@ -1,8 +1,8 @@
 (() => {
   const root = document.documentElement;
   const defaults = {
-    light: { background: "#ffffff", text: "#171717", accent: "#4a4a4a" },
-    dark: { background: "#000000", text: "#f5f5f5", accent: "#bdbdbd" },
+    light: { background: "#ffffff", text: "#171717", accent: "#1c9ae9" },
+    dark: { background: "#000000", text: "#f5f5f5", accent: "#1c9ae9" },
   };
   const valid = (value) => typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value);
   let preferences = {};

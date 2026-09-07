@@ -1,13 +1,29 @@
 const root = document.documentElement;
 const themePreference = window.matchMedia?.("(prefers-color-scheme: dark)");
 
-document.querySelectorAll("[data-language]").forEach((link) => {
+document.querySelectorAll("a[data-language]").forEach((link) => {
   link.addEventListener("click", () => {
     try {
       localStorage.setItem("ssm-language", link.dataset.language);
     } catch {
       // The link still works when browser storage is unavailable.
     }
+  });
+});
+
+document.querySelectorAll("[data-language-select]").forEach((select) => {
+  select.addEventListener("change", () => {
+    const option = select.selectedOptions[0];
+    if (!option) return;
+    try { localStorage.setItem("ssm-language", option.dataset.language); } catch { /* Navigation still works. */ }
+    window.location.assign(option.value);
+  });
+});
+
+window.addEventListener("pageshow", () => {
+  document.querySelectorAll("[data-language-select]").forEach((select) => {
+    const current = Array.from(select.options).find((option) => option.dataset.language === root.lang);
+    if (current) select.value = current.value;
   });
 });
 

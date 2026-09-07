@@ -1,6 +1,6 @@
 # SSM
 
-SSM is a bilingual English/Hebrew blog about physics, music, and connected ideas.
+SSM is a multilingual blog about physics, music, and connected ideas.
 
 Read the website at https://eyesky93.github.io/ssm/.
 
