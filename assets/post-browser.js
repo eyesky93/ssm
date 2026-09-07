@@ -1,16 +1,22 @@
+function tagKeys(value) {
+  return typeof value === "string" ? (value ? [value] : []) : [...value];
+}
+
 export function matchesTag(postTags, selected, excluded = []) {
   const includes = (key) => postTags.some((tag) => tag === key || tag.startsWith(`${key}:`));
-  return (!selected || includes(selected)) && ![...excluded].some(includes);
+  const choices = tagKeys(selected);
+  const leaves = choices.filter((key) => !choices.some((other) => other.startsWith(`${key}:`)));
+  return (!leaves.length || leaves.some(includes)) && ![...excluded].some(includes);
 }
 
 export function visibleTagGroup(parent, selected, excluded = []) {
-  return !parent || Boolean(selected && (selected === parent || selected.startsWith(`${parent}:`))) || [...excluded].some((tag) => tag.startsWith(`${parent}:`));
+  return !parent || tagKeys(selected).some((tag) => tag === parent || tag.startsWith(`${parent}:`)) || [...excluded].some((tag) => tag.startsWith(`${parent}:`));
 }
 
 export function selectionFromUrl(href, initial, knownTags) {
   const params = new URL(href).searchParams;
-  const candidate = params.has("tag") ? params.get("tag") : initial;
-  return knownTags.has(candidate) ? candidate : "";
+  const candidates = params.has("tag") ? params.getAll("tag") : tagKeys(initial);
+  return new Set(candidates.filter((tag) => knownTags.has(tag)));
 }
 
 export function exclusionsFromUrl(href, knownTags) {
@@ -19,8 +25,10 @@ export function exclusionsFromUrl(href, knownTags) {
 
 export function selectionUrl(href, selected, initial, excluded = []) {
   const url = new URL(href);
-  if (selected || initial) url.searchParams.set("tag", selected);
-  else url.searchParams.delete("tag");
+  url.searchParams.delete("tag");
+  const choices = tagKeys(selected);
+  for (const tag of choices) url.searchParams.append("tag", tag);
+  if (!choices.length && initial) url.searchParams.set("tag", "");
   url.searchParams.delete("exclude");
   for (const tag of excluded) url.searchParams.append("exclude", tag);
   return url;
@@ -99,18 +107,54 @@ export function initializePostBrowser(document, window) {
   const optionsByGroup = new Map(groups.map((group) => [group, [...group.querySelectorAll("[data-tag-option]")]]));
   const excludeButtons = [...browser.querySelectorAll("[data-exclude-tag]")];
   const initial = browser.dataset.initialTag;
-  const known = new Set(chips.map((chip) => chip.dataset.tagFilter));
+  const known = new Set([...JSON.parse(browser.dataset.knownTags || "[]"), ...chips.map((chip) => chip.dataset.tagFilter)]);
   if (initial) known.add(initial); // Old tag URLs may have no posts in this language.
   const clear = browser.querySelector("[data-clear-filter]");
   const empty = browser.querySelector("[data-filter-empty]");
   const status = browser.querySelector("[data-filter-status]");
   const article = document.querySelector("[data-reader-article]");
   const inline = browser.dataset.inlineBrowser === "true";
-  let selected = selectionFromUrl(window.location.href, initial, known);
-  let excluded = exclusionsFromUrl(window.location.href, known);
-  if (selected && !matchesTag([selected], "", excluded)) selected = "";
-  const hasFilters = () => Boolean(selected || excluded.size);
+  const storageKey = browser.dataset.filterStorage;
+  const explicitFilters = () => {
+    const params = new URL(window.location.href).searchParams;
+    return Boolean(initial || params.has("tag") || params.has("exclude"));
+  };
+  function normalize(selectedValues, excludedValues) {
+    const excluded = new Set(tagKeys(excludedValues).filter((tag) => known.has(tag)));
+    const selected = new Set();
+    for (const tag of tagKeys(selectedValues)) {
+      if (!known.has(tag) || !matchesTag([tag], [], excluded)) continue;
+      const parts = tag.split(":");
+      for (let i = 1; i <= parts.length; i++) {
+        const parent = parts.slice(0, i).join(":");
+        if (known.has(parent)) selected.add(parent);
+      }
+    }
+    return { selected, excluded };
+  }
+  function readUrl() {
+    return normalize(selectionFromUrl(window.location.href, initial, known), exclusionsFromUrl(window.location.href, known));
+  }
+  function readSaved() {
+    try {
+      const saved = JSON.parse(window.localStorage.getItem(storageKey));
+      if (Array.isArray(saved?.selected) && Array.isArray(saved?.excluded)) return normalize(saved.selected, saved.excluded);
+    } catch { /* Unavailable or malformed storage must not block filtering. */ }
+    return normalize([], []);
+  }
+  let { selected, excluded } = explicitFilters() ? readUrl() : readSaved();
+  let browsing = !inline || explicitFilters();
+  const hasFilters = () => Boolean(selected.size || excluded.size);
   let returnFocus = article?.querySelector("[data-tag-filter]");
+
+  function save() {
+    try { window.localStorage.setItem(storageKey, JSON.stringify({ selected: [...selected], excluded: [...excluded] })); }
+    catch { /* Keep the current page usable without persistent storage. */ }
+  }
+  function setUrl(replace = false) {
+    const url = selectionUrl(window.location.href, selected, initial, excluded);
+    if (url.href !== window.location.href) window.history[replace ? "replaceState" : "pushState"](null, "", url.href);
+  }
 
   function render(announce = false) {
     let count = 0;
@@ -120,9 +164,9 @@ export function initializePostBrowser(document, window) {
     }
     for (const chip of selectorChips) {
       const tag = chip.dataset.tagFilter;
-      chip.setAttribute("aria-pressed", String(tag === selected));
+      chip.setAttribute("aria-pressed", String(selected.has(tag)));
       chip.disabled = false; // Selecting an excluded tag also restores it.
-      chip.classList.toggle("is-ancestor", Boolean(selected && selected.startsWith(`${tag}:`)));
+      chip.classList.toggle("is-ancestor", [...selected].some((other) => other.startsWith(`${tag}:`)));
     }
     for (const button of excludeButtons) {
       const active = excluded.has(button.dataset.excludeTag);
@@ -146,24 +190,23 @@ export function initializePostBrowser(document, window) {
     clear.hidden = !hasFilters();
     empty.hidden = count > 0;
     if (inline) {
-      browser.hidden = !hasFilters();
-      if (article) article.hidden = hasFilters();
+      browser.hidden = !browsing || !hasFilters();
+      if (article) article.hidden = browsing && hasFilters();
     }
     if (announce) status.textContent = status.dataset.resultMessage.replace("{count}", String(count));
   }
 
   function update(source) {
     const wasHidden = browser.hidden;
-    if (inline && source && article?.contains(source)) returnFocus = source;
-    const url = selectionUrl(window.location.href, selected, initial, excluded);
-    if (url.href !== window.location.href) window.history.pushState(null, "", url.href);
+    if (inline && source && article?.contains(source)) { returnFocus = source; browsing = true; }
+    setUrl();
+    save();
     render(true);
     // A tag button can disappear when filtering a card or backing out of a branch.
     if (inline && !hasFilters()) returnFocus?.focus();
     else if (source && (wasHidden || !source.checkVisibility?.({ visibilityProperty: true }))) {
-      const target = selected
-        ? chips.find((chip) => browser.contains(chip) && chip.dataset.tagFilter === selected && chip.closest("[data-tag-parent]"))
-        : selectorChips.find((chip) => !chip.disabled && chip.closest("[data-tag-parent]")?.dataset.tagParent === "") || excludeButtons[0];
+      const target = selectorChips.find((chip) => selected.has(chip.dataset.tagFilter) && chip.checkVisibility?.())
+        || selectorChips.find((chip) => chip.closest("[data-tag-parent]")?.dataset.tagParent === "") || excludeButtons[0];
       target?.focus({ preventScroll: true });
     }
     if (inline && wasHidden && hasFilters()) browser.scrollIntoView({ block: "start" });
@@ -175,7 +218,10 @@ export function initializePostBrowser(document, window) {
     for (const hidden of excluded) {
       if (tag === hidden || tag.startsWith(`${hidden}:`)) excluded.delete(hidden);
     }
-    selected = selected === tag && selectorChips.includes(chip) ? "" : tag;
+    if (selected.has(tag) && selectorChips.includes(chip)) {
+      for (const choice of selected) if (choice === tag || choice.startsWith(`${tag}:`)) selected.delete(choice);
+    } else selected.add(tag);
+    ({ selected, excluded } = normalize(selected, excluded));
     update(chip);
   }));
   excludeButtons.forEach((button) => button.addEventListener("click", (event) => {
@@ -183,7 +229,7 @@ export function initializePostBrowser(document, window) {
     const restoring = excluded.has(tag);
     if (restoring) excluded.delete(tag);
     else excluded.add(tag);
-    if (selected && !matchesTag([selected], "", excluded)) selected = "";
+    ({ selected, excluded } = normalize(selected, excluded));
     update(button);
     const option = button.closest("[data-tag-option]");
     if (restoring && event.detail === 0 && option?.checkVisibility?.({ visibilityProperty: true })) {
@@ -193,20 +239,17 @@ export function initializePostBrowser(document, window) {
       document.activeElement.blur();
     }
   }));
-  clear.addEventListener("click", () => { selected = ""; excluded.clear(); update(clear); });
-  window.addEventListener("popstate", () => {
-    selected = selectionFromUrl(window.location.href, initial, known);
-    excluded = exclusionsFromUrl(window.location.href, known);
-    if (selected && !matchesTag([selected], "", excluded)) selected = "";
+  clear.addEventListener("click", () => { selected.clear(); excluded.clear(); update(clear); });
+  function restoreHistory() {
+    browsing = !inline || explicitFilters();
+    ({ selected, excluded } = inline && !browsing ? readSaved() : readUrl());
+    if (browsing) save();
     render();
-    if (inline && !hasFilters()) returnFocus?.focus({ preventScroll: true });
-  });
-  window.addEventListener("pageshow", () => {
-    selected = selectionFromUrl(window.location.href, initial, known);
-    excluded = exclusionsFromUrl(window.location.href, known);
-    if (selected && !matchesTag([selected], "", excluded)) selected = "";
-    render();
-  });
+    if (inline && !browsing) returnFocus?.focus({ preventScroll: true });
+  }
+  window.addEventListener("popstate", restoreHistory);
+  window.addEventListener("pageshow", restoreHistory);
+  if (browsing) { setUrl(true); save(); }
   render();
 }
 
