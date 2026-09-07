@@ -91,27 +91,6 @@ document.querySelectorAll("[data-color]").forEach((input) => {
   });
 });
 
-document.querySelectorAll("[data-reset-colors]").forEach((button) => {
-  button.addEventListener("click", () => {
-    window.SSMAppearance.reset(root.dataset.theme);
-    updateColorInputs();
-  });
-});
-
-document.addEventListener("click", (event) => {
-  document.querySelectorAll(".color-settings[open]").forEach((panel) => {
-    if (!panel.contains(event.target)) panel.open = false;
-  });
-});
-
-document.addEventListener("keydown", (event) => {
-  if (event.key !== "Escape") return;
-  document.querySelectorAll(".color-settings[open]").forEach((panel) => {
-    panel.open = false;
-    panel.querySelector("summary").focus();
-  });
-});
-
 document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
   button.addEventListener("click", () => {
     applyTheme(root.dataset.theme === "dark" ? "light" : "dark", true);
@@ -128,7 +107,9 @@ if (themePreference?.addEventListener) {
   themePreference?.addListener?.(followSystemTheme);
 }
 
-document.querySelectorAll("[data-giscus-host]").forEach((host) => {
+function loadGiscus(host) {
+  if (host.dataset.loaded) return;
+  host.dataset.loaded = "true";
   const script = document.createElement("script");
   script.src = "https://giscus.app/client.js";
   script.async = true;
@@ -147,6 +128,73 @@ document.querySelectorAll("[data-giscus-host]").forEach((host) => {
   script.dataset.lang = host.dataset.lang;
   script.dataset.loading = "lazy";
   host.append(script);
+}
+
+document.querySelectorAll("[data-giscus-host]").forEach((host) => {
+  const details = host.closest("details");
+  if (!details || details.open) loadGiscus(host);
+  details?.addEventListener("toggle", () => { if (details.open) loadGiscus(host); });
+});
+
+const disqusHost = document.querySelector("[data-disqus]");
+if (disqusHost) {
+  // Keep this iframe's original readable backdrop when the page theme changes.
+  // Reloading the comment form just to recolor it can discard a reader's draft.
+  const palette = window.SSMAppearance.colors(root.dataset.theme);
+  disqusHost.style.setProperty("--comments-paper", palette.background);
+  disqusHost.style.setProperty("--comments-ink", palette.text);
+  window.disqus_config = function () {
+    this.page.identifier = disqusHost.dataset.identifier;
+    this.page.url = disqusHost.dataset.url;
+    this.page.title = disqusHost.dataset.title;
+    this.language = disqusHost.dataset.lang;
+  };
+  const script = document.createElement("script");
+  script.src = `https://${disqusHost.dataset.shortname}.disqus.com/embed.js`;
+  script.async = true;
+  script.dataset.timestamp = String(Date.now());
+  script.onerror = () => { disqusHost.textContent = disqusHost.dataset.errorMessage; };
+  document.head.append(script);
+}
+
+document.querySelectorAll("[data-share-menu]").forEach((menu) => {
+  const status = menu.querySelector(".share-status");
+  const fallback = () => {
+    const field = menu.querySelector("[data-share-url]");
+    field.hidden = false;
+    field.focus();
+    field.select();
+    status.textContent = status.dataset.copyFailed;
+  };
+  menu.querySelector("[data-copy-link]").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(menu.dataset.url);
+      status.textContent = status.dataset.copied;
+    } catch { fallback(); }
+  });
+  const native = menu.querySelector("[data-native-share]");
+  if (navigator.share) {
+    native.hidden = false;
+    native.addEventListener("click", async () => {
+      try {
+        await navigator.share({ title: menu.dataset.title, url: menu.dataset.url });
+      } catch (error) { if (error.name !== "AbortError") fallback(); }
+    });
+  }
+});
+
+document.addEventListener("click", (event) => {
+  document.querySelectorAll("[data-share-menu][open]").forEach((menu) => {
+    if (!menu.contains(event.target)) menu.open = false;
+  });
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  document.querySelectorAll("[data-share-menu][open]").forEach((menu) => {
+    menu.open = false;
+    menu.querySelector("summary").focus();
+  });
 });
 
 const params = new URLSearchParams(window.location.search);

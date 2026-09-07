@@ -11,8 +11,8 @@
   <link rel="alternate" hreflang="en" href="https://eyesky93.github.io/ssm/en/posts/symmetry-notes/">
   <link rel="alternate" hreflang="he" href="https://eyesky93.github.io/ssm/he/posts/symmetry-notes/">
   <link rel="alternate" hreflang="x-default" href="https://eyesky93.github.io/ssm/">
-  <script src="/ssm/assets/appearance.js?v=5ae127bd0738"></script>
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=197d57d0fe5e">
+  <script src="/ssm/assets/appearance.js?v=74ec6c4e9cb4"></script>
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=f3834c417ffe">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -30,23 +30,7 @@
     <svg data-theme-icon="dark" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 15.2A8.5 8.5 0 0 1 8.8 3.6 8.5 8.5 0 1 0 20.4 15.2Z"/></svg>
     <svg data-theme-icon="light" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
   </button>
-      <details class="color-settings">
-    <summary aria-label="Colors" title="Colors">
-      <svg class="palette-icon" viewBox="0 0 40 36" aria-hidden="true">
-        <circle class="palette-background" cx="20" cy="11" r="10"/>
-        <circle class="palette-text" cx="12" cy="23" r="10"/>
-        <circle class="palette-accent" cx="28" cy="23" r="10"/>
-        <g class="palette-outlines"><circle cx="20" cy="11" r="10"/><circle cx="12" cy="23" r="10"/><circle cx="28" cy="23" r="10"/></g>
-      </svg>
-    </summary>
-    <div class="color-panel">
-      <p>Saved in this browser, separately for light and dark mode.</p>
-      <label><span>Background</span><input type="color" data-color="background" value="#ffffff"></label>
-      <label><span>Text</span><input type="color" data-color="text" value="#171717"></label>
-      <label><span>Accent and links</span><input type="color" data-color="accent" value="#1c9ae9"></label>
-      <button type="button" data-reset-colors>Reset colors</button>
-    </div>
-  </details>
+      <input class="accent-picker" type="color" data-color="accent" value="#1c9ae9" aria-label="Accent color" title="Accent color">
     </div>
   </header>
   <main id="main" class="site-main"><article class="article-shell">
@@ -60,6 +44,16 @@
         <span>Published</span>
         <time datetime="2026-08-28T09:00:00.000Z">28 August 2026</time>
       </div>
+      <div class="article-actions"><details class="share-menu" data-share-menu data-url="https://eyesky93.github.io/ssm/en/posts/symmetry-notes/" data-title="Symmetry as a way of organizing a calculation">
+    <summary><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4"/></svg>Share</summary>
+    <div class="share-options">
+      <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Feyesky93.github.io%2Fssm%2Fen%2Fposts%2Fsymmetry-notes%2F" target="_blank" rel="noopener noreferrer" dir="ltr">Facebook</a><a href="https://x.com/intent/tweet?url=https%3A%2F%2Feyesky93.github.io%2Fssm%2Fen%2Fposts%2Fsymmetry-notes%2F&amp;text=Symmetry%20as%20a%20way%20of%20organizing%20a%20calculation" target="_blank" rel="noopener noreferrer" dir="ltr">X</a><a href="https://www.reddit.com/submit?url=https%3A%2F%2Feyesky93.github.io%2Fssm%2Fen%2Fposts%2Fsymmetry-notes%2F&amp;title=Symmetry%20as%20a%20way%20of%20organizing%20a%20calculation" target="_blank" rel="noopener noreferrer" dir="ltr">Reddit</a><a href="https://wa.me/?text=Symmetry%20as%20a%20way%20of%20organizing%20a%20calculation%20https%3A%2F%2Feyesky93.github.io%2Fssm%2Fen%2Fposts%2Fsymmetry-notes%2F" target="_blank" rel="noopener noreferrer" dir="ltr">WhatsApp</a><a href="https://t.me/share/url?url=https%3A%2F%2Feyesky93.github.io%2Fssm%2Fen%2Fposts%2Fsymmetry-notes%2F&amp;text=Symmetry%20as%20a%20way%20of%20organizing%20a%20calculation" target="_blank" rel="noopener noreferrer" dir="ltr">Telegram</a>
+      <button type="button" data-native-share hidden>More sharing options</button>
+      <button type="button" data-copy-link>Copy link</button>
+      <input data-share-url readonly hidden value="https://eyesky93.github.io/ssm/en/posts/symmetry-notes/" aria-label="Copy link" dir="ltr">
+      <span class="share-status" role="status" data-copied="Link copied." data-copy-failed="Select and copy the link below."></span>
+    </div>
+  </details></div>
     </header>
     <div class="article-body"><p>Symmetry is most useful when it reduces the number of independent questions in a calculation.</p>
 <h2 class="unnumbered" id="a-compact-example">A compact example</h2>
@@ -68,7 +62,6 @@
 <p>then the choice of basis makes rotational symmetry manifest. Questions about the full angular dependence become questions about the coefficients <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>ℓ</mi></msub><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a_{\ell}(s)</annotation></semantics></math>.</p>
 <p>This sample can be deleted once the first real physics post is ready.</p></div>
     <section class="comments-shell" id="comments" aria-labelledby="comments-title">
-    <p class="eyebrow">GitHub Discussions</p>
     <h2 id="comments-title">Comments</h2>
     <p class="comments-intro">Join the conversation with your GitHub account.</p>
     <div class="giscus-host"
@@ -79,13 +72,13 @@
         data-category-id="DIC_kwDOUQ129M4DFEBc"
         data-term="SSM:symmetry-notes"
         data-lang="en"></div>
-      <noscript><p class="comments-pending">JavaScript is required to load GitHub comments.</p></noscript>
+      <noscript><p class="comments-pending">JavaScript is required to load comments.</p></noscript>
   </section>
   </article></main>
   <footer class="site-footer">
     <span>© 2026 SSM</span>
     <span>Written in LyX or LaTeX. Published as a private-source static site.</span>
   </footer>
-  <script src="/ssm/assets/site.js?v=b7ec7945dea8" defer></script>
+  <script src="/ssm/assets/site.js?v=7761efa64420" defer></script>
 </body>
 </html>
