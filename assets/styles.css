@@ -305,7 +305,7 @@ h3 {
 
 .tag-chip > span:first-child { min-width: 0; overflow-wrap: anywhere; }
 .tag-chip:has(.tag-count) { padding-inline-end: 0.5rem; }
-.tag-option { position: relative; display: inline-flex; align-items: center; max-width: 100%; padding-inline-end: 2.4rem; border: 1px solid var(--line-dark); border-radius: 999px; background: var(--surface); }
+.tag-option { --tag-count-size: 1.8rem; position: relative; display: inline-flex; align-items: center; max-width: 100%; border: 1px solid var(--line-dark); border-radius: 999px; background: var(--surface); }
 .tag-option:has(> .tag-chip.is-ancestor) { border-color: var(--accent-strong); }
 .tag-option:has(> .tag-chip[aria-pressed="true"]) { background: var(--soft-accent); border-color: var(--accent-strong); box-shadow: inset 0 0 0 1px var(--accent-strong); }
 .tag-option > .tag-chip, .tag-option > .tag-chip:hover { min-width: 0; min-height: calc(2.75rem - 2px); border: 0; background: transparent; box-shadow: none; transform: none; }
@@ -313,13 +313,22 @@ h3 {
 .tag-option.is-excluded { background: var(--code-bg); border-color: var(--line); box-shadow: none; }
 .tag-option.is-excluded .tag-chip, .tag-option.is-excluded .tag-count { color: var(--muted); cursor: default; }
 .tag-option.is-excluded .tag-count { background: var(--line); }
-.tag-exclude { position: absolute; inset-inline-end: 0.35rem; inset-block-start: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 1.8rem; height: 1.8rem; padding: 0.35rem; border: 0; border-radius: 50%; background: var(--line); color: var(--ink); cursor: pointer; opacity: 0; pointer-events: none; }
-.tag-option:hover .tag-exclude, .tag-option:focus-within .tag-exclude, .tag-option.is-excluded .tag-exclude { opacity: 1; pointer-events: auto; }
+.tag-exclude { position: absolute; inset-inline-end: 0.5rem; inset-block-start: 50%; transform: translateY(-50%); display: grid; place-items: center; width: var(--tag-count-size); height: var(--tag-count-size); padding: 0.35rem; border: 0; border-radius: 50%; background: var(--line); color: var(--ink); cursor: pointer; opacity: 0; visibility: hidden; }
+/* Swap within the count's existing space after a continuous three-second hover.
+   Leaving cancels the delay and restores the count immediately. */
+.tag-option:hover .tag-exclude { opacity: 1; visibility: visible; transition: opacity 0s 3s, visibility 0s 3s; }
+.tag-option:hover .tag-count { opacity: 0; transition: opacity 0s 3s; }
+.tag-option:has(:focus-visible) .tag-exclude, .tag-option.is-excluded .tag-exclude { opacity: 1; visibility: visible; transition: none; }
+.tag-option:has(:focus-visible) .tag-count, .tag-option.is-excluded .tag-count { opacity: 0; transition: none; }
 .tag-exclude:hover { background: var(--line-dark); }
 .tag-exclude svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .tag-exclude [data-exclude-icon="restore"], .tag-exclude[aria-pressed="true"] [data-exclude-icon="remove"] { display: none; }
 .tag-exclude[aria-pressed="true"] [data-exclude-icon="restore"] { display: block; }
-@media (hover: none), (pointer: coarse) { .tag-exclude { opacity: 1; pointer-events: auto; } }
+/* Keyboard focus and a focused touch selection expose the same action. */
+@media (hover: none), (pointer: coarse) {
+  .tag-option:focus-within .tag-exclude { opacity: 1; visibility: visible; transition: none; }
+  .tag-option:focus-within .tag-count { opacity: 0; transition: none; }
+}
 
 .tag-chip:hover {
   border-color: var(--accent-strong);
@@ -330,8 +339,9 @@ h3 {
 .tag-count {
   display: grid;
   place-items: center;
-  min-width: 1.8rem;
-  height: 1.8rem;
+  width: var(--tag-count-size, 1.8rem);
+  min-width: var(--tag-count-size, 1.8rem);
+  height: var(--tag-count-size, 1.8rem);
   border-radius: 50%;
   background: var(--soft-accent);
   color: var(--accent-strong);
@@ -342,6 +352,7 @@ h3 {
 .browser-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; align-items: start; padding-block: 1rem; border-block-end: 1px solid var(--line); margin-block-end: 1.25rem; }
 .filter-controls { display: flex; align-items: flex-start; gap: 0.65rem; min-width: 0; }
 .browser-controls { display: flex; align-items: center; gap: 0.6rem; }
+.filter-reset-slot { display: block; flex: 0 0 2.75rem; width: 2.75rem; height: 2.75rem; }
 .view-switch { display: inline-flex; gap: 0.2rem; border: 1px solid var(--line-dark); border-radius: 999px; padding: 0.2rem; background: var(--surface); }
 .view-switch button { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 0; border-radius: 999px; padding: 0.65rem; color: var(--ink); background: transparent; cursor: pointer; }
 .view-switch button[aria-pressed="true"] { background: var(--inverse-bg); color: var(--inverse-ink); }
@@ -805,7 +816,7 @@ h3 {
   }
 
   .browser-toolbar { grid-template-columns: 1fr; gap: 0.75rem; }
-  .browser-controls { justify-content: flex-end; }
+  .browser-controls { grid-row: 1; justify-content: flex-end; }
 
   .card-footer,
   .site-footer,
