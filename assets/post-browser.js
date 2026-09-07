@@ -42,6 +42,45 @@ export function initializeRandomPosts(document, window) {
   });
 }
 
+export function initializePostViews(document, window) {
+  const menu = document.querySelector("[data-view-menu]");
+  if (!menu) return;
+  const summary = menu.querySelector("[data-view-summary]");
+  const options = menu.querySelector("[data-view-options]");
+  const views = [...menu.querySelectorAll("[data-view]")];
+  const streams = [...document.querySelectorAll("[data-post-stream]")];
+  const storageKey = menu.dataset.viewStorage;
+  let view = "list";
+
+  function applyView(value, persist = false) {
+    view = ["grid", "compact"].includes(value) ? value : "list";
+    streams.forEach((stream) => { stream.dataset.layout = view; });
+    menu.dataset.activeView = view;
+    views.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
+    const active = views.find((button) => button.dataset.view === view);
+    options.append(active, ...views.filter((button) => button !== active));
+    const label = `${summary.dataset.label}: ${active.getAttribute("aria-label")}`;
+    summary.setAttribute("aria-label", label);
+    summary.title = label;
+    if (persist) { try { window.localStorage.setItem(storageKey, view); } catch { /* Keep the view on this page. */ } }
+  }
+
+  function restoreView() {
+    try { applyView(window.localStorage.getItem(storageKey)); }
+    catch { applyView(view); }
+  }
+  views.forEach((button) => button.addEventListener("click", () => {
+    applyView(button.dataset.view, true);
+    menu.open = false;
+    summary.focus({ preventScroll: true });
+  }));
+  window.addEventListener("storage", (event) => {
+    if (event.key === storageKey || event.key === null) applyView(event.newValue);
+  });
+  window.addEventListener("pageshow", restoreView);
+  restoreView();
+}
+
 export function initializePostBrowser(document, window) {
   const browser = document.querySelector("[data-post-browser]");
   if (!browser) return;
@@ -60,25 +99,11 @@ export function initializePostBrowser(document, window) {
   const status = browser.querySelector("[data-filter-status]");
   const article = document.querySelector("[data-reader-article]");
   const inline = browser.dataset.inlineBrowser === "true";
-  const views = [...browser.querySelectorAll("[data-view]")];
-  const storageKey = browser.dataset.viewStorage;
   let selected = selectionFromUrl(window.location.href, initial, known);
   let excluded = exclusionsFromUrl(window.location.href, known);
   if (selected && !matchesTag([selected], "", excluded)) selected = "";
   const hasFilters = () => Boolean(selected || excluded.size);
   let returnFocus = article?.querySelector("[data-tag-filter]");
-  let view = "list";
-  try {
-    const saved = window.localStorage.getItem(storageKey);
-    if (["grid", "compact"].includes(saved)) view = saved;
-  } catch { /* List is the default. */ }
-
-  function applyView(value, persist = false) {
-    view = ["grid", "compact"].includes(value) ? value : "list";
-    stream.dataset.layout = view;
-    views.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
-    if (persist) { try { window.localStorage.setItem(storageKey, view); } catch { /* Keep the view on this page. */ } }
-  }
 
   function render(announce = false) {
     let count = 0;
@@ -140,7 +165,6 @@ export function initializePostBrowser(document, window) {
     update(button);
   }));
   clear.addEventListener("click", () => { selected = ""; excluded.clear(); update(clear); });
-  views.forEach((button) => button.addEventListener("click", () => applyView(button.dataset.view, true)));
   window.addEventListener("popstate", () => {
     selected = selectionFromUrl(window.location.href, initial, known);
     excluded = exclusionsFromUrl(window.location.href, known);
@@ -154,14 +178,11 @@ export function initializePostBrowser(document, window) {
     if (selected && !matchesTag([selected], "", excluded)) selected = "";
     render();
   });
-  window.addEventListener("storage", (event) => {
-    if (event.key === storageKey || event.key === null) applyView(event.newValue);
-  });
-  applyView(view);
   render();
 }
 
 if (typeof document !== "undefined") {
   initializeRandomPosts(document, window);
+  initializePostViews(document, window);
   initializePostBrowser(document, window);
 }
