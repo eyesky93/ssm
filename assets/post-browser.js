@@ -40,10 +40,13 @@ export function initializePostBrowser(document, window) {
   let selected = selectionFromUrl(window.location.href, initial, known);
   let returnFocus = article?.querySelector("[data-tag-filter]");
   let view = "list";
-  try { if (window.localStorage.getItem(storageKey) === "grid") view = "grid"; } catch { /* List is the default. */ }
+  try {
+    const saved = window.localStorage.getItem(storageKey);
+    if (["grid", "compact"].includes(saved)) view = saved;
+  } catch { /* List is the default. */ }
 
   function applyView(value, persist = false) {
-    view = value === "grid" ? "grid" : "list";
+    view = ["grid", "compact"].includes(value) ? value : "list";
     stream.dataset.layout = view;
     views.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
     if (persist) { try { window.localStorage.setItem(storageKey, view); } catch { /* Keep the view on this page. */ } }

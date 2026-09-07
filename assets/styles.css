@@ -438,14 +438,20 @@ h3 {
   line-height: 1.65;
 }
 
-.post-stream[data-layout="grid"] { grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); align-items: stretch; }
-.post-stream[data-layout="grid"] .post-card { padding: 1rem; min-width: 0; }
-.post-stream[data-layout="grid"] .post-heading { flex-direction: column; gap: 0.8rem; }
-.post-stream[data-layout="grid"] .post-tools { width: 100%; max-width: 100%; }
-.post-stream[data-layout="grid"] h2 { font-size: 1.5rem; line-height: 1.2; }
-.post-stream[data-layout="grid"] h2 a { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) { grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); align-items: stretch; }
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card { padding: 1rem; min-width: 0; }
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-heading { flex-direction: column; gap: 0.8rem; }
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-tools { order: -1; width: 100%; max-width: 100%; align-items: flex-start; }
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) h2 { font-size: 1.5rem; line-height: 1.2; }
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) h2 a { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .post-stream[data-layout="grid"] .post-card > p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; font-size: 1rem; line-height: 1.5; }
-.post-stream[data-layout="grid"] .card-footer { flex-direction: column; align-items: flex-start; gap: 0.7rem; padding-block-start: 1rem; }
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-footer { flex-direction: column; align-items: flex-start; gap: 0.7rem; padding-block-start: 1rem; }
+.post-stream[data-layout="compact"] { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 0.75rem; }
+.post-stream[data-layout="compact"] .post-card { padding: 0.75rem; }
+.post-stream[data-layout="compact"] .post-tools { gap: 0.5rem; }
+.post-stream[data-layout="compact"] .post-heading { gap: 0.6rem; margin-block-end: 0; }
+.post-stream[data-layout="compact"] h2 { font-size: 1.3rem; }
+.post-stream[data-layout="compact"] .post-card > p { display: none; }
 
 .card-footer {
   margin-block-start: auto;
