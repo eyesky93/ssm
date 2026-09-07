@@ -156,18 +156,58 @@ document.querySelectorAll("[data-share-menu]").forEach((menu) => {
   }
 });
 
+const settings = document.querySelector("[data-header-settings]");
+const settingsToggle = settings?.querySelector("[data-settings-toggle]");
+const popupMenus = "[data-share-menu][open], [data-color-menu][open], [data-view-menu][open]";
+
+function closeSettings(returnFocus = false) {
+  if (!settings) return;
+  settings.dataset.open = "false";
+  settingsToggle.setAttribute("aria-expanded", "false");
+  settings.querySelectorAll(popupMenus).forEach((menu) => { menu.open = false; });
+  if (returnFocus) settingsToggle.focus();
+}
+
+settingsToggle?.addEventListener("click", () => {
+  if (settings.dataset.open === "true") closeSettings();
+  else {
+    settings.dataset.open = "true";
+    settingsToggle.setAttribute("aria-expanded", "true");
+  }
+});
+
+if (settings) {
+  const mobileSettings = window.matchMedia("(max-width: 700px)");
+  mobileSettings.addEventListener("change", () => {
+    const controls = settings.querySelector(".header-actions");
+    const hadFocus = controls.contains(document.activeElement) || document.activeElement === settingsToggle;
+    closeSettings();
+    if (hadFocus) {
+      const target = mobileSettings.matches ? settingsToggle : controls.querySelector("button, a, select, summary");
+      target?.focus();
+    }
+  });
+}
+
 document.addEventListener("click", (event) => {
-  document.querySelectorAll("[data-share-menu][open], [data-color-menu][open], [data-view-menu][open]").forEach((menu) => {
+  document.querySelectorAll(popupMenus).forEach((menu) => {
     if (!menu.contains(event.target)) menu.open = false;
   });
+  if (settings?.dataset.open === "true" && !settings.contains(event.target)) closeSettings(settings.contains(document.activeElement));
 });
 
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
-  document.querySelectorAll("[data-share-menu][open], [data-color-menu][open], [data-view-menu][open]").forEach((menu) => {
+  const menus = [...document.querySelectorAll(popupMenus)];
+  const menu = menus.find((entry) => entry.contains(document.activeElement)) ?? menus.at(-1);
+  if (menu) {
     menu.open = false;
     menu.querySelector("summary").focus();
-  });
+    event.preventDefault();
+  } else if (settings?.dataset.open === "true") {
+    closeSettings(true);
+    event.preventDefault();
+  }
 });
 
 const params = new URLSearchParams(window.location.search);

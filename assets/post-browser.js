@@ -46,7 +46,6 @@ export function initializePostViews(document, window) {
   const menu = document.querySelector("[data-view-menu]");
   if (!menu) return;
   const summary = menu.querySelector("[data-view-summary]");
-  const options = menu.querySelector("[data-view-options]");
   const views = [...menu.querySelectorAll("[data-view]")];
   const streams = [...document.querySelectorAll("[data-post-stream]")];
   const storageKey = menu.dataset.viewStorage;
@@ -58,7 +57,6 @@ export function initializePostViews(document, window) {
     menu.dataset.activeView = view;
     views.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
     const active = views.find((button) => button.dataset.view === view);
-    options.append(active, ...views.filter((button) => button !== active));
     const label = `${summary.dataset.label}: ${active.getAttribute("aria-label")}`;
     summary.setAttribute("aria-label", label);
     summary.title = label;
