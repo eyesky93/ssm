@@ -91,6 +91,7 @@ export function initializePostBrowser(document, window) {
   const chips = [...document.querySelectorAll("[data-tag-filter]")];
   const selectorChips = chips.filter((chip) => chip.closest("[data-tag-parent]"));
   const groups = [...browser.querySelectorAll("[data-tag-parent]")];
+  const optionsByGroup = new Map(groups.map((group) => [group, [...group.querySelectorAll("[data-tag-option]")]]));
   const excludeButtons = [...browser.querySelectorAll("[data-exclude-tag]")];
   const initial = browser.dataset.initialTag;
   const known = new Set(chips.map((chip) => chip.dataset.tagFilter));
@@ -115,7 +116,7 @@ export function initializePostBrowser(document, window) {
     for (const chip of selectorChips) {
       const tag = chip.dataset.tagFilter;
       chip.setAttribute("aria-pressed", String(tag === selected));
-      chip.disabled = excluded.has(tag);
+      chip.disabled = false; // Selecting an excluded tag also restores it.
       chip.classList.toggle("is-ancestor", Boolean(selected && selected.startsWith(`${tag}:`)));
     }
     for (const button of excludeButtons) {
@@ -123,9 +124,20 @@ export function initializePostBrowser(document, window) {
       button.setAttribute("aria-pressed", String(active));
       button.setAttribute("aria-label", active ? button.dataset.labelRestore : button.dataset.labelExclude);
       button.title = button.getAttribute("aria-label");
-      button.closest("[data-tag-option]")?.classList.toggle("is-excluded", active);
+      const option = button.closest("[data-tag-option]");
+      if (option) {
+        if (active) option.classList.toggle("is-restored", false);
+        else if (option.classList.contains("is-excluded")) option.classList.toggle("is-restored", true);
+        option.classList.toggle("is-excluded", active);
+      }
     }
     groups.forEach((group) => { group.hidden = !visibleTagGroup(group.dataset.tagParent, selected, excluded); });
+    const focused = document.activeElement;
+    for (const [group, options] of optionsByGroup) {
+      const ordered = [...options.filter((option) => !excluded.has(option.dataset.tagOption)), ...options.filter((option) => excluded.has(option.dataset.tagOption))];
+      if (ordered.some((option, index) => group.children[index] !== option)) group.append(...ordered);
+    }
+    if (focused && document.activeElement !== focused && focused.checkVisibility?.({ visibilityProperty: true })) focused.focus({ preventScroll: true });
     clear.hidden = !hasFilters();
     empty.hidden = count > 0;
     if (inline) {
@@ -143,7 +155,7 @@ export function initializePostBrowser(document, window) {
     render(true);
     // A tag button can disappear when filtering a card or backing out of a branch.
     if (inline && !hasFilters()) returnFocus?.focus();
-    else if (source && (wasHidden || !source.checkVisibility?.())) {
+    else if (source && (wasHidden || !source.checkVisibility?.({ visibilityProperty: true }))) {
       const target = selected
         ? chips.find((chip) => browser.contains(chip) && chip.dataset.tagFilter === selected && chip.closest("[data-tag-parent]"))
         : selectorChips.find((chip) => !chip.disabled && chip.closest("[data-tag-parent]")?.dataset.tagParent === "") || excludeButtons[0];
@@ -154,16 +166,27 @@ export function initializePostBrowser(document, window) {
 
   chips.forEach((chip) => chip.addEventListener("click", () => {
     const tag = chip.dataset.tagFilter;
-    if (excluded.has(tag)) return; // Explicit exclusions are undone with their restore control.
+    chip.closest("[data-tag-option]")?.classList.toggle("is-restored", false);
+    for (const hidden of excluded) {
+      if (tag === hidden || tag.startsWith(`${hidden}:`)) excluded.delete(hidden);
+    }
     selected = selected === tag && selectorChips.includes(chip) ? "" : tag;
     update(chip);
   }));
-  excludeButtons.forEach((button) => button.addEventListener("click", () => {
+  excludeButtons.forEach((button) => button.addEventListener("click", (event) => {
     const tag = button.dataset.excludeTag;
-    if (excluded.has(tag)) excluded.delete(tag);
+    const restoring = excluded.has(tag);
+    if (restoring) excluded.delete(tag);
     else excluded.add(tag);
     if (selected && !matchesTag([selected], "", excluded)) selected = "";
     update(button);
+    const option = button.closest("[data-tag-option]");
+    if (restoring && event.detail === 0 && option?.checkVisibility?.({ visibilityProperty: true })) {
+      option.querySelector("[data-tag-filter]")?.focus({ preventScroll: true });
+    } else if (restoring && option?.contains(document.activeElement)) {
+      // Touch focus and sticky hover must not turn Restore straight back into X.
+      document.activeElement.blur();
+    }
   }));
   clear.addEventListener("click", () => { selected = ""; excluded.clear(); update(clear); });
   window.addEventListener("popstate", () => {

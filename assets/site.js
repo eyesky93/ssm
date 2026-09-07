@@ -160,6 +160,16 @@ const settings = document.querySelector("[data-header-settings]");
 const settingsToggle = settings?.querySelector("[data-settings-toggle]");
 const popupMenus = "[data-share-menu][open], [data-color-menu][open], [data-view-menu][open]";
 
+function arrangeSettings(expanded) {
+  const actions = settings.querySelector(".header-actions");
+  const display = settings.querySelector(".display-controls");
+  const theme = settings.querySelector("[data-theme-toggle]");
+  const color = settings.querySelector("[data-color-menu]");
+  const view = settings.querySelector("[data-view-menu]");
+  if (expanded) { display.append(view, color); actions.append(display, theme); }
+  else { display.append(color, view); actions.append(theme, display); }
+}
+
 function closeSettings(returnFocus = false) {
   if (!settings) return;
   settings.dataset.open = "false";
@@ -168,12 +178,14 @@ function closeSettings(returnFocus = false) {
     menu.dataset.inlineOptions = "false";
     menu.open = false;
   });
+  arrangeSettings(false);
   if (returnFocus) settingsToggle.focus();
 }
 
 settingsToggle?.addEventListener("click", () => {
   if (settings.dataset.open === "true") closeSettings();
   else {
+    arrangeSettings(true);
     settings.querySelectorAll("[data-color-menu], [data-view-menu]").forEach((menu) => {
       menu.dataset.inlineOptions = "true";
       menu.open = true;
