@@ -370,6 +370,10 @@ h3 {
 .toolbar-view .view-switch button { border-color: transparent; }
 @media (min-width: 701px) {
   .header-actions .view-settings { display: none; }
+  /* Align with the buttons inside the view capsule, independent of subtag rows. */
+  .browser-toolbar > .filter-controls,
+  .browser-toolbar > .filter-reset-slot { margin-block-start: calc(0.2rem + 1px); }
+  .browser-toolbar .tag-option > .tag-chip { padding-block: 0.4rem; }
 }
 @media (max-width: 700px) {
   .browser-toolbar { grid-template-columns: minmax(0, 1fr) auto; }
