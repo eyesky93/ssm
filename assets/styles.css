@@ -164,7 +164,8 @@ select:focus-visible {
 
 .language-nav a,
 .language-nav select,
-.theme-toggle {
+.theme-toggle,
+.accent-reset {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -182,16 +183,20 @@ select:focus-visible {
 .language-nav noscript { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 
 .language-nav a:hover,
-.theme-toggle:hover {
+.theme-toggle:hover,
+.accent-reset:hover {
   border-color: var(--accent-strong);
   color: var(--accent-strong);
 }
 
-.theme-toggle {
+.theme-toggle,
+.accent-reset {
   width: 2.75rem;
   padding: 0;
   cursor: pointer;
 }
+
+.accent-reset svg { width: 1.15rem; height: 1.15rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
 .theme-toggle svg {
   display: none;
@@ -535,9 +540,8 @@ h3 {
 .share-options input { width: 100%; min-width: 0; border: 1px solid var(--line-dark); border-radius: 0.4rem; background: var(--paper); color: var(--ink); padding: 0.65rem; font: inherit; }
 .share-status:empty { display: none; }
 .share-status { padding: 0.4rem 0.75rem; font-size: 0.875rem; color: var(--muted); }
-.github-comments { margin-block-start: 1.5rem; }
-.github-comments summary { cursor: pointer; padding-block: 0.75rem; font-weight: 700; }
-#disqus_thread { color: var(--comments-ink, var(--ink)); background: var(--comments-paper, var(--paper)); border-radius: 0.75rem; padding: 1rem; min-height: 8rem; color-scheme: normal; }
+#disqus_thread { color: var(--ink); background: var(--paper); border-radius: 0.75rem; min-height: 8rem; color-scheme: inherit; }
+#disqus_thread iframe { color-scheme: inherit; }
 
 .article-body {
   min-width: 0;
@@ -748,10 +752,6 @@ h3 {
   background: var(--surface-translucent);
   padding: 1.25rem;
   color: var(--muted);
-}
-
-.giscus-host {
-  min-height: 8rem;
 }
 
 @media (max-width: 700px) {

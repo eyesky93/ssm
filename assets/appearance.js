@@ -82,6 +82,12 @@
   window.SSMAppearance = {
     apply,
     colors,
+    reset(mode) {
+      if (!Object.hasOwn(defaults, mode)) return;
+      delete preferences[mode];
+      save();
+      apply(mode);
+    },
     set(mode, key, value) {
       if (!Object.hasOwn(defaults, mode) || key !== "accent" || !valid(value)) return;
       preferences = { ...preferences, [mode]: { accent: value } };

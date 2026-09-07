@@ -1,5 +1,6 @@
 const root = document.documentElement;
 const themePreference = window.matchMedia?.("(prefers-color-scheme: dark)");
+const disqusHost = document.querySelector("[data-disqus]");
 
 document.querySelectorAll("a[data-language]").forEach((link) => {
   link.addEventListener("click", () => {
@@ -52,20 +53,20 @@ function updateThemeControls(theme) {
   });
 }
 
-function syncGiscusTheme(theme) {
-  document.querySelectorAll("iframe.giscus-frame").forEach((frame) => {
-    frame.contentWindow?.postMessage(
-      { giscus: { setConfig: { theme } } },
-      "https://giscus.app",
-    );
-  });
-}
-
 function applyTheme(theme, persist = false) {
   window.SSMAppearance.apply(theme);
   updateThemeControls(theme);
   updateColorInputs();
-  syncGiscusTheme(theme);
+  if (disqusHost) {
+    const previousTheme = disqusHost.dataset.theme;
+    // Disqus samples both the host background and this browser canvas setting.
+    // Passing "normal" gives its dark text styling a mismatched light canvas.
+    disqusHost.style.colorScheme = theme;
+    disqusHost.dataset.theme = theme;
+    if (previousTheme && previousTheme !== theme && typeof window.DISQUS?.reset === "function") {
+      window.DISQUS.reset({ reload: true, config: window.disqus_config });
+    }
+  }
 
   if (persist) {
     try {
@@ -91,6 +92,13 @@ document.querySelectorAll("[data-color]").forEach((input) => {
   });
 });
 
+document.querySelectorAll("[data-reset-colors]").forEach((button) => {
+  button.addEventListener("click", () => {
+    window.SSMAppearance.reset(root.dataset.theme);
+    updateColorInputs();
+  });
+});
+
 document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
   button.addEventListener("click", () => {
     applyTheme(root.dataset.theme === "dark" ? "light" : "dark", true);
@@ -107,42 +115,7 @@ if (themePreference?.addEventListener) {
   themePreference?.addListener?.(followSystemTheme);
 }
 
-function loadGiscus(host) {
-  if (host.dataset.loaded) return;
-  host.dataset.loaded = "true";
-  const script = document.createElement("script");
-  script.src = "https://giscus.app/client.js";
-  script.async = true;
-  script.crossOrigin = "anonymous";
-  script.dataset.repo = host.dataset.repo;
-  script.dataset.repoId = host.dataset.repoId;
-  script.dataset.category = host.dataset.category;
-  script.dataset.categoryId = host.dataset.categoryId;
-  script.dataset.mapping = "specific";
-  script.dataset.term = host.dataset.term;
-  script.dataset.strict = "1";
-  script.dataset.reactionsEnabled = "1";
-  script.dataset.emitMetadata = "0";
-  script.dataset.inputPosition = "top";
-  script.dataset.theme = root.dataset.theme;
-  script.dataset.lang = host.dataset.lang;
-  script.dataset.loading = "lazy";
-  host.append(script);
-}
-
-document.querySelectorAll("[data-giscus-host]").forEach((host) => {
-  const details = host.closest("details");
-  if (!details || details.open) loadGiscus(host);
-  details?.addEventListener("toggle", () => { if (details.open) loadGiscus(host); });
-});
-
-const disqusHost = document.querySelector("[data-disqus]");
 if (disqusHost) {
-  // Keep this iframe's original readable backdrop when the page theme changes.
-  // Reloading the comment form just to recolor it can discard a reader's draft.
-  const palette = window.SSMAppearance.colors(root.dataset.theme);
-  disqusHost.style.setProperty("--comments-paper", palette.background);
-  disqusHost.style.setProperty("--comments-ink", palette.text);
   window.disqus_config = function () {
     this.page.identifier = disqusHost.dataset.identifier;
     this.page.url = disqusHost.dataset.url;
