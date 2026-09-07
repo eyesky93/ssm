@@ -327,10 +327,10 @@ h3 {
 .tag-option.is-excluded .tag-chip, .tag-option.is-excluded .tag-count { color: var(--muted); cursor: pointer; }
 .tag-option.is-excluded .tag-count { background: var(--line); }
 .tag-exclude { position: absolute; inset-inline-end: 0.5rem; inset-block-start: 50%; transform: translateY(-50%); display: grid; place-items: center; width: var(--tag-count-size); height: var(--tag-count-size); padding: 0.35rem; border: 0; border-radius: 50%; background: var(--line); color: var(--ink); cursor: pointer; opacity: 0; visibility: hidden; }
-/* Swap within the count's existing space after a continuous three-second hover.
+/* Swap within the count's existing space after a continuous 1.5-second hover.
    Leaving cancels the delay and restores the count immediately. */
-.tag-option:hover .tag-exclude { opacity: 1; visibility: visible; transition: opacity 0s 3s, visibility 0s 3s; }
-.tag-option:hover .tag-count { opacity: 0; transition: opacity 0s 3s; }
+.tag-option:hover .tag-exclude { opacity: 1; visibility: visible; transition: opacity 0s 1.5s, visibility 0s 1.5s; }
+.tag-option:hover .tag-count { opacity: 0; transition: opacity 0s 1.5s; }
 .tag-option:has(:focus-visible) .tag-exclude, .tag-option.is-excluded .tag-exclude { opacity: 1; visibility: visible; transition: none; }
 .tag-option:has(:focus-visible) .tag-count, .tag-option.is-excluded .tag-count { opacity: 0; transition: none; }
 .tag-exclude:hover { background: var(--line-dark); }
@@ -364,7 +364,17 @@ h3 {
   flex-shrink: 0;
 }
 
-.browser-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; align-items: start; padding-block: 1rem; border-block-end: 1px solid var(--line); margin-block-end: 1.25rem; }
+.browser-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 1rem; align-items: start; padding-block: 1rem; border-block-end: 1px solid var(--line); margin-block-end: 1.25rem; }
+.toolbar-view { width: auto; height: auto; }
+.toolbar-view > .view-switch { position: static; display: flex; flex-direction: row; width: auto; padding: 0.2rem; gap: 0.25rem; border: 1px solid var(--line-dark); box-shadow: none; }
+.toolbar-view .view-switch button { border-color: transparent; }
+@media (min-width: 701px) {
+  .header-actions .view-settings { display: none; }
+}
+@media (max-width: 700px) {
+  .browser-toolbar { grid-template-columns: minmax(0, 1fr) auto; }
+  .toolbar-view { display: none; }
+}
 .filter-controls { display: flex; align-items: flex-start; gap: 0.65rem; min-width: 0; }
 .filter-reset-slot { display: block; flex: 0 0 2.75rem; width: 2.75rem; height: 2.75rem; }
 .view-switch button { display: grid; place-items: center; flex: 0 0 2.75rem; width: 2.75rem; height: 2.75rem; border: 1px solid var(--line-dark); border-radius: 50%; padding: 0.65rem; color: var(--ink); background: var(--surface); cursor: pointer; }

@@ -43,23 +43,27 @@ export function initializeRandomPosts(document, window) {
 }
 
 export function initializePostViews(document, window) {
-  const menu = document.querySelector("[data-view-menu]");
-  if (!menu) return;
-  const summary = menu.querySelector("[data-view-summary]");
-  const views = [...menu.querySelectorAll("[data-view]")];
+  const menus = [...document.querySelectorAll("[data-view-menu]")];
+  if (!menus.length) return;
+  const views = menus.flatMap((menu) => [...menu.querySelectorAll("[data-view]")]);
   const streams = [...document.querySelectorAll("[data-post-stream]")];
-  const storageKey = menu.dataset.viewStorage;
+  const storageKey = menus[0].dataset.viewStorage;
   let view = "list";
 
   function applyView(value, persist = false) {
     view = ["grid", "compact"].includes(value) ? value : "list";
     streams.forEach((stream) => { stream.dataset.layout = view; });
-    menu.dataset.activeView = view;
     views.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
-    const active = views.find((button) => button.dataset.view === view);
-    const label = `${summary.dataset.label}: ${active.getAttribute("aria-label")}`;
-    summary.setAttribute("aria-label", label);
-    summary.title = label;
+    for (const menu of menus) {
+      menu.dataset.activeView = view;
+      const summary = menu.querySelector("[data-view-summary]");
+      if (summary) {
+        const active = views.find((button) => button.dataset.view === view);
+        const label = `${summary.dataset.label}: ${active.getAttribute("aria-label")}`;
+        summary.setAttribute("aria-label", label);
+        summary.title = label;
+      }
+    }
     if (persist) { try { window.localStorage.setItem(storageKey, view); } catch { /* Keep the view on this page. */ } }
   }
 
@@ -68,11 +72,12 @@ export function initializePostViews(document, window) {
     catch { applyView(view); }
   }
   views.forEach((button) => button.addEventListener("click", () => {
+    const menu = button.closest("[data-view-menu]");
     applyView(button.dataset.view, true);
     if (menu.dataset.inlineOptions === "true") button.focus({ preventScroll: true });
     else {
       menu.open = false;
-      summary.focus({ preventScroll: true });
+      menu.querySelector("[data-view-summary]")?.focus({ preventScroll: true });
     }
   }));
   window.addEventListener("storage", (event) => {

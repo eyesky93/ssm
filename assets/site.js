@@ -199,7 +199,8 @@ if (settings) {
   const mobileSettings = window.matchMedia("(max-width: 700px)");
   mobileSettings.addEventListener("change", () => {
     const controls = settings.querySelector(".header-actions");
-    const hadFocus = controls.contains(document.activeElement) || document.activeElement === settingsToggle;
+    const toolbar = document.querySelector(".toolbar-view");
+    const hadFocus = controls.contains(document.activeElement) || toolbar?.contains(document.activeElement) || document.activeElement === settingsToggle;
     closeSettings();
     if (hadFocus) {
       const target = mobileSettings.matches ? settingsToggle : controls.querySelector("button, a, select, summary");
