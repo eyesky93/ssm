@@ -843,16 +843,16 @@ h3 {
   }
 
   .settings-toggle { display: inline-flex; }
-  .header-actions { display: none; position: absolute; z-index: 20; inset-inline-end: 0; inset-block-start: calc(100% + 0.75rem); grid-template-columns: max-content; justify-items: end; width: 10.75rem; height: 11.25rem; padding: 0.75rem; gap: 0.75rem; background: transparent; pointer-events: none; }
+  .header-actions { display: none; position: absolute; z-index: 20; inset-inline-end: 0; inset-block-start: calc(100% + 0.75rem); grid-template-columns: max-content; justify-items: end; width: 11.25rem; height: 11.25rem; padding: 0.5rem; gap: 1rem; background: transparent; pointer-events: none; }
   .header-settings[data-open="true"] .header-actions { display: grid; }
   .header-actions .settings-outline { display: block; position: absolute; z-index: -1; inset: 0; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.12)); pointer-events: none; }
   .settings-outline path { fill: var(--surface); stroke: var(--line-dark); stroke-width: 1; pointer-events: visiblePainted; }
   [dir="rtl"] .settings-outline { transform: scaleX(-1); }
   .header-actions button, .header-actions input { pointer-events: auto; }
-  .header-actions .display-controls { flex-direction: column; align-items: flex-end; gap: 0.75rem; }
+  .header-actions .display-controls { flex-direction: column; align-items: flex-end; gap: 1rem; }
   .header-actions .color-settings, .header-actions .view-settings { flex: 0 0 auto; width: auto; height: auto; }
   .header-actions .accent-control, .header-actions .view-control { display: none; }
-  .header-actions .accent-panel, .header-actions .view-switch { position: static; flex-direction: row; width: max-content; background: transparent; box-shadow: none; }
+  .header-actions .accent-panel, .header-actions .view-switch { position: static; flex-direction: row; width: max-content; gap: 1rem; background: transparent; box-shadow: none; }
 
   .browser-toolbar { gap: 0.75rem; }
 
