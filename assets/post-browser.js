@@ -69,8 +69,11 @@ export function initializePostViews(document, window) {
   }
   views.forEach((button) => button.addEventListener("click", () => {
     applyView(button.dataset.view, true);
-    menu.open = false;
-    summary.focus({ preventScroll: true });
+    if (menu.dataset.inlineOptions === "true") button.focus({ preventScroll: true });
+    else {
+      menu.open = false;
+      summary.focus({ preventScroll: true });
+    }
   }));
   window.addEventListener("storage", (event) => {
     if (event.key === storageKey || event.key === null) applyView(event.newValue);

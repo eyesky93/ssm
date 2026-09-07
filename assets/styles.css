@@ -826,11 +826,12 @@ h3 {
   }
 
   .settings-toggle { display: inline-flex; }
-  .header-actions { display: none; position: absolute; z-index: 20; inset-inline-end: 0; inset-block-start: calc(100% + 0.75rem); grid-template-columns: 2.75rem; width: max-content; max-width: calc(100vw - 2rem); padding: 0.75rem; gap: 0.75rem; border: 1px solid var(--line-dark); border-radius: 999px; background: var(--surface); box-shadow: var(--shadow); }
+  .header-actions { display: none; position: absolute; z-index: 20; inset-inline-end: 0; inset-block-start: calc(100% + 0.75rem); grid-template-columns: max-content; justify-items: end; width: max-content; max-width: calc(100vw - 2rem); padding: 0.75rem; gap: 0.75rem; border: 1px solid var(--line-dark); border-radius: 1.25rem; background: var(--surface); box-shadow: var(--shadow); }
   .header-settings[data-open="true"] .header-actions { display: grid; }
-  .header-actions .display-controls { flex-direction: column; gap: 0.75rem; }
-  .header-actions .accent-panel, .header-actions .view-switch { flex-direction: row; width: max-content; }
-  .header-actions .accent-panel { flex-direction: row-reverse; }
+  .header-actions .display-controls { flex-direction: column; align-items: flex-end; gap: 0.75rem; }
+  .header-actions .color-settings, .header-actions .view-settings { flex: 0 0 auto; width: auto; height: auto; }
+  .header-actions .accent-control, .header-actions .view-control { display: none; }
+  .header-actions .accent-panel, .header-actions .view-switch { position: static; flex-direction: row; width: max-content; background: transparent; box-shadow: none; }
 
   .browser-toolbar { gap: 0.75rem; }
 

@@ -164,13 +164,20 @@ function closeSettings(returnFocus = false) {
   if (!settings) return;
   settings.dataset.open = "false";
   settingsToggle.setAttribute("aria-expanded", "false");
-  settings.querySelectorAll(popupMenus).forEach((menu) => { menu.open = false; });
+  settings.querySelectorAll("[data-color-menu], [data-view-menu]").forEach((menu) => {
+    menu.dataset.inlineOptions = "false";
+    menu.open = false;
+  });
   if (returnFocus) settingsToggle.focus();
 }
 
 settingsToggle?.addEventListener("click", () => {
   if (settings.dataset.open === "true") closeSettings();
   else {
+    settings.querySelectorAll("[data-color-menu], [data-view-menu]").forEach((menu) => {
+      menu.dataset.inlineOptions = "true";
+      menu.open = true;
+    });
     settings.dataset.open = "true";
     settingsToggle.setAttribute("aria-expanded", "true");
   }
@@ -191,21 +198,23 @@ if (settings) {
 
 document.addEventListener("click", (event) => {
   document.querySelectorAll(popupMenus).forEach((menu) => {
-    if (!menu.contains(event.target)) menu.open = false;
+    if (menu.dataset.inlineOptions !== "true" && !menu.contains(event.target)) menu.open = false;
   });
   if (settings?.dataset.open === "true" && !settings.contains(event.target)) closeSettings(settings.contains(document.activeElement));
 });
 
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
+  if (settings?.dataset.open === "true") {
+    closeSettings(true);
+    event.preventDefault();
+    return;
+  }
   const menus = [...document.querySelectorAll(popupMenus)];
   const menu = menus.find((entry) => entry.contains(document.activeElement)) ?? menus.at(-1);
   if (menu) {
     menu.open = false;
     menu.querySelector("summary").focus();
-    event.preventDefault();
-  } else if (settings?.dataset.open === "true") {
-    closeSettings(true);
     event.preventDefault();
   }
 });
