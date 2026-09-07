@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://eyesky93.github.io/ssm/sitemap.xml

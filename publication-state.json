@@ -1,0 +1,25 @@
+{
+  "generatedAt": "2026-09-07T07:24:38.127Z",
+  "posts": [
+    {
+      "id": "welcome",
+      "publishAt": "2026-09-01T09:00:00+03:00"
+    },
+    {
+      "id": "symmetry-notes",
+      "publishAt": "2026-08-28T12:00:00+03:00"
+    },
+    {
+      "id": "listening-for-patterns",
+      "publishAt": "2026-08-20T18:30:00+03:00"
+    },
+    {
+      "id": "english-only-example",
+      "publishAt": "2026-08-12T10:00:00+03:00"
+    },
+    {
+      "id": "hebrew-only-example",
+      "publishAt": "2026-08-07T10:00:00+03:00"
+    }
+  ]
+}
