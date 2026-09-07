@@ -46,12 +46,9 @@ function syncGiscusTheme(theme) {
 }
 
 function applyTheme(theme, persist = false) {
-  root.dataset.theme = theme;
-  root.style.colorScheme = theme;
-  document
-    .querySelector('meta[name="theme-color"]')
-    ?.setAttribute("content", theme === "dark" ? "#08111b" : "#f7fafc");
+  window.SSMAppearance.apply(theme);
   updateThemeControls(theme);
+  updateColorInputs();
   syncGiscusTheme(theme);
 
   if (persist) {
@@ -63,7 +60,41 @@ function applyTheme(theme, persist = false) {
   }
 }
 
+function updateColorInputs() {
+  const colors = window.SSMAppearance.colors(root.dataset.theme);
+  document.querySelectorAll("[data-color]").forEach((input) => {
+    input.value = colors[input.dataset.color];
+  });
+}
+
 applyTheme(root.dataset.theme || storedTheme() || preferredTheme());
+
+document.querySelectorAll("[data-color]").forEach((input) => {
+  input.addEventListener("input", () => {
+    window.SSMAppearance.set(root.dataset.theme, input.dataset.color, input.value);
+  });
+});
+
+document.querySelectorAll("[data-reset-colors]").forEach((button) => {
+  button.addEventListener("click", () => {
+    window.SSMAppearance.reset(root.dataset.theme);
+    updateColorInputs();
+  });
+});
+
+document.addEventListener("click", (event) => {
+  document.querySelectorAll(".color-settings[open]").forEach((panel) => {
+    if (!panel.contains(event.target)) panel.open = false;
+  });
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape") return;
+  document.querySelectorAll(".color-settings[open]").forEach((panel) => {
+    panel.open = false;
+    panel.querySelector("summary").focus();
+  });
+});
 
 document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
   button.addEventListener("click", () => {
