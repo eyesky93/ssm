@@ -305,8 +305,21 @@ h3 {
 
 .tag-chip > span:first-child { min-width: 0; overflow-wrap: anywhere; }
 .tag-chip:has(.tag-count) { padding-inline-end: 0.5rem; }
-.subject-nav .tag-chip.is-ancestor { border-color: var(--accent-strong); }
-.subject-nav .tag-chip[aria-pressed="true"] { background: var(--soft-accent); color: var(--accent-strong); border-color: var(--accent-strong); box-shadow: inset 0 0 0 1px var(--accent-strong); }
+.tag-option { position: relative; display: inline-flex; align-items: center; max-width: 100%; padding-inline-end: 2.4rem; border: 1px solid var(--line-dark); border-radius: 999px; background: var(--surface); }
+.tag-option:has(> .tag-chip.is-ancestor) { border-color: var(--accent-strong); }
+.tag-option:has(> .tag-chip[aria-pressed="true"]) { background: var(--soft-accent); border-color: var(--accent-strong); box-shadow: inset 0 0 0 1px var(--accent-strong); }
+.tag-option > .tag-chip, .tag-option > .tag-chip:hover { min-width: 0; min-height: calc(2.75rem - 2px); border: 0; background: transparent; box-shadow: none; transform: none; }
+.tag-option > .tag-chip[aria-pressed="true"] { color: var(--accent-strong); }
+.tag-option.is-excluded { background: var(--code-bg); border-color: var(--line); box-shadow: none; }
+.tag-option.is-excluded .tag-chip, .tag-option.is-excluded .tag-count { color: var(--muted); cursor: default; }
+.tag-option.is-excluded .tag-count { background: var(--line); }
+.tag-exclude { position: absolute; inset-inline-end: 0.35rem; inset-block-start: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 1.8rem; height: 1.8rem; padding: 0.35rem; border: 0; border-radius: 50%; background: var(--line); color: var(--ink); cursor: pointer; opacity: 0; pointer-events: none; }
+.tag-option:hover .tag-exclude, .tag-option:focus-within .tag-exclude, .tag-option.is-excluded .tag-exclude { opacity: 1; pointer-events: auto; }
+.tag-exclude:hover { background: var(--line-dark); }
+.tag-exclude svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tag-exclude [data-exclude-icon="restore"], .tag-exclude[aria-pressed="true"] [data-exclude-icon="remove"] { display: none; }
+.tag-exclude[aria-pressed="true"] [data-exclude-icon="restore"] { display: block; }
+@media (hover: none), (pointer: coarse) { .tag-exclude { opacity: 1; pointer-events: auto; } }
 
 .tag-chip:hover {
   border-color: var(--accent-strong);
