@@ -157,14 +157,14 @@ document.querySelectorAll("[data-share-menu]").forEach((menu) => {
 });
 
 document.addEventListener("click", (event) => {
-  document.querySelectorAll("[data-share-menu][open]").forEach((menu) => {
+  document.querySelectorAll("[data-share-menu][open], [data-color-menu][open]").forEach((menu) => {
     if (!menu.contains(event.target)) menu.open = false;
   });
 });
 
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
-  document.querySelectorAll("[data-share-menu][open]").forEach((menu) => {
+  document.querySelectorAll("[data-share-menu][open], [data-color-menu][open]").forEach((menu) => {
     menu.open = false;
     menu.querySelector("summary").focus();
   });
