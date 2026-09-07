@@ -107,28 +107,36 @@ select:focus-visible {
   border-block-end: 1px solid var(--line);
 }
 
+.primary-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
 .wordmark {
   display: inline-flex;
   align-items: center;
-  gap: 0.85rem;
-  text-decoration: none;
-  font-size: 1.05rem;
-  font-weight: 750;
-  letter-spacing: 0.02em;
-}
-
-.wordmark-mark {
-  display: grid;
-  place-items: center;
-  width: 2.65rem;
-  height: 2.65rem;
-  border-radius: 50%;
+  justify-content: center;
+  min-height: 2.75rem;
+  border-radius: 0.65rem;
+  padding: 0.65rem 1rem;
   background: var(--inverse-bg);
   color: var(--inverse-ink);
-  font-family: var(--serif);
-  font-size: 1.25rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.035em;
   line-height: 1;
+  text-decoration: none;
 }
+
+.about-link { font-weight: 700; text-decoration: none; text-underline-offset: 0.25em; }
+.about-link:hover, .about-link[aria-current="page"] { text-decoration: underline; }
+.site-main.home-main { padding-block-start: 0.5rem; }
+.home-main > .subject-nav { border-block-start: 0; }
+.about-page { max-width: 65rem; }
+.about-page .page-heading h1 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.025em; }
+.about-copy { font-family: var(--serif); font-size: clamp(1.15rem, 2vw, 1.5rem); line-height: 1.75; }
+.about-copy p { margin-block: 1.5rem; }
 
 .header-actions {
   margin-inline-start: auto;
@@ -148,10 +156,12 @@ select:focus-visible {
 .color-settings summary {
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 2.75rem;
   min-height: 2.75rem;
   border: 1px solid var(--line-dark);
   border-radius: 999px;
-  padding-inline: 1rem;
+  padding: 0;
   background: var(--surface);
   font-weight: 700;
   cursor: pointer;
@@ -160,6 +170,11 @@ select:focus-visible {
 
 .color-settings summary::-webkit-details-marker { display: none; }
 .color-settings[open] summary { border-color: var(--accent); }
+.palette-icon { display: block; width: 1.9rem; height: 1.75rem; }
+.palette-background { fill: var(--paper); }
+.palette-text { fill: var(--ink); }
+.palette-accent { fill: var(--accent); }
+.palette-outlines { fill: none; stroke: var(--line-dark); stroke-width: 1.3; }
 
 .color-panel {
   position: absolute;
@@ -187,7 +202,7 @@ select:focus-visible {
 .breadcrumbs { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-block-end: 1.5rem; font-size: 0.95rem; color: var(--muted); }
 .breadcrumbs a { color: var(--accent); text-underline-offset: 0.15em; }
 .page-heading + .subject-nav { border-block-start: 0; }
-.page-heading h1, .card-tag, .article-tag, .tag-chip, .post-card h3 { overflow-wrap: anywhere; }
+.page-heading h1, .card-tag, .article-tag, .tag-chip, .post-card h2 { overflow-wrap: anywhere; }
 .tag-chip > span:first-child { min-width: 0; }
 .tag-count { flex-shrink: 0; }
 .post-card > p { max-width: 85ch; }
@@ -248,13 +263,6 @@ select:focus-visible {
   padding-block: clamp(1.25rem, 2.5vw, 2.5rem);
 }
 
-.masthead {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.75rem 2rem;
-  padding-block-end: 1.5rem;
-}
 
 .eyebrow {
   margin: 0 0 0.9rem;
@@ -276,7 +284,6 @@ h3 {
   text-wrap: balance;
 }
 
-.masthead h1,
 .page-heading h1 {
   margin: 0;
   font-size: clamp(2.5rem, 4vw, 4rem);
@@ -285,20 +292,11 @@ h3 {
   line-height: 1.08;
 }
 
-[dir="rtl"] .masthead h1,
 [dir="rtl"] .page-heading h1 {
   letter-spacing: -0.025em;
   line-height: 1;
 }
 
-.lede {
-  max-width: 46rem;
-  margin: 0;
-  color: var(--muted);
-  font-family: var(--serif);
-  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
-  line-height: 1.55;
-}
 
 .subject-nav {
   display: grid;
@@ -369,6 +367,7 @@ h3 {
   margin-block-end: 1.35rem;
 }
 
+.section-heading h1,
 .section-heading h2 {
   margin: 0;
   font-size: clamp(1.7rem, 3vw, 2.35rem);
@@ -447,18 +446,18 @@ h3 {
   text-transform: uppercase;
 }
 
-.post-card h3 {
+.post-card h2 {
   margin: 1rem 0 0.7rem;
   font-size: clamp(1.65rem, 3vw, 2.35rem);
   font-weight: 500;
   line-height: 1.12;
 }
 
-.post-card h3 a {
+.post-card h2 a {
   text-decoration: none;
 }
 
-.post-card h3 a:hover {
+.post-card h2 a:hover {
   text-decoration: underline;
   text-decoration-thickness: 0.08em;
   text-underline-offset: 0.13em;
@@ -830,11 +829,6 @@ h3 {
   .site-main,
   .site-footer {
     width: calc(100% - 1.25rem);
-  }
-
-  .wordmark-mark {
-    width: 2.35rem;
-    height: 2.35rem;
   }
 
   .language-nav a,
