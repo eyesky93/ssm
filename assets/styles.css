@@ -628,7 +628,7 @@ h3 {
 .share-menu summary:hover { box-shadow: 0 0 0 3px var(--soft-accent); }
 .share-menu summary::-webkit-details-marker { display: none; }
 .share-menu summary svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.7; }
-.share-options { position: absolute; z-index: 5; inset-inline-end: 0; inset-block-start: calc(100% + 0.5rem); display: flex; flex-direction: column; align-items: center; width: max-content; gap: 0.5rem; padding: 0.65rem; border: 1px solid var(--line-dark); border-radius: 1rem; background: var(--surface); box-shadow: var(--shadow); }
+.share-options { position: absolute; z-index: 5; inset-inline-end: calc(-0.5rem - 1px); inset-block-start: calc(100% + 0.5rem); display: flex; flex-direction: column; align-items: flex-end; width: max-content; gap: 0.5rem; padding: 0.65rem 0.5rem; border: 1px solid var(--line-dark); border-radius: 1rem; background: var(--surface); box-shadow: var(--shadow); }
 .share-options a, .share-options button { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 1px solid var(--line-dark); border-radius: 50%; background: var(--surface); color: var(--ink); padding: 0.7rem; font: inherit; text-decoration: none; cursor: pointer; }
 .share-options a:hover, .share-options button:hover { background: var(--soft-accent); border-color: var(--accent-strong); }
 .share-options svg { width: 100%; height: 100%; fill: currentColor; }
