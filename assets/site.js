@@ -1,6 +1,5 @@
 const root = document.documentElement;
 const themePreference = window.matchMedia?.("(prefers-color-scheme: dark)");
-const disqusHost = document.querySelector("[data-disqus]");
 
 document.querySelectorAll("a[data-language]").forEach((link) => {
   link.addEventListener("click", () => {
@@ -57,16 +56,6 @@ function applyTheme(theme, persist = false) {
   window.SSMAppearance.apply(theme);
   updateThemeControls(theme);
   updateColorInputs();
-  if (disqusHost) {
-    const previousTheme = disqusHost.dataset.theme;
-    // Disqus samples both the host background and this browser canvas setting.
-    // Passing "normal" gives its dark text styling a mismatched light canvas.
-    disqusHost.style.colorScheme = theme;
-    disqusHost.dataset.theme = theme;
-    if (previousTheme && previousTheme !== theme && typeof window.DISQUS?.reset === "function") {
-      window.DISQUS.reset({ reload: true, config: window.disqus_config });
-    }
-  }
 
   if (persist) {
     try {
@@ -115,20 +104,6 @@ if (themePreference?.addEventListener) {
   themePreference?.addListener?.(followSystemTheme);
 }
 
-if (disqusHost) {
-  window.disqus_config = function () {
-    this.page.identifier = disqusHost.dataset.identifier;
-    this.page.url = disqusHost.dataset.url;
-    this.page.title = disqusHost.dataset.title;
-    this.language = disqusHost.dataset.lang;
-  };
-  const script = document.createElement("script");
-  script.src = `https://${disqusHost.dataset.shortname}.disqus.com/embed.js`;
-  script.async = true;
-  script.dataset.timestamp = String(Date.now());
-  script.onerror = () => { disqusHost.textContent = disqusHost.dataset.errorMessage; };
-  document.head.append(script);
-}
 
 document.querySelectorAll("[data-share-menu]").forEach((menu) => {
   const status = menu.querySelector(".share-status");
