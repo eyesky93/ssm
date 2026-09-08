@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SSM</title>
+    <link>https://eyesky93.github.io/ssm/en/</link>
+    <description>Essays and working notes on physics, music, and the patterns between them.</description>
+    <language>en-GB</language>
+    <atom:link href="https://eyesky93.github.io/ssm/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>A first look at conformal symmetry</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/conformal-symmetry-example/</link>
+      <guid isPermaLink="false">urn:ssm:conformal-symmetry-example</guid>
+      <pubDate>Mon, 07 Sep 2026 18:00:00 GMT</pubDate>
+      <description>An example post in Physics → Conformal Field Theory, about symmetry and scale.</description>
+      <category>Physics / Conformal Field Theory</category>
+    </item>
+    <item>
+      <title>A place for connected ideas</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/welcome/</link>
+      <guid isPermaLink="false">urn:ssm:welcome</guid>
+      <pubDate>Tue, 01 Sep 2026 06:00:00 GMT</pubDate>
+      <description>An introduction to this bilingual collection of essays and working notes.</description>
+      <category>Physics</category>
+      <category>Music</category>
+    </item>
+    <item>
+      <title>Symmetry as a way of organizing a calculation</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/symmetry-notes/</link>
+      <guid isPermaLink="false">urn:ssm:symmetry-notes</guid>
+      <pubDate>Fri, 28 Aug 2026 09:00:00 GMT</pubDate>
+      <description>A short example of a physics note with displayed mathematics.</description>
+      <category>Physics</category>
+      <category>Notes</category>
+    </item>
+    <item>
+      <title>Listening for patterns</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/listening-for-patterns/</link>
+      <guid isPermaLink="false">urn:ssm:listening-for-patterns</guid>
+      <pubDate>Thu, 20 Aug 2026 15:30:00 GMT</pubDate>
+      <description>A sample music post about repetition, variation, and expectation.</description>
+      <category>Music</category>
+      <category>Culture</category>
+    </item>
+    <item>
+      <title>An English-only note</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/english-only-example/</link>
+      <guid isPermaLink="false">urn:ssm:english-only-example</guid>
+      <pubDate>Wed, 12 Aug 2026 07:00:00 GMT</pubDate>
+      <description>Posts do not need to wait for a translation before publication.</description>
+      <category>Physics</category>
+    </item>
+    <item>
+      <title>רשימה בעברית בלבד</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/hebrew-only-example/</link>
+      <guid isPermaLink="false">urn:ssm:hebrew-only-example</guid>
+      <pubDate>Fri, 07 Aug 2026 07:00:00 GMT</pubDate>
+      <description>אין צורך לעכב פרסום של פוסט עד שהתרגום יהיה מוכן.</description>
+      <category>תרבות</category>
+      <category>רשימות</category>
+    </item>
+  </channel>
+</rss>

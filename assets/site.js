@@ -240,3 +240,95 @@ document.querySelector("[data-dismiss-notice]")?.addEventListener("click", () =>
   cleanUrl.searchParams.delete("missing");
   window.history.replaceState({}, "", cleanUrl);
 });
+
+document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
+  const allTopics = form.querySelector("[data-topic-all]");
+  const specificTopics = form.querySelector("[data-topic-specific]");
+  const topicOptions = [...form.querySelectorAll("[data-topic-tag]")];
+  const submitButton = form.querySelector('button[type="submit"]');
+  const status = form.querySelector("[data-subscribe-status]");
+
+  const selectAllTopics = () => {
+    if (allTopics) allTopics.checked = true;
+    if (specificTopics) specificTopics.checked = false;
+    topicOptions.forEach((option) => { option.checked = false; });
+  };
+
+  const reconcileTopics = (changed) => {
+    if (changed === allTopics && allTopics?.checked) {
+      topicOptions.forEach((option) => { option.checked = false; });
+      return;
+    }
+
+    const hasSpecificTopic = topicOptions.some((option) => option.checked);
+    if (hasSpecificTopic) {
+      if (allTopics) allTopics.checked = false;
+      if (specificTopics) specificTopics.checked = true;
+    } else if (changed !== specificTopics) {
+      selectAllTopics();
+    }
+  };
+
+  allTopics?.addEventListener("change", () => reconcileTopics(allTopics));
+  specificTopics?.addEventListener("change", () => reconcileTopics(specificTopics));
+  topicOptions.forEach((option) => {
+    option.addEventListener("change", () => reconcileTopics(option));
+  });
+
+  if (allTopics?.checked) reconcileTopics(allTopics);
+
+  status?.setAttribute("role", "status");
+  status?.setAttribute("aria-live", "polite");
+  status?.setAttribute("aria-atomic", "true");
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity() || !submitButton || !status) return;
+
+    const data = new FormData(form);
+    const selectedTags = data.getAll("tags").filter((tag) => typeof tag === "string");
+    if (data.get("scope") === "tags" && !selectedTags.length) {
+      status.textContent = form.dataset.topicRequired || form.dataset.error || "";
+      status.dataset.state = "error";
+      topicOptions[0]?.focus();
+      return;
+    }
+    const originalLabel = submitButton.textContent;
+
+    submitButton.disabled = true;
+    form.setAttribute("aria-busy", "true");
+    submitButton.textContent = form.dataset.working || originalLabel;
+    status.textContent = form.dataset.working || "";
+    status.dataset.state = "working";
+
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          email: data.get("email"),
+          language: data.get("language"),
+          consent: data.get("consent") === "yes",
+          scope: data.get("scope"),
+          tags: selectedTags,
+          website: data.get("website"),
+        }),
+      });
+
+      if (!response.ok) throw new Error(`Subscription request failed: ${response.status}`);
+
+      form.reset();
+      selectAllTopics();
+      status.textContent = form.dataset.success || "";
+      status.dataset.state = "success";
+    } catch (error) {
+      console.error(error);
+      status.textContent = form.dataset.error || "";
+      status.dataset.state = "error";
+    } finally {
+      submitButton.disabled = false;
+      form.setAttribute("aria-busy", "false");
+      submitButton.textContent = originalLabel;
+    }
+  });
+});

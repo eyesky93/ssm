@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SSM — תרבות</title>
+    <link>https://eyesky93.github.io/ssm/he/tags/culture/</link>
+    <description>פוסטים עם התגית: תרבות</description>
+    <language>he-IL</language>
+    <atom:link href="https://eyesky93.github.io/ssm/he/tags/culture/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>להקשיב לדפוסים</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/listening-for-patterns/</link>
+      <guid isPermaLink="false">urn:ssm:listening-for-patterns:he</guid>
+      <pubDate>Thu, 20 Aug 2026 15:30:00 GMT</pubDate>
+      <description>פוסט מוזיקה לדוגמה על חזרה, שינוי וציפייה.</description>
+      <category>מוזיקה</category>
+      <category>תרבות</category>
+    </item>
+    <item>
+      <title>רשימה בעברית בלבד</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/hebrew-only-example/</link>
+      <guid isPermaLink="false">urn:ssm:hebrew-only-example:he</guid>
+      <pubDate>Fri, 07 Aug 2026 07:00:00 GMT</pubDate>
+      <description>אין צורך לעכב פרסום של פוסט עד שהתרגום יהיה מוכן.</description>
+      <category>תרבות</category>
+      <category>רשימות</category>
+    </item>
+  </channel>
+</rss>

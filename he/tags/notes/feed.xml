@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SSM — רשימות</title>
+    <link>https://eyesky93.github.io/ssm/he/tags/notes/</link>
+    <description>פוסטים עם התגית: רשימות</description>
+    <language>he-IL</language>
+    <atom:link href="https://eyesky93.github.io/ssm/he/tags/notes/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>סימטריה כדרך לארגן חישוב</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/symmetry-notes/</link>
+      <guid isPermaLink="false">urn:ssm:symmetry-notes:he</guid>
+      <pubDate>Fri, 28 Aug 2026 09:00:00 GMT</pubDate>
+      <description>דוגמה קצרה לרשימה בפיזיקה הכוללת מתמטיקה מוצגת.</description>
+      <category>פיזיקה</category>
+      <category>רשימות</category>
+    </item>
+    <item>
+      <title>רשימה בעברית בלבד</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/hebrew-only-example/</link>
+      <guid isPermaLink="false">urn:ssm:hebrew-only-example:he</guid>
+      <pubDate>Fri, 07 Aug 2026 07:00:00 GMT</pubDate>
+      <description>אין צורך לעכב פרסום של פוסט עד שהתרגום יהיה מוכן.</description>
+      <category>תרבות</category>
+      <category>רשימות</category>
+    </item>
+  </channel>
+</rss>

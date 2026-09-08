@@ -58,7 +58,8 @@ export function compareReaderPosts(a, b, isPinned) {
 }
 
 export function initializePins(document, window) {
-  const cards = [...document.querySelectorAll("[data-post-id]")];
+  const cards = [...document.querySelectorAll("[data-post-id]")]
+    .filter((card) => card.querySelector("[data-pin-toggle]"));
   if (!cards.length) return;
   let storage;
   try { storage = window.localStorage; } catch { /* Fall back to this page's memory. */ }

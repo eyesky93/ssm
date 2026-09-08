@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SSM — Music</title>
+    <link>https://eyesky93.github.io/ssm/en/tags/music/</link>
+    <description>Posts tagged: Music</description>
+    <language>en-GB</language>
+    <atom:link href="https://eyesky93.github.io/ssm/en/tags/music/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>A place for connected ideas</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/welcome/</link>
+      <guid isPermaLink="false">urn:ssm:welcome:en</guid>
+      <pubDate>Tue, 01 Sep 2026 06:00:00 GMT</pubDate>
+      <description>An introduction to this bilingual collection of essays and working notes.</description>
+      <category>Physics</category>
+      <category>Music</category>
+    </item>
+    <item>
+      <title>Listening for patterns</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/listening-for-patterns/</link>
+      <guid isPermaLink="false">urn:ssm:listening-for-patterns:en</guid>
+      <pubDate>Thu, 20 Aug 2026 15:30:00 GMT</pubDate>
+      <description>A sample music post about repetition, variation, and expectation.</description>
+      <category>Music</category>
+      <category>Culture</category>
+    </item>
+  </channel>
+</rss>

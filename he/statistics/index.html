@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#ffffff">
-  <title>אודות — SSM</title>
-  <meta name="description" content="מאמרים ורשימות על פיזיקה, מוזיקה והדפוסים שביניהן.">
-  <link rel="canonical" href="https://eyesky93.github.io/ssm/he/about/">
-  <link rel="alternate" hreflang="en" href="https://eyesky93.github.io/ssm/en/about/">
-  <link rel="alternate" hreflang="he" href="https://eyesky93.github.io/ssm/he/about/">
+  <title>סטטיסטיקה — SSM</title>
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="נתוני אתר פרטיים">
+  <link rel="canonical" href="https://eyesky93.github.io/ssm/he/statistics/">
+  <link rel="alternate" hreflang="en" href="https://eyesky93.github.io/ssm/en/statistics/">
+  <link rel="alternate" hreflang="he" href="https://eyesky93.github.io/ssm/he/statistics/">
   <link rel="alternate" hreflang="x-default" href="https://eyesky93.github.io/ssm/">
   <link rel="alternate" type="application/rss+xml" title="ערוץ RSS" href="https://eyesky93.github.io/ssm/he/feed.xml">
   <script src="/ssm/assets/appearance.js?v=fcf5ea336668"></script>
@@ -20,12 +21,12 @@
   <header class="site-header">
     <nav class="primary-nav" aria-label="ניווט ראשי">
       <a class="wordmark" href="/ssm/he/">SSM</a>
-      <a class="about-link" href="/ssm/he/about/" aria-current="page">אודות</a>
+      <a class="about-link" href="/ssm/he/about/">אודות</a>
     </nav>
     <div class="header-controls">
       
       <button class="random-post" type="button" data-random-posts="[&quot;/ssm/he/posts/welcome/&quot;,&quot;/ssm/he/posts/symmetry-notes/&quot;,&quot;/ssm/he/posts/conformal-symmetry-example/&quot;,&quot;/ssm/he/posts/listening-for-patterns/&quot;,&quot;/ssm/he/posts/hebrew-only-example/&quot;]" aria-label="פוסט אקראי" title="פוסט אקראי"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 8a8 8 0 0 1 6-5.5M2 3v5h5"/><g transform="rotate(-12 14 14)"><rect x="7" y="7" width="14" height="14" rx="3"/><circle cx="11" cy="11" r="1"/><circle cx="17" cy="11" r="1"/><circle cx="14" cy="14" r="1"/><circle cx="11" cy="17" r="1"/><circle cx="17" cy="17" r="1"/></g></svg></button>
-      <nav class="language-nav" aria-label="שפה"><a href="/ssm/en/about/" data-language="en" lang="en" dir="ltr" aria-label="English" title="English">En</a></nav>
+      <nav class="language-nav" aria-label="שפה"><a href="/ssm/en/statistics/" data-language="en" lang="en" dir="ltr" aria-label="English" title="English">En</a></nav>
       <div class="header-settings" data-header-settings data-open="false">
         <button class="settings-toggle" type="button" data-settings-toggle aria-expanded="false" aria-controls="site-settings" aria-label="הגדרות תצוגה" title="הגדרות תצוגה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 2-.6 2.5-2 1.2-2.5-.7L2 9.2l1.9 1.8v2L2 14.8 4.4 19l2.5-.7 2 1.2.6 2.5h5l.6-2.5 2-1.2 2.5.7 2.4-4.2-1.9-1.8v-2L22 9.2 19.6 5l-2.5.7-2-1.2L14.5 2Z"/><circle cx="12" cy="12" r="3.5"/></svg></button>
         <div class="header-actions" id="site-settings" aria-label="הגדרות תצוגה">
@@ -66,10 +67,27 @@
   </div>
     </div>
   </header>
-  <main id="main" class="site-main"><article class="about-page">
-    <header class="page-heading"><h1>אודות</h1></header>
-    <div class="about-copy"><p>מאמרים ורשימות על פיזיקה, מוזיקה והדפוסים שביניהן.</p></div>
-  </article></main>
+  <main id="main" class="site-main"><section data-statistics-dashboard data-post-labels="{&quot;welcome&quot;:&quot;מקום לרעיונות שמתחברים&quot;,&quot;symmetry-notes&quot;:&quot;סימטריה כדרך לארגן חישוב&quot;,&quot;conformal-symmetry-example&quot;:&quot;מבט ראשון על סימטריה קונפורמית&quot;,&quot;listening-for-patterns&quot;:&quot;להקשיב לדפוסים&quot;,&quot;english-only-example&quot;:&quot;An English-only note&quot;,&quot;hebrew-only-example&quot;:&quot;רשימה בעברית בלבד&quot;}">
+    <div class="page-heading"><h1>סטטיסטיקה</h1></div>
+    <p data-statistics-status role="status" aria-live="polite">טעינה…</p>
+    <div class="statistics-identity" data-statistics-identity></div>
+    <div data-statistics-content hidden>
+      <div class="statistics-controls">
+        <label>תקופה <select data-statistics-period>
+          <option value="7">7 הימים האחרונים</option>
+          <option value="30" selected>30 הימים האחרונים</option>
+          <option value="90">90 הימים האחרונים</option>
+          <option value="365">365 הימים האחרונים</option>
+          <option value="all">כל התקופה</option>
+        </select></label>
+        <label>פוסט <select data-statistics-post><option value="">כל האתר</option></select></label>
+        <button type="button" data-statistics-refresh>רענון</button>
+      </div>
+      <div class="statistics-cards" data-statistics-cards></div>
+      <div data-statistics-tables></div>
+    </div>
+    <noscript>יש להפעיל JavaScript כדי להתחבר ולצפות בנתונים.</noscript>
+  </section><script type="module" src="/ssm/assets/statistics.js?v=9faf680e56e5"></script></main>
   <footer class="site-footer">
     <span>© 2026 SSM</span>
     <a href="/ssm/he/statistics/">סטטיסטיקה</a>

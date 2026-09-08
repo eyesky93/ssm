@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SSM — מוזיקה</title>
+    <link>https://eyesky93.github.io/ssm/he/tags/music/</link>
+    <description>פוסטים עם התגית: מוזיקה</description>
+    <language>he-IL</language>
+    <atom:link href="https://eyesky93.github.io/ssm/he/tags/music/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>מקום לרעיונות שמתחברים</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/welcome/</link>
+      <guid isPermaLink="false">urn:ssm:welcome:he</guid>
+      <pubDate>Tue, 01 Sep 2026 06:00:00 GMT</pubDate>
+      <description>מבוא לאוסף הדו־לשוני הזה של מאמרים ורשימות עבודה.</description>
+      <category>פיזיקה</category>
+      <category>מוזיקה</category>
+    </item>
+    <item>
+      <title>להקשיב לדפוסים</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/listening-for-patterns/</link>
+      <guid isPermaLink="false">urn:ssm:listening-for-patterns:he</guid>
+      <pubDate>Thu, 20 Aug 2026 15:30:00 GMT</pubDate>
+      <description>פוסט מוזיקה לדוגמה על חזרה, שינוי וציפייה.</description>
+      <category>מוזיקה</category>
+      <category>תרבות</category>
+    </item>
+  </channel>
+</rss>

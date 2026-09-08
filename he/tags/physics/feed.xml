@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SSM — פיזיקה</title>
+    <link>https://eyesky93.github.io/ssm/he/tags/physics/</link>
+    <description>פוסטים עם התגית: פיזיקה</description>
+    <language>he-IL</language>
+    <atom:link href="https://eyesky93.github.io/ssm/he/tags/physics/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>מבט ראשון על סימטריה קונפורמית</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/conformal-symmetry-example/</link>
+      <guid isPermaLink="false">urn:ssm:conformal-symmetry-example:he</guid>
+      <pubDate>Mon, 07 Sep 2026 18:00:00 GMT</pubDate>
+      <description>פוסט לדוגמה בתת־הנושא תורת שדות קונפורמית בפיזיקה, על סימטריה וקנה מידה.</description>
+      <category>פיזיקה / תורת שדות קונפורמית</category>
+    </item>
+    <item>
+      <title>מקום לרעיונות שמתחברים</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/welcome/</link>
+      <guid isPermaLink="false">urn:ssm:welcome:he</guid>
+      <pubDate>Tue, 01 Sep 2026 06:00:00 GMT</pubDate>
+      <description>מבוא לאוסף הדו־לשוני הזה של מאמרים ורשימות עבודה.</description>
+      <category>פיזיקה</category>
+      <category>מוזיקה</category>
+    </item>
+    <item>
+      <title>סימטריה כדרך לארגן חישוב</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/symmetry-notes/</link>
+      <guid isPermaLink="false">urn:ssm:symmetry-notes:he</guid>
+      <pubDate>Fri, 28 Aug 2026 09:00:00 GMT</pubDate>
+      <description>דוגמה קצרה לרשימה בפיזיקה הכוללת מתמטיקה מוצגת.</description>
+      <category>פיזיקה</category>
+      <category>רשימות</category>
+    </item>
+  </channel>
+</rss>

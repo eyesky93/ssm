@@ -1,0 +1,200 @@
+{
+  "version": 1,
+  "generatedAt": "2026-09-08T21:30:02.000Z",
+  "site": {
+    "url": "https://eyesky93.github.io/ssm/",
+    "title": {
+      "en": "SSM",
+      "he": "SSM"
+    }
+  },
+  "languages": {
+    "en": {
+      "name": "English",
+      "direction": "ltr",
+      "locale": "en-GB"
+    },
+    "he": {
+      "name": "עברית",
+      "direction": "rtl",
+      "locale": "he-IL"
+    }
+  },
+  "defaultLanguage": "en",
+  "fallbackLanguage": "en",
+  "tags": [
+    {
+      "key": "physics",
+      "parent": null,
+      "route": "physics",
+      "labels": {
+        "en": "Physics",
+        "he": "פיזיקה"
+      }
+    },
+    {
+      "key": "music",
+      "parent": null,
+      "route": "music",
+      "labels": {
+        "en": "Music",
+        "he": "מוזיקה"
+      }
+    },
+    {
+      "key": "notes",
+      "parent": null,
+      "route": "notes",
+      "labels": {
+        "en": "Notes",
+        "he": "רשימות"
+      }
+    },
+    {
+      "key": "physics:conformal-field-theory",
+      "parent": "physics",
+      "route": "physics/conformal-field-theory",
+      "labels": {
+        "en": "Conformal Field Theory",
+        "he": "תורת שדות קונפורמית"
+      }
+    },
+    {
+      "key": "culture",
+      "parent": null,
+      "route": "culture",
+      "labels": {
+        "en": "Culture",
+        "he": "תרבות"
+      }
+    }
+  ],
+  "posts": [
+    {
+      "id": "conformal-symmetry-example",
+      "slug": "conformal-symmetry-example",
+      "publishedAt": "2026-09-07T18:00:00.000Z",
+      "notify": true,
+      "notifyVersion": 1,
+      "tags": [
+        "physics:conformal-field-theory"
+      ],
+      "translations": {
+        "en": {
+          "title": "A first look at conformal symmetry",
+          "summary": "An example post in Physics → Conformal Field Theory, about symmetry and scale.",
+          "url": "https://eyesky93.github.io/ssm/en/posts/conformal-symmetry-example/"
+        },
+        "he": {
+          "title": "מבט ראשון על סימטריה קונפורמית",
+          "summary": "פוסט לדוגמה בתת־הנושא תורת שדות קונפורמית בפיזיקה, על סימטריה וקנה מידה.",
+          "url": "https://eyesky93.github.io/ssm/he/posts/conformal-symmetry-example/"
+        }
+      }
+    },
+    {
+      "id": "welcome",
+      "slug": "welcome",
+      "publishedAt": "2026-09-01T06:00:00.000Z",
+      "notify": true,
+      "notifyVersion": 1,
+      "tags": [
+        "physics",
+        "music"
+      ],
+      "translations": {
+        "en": {
+          "title": "A place for connected ideas",
+          "summary": "An introduction to this bilingual collection of essays and working notes.",
+          "url": "https://eyesky93.github.io/ssm/en/posts/welcome/"
+        },
+        "he": {
+          "title": "מקום לרעיונות שמתחברים",
+          "summary": "מבוא לאוסף הדו־לשוני הזה של מאמרים ורשימות עבודה.",
+          "url": "https://eyesky93.github.io/ssm/he/posts/welcome/"
+        }
+      }
+    },
+    {
+      "id": "symmetry-notes",
+      "slug": "symmetry-notes",
+      "publishedAt": "2026-08-28T09:00:00.000Z",
+      "notify": true,
+      "notifyVersion": 1,
+      "tags": [
+        "physics",
+        "notes"
+      ],
+      "translations": {
+        "en": {
+          "title": "Symmetry as a way of organizing a calculation",
+          "summary": "A short example of a physics note with displayed mathematics.",
+          "url": "https://eyesky93.github.io/ssm/en/posts/symmetry-notes/"
+        },
+        "he": {
+          "title": "סימטריה כדרך לארגן חישוב",
+          "summary": "דוגמה קצרה לרשימה בפיזיקה הכוללת מתמטיקה מוצגת.",
+          "url": "https://eyesky93.github.io/ssm/he/posts/symmetry-notes/"
+        }
+      }
+    },
+    {
+      "id": "listening-for-patterns",
+      "slug": "listening-for-patterns",
+      "publishedAt": "2026-08-20T15:30:00.000Z",
+      "notify": true,
+      "notifyVersion": 1,
+      "tags": [
+        "music",
+        "culture"
+      ],
+      "translations": {
+        "en": {
+          "title": "Listening for patterns",
+          "summary": "A sample music post about repetition, variation, and expectation.",
+          "url": "https://eyesky93.github.io/ssm/en/posts/listening-for-patterns/"
+        },
+        "he": {
+          "title": "להקשיב לדפוסים",
+          "summary": "פוסט מוזיקה לדוגמה על חזרה, שינוי וציפייה.",
+          "url": "https://eyesky93.github.io/ssm/he/posts/listening-for-patterns/"
+        }
+      }
+    },
+    {
+      "id": "english-only-example",
+      "slug": "english-only-example",
+      "publishedAt": "2026-08-12T07:00:00.000Z",
+      "notify": true,
+      "notifyVersion": 1,
+      "tags": [
+        "physics"
+      ],
+      "translations": {
+        "en": {
+          "title": "An English-only note",
+          "summary": "Posts do not need to wait for a translation before publication.",
+          "url": "https://eyesky93.github.io/ssm/en/posts/english-only-example/"
+        }
+      }
+    },
+    {
+      "id": "hebrew-only-example",
+      "slug": "hebrew-only-example",
+      "publishedAt": "2026-08-07T07:00:00.000Z",
+      "notify": true,
+      "notifyVersion": 1,
+      "tags": [
+        "culture",
+        "notes"
+      ],
+      "translations": {
+        "he": {
+          "title": "רשימה בעברית בלבד",
+          "summary": "אין צורך לעכב פרסום של פוסט עד שהתרגום יהיה מוכן.",
+          "url": "https://eyesky93.github.io/ssm/he/posts/hebrew-only-example/"
+        }
+      }
+    }
+  ]
+}

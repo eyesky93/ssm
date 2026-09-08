@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SSM — Physics / Conformal Field Theory</title>
+    <link>https://eyesky93.github.io/ssm/en/tags/physics/conformal-field-theory/</link>
+    <description>Posts tagged: Physics / Conformal Field Theory</description>
+    <language>en-GB</language>
+    <atom:link href="https://eyesky93.github.io/ssm/en/tags/physics/conformal-field-theory/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>A first look at conformal symmetry</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/conformal-symmetry-example/</link>
+      <guid isPermaLink="false">urn:ssm:conformal-symmetry-example:en</guid>
+      <pubDate>Mon, 07 Sep 2026 18:00:00 GMT</pubDate>
+      <description>An example post in Physics → Conformal Field Theory, about symmetry and scale.</description>
+      <category>Physics / Conformal Field Theory</category>
+    </item>
+  </channel>
+</rss>

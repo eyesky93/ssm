@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SSM — Culture</title>
+    <link>https://eyesky93.github.io/ssm/en/tags/culture/</link>
+    <description>Posts tagged: Culture</description>
+    <language>en-GB</language>
+    <atom:link href="https://eyesky93.github.io/ssm/en/tags/culture/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Listening for patterns</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/listening-for-patterns/</link>
+      <guid isPermaLink="false">urn:ssm:listening-for-patterns:en</guid>
+      <pubDate>Thu, 20 Aug 2026 15:30:00 GMT</pubDate>
+      <description>A sample music post about repetition, variation, and expectation.</description>
+      <category>Music</category>
+      <category>Culture</category>
+    </item>
+  </channel>
+</rss>
