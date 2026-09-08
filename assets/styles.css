@@ -995,8 +995,9 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 .comment-status { color: var(--muted); font-size: .875rem; line-height: 1.6; }
 .comment-status:empty { display: none; }
 .comment-error { color: var(--ink); border-inline-start: 3px solid var(--accent-strong); padding-inline-start: .75rem; }
-.comment-thread-header { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; margin-block: 1.8rem .4rem; padding-block-end: .8rem; border-block-end: 1px solid var(--line-dark); }
+.comment-thread-header { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; margin-block: 0 .4rem; padding-block-end: .8rem; border-block-end: 1px solid var(--line-dark); }
 .comment-thread-header > span { margin-inline-end: auto; font-weight: 600; font-size: .875rem; }
+.comment-thread { margin-block-end: 1.8rem; }
 .comment-item { padding-block: 1.25rem .5rem; border-block-end: 1px solid var(--line); overflow-wrap: anywhere; }
 .comment-item-heading { display: flex; align-items: center; gap: .65rem; }
 .comment-avatar { flex: 0 0 2.3rem; inline-size: 2.3rem; block-size: 2.3rem; display: grid; place-items: center; background: var(--soft-accent); border: 1px solid var(--line); border-radius: 50%; font-size: .875rem; font-weight: 600; color: var(--ink); }
