@@ -146,14 +146,13 @@ document.querySelectorAll("[data-share-menu]").forEach((menu) => {
     } catch { fallback(); }
   });
   const native = menu.querySelector("[data-native-share]");
-  if (navigator.share) {
-    native.hidden = false;
-    native.addEventListener("click", async () => {
-      try {
-        await navigator.share({ title: menu.dataset.title, url: menu.dataset.url });
-      } catch (error) { if (error.name !== "AbortError") fallback(); }
-    });
-  }
+  native.hidden = false;
+  native.addEventListener("click", async () => {
+    if (!navigator.share) { fallback(); return; }
+    try {
+      await navigator.share({ title: menu.dataset.title, url: menu.dataset.url });
+    } catch (error) { if (error.name !== "AbortError") fallback(); }
+  });
 });
 
 const settings = document.querySelector("[data-header-settings]");

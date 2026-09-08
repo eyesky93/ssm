@@ -34,6 +34,27 @@ export function selectionUrl(href, selected, initial, excluded = []) {
   return url;
 }
 
+// Reading order is independent of the pin order used by the catalogue.
+export function readingSequence(posts, currentId, selected, excluded = []) {
+  const chronological = [...posts].sort((a, b) => a.published - b.published || a.id.localeCompare(b.id));
+  const selectedPosts = chronological.filter((post) => matchesTag(post.tags, selected, excluded));
+  const index = selectedPosts.findIndex((post) => post.id === currentId);
+  const currentIndex = chronological.findIndex((post) => post.id === currentId);
+  return {
+    current: index < 0 ? null : index + 1,
+    total: selectedPosts.length,
+    previous: selectedPosts.filter((post) => chronological.indexOf(post) < currentIndex).at(-1) ?? null,
+    next: selectedPosts.find((post) => chronological.indexOf(post) > currentIndex) ?? null,
+  };
+}
+
+export function readerUrl(href, selected, excluded = []) {
+  // Explicit empty selection overrides stale storage; reader keeps the article open.
+  const url = selectionUrl(href, selected, true, excluded);
+  url.searchParams.set("reader", "1");
+  return url;
+}
+
 export function chooseRandomPost(paths, currentPath, random = Math.random) {
   const alternatives = paths.filter((path) => path !== currentPath);
   const choices = alternatives.length ? alternatives : paths;
@@ -44,8 +65,11 @@ export function initializeRandomPosts(document, window) {
   document.querySelectorAll("[data-random-posts]").forEach((button) => {
     const paths = JSON.parse(button.dataset.randomPosts);
     button.addEventListener("click", () => {
-      const target = chooseRandomPost(paths, window.location.pathname);
-      if (target) window.location.assign(target);
+      const browser = document.querySelector?.("[data-post-browser]");
+      const cards = browser ? [...browser.querySelectorAll("[data-post-url]")].filter((card) => !card.hidden) : null;
+      const target = chooseRandomPost(cards ? cards.map((card) => card.dataset.postUrl) : paths, window.location.pathname);
+      const link = cards?.find((card) => card.dataset.postUrl === target)?.querySelector("[data-reader-link]");
+      if (target) window.location.assign(link?.href || target);
     });
   });
 }
@@ -143,7 +167,13 @@ export function initializePostBrowser(document, window) {
     return normalize([], []);
   }
   let { selected, excluded } = explicitFilters() ? readUrl() : readSaved();
-  let browsing = !inline || explicitFilters();
+  const isBrowsing = () => !inline || (explicitFilters() && new URL(window.location.href).searchParams.get("reader") !== "1");
+  let browsing = isBrowsing();
+  const navigation = article?.querySelector("[data-post-navigation]");
+  const navigationPosts = cards.map((card) => ({
+    id: card.dataset.postId, tags: tagsByCard.get(card), published: Number(card.dataset.published),
+    url: card.dataset.postUrl, title: card.dataset.postTitle,
+  }));
   const hasFilters = () => Boolean(selected.size || excluded.size);
   let returnFocus = article?.querySelector("[data-tag-filter]");
 
@@ -153,7 +183,49 @@ export function initializePostBrowser(document, window) {
   }
   function setUrl(replace = false) {
     const url = selectionUrl(window.location.href, selected, initial, excluded);
+    if (inline && browsing) url.searchParams.delete("reader");
+    if (inline && !browsing && url.searchParams.has("reader") && !selected.size) url.searchParams.set("tag", "");
     if (url.href !== window.location.href) window.history[replace ? "replaceState" : "pushState"](null, "", url.href);
+  }
+
+  function renderNavigation() {
+    for (const card of cards) {
+      for (const link of card.querySelectorAll("[data-reader-link]")) {
+        link.href = readerUrl(new URL(card.dataset.postUrl, window.location.href), selected, excluded).href;
+      }
+    }
+    const back = article?.querySelector("[data-reader-back]");
+    if (back) {
+      const url = selectionUrl(new URL(back.href, window.location.href), selected, true, excluded);
+      url.searchParams.delete("reader");
+      back.href = url.href;
+    }
+    if (inline) {
+      for (const link of document.querySelectorAll("a[data-language]")) {
+        if (new URL(link.href, window.location.href).pathname.includes("/posts/")) link.href = readerUrl(new URL(link.href, window.location.href), selected, excluded).href;
+      }
+      for (const select of document.querySelectorAll("[data-language-select]")) {
+        for (const option of select.options) {
+          if (new URL(option.value, window.location.href).pathname.includes("/posts/")) option.value = readerUrl(new URL(option.value, window.location.href), selected, excluded).href;
+        }
+      }
+    }
+    if (!navigation) return;
+    const sequence = readingSequence(navigationPosts, article.dataset.postId, selected, excluded);
+    const position = navigation.querySelector("[data-post-position]");
+    position.textContent = `${sequence.current ?? "—"}/${sequence.total}`;
+    position.setAttribute("aria-label", (sequence.current === null ? navigation.dataset.outsideLabel : navigation.dataset.positionLabel)
+      .replace("{current}", String(sequence.current)).replace("{total}", String(sequence.total)));
+    for (const [direction, target] of [["prev", sequence.previous], ["next", sequence.next]]) {
+      const link = navigation.querySelector(`[data-post-${direction}]`);
+      link.hidden = !target;
+      if (!target) { link.removeAttribute("href"); link.removeAttribute("rel"); continue; }
+      link.href = readerUrl(new URL(target.url, window.location.href), selected, excluded).href;
+      link.setAttribute("rel", direction);
+      const label = `${navigation.dataset[direction === "prev" ? "labelPrev" : "labelNext"]}: ${target.title}`;
+      link.setAttribute("aria-label", label);
+      link.title = label;
+    }
   }
 
   function render(announce = false) {
@@ -193,6 +265,7 @@ export function initializePostBrowser(document, window) {
       browser.hidden = !browsing || !hasFilters();
       if (article) article.hidden = browsing && hasFilters();
     }
+    renderNavigation();
     if (announce) status.textContent = status.dataset.resultMessage.replace("{count}", String(count));
   }
 
@@ -241,8 +314,8 @@ export function initializePostBrowser(document, window) {
   }));
   clear.addEventListener("click", () => { selected.clear(); excluded.clear(); update(clear); });
   function restoreHistory() {
-    browsing = !inline || explicitFilters();
-    ({ selected, excluded } = inline && !browsing ? readSaved() : readUrl());
+    browsing = isBrowsing();
+    ({ selected, excluded } = inline && !explicitFilters() ? readSaved() : readUrl());
     if (browsing) save();
     render();
     if (inline && !browsing) returnFocus?.focus({ preventScroll: true });
