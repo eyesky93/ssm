@@ -145,6 +145,28 @@ document.querySelectorAll("[data-share-menu]").forEach((menu) => {
       status.textContent = status.dataset.copied;
     } catch { fallback(); }
   });
+  const instagram = menu.querySelector("[data-instagram-share]");
+  const openInstagram = menu.querySelector("[data-open-instagram]");
+  instagram?.addEventListener("click", async () => {
+    if (navigator.share) {
+      status.textContent = status.dataset.instagramChoose;
+      try {
+        await navigator.share({ title: menu.dataset.title, text: menu.dataset.title, url: menu.dataset.url });
+        status.textContent = "";
+        return;
+      } catch (error) {
+        if (error.name === "AbortError") { status.textContent = ""; return; }
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(menu.dataset.url);
+      status.textContent = status.dataset.instagramCopied;
+    } catch {
+      fallback();
+      status.textContent = status.dataset.instagramCopy;
+    }
+    openInstagram.hidden = false;
+  });
   const native = menu.querySelector("[data-native-share]");
   native.hidden = false;
   native.addEventListener("click", async () => {
