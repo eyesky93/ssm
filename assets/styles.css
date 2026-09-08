@@ -964,6 +964,9 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 [data-ssm-comments] button { cursor: pointer; }
 [data-ssm-comments] button:hover:not(:disabled), [data-ssm-comments] button[aria-pressed="true"] { border-color: var(--accent-strong); color: var(--accent-strong); background: var(--surface); }
 [data-ssm-comments] button:disabled { opacity: .48; cursor: not-allowed; }
+[data-ssm-comments] .comment-provider-button { display: grid; place-items: center; flex: 0 0 2.75rem; inline-size: 2.75rem; block-size: 2.75rem; padding: .7rem; border-color: var(--line-dark); border-radius: 50%; background: var(--surface); }
+[data-ssm-comments] .comment-provider-button:hover:not(:disabled) { background: var(--soft-accent); }
+.comment-provider-button svg { display: block; inline-size: 100%; block-size: 100%; fill: currentColor; }
 .comment-composer { border: 1px solid var(--line-dark); border-radius: .7rem; overflow: hidden; background: var(--paper); }
 .comment-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: .2rem; padding: .5rem; background: var(--surface); border-block-end: 1px solid var(--line); }
 .comment-toolbar > button { border: 0; min-width: 2.1rem; min-height: 2.1rem; font-weight: 600; }
