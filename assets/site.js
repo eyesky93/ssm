@@ -156,16 +156,6 @@ const settings = document.querySelector("[data-header-settings]");
 const settingsToggle = settings?.querySelector("[data-settings-toggle]");
 const popupMenus = "[data-share-menu][open], [data-color-menu][open], [data-view-menu][open]";
 
-function arrangeSettings(expanded) {
-  const actions = settings.querySelector(".header-actions");
-  const display = settings.querySelector(".display-controls");
-  const theme = settings.querySelector("[data-theme-toggle]");
-  const color = settings.querySelector("[data-color-menu]");
-  const view = settings.querySelector("[data-view-menu]");
-  if (expanded) { display.append(view, color); actions.append(display, theme); }
-  else { display.append(color, view); actions.append(theme, display); }
-}
-
 function closeSettings(returnFocus = false) {
   if (!settings) return;
   settings.dataset.open = "false";
@@ -174,14 +164,12 @@ function closeSettings(returnFocus = false) {
     menu.dataset.inlineOptions = "false";
     menu.open = false;
   });
-  arrangeSettings(false);
   if (returnFocus) settingsToggle.focus();
 }
 
 settingsToggle?.addEventListener("click", () => {
   if (settings.dataset.open === "true") closeSettings();
   else {
-    arrangeSettings(true);
     settings.querySelectorAll("[data-color-menu], [data-view-menu]").forEach((menu) => {
       menu.dataset.inlineOptions = "true";
       menu.open = true;
@@ -199,8 +187,7 @@ if (settings) {
     const hadFocus = controls.contains(document.activeElement) || toolbar?.contains(document.activeElement) || document.activeElement === settingsToggle;
     closeSettings();
     if (hadFocus) {
-      const target = mobileSettings.matches ? settingsToggle : controls.querySelector("button, a, select, summary");
-      target?.focus();
+      settingsToggle.focus();
     }
   });
 }
@@ -239,6 +226,29 @@ document.querySelector("[data-dismiss-notice]")?.addEventListener("click", () =>
   const cleanUrl = new URL(window.location.href);
   cleanUrl.searchParams.delete("missing");
   window.history.replaceState({}, "", cleanUrl);
+});
+
+const subscriptionDialog = document.querySelector("[data-subscribe-dialog]");
+let subscriptionOpener = null;
+document.querySelectorAll("[data-subscribe-open]").forEach((button) => {
+  button.addEventListener("click", () => {
+    subscriptionOpener = button;
+    closeSettings();
+    if (typeof subscriptionDialog?.showModal === "function") subscriptionDialog.showModal();
+    else subscriptionDialog?.setAttribute("open", "");
+    subscriptionDialog?.querySelector('input[type="email"], [data-subscribe-close]')?.focus();
+  });
+});
+subscriptionDialog?.querySelector("[data-subscribe-close]")?.addEventListener("click", () => {
+  if (typeof subscriptionDialog.close === "function") subscriptionDialog.close();
+  else subscriptionDialog.removeAttribute("open");
+});
+subscriptionDialog?.addEventListener("click", (event) => {
+  if (event.target === subscriptionDialog && typeof subscriptionDialog.close === "function") subscriptionDialog.close();
+});
+subscriptionDialog?.addEventListener("close", () => {
+  subscriptionOpener?.focus();
+  subscriptionOpener = null;
 });
 
 document.querySelectorAll("[data-subscribe-form]").forEach((form) => {

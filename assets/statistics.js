@@ -165,7 +165,7 @@ if (host) {
     }
     await showIdentity();
     if (token) await load(true);
-    else status.textContent = t('Sign in with the site owner’s GitHub account or an authorized moderator account.', 'יש להתחבר עם חשבון GitHub של בעל האתר או חשבון מנהל מורשה.');
+    else status.textContent = t('Sign in with the site owner’s GitHub account.', 'יש להתחבר עם חשבון GitHub של בעל האתר.');
   }
   initialize().catch(async error => { status.textContent = error.message; try { await showIdentity(); } catch {} });
 }
