@@ -266,7 +266,7 @@ export function initializePostBrowser(document, window) {
       if (ordered.some((option, index) => group.children[index] !== option)) group.append(...ordered);
     }
     if (focused && document.activeElement !== focused && focused.checkVisibility?.({ visibilityProperty: true })) focused.focus({ preventScroll: true });
-    clear.hidden = !hasFilters();
+    clear.disabled = !hasFilters();
     empty.hidden = count > 0;
     if (inline) {
       browser.hidden = !browsing || !hasFilters();
