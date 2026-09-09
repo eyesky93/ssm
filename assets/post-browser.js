@@ -80,11 +80,12 @@ export function initializePostViews(document, window) {
   const views = menus.flatMap((menu) => [...menu.querySelectorAll("[data-view]")]);
   const streams = [...document.querySelectorAll("[data-post-stream]")];
   const storageKey = menus[0].dataset.viewStorage;
+  const mobileLayout = typeof window.matchMedia === "function" ? window.matchMedia("(max-width: 700px)") : null;
   let view = "list";
 
-  function applyView(value, persist = false) {
-    view = ["grid", "compact"].includes(value) ? value : "list";
-    streams.forEach((stream) => { stream.dataset.layout = view; });
+  function renderView() {
+    const effectiveView = mobileLayout?.matches ? "list" : view;
+    streams.forEach((stream) => { stream.dataset.layout = effectiveView; });
     views.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
     for (const menu of menus) {
       menu.dataset.activeView = view;
@@ -96,6 +97,11 @@ export function initializePostViews(document, window) {
         summary.title = label;
       }
     }
+  }
+
+  function applyView(value, persist = false) {
+    view = ["grid", "compact"].includes(value) ? value : "list";
+    renderView();
     if (persist) { try { window.localStorage.setItem(storageKey, view); } catch { /* Keep the view on this page. */ } }
   }
 
@@ -115,6 +121,7 @@ export function initializePostViews(document, window) {
   window.addEventListener("storage", (event) => {
     if (event.key === storageKey || event.key === null) applyView(event.newValue);
   });
+  mobileLayout?.addEventListener("change", renderView);
   window.addEventListener("pageshow", restoreView);
   restoreView();
 }
