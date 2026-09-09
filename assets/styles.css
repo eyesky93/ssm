@@ -3,7 +3,19 @@
   font-style: normal;
   font-display: swap;
   font-weight: 400;
+  size-adjust: 105%;
   src: url("./fonts/frank-ruhl-libre-hebrew-400-normal.woff2") format("woff2");
+  unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+
+@font-face {
+  font-family: "Frank Ruhl Libre";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  size-adjust: 105%;
+  src: url("./fonts/frank-ruhl-libre-latin-400-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
@@ -11,7 +23,19 @@
   font-style: normal;
   font-display: swap;
   font-weight: 500;
+  size-adjust: 105%;
   src: url("./fonts/frank-ruhl-libre-hebrew-500-normal.woff2") format("woff2");
+  unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+
+@font-face {
+  font-family: "Frank Ruhl Libre";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  size-adjust: 105%;
+  src: url("./fonts/frank-ruhl-libre-latin-500-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
@@ -19,7 +43,19 @@
   font-style: normal;
   font-display: swap;
   font-weight: 700;
+  size-adjust: 105%;
   src: url("./fonts/frank-ruhl-libre-hebrew-700-normal.woff2") format("woff2");
+  unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+
+@font-face {
+  font-family: "Frank Ruhl Libre";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  size-adjust: 105%;
+  src: url("./fonts/frank-ruhl-libre-latin-700-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 :root {
@@ -78,6 +114,21 @@ html {
   font-family: var(--sans);
   font-size: 100%;
   scroll-behavior: smooth;
+}
+
+/* Hebrew interface copy uses Frank Ruhl Libre. Content that explicitly uses
+   the serif stack—including post titles, summaries, and bodies—stays intact. */
+html[lang="he"] {
+  font-family: "Frank Ruhl Libre", var(--sans);
+}
+
+html[lang="he"] button,
+html[lang="he"] input,
+html[lang="he"] select,
+html[lang="he"] textarea,
+html[lang="he"] .share-menu,
+html[lang="he"] .article-body figcaption {
+  font-family: "Frank Ruhl Libre", var(--sans);
 }
 
 body {
@@ -156,7 +207,6 @@ select:focus-visible {
 .about-link { font-weight: 700; text-decoration: none; text-underline-offset: 0.25em; }
 .about-link:hover, .about-link[aria-current="page"] { text-decoration: underline; }
 html[lang="he"] .about-link,
-html[lang="he"] .about-page,
 html[lang="he"] .about-copy,
 html[lang="he"] .card-tag,
 html[lang="he"] .article-tag,
@@ -867,6 +917,35 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 .subscribe-dialog .form-status[data-state="error"] { border-inline-start: 3px solid var(--accent-strong); color: var(--ink); padding-inline-start: 0.65rem; }
 .subscribe-dialog .form-trap { position: absolute !important; inset-inline-start: -10000px !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important; }
 
+.back-to-top {
+  position: fixed;
+  z-index: 25;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  border: 1px solid var(--line-dark);
+  border-radius: 50%;
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+  padding: 0.72rem;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(0.5rem);
+  pointer-events: none;
+  transition: opacity 0.16s, visibility 0s 0.16s, transform 0.16s;
+}
+
+.back-to-top[hidden] { display: none; }
+.back-to-top[data-visible="true"],
+.back-to-top:focus-visible { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; transition-delay: 0s; }
+.back-to-top:hover { background: var(--accent-strong); border-color: var(--accent-strong); color: var(--paper); }
+.back-to-top svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
 .site-footer {
   display: flex;
   justify-content: space-between;
@@ -1036,6 +1115,10 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .back-to-top {
+    transition: none;
   }
 
   *,

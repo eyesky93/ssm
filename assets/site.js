@@ -215,6 +215,30 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+const backToTop = document.querySelector("[data-back-to-top]");
+if (backToTop) {
+  let updatePending = false;
+  const updateBackToTop = () => {
+    updatePending = false;
+    const viewport = Number(window.innerHeight) || 0;
+    backToTop.dataset.visible = Number(window.scrollY) > Math.max(400, viewport * 0.75) ? "true" : "false";
+  };
+  const scheduleBackToTopUpdate = () => {
+    if (updatePending) return;
+    updatePending = true;
+    if (typeof window.requestAnimationFrame === "function") window.requestAnimationFrame(updateBackToTop);
+    else updateBackToTop();
+  };
+
+  backToTop.hidden = false;
+  updateBackToTop();
+  window.addEventListener("scroll", scheduleBackToTopUpdate, { passive: true });
+  backToTop.addEventListener("click", () => {
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+  });
+}
+
 const params = new URLSearchParams(window.location.search);
 const notice = document.querySelector("[data-translation-notice]");
 if (params.has("missing") && notice) {
@@ -229,10 +253,8 @@ document.querySelector("[data-dismiss-notice]")?.addEventListener("click", () =>
 });
 
 const subscriptionDialog = document.querySelector("[data-subscribe-dialog]");
-let subscriptionOpener = null;
 document.querySelectorAll("[data-subscribe-open]").forEach((button) => {
   button.addEventListener("click", () => {
-    subscriptionOpener = button;
     closeSettings();
     if (typeof subscriptionDialog?.showModal === "function") subscriptionDialog.showModal();
     else subscriptionDialog?.setAttribute("open", "");
@@ -247,8 +269,9 @@ subscriptionDialog?.addEventListener("click", (event) => {
   if (event.target === subscriptionDialog && typeof subscriptionDialog.close === "function") subscriptionDialog.close();
 });
 subscriptionDialog?.addEventListener("close", () => {
-  subscriptionOpener?.focus();
-  subscriptionOpener = null;
+  // The opener lives inside the now-hidden settings popup, so return keyboard
+  // focus to the visible cogwheel instead of leaving it on the document body.
+  settingsToggle?.focus();
 });
 
 document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
