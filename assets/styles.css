@@ -559,7 +559,7 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   border-color: var(--accent-strong);
   color: var(--accent-strong);
 }
-.toolbar-view .view-switch button[aria-pressed="true"]:is(:hover, :focus-visible) { border-color: var(--accent-strong); color: var(--accent-strong); }
+.toolbar-view .view-switch button[aria-pressed="true"]:is(:hover, :focus-visible) { border-color: transparent; color: var(--ink); }
 .view-control svg, .view-switch svg, .clear-filter svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .clear-filter { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 2.75rem; width: 2.75rem; height: 2.75rem; border: 1px solid var(--line-dark); border-radius: 50%; background: var(--surface); color: var(--ink); padding: 0.65rem; cursor: pointer; }
 .clear-filter:not(:disabled):hover { border-color: var(--ink); }
