@@ -225,29 +225,55 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
 .about-copy { font-family: var(--font-content); font-size: clamp(1.15rem, 2vw, 1.5rem); line-height: 1.75; }
 .about-copy p { margin-block: 1.5rem; }
 
-.header-controls { display: flex; align-items: center; gap: 0.6rem; margin-inline-start: auto; }
-.header-controls > .language-nav { min-width: 0; }
-.header-controls > .language-nav select { max-width: 100%; }
+.header-controls {
+  --header-control-size: 2.75rem;
+  --header-control-gap: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: var(--header-control-gap);
+  margin-inline-start: auto;
+}
+.header-controls > .language-nav {
+  flex: 0 0 var(--header-control-size);
+  width: var(--header-control-size);
+  min-width: 0;
+  height: var(--header-control-size);
+}
+.header-controls > .language-nav > a,
+.header-controls > .language-nav > select {
+  width: var(--header-control-size);
+  height: var(--header-control-size);
+  min-height: var(--header-control-size);
+  border-radius: 50%;
+  padding-inline: 0;
+  text-align: center;
+}
+.header-controls > .language-nav > select {
+  appearance: none;
+  -webkit-appearance: none;
+  text-align-last: center;
+}
 .header-settings { position: relative; }
 .settings-toggle { display: inline-flex; align-items: center; justify-content: center; width: 2.75rem; height: 2.75rem; padding: 0; border: 1px solid var(--line-dark); border-radius: 50%; background: var(--surface-translucent); color: var(--ink); cursor: pointer; }
 .settings-toggle:hover, .settings-toggle[aria-expanded="true"] { border-color: var(--accent-strong); }
 .settings-toggle svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .header-actions {
-  --settings-cell: 2.75rem;
-  --settings-gap: 0.625rem;
-  --settings-frame-padding: 0.25rem;
-  --settings-padding: 0.75rem;
-  --settings-frame-extra: calc(var(--settings-frame-padding) + var(--settings-frame-padding) + 2px);
+  --settings-cell: var(--header-control-size);
+  --settings-frame-padding: 0.0625rem;
+  --settings-padding: 0.125rem;
+  --settings-frame-offset: calc(var(--settings-frame-padding) + 1px);
+  --settings-frame-extra: calc(var(--settings-frame-offset) + var(--settings-frame-offset));
+  --settings-gap: var(--settings-frame-extra);
   --settings-color-width: calc(var(--settings-cell) + var(--settings-frame-extra));
   --settings-color-height: calc(var(--settings-color-width) + var(--settings-color-width));
   --settings-layout-width: calc(var(--settings-color-width) + var(--settings-color-width) + var(--settings-color-width));
   display: none;
   position: absolute;
   z-index: 30;
-  inset-inline-end: 0;
-  inset-block-start: calc(100% + 0.7rem);
+  inset-inline-end: calc(0px - var(--settings-frame-offset) - var(--settings-padding));
+  inset-block-start: 100%;
   justify-items: stretch;
-  gap: 0.75rem;
+  gap: 0;
   inline-size: calc(var(--settings-layout-width) + var(--settings-padding) + var(--settings-padding));
   min-inline-size: 0;
   border: 0;
@@ -1111,11 +1137,6 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
     padding-block: 0.75rem;
     flex-wrap: wrap;
   }
-
-  .header-controls { gap: 0.25rem; }
-  .header-controls > .language-nav { width: 2.75rem; flex: 0 0 2.75rem; }
-  .header-controls > .language-nav a,
-  .header-controls > .language-nav select { width: 2.75rem; padding-inline: 0; }
 
   .browser-toolbar { gap: 0.75rem; }
 
