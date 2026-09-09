@@ -263,7 +263,8 @@ export function initializePostBrowser(document, window) {
     const focused = document.activeElement;
     for (const [group, options] of optionsByGroup) {
       const ordered = [...options.filter((option) => !excluded.has(option.dataset.tagOption)), ...options.filter((option) => excluded.has(option.dataset.tagOption))];
-      if (ordered.some((option, index) => group.children[index] !== option)) group.append(...ordered);
+      const current = [...group.children].filter((child) => child.matches?.("[data-tag-option]"));
+      if (ordered.some((option, index) => current[index] !== option)) group.append(...ordered);
     }
     if (focused && document.activeElement !== focused && focused.checkVisibility?.({ visibilityProperty: true })) focused.focus({ preventScroll: true });
     clear.disabled = !hasFilters();
