@@ -6,7 +6,7 @@ export function matchesTag(postTags, selected, excluded = []) {
   const includes = (key) => postTags.some((tag) => tag === key || tag.startsWith(`${key}:`));
   const choices = tagKeys(selected);
   const leaves = choices.filter((key) => !choices.some((other) => other.startsWith(`${key}:`)));
-  return (!leaves.length || leaves.some(includes)) && ![...excluded].some(includes);
+  return leaves.every(includes) && ![...excluded].some(includes);
 }
 
 export function visibleTagGroup(parent, selected, excluded = []) {
