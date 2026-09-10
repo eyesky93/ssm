@@ -42,8 +42,8 @@ function installEngagementLayout(document) {
       .post-card .card-footer > .post-engagement {
         position: absolute;
         z-index: 1;
-        inset-inline-end: 0;
-        inset-block-end: 0;
+        inset-inline-end: -1px;
+        inset-block-end: -1px;
         margin: 0;
         transform: translateY(100%);
       }
@@ -56,7 +56,9 @@ function installEngagementLayout(document) {
         color: var(--accent-strong);
         box-shadow: none;
       }
-      .post-vote[aria-pressed="true"] {
+      .post-vote[aria-pressed="true"],
+      .post-vote[aria-pressed="true"] svg,
+      .post-vote[aria-pressed="true"] .post-vote-count {
         color: var(--accent-strong);
       }
       .article-engagement-dock {
