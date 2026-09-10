@@ -967,10 +967,9 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 }
 
 .empty-state {
-  border: 1px dashed var(--line-dark);
-  border-radius: 0.5rem;
   padding: 2rem;
   color: var(--muted);
+  font-size: 1.2rem;
 }
 
 .subscribe-dialog {
