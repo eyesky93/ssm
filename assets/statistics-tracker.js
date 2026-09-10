@@ -28,7 +28,7 @@ if (typeof document !== 'undefined' && document.body.dataset.statisticsEndpoint 
     const body = JSON.stringify(visitPayload(document, sessionStore, visitorStore, undefined, document.body.dataset.statisticsVisitorStorage));
     fetch(document.body.dataset.statisticsEndpoint + '/statistics/event', {
       method: 'POST', credentials: 'omit', keepalive: true,
-      headers: { 'Content-Type': 'application/json' }, body,
+      headers: { 'X-SSM-Language': document.documentElement.lang, 'Content-Type': 'application/json' }, body,
     }).catch(() => {});
   };
   send();

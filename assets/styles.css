@@ -1309,24 +1309,3 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   .comment-replies { margin-inline-start: .25rem; padding-inline-start: .5rem; }
   .comment-compose-footer { padding: .65rem; }
 }
-
-
-/* Private statistics use the same width, typography and theme as the blog. */
-.statistics-identity, .statistics-controls { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; margin-block: 1rem 1.5rem; }
-.statistics-controls label { display: grid; gap: .35rem; min-width: 0; }
-[data-statistics-dashboard] button, [data-statistics-dashboard] select { border: 1px solid var(--line-dark); border-radius: .5rem; padding: .65rem .8rem; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; max-width: 100%; }
-[data-statistics-dashboard] button:hover { background: var(--soft-accent); }
-[data-statistics-dashboard] button:disabled { opacity: .55; cursor: wait; }
-.statistics-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-.statistics-card { border: 1px solid var(--line); border-radius: .65rem; padding: 1.25rem; display: grid; gap: .7rem; }
-.statistics-card span, .statistics-note { color: var(--muted); }
-.statistics-card strong { font-size: 2rem; font-weight: 500; font-variant-numeric: tabular-nums; }
-.statistics-section { margin-block: 2rem; }
-.statistics-section h2 { font-size: 1.4rem; }
-.statistics-table-scroll { overflow-x: auto; }
-.statistics-table-scroll table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
-.statistics-table-scroll th, .statistics-table-scroll td { text-align: start; padding: .7rem .6rem; border-bottom: 1px solid var(--line); }
-.statistics-table-scroll th { font-weight: 600; }
-.statistics-table-scroll td { overflow-wrap: anywhere; }
-.statistics-note { font-size: .9rem; line-height: 1.6; max-width: 90ch; }
-@media (max-width: 700px) { .statistics-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } .statistics-card { padding: .85rem; } }

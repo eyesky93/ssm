@@ -167,7 +167,7 @@ export function initializePostVotes(document, window, { randomId } = {}) {
       if (!validVoteUuid(requestId)) throw new Error("The browser could not create a request identifier.");
       const state = apply(group, await request(`${endpoint}/post-votes`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 'X-SSM-Language': document.documentElement.lang, "Content-Type": "application/json" },
         body: JSON.stringify({ postId: group.postId, browserId, requestId: requestId.toLowerCase(), upvoted: desired }),
       }));
       announce(state.upvoted ? "saved" : "removed");
