@@ -26,6 +26,13 @@ export function createReadStore(storage, key) {
   };
 }
 
+function detachCardEngagement(document) {
+  for (const card of document.querySelectorAll(".post-card")) {
+    const engagement = card.querySelector(".card-footer > [data-post-engagement]");
+    if (engagement && typeof card.append === "function") card.append(engagement);
+  }
+}
+
 function installEngagementLayout(document) {
   if (!document.getElementById || !document.createElement || !document.head) return;
   if (!document.getElementById("ssm-engagement-layout")) {
@@ -49,20 +56,37 @@ function installEngagementLayout(document) {
         row-gap: 1.95rem;
       }
       .post-engagement {
+        --stat-segment-width: 3rem;
+        display: inline-grid;
+        grid-template-columns: repeat(3, var(--stat-segment-width));
+        inline-size: calc(3 * var(--stat-segment-width));
+        min-inline-size: calc(3 * var(--stat-segment-width));
+        max-inline-size: calc(3 * var(--stat-segment-width));
         height: 1.5rem;
         border: 0;
         border-radius: 0;
         overflow: visible;
         background: transparent;
+        font-size: .875rem;
+        font-variant-numeric: tabular-nums;
       }
       .post-engagement .post-vote,
       .post-engagement .post-comments,
       .post-engagement .post-views {
         position: relative;
         z-index: 1;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: center;
+        justify-items: center;
+        column-gap: 0;
+        box-sizing: border-box;
+        inline-size: var(--stat-segment-width);
+        min-inline-size: var(--stat-segment-width);
+        max-inline-size: var(--stat-segment-width);
         min-height: 0;
         height: 1.5rem;
-        padding: .02rem .26rem;
+        padding: .02rem 0;
         background: var(--surface);
         border-block-start: 0;
         border-block-end: 1px solid var(--line);
@@ -76,27 +100,38 @@ function installEngagementLayout(document) {
         pointer-events: auto;
       }
       .post-engagement .post-comments {
-        border-inline-start: 0;
+        border-inline-start: 1px solid transparent;
         border-inline-end: 1px solid var(--line);
       }
       .post-engagement .post-views {
-        border-inline-start: 0;
+        border-inline-start: 1px solid transparent;
         border-inline-end: 1px solid var(--line);
         border-end-end-radius: .42rem;
       }
       .post-engagement svg {
-        flex-basis: .74rem;
+        justify-self: center;
+        flex: none;
         width: .74rem;
         height: .74rem;
       }
       .post-engagement .post-vote-count,
       .post-engagement .post-comment-count,
       .post-engagement .post-view-count {
+        box-sizing: border-box;
+        display: grid;
+        place-items: center;
+        inline-size: 100%;
+        min-inline-size: 0;
+        max-inline-size: 100%;
         height: .76rem;
-        padding-inline-start: .22rem;
+        padding: 0;
+        border-inline-start: 1px solid var(--line);
         border-color: var(--line);
+        overflow: hidden;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
       }
-      .post-card .card-footer > .post-engagement {
+      .post-card > .post-engagement {
         position: absolute;
         inset-inline-end: clamp(2.75rem, 4.5vw, 3.5rem);
         inset-block-start: 100%;
@@ -108,7 +143,7 @@ function installEngagementLayout(document) {
       /* The neutral stats tabs have no upper edge. Paint only the post's own
          bottom-frame segment across their attachment width, above the tabs.
          This keeps the post visually on top without restoring a stats top edge. */
-      .post-card .post-engagement::before {
+      .post-card > .post-engagement::before {
         content: "";
         position: absolute;
         z-index: 6;
@@ -119,31 +154,34 @@ function installEngagementLayout(document) {
         pointer-events: none;
       }
 
-      /* Hovering the stats area itself must not count as hovering the post. */
-      .post-card:has(.post-engagement:hover),
-      .post-card:has(.post-engagement:focus-within) {
+      /* Hovering the detached stats control itself must not activate the post
+         frame; only hovering the card surface should do that. */
+      .post-card:has(> .post-engagement:hover),
+      .post-card:has(> .post-engagement:focus-within) {
         --post-frame-color: var(--line);
         border-block-color: var(--line) !important;
         border-inline-end-color: var(--line) !important;
       }
-      .post-card:not(.unread-card):has(.post-engagement:hover),
-      .post-card:not(.unread-card):has(.post-engagement:focus-within) {
+      .post-card:not(.unread-card):has(> .post-engagement:hover),
+      .post-card:not(.unread-card):has(> .post-engagement:focus-within) {
         border-inline-start-color: var(--line) !important;
       }
-      .unread-card:has(.post-engagement:hover),
-      .unread-card:has(.post-engagement:focus-within) {
+      .unread-card:has(> .post-engagement:hover),
+      .unread-card:has(> .post-engagement:focus-within) {
         border-inline-start-color: var(--accent) !important;
       }
 
-      /* The upvote alone gets a complete accent frame, including its upper
-         edge, while hovered/focused and for as long as it remains upvoted. */
+      /* Highlighting changes only paint, never geometry. The upvote keeps the
+         same fixed segment width, grid tracks, padding and border widths. */
       .post-engagement .post-vote:hover:not(:disabled),
       .post-engagement .post-vote:focus-visible,
       .post-engagement .post-vote[aria-pressed="true"] {
         z-index: 7;
         color: var(--ink);
-        border: 1px solid var(--accent-strong);
-        box-shadow: none;
+        border-block-end-color: var(--accent-strong);
+        border-inline-start-color: var(--accent-strong);
+        border-inline-end-color: var(--accent-strong);
+        box-shadow: inset 0 1px 0 var(--accent-strong);
         outline: none;
       }
       .post-engagement .post-vote:hover:not(:disabled) svg,
@@ -165,7 +203,7 @@ function installEngagementLayout(document) {
       }
       @media (max-width: 520px) {
         .post-stream[data-layout] { row-gap: 1.95rem; }
-        .post-card .post-engagement { max-width: 100%; }
+        .post-card > .post-engagement { max-width: 100%; }
       }
     `;
     document.head.append(style);
@@ -184,6 +222,7 @@ function installEngagementLayout(document) {
 }
 
 export function initializeReadStatus(document, window) {
+  detachCardEngagement(document);
   installEngagementLayout(document);
   const cards = [...document.querySelectorAll(".post-card[data-post-id]")];
   const article = document.querySelector("[data-reader-article]");
