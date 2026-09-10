@@ -496,13 +496,13 @@ h3 {
 .tag-option.is-excluded { background: var(--code-bg); border-color: var(--line); box-shadow: none; }
 .tag-option.is-excluded .tag-chip, .tag-option.is-excluded .tag-count { color: var(--muted); cursor: pointer; }
 .tag-option.is-excluded .tag-count { background: var(--line); }
-.tag-option:hover, .tag-option:has(:focus-visible) { border-color: var(--accent-strong); }
+.tag-option:not(.is-excluded):hover, .tag-option:has(:focus-visible) { border-color: var(--accent-strong); }
 [dir="rtl"] .tag-option { direction: rtl; }
 .tag-exclude { position: absolute; inset-inline-end: 0.5rem; inset-block-start: 50%; transform: translateY(-50%); display: grid; place-items: center; width: var(--tag-count-size); height: var(--tag-count-size); padding: 0.35rem; border: 0; border-radius: 50%; background: var(--line); color: var(--ink); cursor: pointer; opacity: 0; visibility: hidden; }
-/* Swap within the count's existing space after a continuous 1.5-second hover.
+/* Swap within the count's existing space after a continuous 0.2-second hover.
    Leaving cancels the delay and restores the count immediately. */
-.tag-option:hover .tag-exclude { opacity: 1; visibility: visible; transition: opacity 0s 1.5s, visibility 0s 1.5s; }
-.tag-option:hover .tag-count { opacity: 0; transition: opacity 0s 1.5s; }
+.tag-option:hover .tag-exclude { opacity: 1; visibility: visible; transition: opacity 0s 0.2s, visibility 0s 0.2s; }
+.tag-option:hover .tag-count { opacity: 0; transition: opacity 0s 0.2s; }
 .tag-option:has(:focus-visible) .tag-exclude, .tag-option.is-excluded .tag-exclude { opacity: 1; visibility: visible; transition: none; }
 .tag-option:has(:focus-visible) .tag-count, .tag-option.is-excluded .tag-count { opacity: 0; transition: none; }
 .tag-exclude:hover { background: var(--line-dark); }
