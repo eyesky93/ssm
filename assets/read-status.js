@@ -97,21 +97,7 @@ function installEngagementLayout(document) {
       }
 
       /* The tabs keep their own top border and start exactly at the post's
-         lower border. Repaint the post seam above them so the post is the
-         upper visual layer at rest while the tabs remain fully below it. */
-      .post-card::after {
-        content: "";
-        position: absolute;
-        z-index: 4;
-        inset-inline: 0;
-        inset-block-end: -1px;
-        height: 1px;
-        background: var(--line);
-        border-end-start-radius: inherit;
-        border-end-end-radius: inherit;
-        pointer-events: none;
-      }
-      .unread-card::after { background: var(--line); }
+         lower edge. No extra seam is painted over the card border. */
 
       /* Hovering any part of the stats control must not activate the post-card
          hover border. Keep only the unread marker when that state applies. */
@@ -129,7 +115,7 @@ function installEngagementLayout(document) {
         border-inline-start-color: var(--accent) !important;
       }
 
-      /* On hover/focus the upvote segment rises above the post seam, so its
+      /* On hover/focus the upvote segment rises above the shared edge, so its
          accent border is the visible top layer. */
       .post-engagement .post-vote:hover:not(:disabled),
       .post-engagement .post-vote:focus-visible {
