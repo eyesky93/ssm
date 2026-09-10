@@ -665,7 +665,7 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   direction: ltr;
 }
 .post-vote,
-.post-reads,
+.post-comments,
 .post-views {
   display: inline-flex;
   align-items: center;
@@ -680,10 +680,10 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   font: inherit;
 }
 .post-vote { cursor: pointer; }
-.post-reads, .post-views { border-inline-start: 1px solid var(--line); color: var(--muted); }
+.post-comments, .post-views { border-inline-start: 1px solid var(--line); color: var(--muted); }
 .post-engagement svg { flex: 0 0 1.1rem; width: 1.1rem; height: 1.1rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .post-vote-count,
-.post-read-count,
+.post-comment-count,
 .post-view-count {
   display: inline-flex;
   align-items: center;
@@ -735,6 +735,12 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 .post-stream:is([data-layout="grid"], [data-layout="compact"]) h2 a { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .post-stream[data-layout="grid"] .post-card > p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; font-size: 1rem; line-height: 1.5; }
 .post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-footer { padding-block-start: 1rem; }
+.post-date-compact { display: none; }
+.post-stream[data-layout="compact"] .post-date-full { display: none; }
+.post-stream[data-layout="compact"] .post-date-compact { display: inline; white-space: nowrap; }
+.post-stream[data-layout="compact"] .card-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; }
+.post-stream[data-layout="compact"] .card-footer > .post-engagement { margin-inline-start: auto; }
+.post-stream[data-layout="compact"] .card-links { flex-basis: 100%; justify-content: flex-end; }
 .post-stream[data-layout="compact"] { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 0.75rem; }
 .post-stream[data-layout="compact"] .post-card { padding: 0.75rem; }
 .post-stream[data-layout="compact"] .post-tools { gap: 0.5rem; }

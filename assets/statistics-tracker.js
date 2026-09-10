@@ -35,7 +35,7 @@ if (typeof document !== 'undefined' && document.body.dataset.statisticsEndpoint 
       const result = await response.json();
       if (typeof result.postId === 'string' && Number.isSafeInteger(result.views) && result.views >= 0) {
         window.dispatchEvent(new window.CustomEvent('ssm:post-view-recorded', {
-          detail: { postId: result.postId, views: result.views, reads: result.reads },
+          detail: { postId: result.postId, views: result.views },
         }));
       }
     }).catch(() => {});

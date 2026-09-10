@@ -36,8 +36,9 @@ export function voteResponse(value, postId) {
     throw new Error("Invalid post-vote response.");
   }
   if (value.views !== undefined && (!Number.isSafeInteger(value.views) || value.views < 0)) throw new Error("Invalid post-view response.");
-  if (value.reads !== undefined && (!Number.isSafeInteger(value.reads) || value.reads < 0)) throw new Error("Invalid post-reader response.");
-  return { ...(value.reads === undefined ? {} : { reads: value.reads }), postId, count: value.count, upvoted: value.upvoted, changed: value.changed === true, views: value.views ?? null };
+  if (value.comments !== undefined && value.comments !== null && (!Number.isSafeInteger(value.comments) || value.comments < 0)) throw new Error("Invalid post-comment response.");
+  if (value.commentsUpdated !== undefined && (!Number.isSafeInteger(value.commentsUpdated) || value.commentsUpdated < 0)) throw new Error("Invalid comment-count revision.");
+  return { ...(value.comments === undefined ? {} : { comments: value.comments, commentsUpdated: value.commentsUpdated || 0 }), postId, count: value.count, upvoted: value.upvoted, changed: value.changed === true, views: value.views ?? null };
 }
 
 function localizedNumber(value, lang) {
@@ -67,7 +68,7 @@ export function initializePostVotes(document, window, { randomId } = {}) {
       continue;
     }
     if (!groups.has(postId)) groups.set(postId, {
-      postId, buttons: [], count: null, views: null, reads: null, upvoted: false, available: false,
+      postId, buttons: [], count: null, views: null, comments: null, commentsUpdated: 0, upvoted: false, available: false,
       loading: null, mutating: false, requested: false,
     });
     groups.get(postId).buttons.push(button);
@@ -114,12 +115,12 @@ export function initializePostVotes(document, window, { randomId } = {}) {
       button.title = group.available
         ? [actionLabel(button, group.upvoted), button.dataset.labelPrivacy].filter(Boolean).join(" ")
         : (button.dataset.labelUnavailable || "");
-      const reads = button.closest?.('[data-post-engagement]')?.querySelector('[data-post-reads]');
-      if (reads) {
-        const count = group.reads === null ? '—' : localizedNumber(group.reads, document.documentElement?.lang);
-        reads.querySelector('[data-post-read-count]').textContent = count;
-        const label = group.reads === null ? reads.dataset.labelUnavailable : reads.dataset.labelCount.replace('{count}', count);
-        reads.setAttribute('aria-label', label); reads.title = label;
+      const comments = button.closest?.('[data-post-engagement]')?.querySelector('[data-post-comments]');
+      if (comments) {
+        const count = group.comments === null ? '—' : localizedNumber(group.comments, document.documentElement?.lang);
+        comments.querySelector('[data-post-comment-count]').textContent = count;
+        const label = group.comments === null ? comments.dataset.labelUnavailable : comments.dataset.labelCount.replace('{count}', count);
+        comments.setAttribute('aria-label', label); comments.title = label;
       }
       const views = button.closest?.('[data-post-engagement]')?.querySelector('[data-post-views]');
       if (views) {
@@ -139,7 +140,9 @@ export function initializePostVotes(document, window, { randomId } = {}) {
   function apply(group, value) {
     const state = voteResponse(value, group.postId);
     group.count = state.count;
-    if (state.reads !== undefined) group.reads = Math.max(group.reads ?? 0, state.reads);
+    if (state.comments != null && state.commentsUpdated >= group.commentsUpdated) {
+      group.comments = state.comments; group.commentsUpdated = state.commentsUpdated;
+    }
     if (state.views !== null) group.views = Math.max(group.views ?? 0, state.views);
     group.upvoted = state.upvoted;
     group.available = true;
@@ -213,11 +216,18 @@ export function initializePostVotes(document, window, { randomId } = {}) {
   // The visit write and initial counter read can finish in either order.
   // Reflect the recorded visit immediately without sending another request.
   window.addEventListener?.('ssm:post-view-recorded', event => {
-    const { postId, views, reads } = event.detail || {};
+    const { postId, views } = event.detail || {};
     const group = groups.get(postId);
     if (!group || !Number.isSafeInteger(views) || views < 0) return;
     group.views = Math.max(group.views ?? 0, views);
-    if (Number.isSafeInteger(reads) && reads >= 0) group.reads = Math.max(group.reads ?? 0, reads);
+    render(group);
+  });
+
+  window.addEventListener?.('ssm:post-comments-updated', event => {
+    const {postId, comments, commentsUpdated} = event.detail || {};
+    const group = groups.get(postId);
+    if (!group || !Number.isSafeInteger(comments) || comments < 0 || !Number.isSafeInteger(commentsUpdated) || commentsUpdated < group.commentsUpdated) return;
+    group.comments = comments; group.commentsUpdated = commentsUpdated;
     render(group);
   });
 
