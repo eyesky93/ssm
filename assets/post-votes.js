@@ -87,12 +87,15 @@ export function initializePostVotes(document, window, { randomId } = {}) {
   function actionLabel(button, upvoted) {
     return upvoted ? button.dataset.labelRemove : button.dataset.labelUpvote;
   }
+  function shortActionLabel(button, upvoted) {
+    if (document.documentElement?.lang === "en") return upvoted ? "Remove upvote" : "Upvote";
+    return actionLabel(button, upvoted) || "";
+  }
   function accessibleLabel(button, group) {
-    const action = actionLabel(button, group.upvoted) || "";
-    const privacy = button.dataset.labelPrivacy || "";
+    const action = shortActionLabel(button, group.upvoted);
     const count = group.count === null ? "" : localizedNumber(group.count, document.documentElement?.lang);
     const countLabel = count && (button.dataset.labelCount || "{count}").replace("{count}", count);
-    return [action, countLabel, privacy].filter(Boolean).join(" · ");
+    return [action, countLabel].filter(Boolean).join(" · ");
   }
   function render(group) {
     for (const button of group.buttons) {
@@ -109,11 +112,11 @@ export function initializePostVotes(document, window, { randomId } = {}) {
         ? accessibleLabel(button, group)
         : (button.dataset.labelUnavailable || "");
       if (part.label) part.label.textContent = group.available
-        ? (actionLabel(button, group.upvoted) || "")
+        ? shortActionLabel(button, group.upvoted)
         : (button.dataset.labelUnavailable || "");
       button.setAttribute("aria-label", label);
       button.title = group.available
-        ? [actionLabel(button, group.upvoted), button.dataset.labelPrivacy].filter(Boolean).join(" ")
+        ? shortActionLabel(button, group.upvoted)
         : (button.dataset.labelUnavailable || "");
       const comments = button.closest?.('[data-post-engagement]')?.querySelector('[data-post-comments]');
       if (comments) {
