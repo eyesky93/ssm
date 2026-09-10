@@ -34,63 +34,85 @@ function installEngagementLayout(document) {
     style.textContent = `
       .post-card {
         position: relative;
+        isolation: isolate;
         overflow: visible;
       }
       .post-stream[data-layout] {
-        row-gap: 2.45rem;
+        row-gap: 2.2rem;
       }
       .post-engagement {
-        height: 2rem;
-        border: 1px solid var(--line);
-        border-radius: 0 0 .55rem .55rem;
-        background: var(--surface);
+        height: 1.75rem;
+        border: 0;
+        border-radius: 0;
+        overflow: visible;
+        background: transparent;
       }
       .post-engagement .post-vote,
       .post-engagement .post-comments,
       .post-engagement .post-views {
+        position: relative;
+        z-index: -1;
         min-height: 0;
-        padding: .18rem .42rem;
+        height: 1.75rem;
+        padding: .08rem .32rem;
+        background: var(--surface);
+        border-block: 1px solid var(--line);
+        border-radius: 0;
+      }
+      .post-engagement .post-vote {
+        border-inline-start: 1px solid var(--line);
+        border-inline-end: 1px solid var(--line);
+        border-end-start-radius: .5rem;
+      }
+      .post-engagement .post-comments {
+        border-inline-start: 0;
+        border-inline-end: 1px solid var(--line);
+      }
+      .post-engagement .post-views {
+        border-inline-start: 0;
+        border-inline-end: 1px solid var(--line);
+        border-end-end-radius: .5rem;
       }
       .post-engagement svg {
-        flex-basis: .9rem;
-        width: .9rem;
-        height: .9rem;
+        flex-basis: .82rem;
+        width: .82rem;
+        height: .82rem;
       }
       .post-engagement .post-vote-count,
       .post-engagement .post-comment-count,
       .post-engagement .post-view-count {
-        height: .95rem;
-        padding-inline-start: .32rem;
-      }
-      .post-engagement .post-vote-count,
-      .post-engagement .post-comment-count,
-      .post-engagement .post-view-count,
-      .post-engagement .post-comments,
-      .post-engagement .post-views {
+        height: .85rem;
+        padding-inline-start: .28rem;
         border-color: var(--line);
       }
       .post-card .card-footer > .post-engagement {
         position: absolute;
-        z-index: 1;
-        inset-inline-end: clamp(2.25rem, 4vw, 3rem);
-        inset-block-end: 0;
+        inset-inline-end: clamp(2.75rem, 4.5vw, 3.5rem);
+        inset-block-start: calc(100% - 1px);
+        inset-block-end: auto;
         margin: 0;
-        transform: translateY(calc(100% - 1px));
+        transform: none;
       }
-      /* The stats control is visually independent of the post hover state. */
-      .post-card:has(.post-engagement:hover),
-      .post-card:has(.post-engagement:focus-within) {
-        border-block-color: var(--line) !important;
-        border-inline-end-color: var(--line) !important;
-      }
+      /* The card sits over the neutral stats frame. Hovering the stats frame
+         must not trigger the card's own hover border. */
       .post-card:not(.unread-card):has(.post-engagement:hover),
       .post-card:not(.unread-card):has(.post-engagement:focus-within) {
-        border-inline-start-color: var(--line) !important;
+        border-color: var(--line) !important;
       }
-      .post-vote:hover:not(:disabled),
-      .post-vote:focus-visible {
-        color: inherit;
-        box-shadow: inset 0 0 0 1px var(--accent-strong);
+      .unread-card:has(.post-engagement:hover),
+      .unread-card:has(.post-engagement:focus-within) {
+        border-block-color: var(--line) !important;
+        border-inline-end-color: var(--line) !important;
+        border-inline-start-color: var(--accent) !important;
+      }
+      /* Upvote owns its real segment border on hover; no inset frame. It also
+         rises above the post border only while it is the active segment. */
+      .post-engagement .post-vote:hover:not(:disabled),
+      .post-engagement .post-vote:focus-visible {
+        z-index: 3;
+        color: var(--ink);
+        border-color: var(--accent-strong);
+        box-shadow: none;
         outline: none;
       }
       .post-vote:hover:not(:disabled) svg,
@@ -110,7 +132,7 @@ function installEngagementLayout(document) {
         padding-block: .25rem .5rem;
       }
       @media (max-width: 520px) {
-        .post-stream[data-layout] { row-gap: 2.45rem; }
+        .post-stream[data-layout] { row-gap: 2.2rem; }
         .post-card .post-engagement { max-width: 100%; }
       }
     `;
