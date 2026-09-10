@@ -1,3 +1,5 @@
+import { statisticsExcluded } from './statistics-exclusion.js';
+
 // A missing override follows the author's default. An explicit false must survive it.
 export function createPinStore(storage, key, randomId = () => crypto.randomUUID()) {
   let state = { version: 1, browserId: null, posts: {} };
@@ -92,6 +94,11 @@ export function initializePins(document, window) {
   let sending = false;
   let flushRequested = false;
   async function flush() {
+    if (statisticsExcluded(document, window)) {
+      // Keep local bookmarks, but never replay excluded choices when re-enabled.
+      for (const event of store.pending()) store.acknowledge(event);
+      return;
+    }
     if (!endpoint || window.navigator.onLine === false) return;
     if (sending) { flushRequested = true; return; }
     sending = true;
@@ -99,6 +106,7 @@ export function initializePins(document, window) {
     let succeeded = true;
     try {
       for (const event of store.pending()) {
+        if (statisticsExcluded(document, window)) { store.acknowledge(event); continue; }
         const response = await window.fetch(endpoint, {
           method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify(event), credentials: "omit", redirect: "error",
