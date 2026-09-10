@@ -32,24 +32,21 @@ function installEngagementLayout(document) {
     const style = document.createElement("style");
     style.id = "ssm-engagement-layout";
     style.textContent = `
-      .post-card .card-footer {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        grid-template-rows: auto auto;
-        align-items: end;
-        gap: .6rem 1rem;
+      .post-card {
+        position: relative;
+        overflow: visible;
       }
-      .post-card .card-footer > time { grid-column: 1; grid-row: 1; }
-      .post-card .card-footer > .card-links { grid-column: 1; grid-row: 2; justify-self: start; }
-      .post-card .card-footer > .post-engagement { grid-column: 2; grid-row: 2; justify-self: end; align-self: end; margin: 0; }
-      .post-stream[data-layout="compact"] .post-card .card-footer {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        grid-template-rows: auto auto;
+      .post-stream[data-layout] {
+        row-gap: 2rem;
       }
-      .post-stream[data-layout="compact"] .post-card .card-footer > time { grid-column: 1; grid-row: 1; }
-      .post-stream[data-layout="compact"] .post-card .card-footer > .card-links { grid-column: 1; grid-row: 2; justify-self: start; }
-      .post-stream[data-layout="compact"] .post-card .card-footer > .post-engagement { grid-column: 2; grid-row: 2; justify-self: end; margin: 0; }
+      .post-card .card-footer > .post-engagement {
+        position: absolute;
+        z-index: 3;
+        inset-inline-end: clamp(.75rem, 2vw, 1.5rem);
+        inset-block-end: 0;
+        margin: 0;
+        transform: translateY(50%);
+      }
       .article-engagement-dock {
         display: flex;
         justify-content: flex-end;
@@ -58,8 +55,8 @@ function installEngagementLayout(document) {
         padding-block: .25rem .5rem;
       }
       @media (max-width: 520px) {
-        .post-card .card-footer { grid-template-columns: minmax(0, 1fr) auto; gap: .55rem; }
-        .post-card .post-engagement { max-width: 100%; }
+        .post-stream[data-layout] { row-gap: 1.8rem; }
+        .post-card .post-engagement { max-width: calc(100% - 1.5rem); }
       }
     `;
     document.head.append(style);
