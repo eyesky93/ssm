@@ -63,6 +63,9 @@ function installEngagementLayout(document) {
       .post-stream[data-layout] {
         row-gap: 2.45rem;
       }
+      .post-stream[data-layout]:has(> .post-card:not([hidden])) {
+        padding-block-end: 2.5rem;
+      }
 
       /* Date and reading actions share one baseline instead of occupying two
          footer rows. The arrow gets a fixed slot, so the end of "Read post"
