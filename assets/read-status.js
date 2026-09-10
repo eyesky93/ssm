@@ -53,16 +53,17 @@ function installEngagementLayout(document) {
         border-color: var(--accent-strong);
       }
       .post-stream[data-layout] {
-        row-gap: 1.95rem;
+        row-gap: 2.45rem;
       }
       .post-engagement {
         --stat-segment-width: 3rem;
+        --stat-segment-height: 2rem;
         display: inline-grid;
         grid-template-columns: repeat(3, var(--stat-segment-width));
         inline-size: calc(3 * var(--stat-segment-width));
         min-inline-size: calc(3 * var(--stat-segment-width));
         max-inline-size: calc(3 * var(--stat-segment-width));
-        height: 1.5rem;
+        height: var(--stat-segment-height);
         border: 0;
         border-radius: 0;
         overflow: visible;
@@ -85,7 +86,7 @@ function installEngagementLayout(document) {
         min-inline-size: var(--stat-segment-width);
         max-inline-size: var(--stat-segment-width);
         min-height: 0;
-        height: 1.5rem;
+        height: var(--stat-segment-height);
         padding: .02rem 0;
         background: var(--surface);
         border-block-start: 0;
@@ -95,7 +96,7 @@ function installEngagementLayout(document) {
       .post-engagement .post-vote {
         border-inline-start: 1px solid var(--line);
         border-inline-end: 1px solid var(--line);
-        border-end-start-radius: .42rem;
+        border-end-start-radius: .5rem;
         cursor: pointer;
         pointer-events: auto;
       }
@@ -106,7 +107,7 @@ function installEngagementLayout(document) {
       .post-engagement .post-views {
         border-inline-start: 1px solid transparent;
         border-inline-end: 1px solid var(--line);
-        border-end-end-radius: .42rem;
+        border-end-end-radius: .5rem;
       }
       .post-engagement svg {
         justify-self: center;
@@ -123,7 +124,7 @@ function installEngagementLayout(document) {
         inline-size: 100%;
         min-inline-size: 0;
         max-inline-size: 100%;
-        height: .76rem;
+        height: 1rem;
         padding: 0;
         border-inline-start: 1px solid var(--line);
         border-color: var(--line);
@@ -202,7 +203,7 @@ function installEngagementLayout(document) {
         padding-block: .25rem .5rem;
       }
       @media (max-width: 520px) {
-        .post-stream[data-layout] { row-gap: 1.95rem; }
+        .post-stream[data-layout] { row-gap: 2.45rem; }
         .post-card > .post-engagement { max-width: 100%; }
       }
     `;
