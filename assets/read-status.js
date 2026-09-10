@@ -96,8 +96,19 @@ function installEngagementLayout(document) {
         transform: none;
       }
 
-      /* The tabs keep their own top border and start exactly at the post's
-         lower edge. No extra seam is painted over the card border. */
+      /* At the shared edge the card is the upper layer. This mask is limited
+         to the stats width, so it does not create a stray line across the card.
+         Each tab still owns its real top border underneath. */
+      .post-card .post-engagement::before {
+        content: "";
+        position: absolute;
+        z-index: 4;
+        inset-inline: 0;
+        inset-block-start: 0;
+        height: 1px;
+        background: var(--line);
+        pointer-events: none;
+      }
 
       /* Hovering any part of the stats control must not activate the post-card
          hover border. Keep only the unread marker when that state applies. */
@@ -115,8 +126,8 @@ function installEngagementLayout(document) {
         border-inline-start-color: var(--accent) !important;
       }
 
-      /* On hover/focus the upvote segment rises above the shared edge, so its
-         accent border is the visible top layer. */
+      /* Only the upvote rises above the card seam, and only while hovered or
+         keyboard-focused. The comments and views remain underneath. */
       .post-engagement .post-vote:hover:not(:disabled),
       .post-engagement .post-vote:focus-visible {
         z-index: 5;
@@ -130,11 +141,9 @@ function installEngagementLayout(document) {
       .post-engagement .post-vote[aria-pressed="true"] svg {
         color: var(--accent-strong);
       }
-      .post-engagement .post-vote[aria-pressed="true"] {
-        color: var(--ink);
-      }
+      .post-engagement .post-vote[aria-pressed="true"],
       .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
-        color: var(--accent);
+        color: var(--ink);
       }
 
       .article-engagement-dock {
