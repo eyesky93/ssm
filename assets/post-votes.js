@@ -36,7 +36,8 @@ export function voteResponse(value, postId) {
   if (!value || value.postId !== postId || !Number.isSafeInteger(value.count) || value.count < 0 || typeof value.upvoted !== "boolean") {
     throw new Error("Invalid post-vote response.");
   }
-  return { postId, count: value.count, upvoted: value.upvoted, changed: value.changed === true };
+  if (value.views !== undefined && (!Number.isSafeInteger(value.views) || value.views < 0)) throw new Error("Invalid post-view response.");
+  return { postId, count: value.count, upvoted: value.upvoted, changed: value.changed === true, views: value.views ?? null };
 }
 
 function localizedNumber(value, lang) {
@@ -66,7 +67,7 @@ export function initializePostVotes(document, window, { randomId } = {}) {
       continue;
     }
     if (!groups.has(postId)) groups.set(postId, {
-      postId, buttons: [], count: null, upvoted: false, available: false,
+      postId, buttons: [], count: null, views: null, upvoted: false, available: false,
       loading: null, mutating: false, requested: false,
     });
     groups.get(postId).buttons.push(button);
@@ -113,6 +114,14 @@ export function initializePostVotes(document, window, { randomId } = {}) {
       button.title = group.available
         ? [actionLabel(button, group.upvoted), button.dataset.labelPrivacy].filter(Boolean).join(" ")
         : (button.dataset.labelUnavailable || "");
+      const views = button.closest?.('[data-post-engagement]')?.querySelector('[data-post-views]');
+      if (views) {
+        const count = group.views === null ? '—' : localizedNumber(group.views, document.documentElement?.lang);
+        views.querySelector('[data-post-view-count]').textContent = count;
+        const label = group.views === null ? views.dataset.labelUnavailable : views.dataset.labelCount.replace('{count}', count);
+        views.setAttribute('aria-label', label);
+        views.title = label;
+      }
     }
   }
   function unavailable(group, notify = true) {
@@ -123,6 +132,7 @@ export function initializePostVotes(document, window, { randomId } = {}) {
   function apply(group, value) {
     const state = voteResponse(value, group.postId);
     group.count = state.count;
+    if (state.views !== null) group.views = Math.max(group.views ?? 0, state.views);
     group.upvoted = state.upvoted;
     group.available = true;
     render(group);
@@ -192,6 +202,16 @@ export function initializePostVotes(document, window, { randomId } = {}) {
     unavailable(group, false);
     for (const button of group.buttons) button.addEventListener("click", () => change(group));
   }
+
+  // The visit write and initial counter read can finish in either order.
+  // Reflect the recorded visit immediately without sending another request.
+  window.addEventListener?.('ssm:post-view-recorded', event => {
+    const { postId, views } = event.detail || {};
+    const group = groups.get(postId);
+    if (!group || !Number.isSafeInteger(views) || views < 0) return;
+    group.views = Math.max(group.views ?? 0, views);
+    render(group);
+  });
 
   const initial = [];
   let observer = null;

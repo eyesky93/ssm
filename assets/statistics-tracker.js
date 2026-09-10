@@ -31,6 +31,14 @@ if (typeof document !== 'undefined' && document.body.dataset.statisticsEndpoint 
     fetch(document.body.dataset.statisticsEndpoint + '/statistics/event', {
       method: 'POST', credentials: 'omit', keepalive: true,
       headers: { 'X-SSM-Language': document.documentElement.lang, 'Content-Type': 'application/json' }, body,
+    }).then(async response => {
+      if (!response.ok) return;
+      const result = await response.json();
+      if (typeof result.postId === 'string' && Number.isSafeInteger(result.views) && result.views >= 0) {
+        window.dispatchEvent(new window.CustomEvent('ssm:post-view-recorded', {
+          detail: { postId: result.postId, views: result.views },
+        }));
+      }
     }).catch(() => {});
   };
   send();
