@@ -93,22 +93,25 @@ function installEngagementLayout(document) {
         display: none;
       }
 
-      /* Read state is presented as a real checkbox affordance. Keep the
-         existing action text in the DOM for accessibility/tooltips, but show
-         one stable visible label and a check mark (never an X) for the state. */
+      /* Read state is icon-only. The action text remains available through the
+         dynamic aria-label/title, matching the hover explanations used by the
+         other compact controls. */
       .read-toggle {
         position: relative;
-        display: inline-flex;
-        align-items: center;
-        gap: .45rem;
+        display: inline-grid;
+        place-items: center;
+        inline-size: 1.15rem;
+        block-size: 1.15rem;
+        min-inline-size: 1.15rem;
+        padding: 0;
         font-size: 0;
+        line-height: 0;
         text-decoration: none;
       }
       .read-toggle::before {
         content: "";
         display: inline-grid;
         place-items: center;
-        flex: 0 0 .95rem;
         inline-size: .95rem;
         block-size: .95rem;
         box-sizing: border-box;
@@ -125,16 +128,6 @@ function installEngagementLayout(document) {
       .read-toggle[aria-checked="true"]::before {
         content: "✓";
         border-color: var(--accent-strong);
-      }
-      .read-toggle::after {
-        content: attr(data-label-read);
-        color: var(--muted);
-        font-size: .875rem;
-        font-weight: 750;
-        line-height: normal;
-        text-decoration-line: underline;
-        text-decoration-thickness: .08em;
-        text-underline-offset: .15em;
       }
       .read-toggle:is(:hover, :focus-visible)::before {
         border-color: var(--accent-strong);
