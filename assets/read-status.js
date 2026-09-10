@@ -43,6 +43,8 @@ function installEngagementLayout(document) {
         position: relative;
         overflow: visible;
         --post-frame-color: var(--line);
+        --post-card-padding-inline: clamp(1rem, 2vw, 1.5rem);
+        --read-arrow-slot: 1.3rem;
       }
       .post-card:hover {
         --post-frame-color: var(--accent-strong);
@@ -52,9 +54,46 @@ function installEngagementLayout(document) {
         --post-frame-color: var(--accent-strong);
         border-color: var(--accent-strong);
       }
+      .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card {
+        --post-card-padding-inline: 1rem;
+      }
+      .post-stream[data-layout="compact"] .post-card {
+        --post-card-padding-inline: .75rem;
+      }
       .post-stream[data-layout] {
         row-gap: 2.45rem;
       }
+
+      /* Date and reading actions share one baseline instead of occupying two
+         footer rows. The arrow gets a fixed slot, so the end of "Read post"
+         is a stable alignment anchor independent of the arrow glyph. */
+      .card-footer {
+        align-items: baseline;
+      }
+      .card-footer > time {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: baseline;
+      }
+      .card-footer > .card-links {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        align-self: baseline;
+      }
+      .card-links {
+        align-items: baseline;
+      }
+      .read-link {
+        display: inline-grid;
+        grid-template-columns: max-content var(--read-arrow-slot);
+        align-items: baseline;
+        column-gap: 0;
+      }
+      .read-link > span[aria-hidden="true"] {
+        justify-self: end;
+      }
+
       .post-engagement {
         --stat-segment-width: 3rem;
         --stat-segment-height: 2rem;
@@ -134,7 +173,7 @@ function installEngagementLayout(document) {
       }
       .post-card > .post-engagement {
         position: absolute;
-        inset-inline-end: clamp(2.75rem, 4.5vw, 3.5rem);
+        inset-inline-end: calc(var(--post-card-padding-inline) + var(--read-arrow-slot));
         inset-block-start: 100%;
         inset-block-end: auto;
         margin: 0;
