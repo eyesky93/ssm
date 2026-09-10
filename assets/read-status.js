@@ -38,7 +38,8 @@ function installEngagementLayout(document) {
         --post-frame-color: var(--line);
       }
       .post-card:hover {
-        --post-frame-color: var(--line-dark);
+        --post-frame-color: var(--accent-strong);
+        border-color: var(--accent-strong);
       }
       .unread-card:hover {
         --post-frame-color: var(--accent-strong);
