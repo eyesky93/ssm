@@ -37,22 +37,30 @@ function installEngagementLayout(document) {
         overflow: visible;
       }
       .post-stream[data-layout] {
-        row-gap: 2.65rem;
+        row-gap: 2.45rem;
       }
       .post-engagement {
-        height: 2.35rem;
-        border-color: var(--line);
-        border-radius: 0 0 .65rem .65rem;
+        height: 2rem;
+        border: 1px solid var(--line);
+        border-radius: 0 0 .55rem .55rem;
+        background: var(--surface);
       }
       .post-engagement .post-vote,
       .post-engagement .post-comments,
       .post-engagement .post-views {
-        padding: .3rem .5rem;
+        min-height: 0;
+        padding: .18rem .42rem;
       }
       .post-engagement svg {
-        flex-basis: 1rem;
-        width: 1rem;
-        height: 1rem;
+        flex-basis: .9rem;
+        width: .9rem;
+        height: .9rem;
+      }
+      .post-engagement .post-vote-count,
+      .post-engagement .post-comment-count,
+      .post-engagement .post-view-count {
+        height: .95rem;
+        padding-inline-start: .32rem;
       }
       .post-engagement .post-vote-count,
       .post-engagement .post-comment-count,
@@ -64,18 +72,20 @@ function installEngagementLayout(document) {
       .post-card .card-footer > .post-engagement {
         position: absolute;
         z-index: 1;
-        inset-inline-end: clamp(1.6rem, 3vw, 2.25rem);
+        inset-inline-end: clamp(2.25rem, 4vw, 3rem);
         inset-block-end: 0;
         margin: 0;
         transform: translateY(calc(100% - 1px));
       }
-      .post-card:has(.post-vote:hover:not(:disabled)),
-      .post-card:has(.post-vote:focus-visible) {
-        border-color: var(--line);
+      /* The stats control is visually independent of the post hover state. */
+      .post-card:has(.post-engagement:hover),
+      .post-card:has(.post-engagement:focus-within) {
+        border-block-color: var(--line) !important;
+        border-inline-end-color: var(--line) !important;
       }
-      .unread-card:has(.post-vote:hover:not(:disabled)),
-      .unread-card:has(.post-vote:focus-visible) {
-        border-inline-start-color: var(--accent);
+      .post-card:not(.unread-card):has(.post-engagement:hover),
+      .post-card:not(.unread-card):has(.post-engagement:focus-within) {
+        border-inline-start-color: var(--line) !important;
       }
       .post-vote:hover:not(:disabled),
       .post-vote:focus-visible {
@@ -100,7 +110,7 @@ function installEngagementLayout(document) {
         padding-block: .25rem .5rem;
       }
       @media (max-width: 520px) {
-        .post-stream[data-layout] { row-gap: 2.65rem; }
+        .post-stream[data-layout] { row-gap: 2.45rem; }
         .post-card .post-engagement { max-width: 100%; }
       }
     `;
