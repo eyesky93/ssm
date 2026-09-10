@@ -135,10 +135,12 @@ function installEngagementLayout(document) {
         border-inline-start-color: var(--accent) !important;
       }
 
-      /* Only the upvote rises above the post frame, and only while hovered or
-         keyboard-focused. Comments and views remain below the post. */
+      /* The upvote rises above the post frame while hovered/focused and stays
+         there with the accent frame for as long as it is upvoted. Comments and
+         views remain below the post. */
       .post-engagement .post-vote:hover:not(:disabled),
-      .post-engagement .post-vote:focus-visible {
+      .post-engagement .post-vote:focus-visible,
+      .post-engagement .post-vote[aria-pressed="true"] {
         z-index: 7;
         color: var(--ink);
         border-color: var(--accent-strong);
