@@ -37,10 +37,10 @@ function installEngagementLayout(document) {
         overflow: visible;
       }
       .post-stream[data-layout] {
-        row-gap: 2.05rem;
+        row-gap: 1.95rem;
       }
       .post-engagement {
-        height: 1.6rem;
+        height: 1.5rem;
         border: 0;
         border-radius: 0;
         overflow: visible;
@@ -52,16 +52,19 @@ function installEngagementLayout(document) {
         position: relative;
         z-index: 1;
         min-height: 0;
-        height: 1.6rem;
-        padding: .04rem .28rem;
+        height: 1.5rem;
+        padding: .02rem .26rem;
         background: var(--surface);
-        border-block: 1px solid var(--line);
+        border-block-start: 0;
+        border-block-end: 1px solid var(--line);
         border-radius: 0;
       }
       .post-engagement .post-vote {
         border-inline-start: 1px solid var(--line);
         border-inline-end: 1px solid var(--line);
-        border-end-start-radius: .45rem;
+        border-end-start-radius: .42rem;
+        cursor: pointer;
+        pointer-events: auto;
       }
       .post-engagement .post-comments {
         border-inline-start: 0;
@@ -70,18 +73,18 @@ function installEngagementLayout(document) {
       .post-engagement .post-views {
         border-inline-start: 0;
         border-inline-end: 1px solid var(--line);
-        border-end-end-radius: .45rem;
+        border-end-end-radius: .42rem;
       }
       .post-engagement svg {
-        flex-basis: .78rem;
-        width: .78rem;
-        height: .78rem;
+        flex-basis: .74rem;
+        width: .74rem;
+        height: .74rem;
       }
       .post-engagement .post-vote-count,
       .post-engagement .post-comment-count,
       .post-engagement .post-view-count {
-        height: .8rem;
-        padding-inline-start: .24rem;
+        height: .76rem;
+        padding-inline-start: .22rem;
         border-color: var(--line);
       }
       .post-card .card-footer > .post-engagement {
@@ -92,24 +95,11 @@ function installEngagementLayout(document) {
         margin: 0;
         transform: none;
       }
-      /* Paint the post's bottom border over the neutral stats top border so the
-         two lines coincide visually and the post is the upper layer. */
-      .post-card::after {
-        content: "";
-        position: absolute;
-        z-index: 2;
-        inset-inline: 0;
-        inset-block-end: -1px;
-        height: 1px;
-        background: var(--line);
-        border-end-start-radius: inherit;
-        border-end-end-radius: inherit;
-        pointer-events: none;
-      }
-      .unread-card::after { background: var(--line); }
 
-      /* Hovering any part of the stats control must not activate the post-card
-         hover border. Keep only the unread marker when that state applies. */
+      /* The post owns the neutral shared seam. The stats tabs have no top
+         border at rest, so there is no duplicate horizontal line on either
+         side of the control. Hovering the stats area must not highlight the
+         post itself. */
       .post-card:has(.post-engagement:hover),
       .post-card:has(.post-engagement:focus-within) {
         border-block-color: var(--line) !important;
@@ -124,17 +114,17 @@ function installEngagementLayout(document) {
         border-inline-start-color: var(--accent) !important;
       }
 
-      /* The upvote segment itself is clickable and owns the only hover accent.
-         On hover/focus it rises above the post's seam; there is no inset frame. */
-      .post-engagement .post-vote {
-        cursor: pointer;
-        pointer-events: auto;
-      }
+      /* Only the real upvote segment becomes accent-colored. Its top border is
+         created on hover/focus exactly on the post's bottom seam and is painted
+         above that seam; there is no inset or secondary frame. */
       .post-engagement .post-vote:hover:not(:disabled),
       .post-engagement .post-vote:focus-visible {
         z-index: 3;
         color: var(--ink);
-        border-color: var(--accent-strong);
+        border-block-start: 1px solid var(--accent-strong);
+        border-block-end-color: var(--accent-strong);
+        border-inline-start-color: var(--accent-strong);
+        border-inline-end-color: var(--accent-strong);
         box-shadow: none;
         outline: none;
       }
@@ -156,7 +146,7 @@ function installEngagementLayout(document) {
         padding-block: .25rem .5rem;
       }
       @media (max-width: 520px) {
-        .post-stream[data-layout] { row-gap: 2.05rem; }
+        .post-stream[data-layout] { row-gap: 1.95rem; }
         .post-card .post-engagement { max-width: 100%; }
       }
     `;
