@@ -35,6 +35,13 @@ function installEngagementLayout(document) {
       .post-card {
         position: relative;
         overflow: visible;
+        --post-frame-color: var(--line);
+      }
+      .post-card:hover {
+        --post-frame-color: var(--line-dark);
+      }
+      .unread-card:hover {
+        --post-frame-color: var(--accent-strong);
       }
       .post-stream[data-layout] {
         row-gap: 1.95rem;
@@ -96,17 +103,17 @@ function installEngagementLayout(document) {
         transform: none;
       }
 
-      /* At the shared edge the card is the upper layer. This mask is limited
-         to the stats width, so it does not create a stray line across the card.
-         Each tab still owns its real top border underneath. */
+      /* The post's own lower frame is the visible shared edge. This overlay is
+         limited to the stats width and follows the card's actual border color,
+         so the three stats tabs stay one layer underneath the post. */
       .post-card .post-engagement::before {
         content: "";
         position: absolute;
-        z-index: 4;
+        z-index: 6;
         inset-inline: 0;
         inset-block-start: 0;
         height: 1px;
-        background: var(--line);
+        background: var(--post-frame-color);
         pointer-events: none;
       }
 
@@ -114,6 +121,7 @@ function installEngagementLayout(document) {
          hover border. Keep only the unread marker when that state applies. */
       .post-card:has(.post-engagement:hover),
       .post-card:has(.post-engagement:focus-within) {
+        --post-frame-color: var(--line);
         border-block-color: var(--line) !important;
         border-inline-end-color: var(--line) !important;
       }
@@ -126,11 +134,11 @@ function installEngagementLayout(document) {
         border-inline-start-color: var(--accent) !important;
       }
 
-      /* Only the upvote rises above the card seam, and only while hovered or
-         keyboard-focused. The comments and views remain underneath. */
+      /* Only the upvote rises above the post frame, and only while hovered or
+         keyboard-focused. Comments and views remain below the post. */
       .post-engagement .post-vote:hover:not(:disabled),
       .post-engagement .post-vote:focus-visible {
-        z-index: 5;
+        z-index: 7;
         color: var(--ink);
         border-color: var(--accent-strong);
         box-shadow: none;
