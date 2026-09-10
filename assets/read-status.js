@@ -97,8 +97,8 @@ function installEngagementLayout(document) {
       }
 
       /* The tabs keep their own top border and start exactly at the post's
-         lower border. Repaint the post seam above them so the post is always
-         the upper visual layer while the tabs remain fully below it. */
+         lower border. Repaint the post seam above them so the post is the
+         upper visual layer at rest while the tabs remain fully below it. */
       .post-card::after {
         content: "";
         position: absolute;
@@ -129,11 +129,11 @@ function installEngagementLayout(document) {
         border-inline-start-color: var(--accent) !important;
       }
 
-      /* The upvote segment keeps the accent hover/focus treatment. The card's
-         repainted seam stays above it, so the post remains the top layer. */
+      /* On hover/focus the upvote segment rises above the post seam, so its
+         accent border is the visible top layer. */
       .post-engagement .post-vote:hover:not(:disabled),
       .post-engagement .post-vote:focus-visible {
-        z-index: 3;
+        z-index: 5;
         color: var(--ink);
         border-color: var(--accent-strong);
         box-shadow: none;
