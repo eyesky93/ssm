@@ -1,51 +1,34 @@
-// A browser preference only. It never authenticates a user or grants access.
-const stateKey = Symbol.for('ssm.statistics.exclusion');
+// Only credentials whose hashes were registered by the site owner are accepted.
+// There is deliberately no URL, click handler, or legacy opt-out flag.
+const stateKey = Symbol.for('ssm.statistics.registered-browser');
+
 export function initializeExclusion(document, window) {
-  if (window[stateKey]) return window[stateKey];
-  const key = document.body?.dataset.statisticsExclusionStorage;
-  const state = { key, setup: false, temporary: false };
+  if (window[stateKey]) return window[stateKey].ready;
+  const state = { token: '', key: document.body?.dataset.statisticsExclusionStorage };
   window[stateKey] = state;
-  if (!key) return state;
-  const apply = () => {
-    const action = /^#ssm-statistics=(exclude|check|include)$/.exec(window.location.hash)?.[1];
-    if (!action) return;
-    // Even the first setup/check visit must not send analytics.
-    state.setup = true;
-    try { window.history.replaceState(null, '', window.location.pathname + window.location.search); } catch {}
+  state.ready = (async () => {
     try {
-      if (action === 'exclude') {
-        window.localStorage.setItem(key, '1');
-        if (window.localStorage.getItem(key) !== '1') throw new Error('Storage unavailable');
-        window.alert('SSM: This browser is now excluded from activity statistics. Repeat this on each browser or device you use.');
-      } else if (action === 'include') {
-        window.localStorage.removeItem(key);
-        if (window.localStorage.getItem(key) === '1') throw new Error('Storage unavailable');
-        state.temporary = false;
-        window.alert('SSM: Exclusion removed. Activity statistics resume on your next page visit.');
-      } else {
-        window.alert(window.localStorage.getItem(key) === '1'
-          ? 'SSM: This browser is excluded from activity statistics.'
-          : 'SSM: This browser is NOT excluded. Use the private setup link to enable exclusion.');
-      }
-    } catch {
-      state.temporary = true;
-      window.alert('SSM: Browser storage is unavailable. This page is excluded, but the setting could not be saved or checked. Allow site storage, then open the setup link again.');
-    }
-  };
-  apply();
-  window.addEventListener('hashchange', apply);
-  return state;
+      const token = state.key && window.localStorage.getItem(state.key);
+      if (!/^[A-Za-z0-9_-]{43}$/.test(token || '')) return;
+      const digests = JSON.parse(document.body.dataset.statisticsBrowserDigests || '[]');
+      const bytes = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));
+      const digest = Array.from(new Uint8Array(bytes), b => b.toString(16).padStart(2, '0')).join('');
+      if (Array.isArray(digests) && digests.includes(digest)) state.token = token;
+    } catch { /* Unavailable storage/crypto or invalid credentials never enroll a browser. */ }
+  })();
+  return state.ready;
 }
 
 export function statisticsExcluded(document, window) {
-  const state = initializeExclusion(document, window);
-  if (state.setup || state.temporary) return true;
-  try { return Boolean(state.key && window.localStorage.getItem(state.key) === '1'); }
+  const state = window[stateKey];
+  try { return Boolean(state?.token && window.localStorage.getItem(state.key) === state.token); }
   catch { return false; }
 }
 
 export function statisticsHeaders(document, window) {
-  return statisticsExcluded(document, window) ? { 'X-SSM-Statistics': 'exclude' } : {};
+  return statisticsExcluded(document, window)
+    ? { 'X-SSM-Browser-Credential': window[stateKey].token } : {};
 }
 
-if (typeof document !== 'undefined') initializeExclusion(document, window);
+// All importers wait for verification before issuing their first request.
+if (typeof document !== 'undefined') await initializeExclusion(document, window);
