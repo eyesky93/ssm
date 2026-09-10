@@ -737,8 +737,10 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 .post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-footer { padding-block-start: 1rem; }
 .post-date-compact { display: none; }
 .post-stream[data-layout="compact"] .post-date-full { display: none; }
-.post-stream[data-layout="compact"] .post-date-compact { display: inline; white-space: nowrap; }
+.post-stream[data-layout="compact"] .post-date-compact { display: inline-block; white-space: normal; }
+.post-date-compact > span { white-space: nowrap; }
 .post-stream[data-layout="compact"] .card-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; }
+.post-stream[data-layout="compact"] .card-footer > time { flex: 1 1 min-content; }
 .post-stream[data-layout="compact"] .card-footer > .post-engagement { margin-inline-start: auto; }
 .post-stream[data-layout="compact"] .card-links { flex-basis: 100%; justify-content: flex-end; }
 .post-stream[data-layout="compact"] { grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 0.75rem; }
