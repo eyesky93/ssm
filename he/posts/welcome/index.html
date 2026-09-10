@@ -15,7 +15,7 @@
   <script src="/ssm/assets/appearance.js?v=fcf5ea336668"></script>
   <link rel="stylesheet" href="/ssm/assets/styles.css?v=651e6d5f1554">
 </head>
-<body data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="" data-read-storage="ssm-read:/ssm">
+<body data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="https://ssm-pin-stats.eyesky93.workers.dev/pins" data-read-storage="ssm-read:/ssm">
   <a class="skip-link" href="#main">דלגו לתוכן</a>
   <header class="site-header">
     <nav class="primary-nav" aria-label="ניווט ראשי">
@@ -254,7 +254,53 @@
       </div>
       <div class="updates-subscription">
       <h3>עדכונים בדוא״ל</h3>
-        <p class="subscribe-unavailable">החיבור לעדכונים בדוא״ל עדיין מתבצע. ערוץ ה־RSS זמין כבר עכשיו.</p>
+        <form class="subscribe-form" data-subscribe-form action="https://ssm-newsletter.eyesky93.workers.dev/api/subscriptions" method="post"
+        data-working="מתבצעת הרשמה…"
+        data-success="יש לבדוק את תיבת הדוא״ל ולאשר את ההרשמה. כדי לשנות נושאים בהמשך, יש לבטל את ההרשמה ולהצטרף מחדש."
+        data-error="לא הצלחנו להתחיל את ההרשמה. אפשר לנסות שוב."
+        data-topic-required="יש לבחור לפחות נושא מסוים אחד, או לבחור בכל הנושאים.">
+        <input type="hidden" name="language" value="he">
+        <div class="form-trap" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <div class="subscribe-row">
+          <label class="email-field"><span>כתובת דוא״ל</span><input type="email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required></label>
+          <button class="subscribe-button" type="submit">הרשמה</button>
+        </div>
+        <fieldset class="topic-picker">
+          <legend>נושאים</legend>
+          <p class="form-note">אפשר לבחור את כל הנושאים או כל שילוב ביניהם.</p>
+          <div class="topic-scopes">
+            <label class="topic-option">
+    <input type="radio" name="scope" value="all" checked data-topic-all>
+    <span>כל הנושאים</span>
+  </label>
+            <label class="topic-option">
+    <input type="radio" name="scope" value="tags" data-topic-specific>
+    <span>נושאים מסוימים</span>
+  </label>
+          </div>
+          <div class="topic-options">
+            <label class="topic-option">
+    <input type="checkbox" name="tags" value="music" data-topic-tag>
+    <span>מוזיקה</span>
+  </label><label class="topic-option">
+    <input type="checkbox" name="tags" value="physics" data-topic-tag>
+    <span>פיזיקה</span>
+  </label><label class="topic-option">
+    <input type="checkbox" name="tags" value="physics:conformal-field-theory" data-topic-tag>
+    <span>פיזיקה / תורת שדות קונפורמית</span>
+  </label><label class="topic-option">
+    <input type="checkbox" name="tags" value="notes" data-topic-tag>
+    <span>רשימות</span>
+  </label><label class="topic-option">
+    <input type="checkbox" name="tags" value="culture" data-topic-tag>
+    <span>תרבות</span>
+  </label>
+          </div>
+        </fieldset>
+        <label class="consent-row"><input type="checkbox" name="consent" value="yes" required><span>אני מסכים או מסכימה לקבל עדכונים בדוא״ל על פוסטים חדשים ב־SSM. ידוע לי שצריך לאשר את ההרשמה בדוא״ל.</span></label>
+        <p class="form-note">הכתובת מוצפנת באחסון. אין פיקסלים למעקב. אפשר לבטל הרשמה מכל הודעת דוא״ל.</p>
+        <p class="form-status" data-subscribe-status role="status" aria-live="polite"></p>
+      </form>
       </div>
     </div>
   </dialog>

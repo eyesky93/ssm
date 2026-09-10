@@ -14,7 +14,7 @@
   <script src="/ssm/assets/appearance.js?v=fcf5ea336668"></script>
   <link rel="stylesheet" href="/ssm/assets/styles.css?v=651e6d5f1554">
 </head>
-<body data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="" data-read-storage="ssm-read:/ssm">
+<body data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="https://ssm-pin-stats.eyesky93.workers.dev/pins" data-read-storage="ssm-read:/ssm">
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <nav class="primary-nav" aria-label="Main navigation">
@@ -247,7 +247,53 @@
       </div>
       <div class="updates-subscription">
       <h3>Email notifications</h3>
-        <p class="subscribe-unavailable">Email notifications are being connected. RSS is available now.</p>
+        <form class="subscribe-form" data-subscribe-form action="https://ssm-newsletter.eyesky93.workers.dev/api/subscriptions" method="post"
+        data-working="Subscribing…"
+        data-success="Check your inbox to confirm your subscription. To change subjects later, unsubscribe and rejoin."
+        data-error="We couldn&#039;t start your subscription. Please try again."
+        data-topic-required="Choose at least one specific subject, or select All subjects.">
+        <input type="hidden" name="language" value="en">
+        <div class="form-trap" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <div class="subscribe-row">
+          <label class="email-field"><span>Email address</span><input type="email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required></label>
+          <button class="subscribe-button" type="submit">Subscribe</button>
+        </div>
+        <fieldset class="topic-picker">
+          <legend>Subjects</legend>
+          <p class="form-note">Choose all subjects or any combination.</p>
+          <div class="topic-scopes">
+            <label class="topic-option">
+    <input type="radio" name="scope" value="all" checked data-topic-all>
+    <span>All subjects</span>
+  </label>
+            <label class="topic-option">
+    <input type="radio" name="scope" value="tags" data-topic-specific>
+    <span>Specific subjects</span>
+  </label>
+          </div>
+          <div class="topic-options">
+            <label class="topic-option">
+    <input type="checkbox" name="tags" value="culture" data-topic-tag>
+    <span>Culture</span>
+  </label><label class="topic-option">
+    <input type="checkbox" name="tags" value="music" data-topic-tag>
+    <span>Music</span>
+  </label><label class="topic-option">
+    <input type="checkbox" name="tags" value="notes" data-topic-tag>
+    <span>Notes</span>
+  </label><label class="topic-option">
+    <input type="checkbox" name="tags" value="physics" data-topic-tag>
+    <span>Physics</span>
+  </label><label class="topic-option">
+    <input type="checkbox" name="tags" value="physics:conformal-field-theory" data-topic-tag>
+    <span>Physics / Conformal Field Theory</span>
+  </label>
+          </div>
+        </fieldset>
+        <label class="consent-row"><input type="checkbox" name="consent" value="yes" required><span>I agree to receive email notifications about new SSM posts. I understand that I must confirm by email.</span></label>
+        <p class="form-note">Your address is encrypted at rest. No tracking pixels. Unsubscribe from any email.</p>
+        <p class="form-status" data-subscribe-status role="status" aria-live="polite"></p>
+      </form>
       </div>
     </div>
   </dialog>
