@@ -34,6 +34,27 @@ export function selectionUrl(href, selected, initial, excluded = []) {
   return url;
 }
 
+export function filterContextUrl(href, contextHref) {
+  const url = new URL(href, contextHref);
+  const params = new URL(contextHref).searchParams;
+  if (params.get("filters") === "temporary") {
+    url.searchParams.set("filters", "temporary");
+    return selectionUrl(url, params.getAll("tag"), true, params.getAll("exclude"));
+  }
+  url.searchParams.delete("filters");
+  return url;
+}
+
+function renderFilterContextLinks(document, window) {
+  if (new URL(window.location.href).searchParams.get("filters") !== "temporary") return;
+  for (const link of document.querySelectorAll("[data-filter-context-link]")) {
+    link.href = filterContextUrl(link.href, window.location.href).href;
+  }
+  for (const select of document.querySelectorAll("[data-language-select]")) {
+    for (const option of select.options) option.value = filterContextUrl(option.value, window.location.href).href;
+  }
+}
+
 // Reading order is independent of the pin order used by the catalogue.
 export function readingSequence(posts, currentId, selected, excluded = []) {
   const chronological = [...posts].sort((a, b) => a.published - b.published || a.id.localeCompare(b.id));
@@ -127,6 +148,7 @@ export function initializePostViews(document, window) {
 }
 
 export function initializePostBrowser(document, window) {
+  renderFilterContextLinks(document, window);
   const browser = document.querySelector("[data-post-browser]");
   if (!browser) return;
   const stream = browser.querySelector("[data-post-stream]");
@@ -146,9 +168,10 @@ export function initializePostBrowser(document, window) {
   const article = document.querySelector("[data-reader-article]");
   const inline = browser.dataset.inlineBrowser === "true";
   const storageKey = browser.dataset.filterStorage;
+  const temporaryFilters = () => new URL(window.location.href).searchParams.get("filters") === "temporary";
   const explicitFilters = () => {
     const params = new URL(window.location.href).searchParams;
-    return Boolean(initial || params.has("tag") || params.has("exclude"));
+    return Boolean(initial || params.has("tag") || params.has("exclude") || temporaryFilters());
   };
   function normalize(selectedValues, excludedValues) {
     const excluded = new Set(tagKeys(excludedValues).filter((tag) => known.has(tag)));
@@ -167,6 +190,7 @@ export function initializePostBrowser(document, window) {
     return normalize(selectionFromUrl(window.location.href, initial, known), exclusionsFromUrl(window.location.href, known));
   }
   function readSaved() {
+    if (temporaryFilters()) return normalize([], []);
     try {
       const saved = JSON.parse(window.localStorage.getItem(storageKey));
       if (Array.isArray(saved?.selected) && Array.isArray(saved?.excluded)) return normalize(saved.selected, saved.excluded);
@@ -185,6 +209,7 @@ export function initializePostBrowser(document, window) {
   let returnFocus = article?.querySelector("[data-tag-filter]");
 
   function save() {
+    if (temporaryFilters()) return;
     try { window.localStorage.setItem(storageKey, JSON.stringify({ selected: [...selected], excluded: [...excluded] })); }
     catch { /* Keep the current page usable without persistent storage. */ }
   }
@@ -196,14 +221,15 @@ export function initializePostBrowser(document, window) {
   }
 
   function renderNavigation() {
+    renderFilterContextLinks(document, window);
     for (const card of cards) {
       for (const link of card.querySelectorAll("[data-reader-link]")) {
-        link.href = readerUrl(new URL(card.dataset.postUrl, window.location.href), selected, excluded).href;
+        link.href = readerUrl(filterContextUrl(card.dataset.postUrl, window.location.href), selected, excluded).href;
       }
     }
     const back = article?.querySelector("[data-reader-back]");
     if (back) {
-      const url = selectionUrl(new URL(back.href, window.location.href), selected, true, excluded);
+      const url = selectionUrl(filterContextUrl(back.href, window.location.href), selected, true, excluded);
       url.searchParams.delete("reader");
       back.href = url.href;
     }
@@ -227,7 +253,7 @@ export function initializePostBrowser(document, window) {
       const link = navigation.querySelector(`[data-post-${direction}]`);
       link.hidden = !target;
       if (!target) { link.removeAttribute("href"); link.removeAttribute("rel"); continue; }
-      link.href = readerUrl(new URL(target.url, window.location.href), selected, excluded).href;
+      link.href = readerUrl(filterContextUrl(target.url, window.location.href), selected, excluded).href;
       link.setAttribute("rel", direction);
       const label = `${navigation.dataset[direction === "prev" ? "labelPrev" : "labelNext"]}: ${target.title}`;
       link.setAttribute("aria-label", label);
@@ -293,7 +319,10 @@ export function initializePostBrowser(document, window) {
     if (inline && wasHidden && hasFilters()) browser.scrollIntoView({ block: "start" });
   }
 
-  chips.forEach((chip) => chip.addEventListener("click", () => {
+  chips.forEach((chip) => chip.addEventListener("click", (event) => {
+    // Native links handle context menus, middle-click and modified clicks.
+    if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
     const tag = chip.dataset.tagFilter;
     chip.closest("[data-tag-option]")?.classList.toggle("is-restored", false);
     for (const hidden of excluded) {
@@ -304,6 +333,11 @@ export function initializePostBrowser(document, window) {
     } else selected.add(tag);
     ({ selected, excluded } = normalize(selected, excluded));
     update(chip);
+  }));
+  chips.forEach((chip) => chip.addEventListener("keydown", (event) => {
+    if (event.defaultPrevented || event.key !== " " || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    if (!event.repeat) chip.click();
   }));
   excludeButtons.forEach((button) => button.addEventListener("click", (event) => {
     const tag = button.dataset.excludeTag;
