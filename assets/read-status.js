@@ -39,27 +39,31 @@ function installEngagementLayout(document) {
       .post-stream[data-layout] {
         row-gap: 3rem;
       }
+      .post-engagement {
+        border-radius: 0;
+      }
       .post-card .card-footer > .post-engagement {
         position: absolute;
         z-index: 1;
-        inset-inline-end: -1px;
-        inset-block-end: -1px;
+        inset-inline-end: clamp(1rem, 2vw, 1.5rem);
+        inset-block-end: 0;
         margin: 0;
-        transform: translateY(100%);
-      }
-      .post-engagement:has(.post-vote:hover:not(:disabled)),
-      .post-engagement:has(.post-vote:focus-visible) {
-        border-color: var(--accent-strong);
+        transform: translateY(calc(100% - 1px));
       }
       .post-vote:hover:not(:disabled),
       .post-vote:focus-visible {
+        color: inherit;
+        box-shadow: inset 0 0 0 1px var(--accent-strong);
+        outline: none;
+      }
+      .post-vote:hover:not(:disabled) svg,
+      .post-vote:focus-visible svg,
+      .post-vote[aria-pressed="true"] svg {
         color: var(--accent-strong);
-        box-shadow: none;
       }
       .post-vote[aria-pressed="true"],
-      .post-vote[aria-pressed="true"] svg,
       .post-vote[aria-pressed="true"] .post-vote-count {
-        color: var(--accent-strong);
+        color: var(--ink);
       }
       .article-engagement-dock {
         display: flex;
