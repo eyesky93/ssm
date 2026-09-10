@@ -55,7 +55,7 @@ function installEngagementLayout(document) {
         height: 1.5rem;
         padding: .02rem .26rem;
         background: var(--surface);
-        border-block-start: 0;
+        border-block-start: 1px solid var(--line);
         border-block-end: 1px solid var(--line);
         border-radius: 0;
       }
@@ -90,16 +90,31 @@ function installEngagementLayout(document) {
       .post-card .card-footer > .post-engagement {
         position: absolute;
         inset-inline-end: clamp(2.75rem, 4.5vw, 3.5rem);
-        inset-block-start: calc(100% - 1px);
+        inset-block-start: 100%;
         inset-block-end: auto;
         margin: 0;
         transform: none;
       }
 
-      /* The post owns the neutral shared seam. The stats tabs have no top
-         border at rest, so there is no duplicate horizontal line on either
-         side of the control. Hovering the stats area must not highlight the
-         post itself. */
+      /* The tabs keep their own top border and start exactly at the post's
+         lower border. Repaint the post seam above them so the post is always
+         the upper visual layer while the tabs remain fully below it. */
+      .post-card::after {
+        content: "";
+        position: absolute;
+        z-index: 4;
+        inset-inline: 0;
+        inset-block-end: -1px;
+        height: 1px;
+        background: var(--line);
+        border-end-start-radius: inherit;
+        border-end-end-radius: inherit;
+        pointer-events: none;
+      }
+      .unread-card::after { background: var(--line); }
+
+      /* Hovering any part of the stats control must not activate the post-card
+         hover border. Keep only the unread marker when that state applies. */
       .post-card:has(.post-engagement:hover),
       .post-card:has(.post-engagement:focus-within) {
         border-block-color: var(--line) !important;
@@ -114,17 +129,13 @@ function installEngagementLayout(document) {
         border-inline-start-color: var(--accent) !important;
       }
 
-      /* Only the real upvote segment becomes accent-colored. Its top border is
-         created on hover/focus exactly on the post's bottom seam and is painted
-         above that seam; there is no inset or secondary frame. */
+      /* The upvote segment keeps the accent hover/focus treatment. The card's
+         repainted seam stays above it, so the post remains the top layer. */
       .post-engagement .post-vote:hover:not(:disabled),
       .post-engagement .post-vote:focus-visible {
         z-index: 3;
         color: var(--ink);
-        border-block-start: 1px solid var(--accent-strong);
-        border-block-end-color: var(--accent-strong);
-        border-inline-start-color: var(--accent-strong);
-        border-inline-end-color: var(--accent-strong);
+        border-color: var(--accent-strong);
         box-shadow: none;
         outline: none;
       }
@@ -133,9 +144,11 @@ function installEngagementLayout(document) {
       .post-engagement .post-vote[aria-pressed="true"] svg {
         color: var(--accent-strong);
       }
-      .post-engagement .post-vote[aria-pressed="true"],
-      .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
+      .post-engagement .post-vote[aria-pressed="true"] {
         color: var(--ink);
+      }
+      .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
+        color: var(--accent);
       }
 
       .article-engagement-dock {
