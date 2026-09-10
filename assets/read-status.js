@@ -35,11 +35,14 @@ function installEngagementLayout(document) {
       .post-card {
         position: relative;
         overflow: visible;
+        --post-frame-color: var(--line);
       }
       .post-card:hover {
+        --post-frame-color: var(--accent-strong);
         border-color: var(--accent-strong);
       }
       .unread-card:hover {
+        --post-frame-color: var(--accent-strong);
         border-color: var(--accent-strong);
       }
       .post-stream[data-layout] {
@@ -102,14 +105,24 @@ function installEngagementLayout(document) {
         transform: none;
       }
 
-      /* The neutral stats tabs have no upper edge. The post's real lower frame
-         is therefore the only line at the shared boundary, avoiding seam
-         rendering artifacts. */
+      /* The neutral stats tabs have no upper edge. Paint only the post's own
+         bottom-frame segment across their attachment width, above the tabs.
+         This keeps the post visually on top without restoring a stats top edge. */
+      .post-card .post-engagement::before {
+        content: "";
+        position: absolute;
+        z-index: 6;
+        inset-inline: 0;
+        inset-block-start: 0;
+        height: 1px;
+        background: var(--post-frame-color);
+        pointer-events: none;
+      }
 
-      /* Hovering any part of the stats control must not activate the post-card
-         hover border. Keep only the unread marker when that state applies. */
+      /* Hovering the stats area itself must not count as hovering the post. */
       .post-card:has(.post-engagement:hover),
       .post-card:has(.post-engagement:focus-within) {
+        --post-frame-color: var(--line);
         border-block-color: var(--line) !important;
         border-inline-end-color: var(--line) !important;
       }
