@@ -1,5 +1,4 @@
 // Traffic collection is independent of the lazily loaded discussion widget.
-import { statisticsExcluded } from './statistics-exclusion.js';
 
 const validUuid = value => /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value || '');
 
@@ -23,7 +22,7 @@ export function visitPayload(document, sessionStore, visitorStore, uuid = () => 
 
 if (typeof document !== 'undefined' && document.body.dataset.statisticsEndpoint && !document.querySelector('[data-statistics-dashboard]')) {
   const send = () => {
-    if (document.visibilityState === 'prerender' || statisticsExcluded(document, window)) return;
+    if (document.visibilityState === 'prerender') return;
     let sessionStore, visitorStore;
     try { sessionStore = sessionStorage; } catch {}
     try { visitorStore = localStorage; } catch {}
@@ -36,7 +35,7 @@ if (typeof document !== 'undefined' && document.body.dataset.statisticsEndpoint 
       const result = await response.json();
       if (typeof result.postId === 'string' && Number.isSafeInteger(result.views) && result.views >= 0) {
         window.dispatchEvent(new window.CustomEvent('ssm:post-view-recorded', {
-          detail: { postId: result.postId, views: result.views },
+          detail: { postId: result.postId, views: result.views, reads: result.reads },
         }));
       }
     }).catch(() => {});

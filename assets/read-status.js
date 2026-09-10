@@ -57,10 +57,34 @@ export function initializeReadStatus(document, window) {
     }
   }
 
+  async function recordRead(postId) {
+    const endpoint = document.body.dataset.statisticsEndpoint;
+    if (!endpoint) return;
+    try {
+      const valid = value => /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value || '');
+      const visitorKey = document.body.dataset.statisticsVisitorStorage;
+      let visitor;
+      try { visitor = storage?.getItem(visitorKey); } catch {}
+      if (!valid(visitor)) {
+        visitor = window.crypto.randomUUID();
+        try { storage?.setItem(visitorKey, visitor); } catch {}
+      }
+      const response = await window.fetch(endpoint + '/statistics/event', {
+        method: 'POST', credentials: 'omit', redirect: 'error',
+        headers: {'Content-Type': 'application/json', 'X-SSM-Language': document.documentElement.lang},
+        body: JSON.stringify({id: window.crypto.randomUUID(), session: window.crypto.randomUUID(), visitor, postId, referrer: '', kind: 'read'}),
+      });
+      if (!response.ok) return;
+      const detail = await response.json();
+      window.dispatchEvent(new window.CustomEvent('ssm:post-view-recorded', {detail}));
+    } catch { /* Local reading choices remain available during service outages. */ }
+  }
+
   for (const card of cards) {
     card.querySelector("[data-read-toggle]")?.addEventListener("click", () => {
       const read = !store.isRead(card.dataset.postId);
       const persisted = store.set(card.dataset.postId, read);
+      if (read) void recordRead(card.dataset.postId);
       render();
       if (status) status.textContent = `${read ? status.dataset.read : status.dataset.unread}${persisted ? "" : ` ${status.dataset.temporary}`}`;
     });
