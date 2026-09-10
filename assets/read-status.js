@@ -44,7 +44,6 @@ function installEngagementLayout(document) {
         overflow: visible;
         --post-frame-color: var(--line);
         --post-card-padding-inline: clamp(1rem, 2vw, 1.5rem);
-        --read-arrow-slot: 1.3rem;
       }
       .post-card:hover {
         --post-frame-color: var(--accent-strong);
@@ -67,9 +66,9 @@ function installEngagementLayout(document) {
         padding-block-end: 2.5rem;
       }
 
-      /* Date and reading actions share one baseline instead of occupying two
-         footer rows. The arrow gets a fixed slot, so the end of "Read post"
-         is a stable alignment anchor independent of the arrow glyph. */
+      /* Date and reading actions share one baseline. The catalogue link no
+         longer carries a trailing arrow, so its text edge is also the stable
+         alignment edge for the hanging engagement tabs. */
       .card-footer {
         align-items: baseline;
       }
@@ -88,13 +87,57 @@ function installEngagementLayout(document) {
         align-items: baseline;
       }
       .read-link {
-        display: inline-grid;
-        grid-template-columns: max-content var(--read-arrow-slot);
-        align-items: baseline;
-        column-gap: 0;
+        display: inline;
       }
       .read-link > span[aria-hidden="true"] {
-        justify-self: end;
+        display: none;
+      }
+
+      /* Read state is presented as a real checkbox affordance. Keep the
+         existing action text in the DOM for accessibility/tooltips, but show
+         one stable visible label and a check mark (never an X) for the state. */
+      .read-toggle {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        font-size: 0;
+        text-decoration: none;
+      }
+      .read-toggle::before {
+        content: "";
+        display: inline-grid;
+        place-items: center;
+        flex: 0 0 .95rem;
+        inline-size: .95rem;
+        block-size: .95rem;
+        box-sizing: border-box;
+        border: 1px solid var(--line-dark);
+        border-radius: .16rem;
+        background: var(--surface);
+        color: var(--accent-strong);
+        font-family: var(--font-interface);
+        font-size: .78rem;
+        font-weight: 900;
+        line-height: 1;
+        text-decoration: none;
+      }
+      .read-toggle[aria-checked="true"]::before {
+        content: "✓";
+        border-color: var(--accent-strong);
+      }
+      .read-toggle::after {
+        content: attr(data-label-read);
+        color: var(--muted);
+        font-size: .875rem;
+        font-weight: 750;
+        line-height: normal;
+        text-decoration-line: underline;
+        text-decoration-thickness: .08em;
+        text-underline-offset: .15em;
+      }
+      .read-toggle:is(:hover, :focus-visible)::before {
+        border-color: var(--accent-strong);
       }
 
       .post-engagement {
@@ -176,7 +219,7 @@ function installEngagementLayout(document) {
       }
       .post-card > .post-engagement {
         position: absolute;
-        inset-inline-end: calc(var(--post-card-padding-inline) + var(--read-arrow-slot));
+        inset-inline-end: var(--post-card-padding-inline);
         inset-block-start: 100%;
         inset-block-end: auto;
         margin: 0;
@@ -285,6 +328,8 @@ export function initializeReadStatus(document, window) {
       const label = read ? button.dataset.labelUnread : button.dataset.labelRead;
       button.disabled = false;
       button.textContent = label;
+      button.setAttribute("role", "checkbox");
+      button.setAttribute("aria-checked", String(read));
       button.setAttribute("aria-label", label);
       button.title = label;
     }
