@@ -37,18 +37,45 @@ function installEngagementLayout(document) {
         overflow: visible;
       }
       .post-stream[data-layout] {
-        row-gap: 3rem;
+        row-gap: 2.65rem;
       }
       .post-engagement {
-        border-radius: 0;
+        height: 2.35rem;
+        border-color: var(--line);
+        border-radius: 0 0 .65rem .65rem;
+      }
+      .post-engagement .post-vote,
+      .post-engagement .post-comments,
+      .post-engagement .post-views {
+        padding: .3rem .5rem;
+      }
+      .post-engagement svg {
+        flex-basis: 1rem;
+        width: 1rem;
+        height: 1rem;
+      }
+      .post-engagement .post-vote-count,
+      .post-engagement .post-comment-count,
+      .post-engagement .post-view-count,
+      .post-engagement .post-comments,
+      .post-engagement .post-views {
+        border-color: var(--line);
       }
       .post-card .card-footer > .post-engagement {
         position: absolute;
         z-index: 1;
-        inset-inline-end: clamp(1rem, 2vw, 1.5rem);
+        inset-inline-end: clamp(1.6rem, 3vw, 2.25rem);
         inset-block-end: 0;
         margin: 0;
         transform: translateY(calc(100% - 1px));
+      }
+      .post-card:has(.post-vote:hover:not(:disabled)),
+      .post-card:has(.post-vote:focus-visible) {
+        border-color: var(--line);
+      }
+      .unread-card:has(.post-vote:hover:not(:disabled)),
+      .unread-card:has(.post-vote:focus-visible) {
+        border-inline-start-color: var(--accent);
       }
       .post-vote:hover:not(:disabled),
       .post-vote:focus-visible {
@@ -73,7 +100,7 @@ function installEngagementLayout(document) {
         padding-block: .25rem .5rem;
       }
       @media (max-width: 520px) {
-        .post-stream[data-layout] { row-gap: 3rem; }
+        .post-stream[data-layout] { row-gap: 2.65rem; }
         .post-card .post-engagement { max-width: 100%; }
       }
     `;
