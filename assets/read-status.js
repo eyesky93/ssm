@@ -332,17 +332,16 @@ function installEngagementLayout(document) {
         box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
       }
 
-      /* The selected upvote stays visually below the post: its side/bottom
-         accent and foreground persist, while the post's bottom-frame segment
-         remains above it. Hover/focus alone raises the tab and paints its top
-         accent, without changing any geometry. */
+      /* A selected upvote sits above the post boundary. Its resting selected
+         state uses --accent; only hovering/focusing the upvote itself strengthens
+         it to --accent-strong. No other engagement hover changes the selected tab. */
       .post-engagement .post-vote[aria-pressed="true"] {
-        z-index: 1;
-        color: var(--accent-strong);
-        border-block-end-color: var(--accent-strong);
-        border-inline-start-color: var(--accent-strong);
-        border-inline-end-color: var(--accent-strong);
-        box-shadow: none;
+        z-index: 7;
+        color: var(--accent);
+        border-block-end-color: var(--accent);
+        border-inline-start-color: var(--accent);
+        border-inline-end-color: var(--accent);
+        box-shadow: inset 0 1px 0 var(--accent);
         outline: none;
       }
       .post-engagement .post-vote:hover:not(:disabled),
@@ -354,12 +353,22 @@ function installEngagementLayout(document) {
         box-shadow: inset 0 1px 0 var(--accent-strong);
         outline: none;
       }
-      .post-engagement .post-vote:hover:not(:disabled) svg,
-      .post-engagement .post-vote:focus-visible svg,
-      .post-engagement .post-vote[aria-pressed="true"] svg {
+      .post-engagement .post-vote[aria-pressed="true"]:hover:not(:disabled),
+      .post-engagement .post-vote[aria-pressed="true"]:focus-visible {
         color: var(--accent-strong);
       }
+      .post-engagement .post-vote:hover:not(:disabled) svg,
+      .post-engagement .post-vote:focus-visible svg {
+        color: var(--accent-strong);
+      }
+      .post-engagement .post-vote[aria-pressed="true"] svg,
       .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
+        color: var(--accent);
+      }
+      .post-engagement .post-vote[aria-pressed="true"]:hover:not(:disabled) svg,
+      .post-engagement .post-vote[aria-pressed="true"]:focus-visible svg,
+      .post-engagement .post-vote[aria-pressed="true"]:hover:not(:disabled) .post-vote-count,
+      .post-engagement .post-vote[aria-pressed="true"]:focus-visible .post-vote-count {
         color: var(--accent-strong);
       }
 
