@@ -333,6 +333,9 @@ export function initializePostBrowser(document, window) {
     } else selected.add(tag);
     ({ selected, excluded } = normalize(selected, excluded));
     update(chip);
+    // Pointer/touch selection should not leave the hide-X exposed through focus.
+    // Keyboard activation keeps focus so the hide control remains accessible.
+    if (event.detail > 0) queueMicrotask(() => chip.blur?.());
   }));
   chips.forEach((chip) => chip.addEventListener("keydown", (event) => {
     if (event.defaultPrevented || event.key !== " " || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
