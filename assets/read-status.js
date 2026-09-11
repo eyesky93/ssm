@@ -103,6 +103,32 @@ function installEngagementLayout(document) {
       .card-links {
         align-items: center;
       }
+
+      /* Compact mode used to force card-links onto a second flex row. Once the
+         engagement strip is detached, use the same one-row footer geometry as
+         the other layouts so the date and Read post share the same baseline. */
+      .post-stream[data-layout="compact"] .card-footer {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        flex-wrap: initial;
+        justify-content: normal;
+        align-items: baseline;
+        gap: .5rem 1rem;
+      }
+      .post-stream[data-layout="compact"] .card-footer > time {
+        flex: none;
+        grid-column: 1;
+        grid-row: 1;
+        align-self: baseline;
+      }
+      .post-stream[data-layout="compact"] .card-footer > .card-links {
+        flex-basis: auto;
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        align-self: baseline;
+      }
+
       .read-link {
         display: inline-flex;
         align-items: center;
