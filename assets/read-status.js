@@ -106,7 +106,9 @@ function installEngagementLayout(document) {
 
       /* Compact mode used to force card-links onto a second flex row. Once the
          engagement strip is detached, use the same one-row footer geometry as
-         the other layouts so the date and Read post share the same baseline. */
+         the other layouts. Its first flex item is the icon-only checkbox, which
+         gives the flex container a synthetic baseline below the text baseline;
+         compensate optically so the date and Read post sit at the same height. */
       .post-stream[data-layout="compact"] .card-footer {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
@@ -127,6 +129,7 @@ function installEngagementLayout(document) {
         grid-row: 1;
         justify-self: end;
         align-self: baseline;
+        transform: translateY(-.45rem);
       }
 
       .read-link {
