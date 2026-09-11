@@ -63,11 +63,17 @@ function installEngagementLayout(document) {
         box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
       }
 
-      /* Read cards keep a neutral frame. Hovering an unread card uses the
-         stronger accent for the frame; a pinned+unread ribbon uses it too. */
+      /* Pinned read and unread cards both strengthen their state color on hover.
+         The read state uses a darker neutral grey; the unread state uses the
+         strong accent. The frame and ribbon use the same hover color. */
       .post-card:hover {
         --post-frame-color: var(--line);
         border-color: var(--line) !important;
+      }
+      .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover {
+        --post-frame-color: color-mix(in srgb, var(--line-dark) 72%, #000);
+        border-color: color-mix(in srgb, var(--line-dark) 72%, #000) !important;
+        box-shadow: -.32rem 0 0 color-mix(in srgb, var(--line-dark) 72%, #000), 0 1px 0 rgba(0, 0, 0, 0.03);
       }
       .unread-card:hover {
         --post-frame-color: var(--accent-strong);
