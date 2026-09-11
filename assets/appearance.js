@@ -98,15 +98,5 @@
       apply(mode);
     },
   };
-
-  if (typeof document.createElement === "function" && document.head?.append) {
-    const selectedTagHoverStyle = document.createElement("style");
-    selectedTagHoverStyle.textContent = `
-      :root[data-theme="light"] .tag-option:not(.is-excluded):has(> .tag-chip[aria-pressed="true"]):hover { border-color: #000000; }
-      :root[data-theme="dark"] .tag-option:not(.is-excluded):has(> .tag-chip[aria-pressed="true"]):hover { border-color: #ffffff; }
-    `;
-    document.head.append(selectedTagHoverStyle);
-  }
-
   apply(theme);
 })();
