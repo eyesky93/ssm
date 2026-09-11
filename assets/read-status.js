@@ -72,22 +72,22 @@ function installEngagementLayout(document) {
       }
 
       /* Read posts use a grey frame on hover. Pinned read posts strengthen that
-         grey further so their frame matches the darker ribbon. Unread posts use
-         the strong accent, with pinned unread ribbons matching it on hover. */
-      .post-card:not(.unread-card):hover {
+         grey further so their frame matches the darker ribbon. Hovering the
+         detached engagement strip is explicitly excluded from card hover. */
+      .post-card:not(.unread-card):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
         --post-frame-color: var(--line-dark);
         border-color: var(--line-dark) !important;
       }
-      .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover {
+      .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
         --post-frame-color: color-mix(in srgb, var(--line-dark) 72%, #000);
         border-color: color-mix(in srgb, var(--line-dark) 72%, #000) !important;
         box-shadow: -.32rem 0 0 color-mix(in srgb, var(--line-dark) 72%, #000), 0 1px 0 rgba(0, 0, 0, 0.03);
       }
-      .unread-card:hover {
+      .unread-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
         --post-frame-color: var(--accent-strong);
         border-color: var(--accent-strong) !important;
       }
-      .unread-card:has([data-pin-toggle][aria-pressed="true"]):hover {
+      .unread-card:has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
         box-shadow: -.32rem 0 0 var(--accent-strong), var(--shadow);
       }
       .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card {
@@ -316,18 +316,19 @@ function installEngagementLayout(document) {
 
       /* Hovering/focusing the detached stats control must not count as hovering
          the post itself. Restore the post frame and any pin ribbon to their
-         resting colors while the engagement strip is active. */
-      .post-card:has(> .post-engagement:hover),
-      .post-card:has(> .post-engagement:focus-within) {
+         resting colors while the engagement strip is active. Descendant :has()
+         is used deliberately so this remains correct even if the strip is wrapped. */
+      .post-card:has(.post-engagement:hover),
+      .post-card:has(.post-engagement:focus-within) {
         --post-frame-color: var(--line);
         border-color: var(--line) !important;
       }
-      .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:hover),
-      .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
+      .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:hover),
+      .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:focus-within) {
         box-shadow: -.32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
       }
-      .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:hover),
-      .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
+      .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:hover),
+      .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:focus-within) {
         box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
       }
 
