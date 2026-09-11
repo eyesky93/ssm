@@ -46,14 +46,16 @@ function installEngagementLayout(document) {
         --post-card-padding-inline: clamp(1rem, 2vw, 1.5rem);
       }
 
-      /* Read state owns the ribbon. Use a solid, horizontally shifted shadow
-         of the card itself so the ribbon follows the exact rounded card edge
-         and continues underneath it. This fills the little corner crescent
-         without changing the card's border width, dimensions, or text position. */
+      /* Pin state owns the outside ribbon without changing card geometry.
+         Pinned+read uses the neutral ribbon, pinned+unread uses the accent
+         ribbon, and unpinned cards have no ribbon. */
       .unread-card {
         --post-frame-color: var(--line);
         border-inline-start: 1px solid var(--line);
         background: var(--surface-translucent);
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
+      }
+      .post-card:has([data-pin-toggle][aria-pressed="true"]) {
         box-shadow: -.32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
       }
       .unread-card:has([data-pin-toggle][aria-pressed="true"]) {
@@ -61,10 +63,15 @@ function installEngagementLayout(document) {
         box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
       }
 
-      /* Card hover never changes the frame or the outside read-state ribbon. */
+      /* Read cards keep a neutral frame. Hovering an unread card restores the
+         accent frame without changing dimensions or the outside pin ribbon. */
       .post-card:hover {
         --post-frame-color: var(--line);
         border-color: var(--line) !important;
+      }
+      .unread-card:hover {
+        --post-frame-color: var(--accent-strong);
+        border-color: var(--accent-strong) !important;
       }
       .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card {
         --post-card-padding-inline: 1rem;
@@ -292,8 +299,8 @@ function installEngagementLayout(document) {
       }
 
       /* Hovering the detached stats control also leaves the card frame neutral.
-         The outside read-state ribbon is independent and therefore never shifts
-         or changes when the stats control is hovered or focused. */
+         The outside pin ribbon is independent and therefore never shifts or
+         changes when the stats control is hovered or focused. */
       .post-card:has(> .post-engagement:hover),
       .post-card:has(> .post-engagement:focus-within) {
         --post-frame-color: var(--line);
