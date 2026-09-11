@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-11T23:25:13.000Z",
+  "generatedAt": "2026-09-11T23:27:49.000Z",
   "site": {
     "url": "https://eyesky93.github.io/ssm/",
     "title": {
@@ -60,6 +60,15 @@
       }
     },
     {
+      "key": "physics:analytical-mechanics",
+      "parent": "physics",
+      "route": "physics/analytical-mechanics",
+      "labels": {
+        "en": "Analytical Mechanics",
+        "he": "מכניקה אנליטית"
+      }
+    },
+    {
       "key": "physics:conformal-field-theory",
       "parent": "physics",
       "route": "physics/conformal-field-theory",
@@ -98,6 +107,28 @@
           "title": "דוגמת מטאל",
           "summary": "פוסט לדוגמה תחת תת-התג מטאל של מוזיקה.",
           "url": "https://eyesky93.github.io/ssm/he/posts/metal-example/"
+        }
+      }
+    },
+    {
+      "id": "analytical-mechanics-example",
+      "slug": "analytical-mechanics-example",
+      "publishedAt": "2026-09-11T21:10:00.000Z",
+      "notify": true,
+      "notifyVersion": 1,
+      "tags": [
+        "physics:analytical-mechanics"
+      ],
+      "translations": {
+        "en": {
+          "title": "Analytical mechanics example",
+          "summary": "A sample physics post under the Analytical Mechanics subtag.",
+          "url": "https://eyesky93.github.io/ssm/en/posts/analytical-mechanics-example/"
+        },
+        "he": {
+          "title": "דוגמת מכניקה אנליטית",
+          "summary": "פוסט פיזיקה לדוגמה תחת תת-התג מכניקה אנליטית.",
+          "url": "https://eyesky93.github.io/ssm/he/posts/analytical-mechanics-example/"
         }
       }
     },
