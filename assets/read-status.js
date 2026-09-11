@@ -33,6 +33,13 @@ function detachCardEngagement(document) {
   }
 }
 
+function removeCardReadLinks(document) {
+  for (const card of document.querySelectorAll(".post-card")) {
+    const link = card.querySelector(".read-link");
+    if (link && typeof link.remove === "function") link.remove();
+  }
+}
+
 function installEngagementLayout(document) {
   if (!document.getElementById || !document.createElement || !document.head) return;
   if (!document.getElementById("ssm-engagement-layout")) {
@@ -95,8 +102,8 @@ function installEngagementLayout(document) {
         padding-block-end: 2.5rem;
       }
 
-      /* Date and reading actions share one baseline. Inside the action group,
-         the checkbox is optically centered with the visible Read post glyphs. */
+      /* Date and read checkbox share one baseline; the checkbox occupies the
+         bottom-right action slot by itself. */
       .card-footer {
         align-items: baseline;
       }
@@ -115,11 +122,8 @@ function installEngagementLayout(document) {
         align-items: center;
       }
 
-      /* Compact mode used to force card-links onto a second flex row. Once the
-         engagement strip is detached, use the same one-row footer geometry as
-         the other layouts. Its first flex item is the icon-only checkbox, which
-         gives the flex container a synthetic baseline below the text baseline;
-         compensate optically so the date and Read post sit at the same height. */
+      /* Compact mode uses the same one-row footer geometry as the other layouts,
+         with the checkbox alone at the bottom-right. */
       .post-stream[data-layout="compact"] .card-footer {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
@@ -140,17 +144,13 @@ function installEngagementLayout(document) {
         grid-row: 1;
         justify-self: end;
         align-self: baseline;
-        transform: translateY(-.45rem);
+        transform: none;
       }
 
-      .read-link {
-        display: inline-flex;
-        align-items: center;
-        min-block-size: 1.15rem;
-        line-height: 1.15rem;
-      }
-      .read-link > span[aria-hidden="true"] {
-        display: none;
+      /* The card title remains the navigation link; the redundant Read post
+         link is removed by JavaScript and hidden here to prevent any flash. */
+      .post-card .read-link {
+        display: none !important;
       }
 
       /* Read state is icon-only. The action text remains available through the
@@ -277,8 +277,8 @@ function installEngagementLayout(document) {
 
       /* The engagement control itself is forced LTR so icon/count order stays
          stable. Therefore use physical horizontal edges here: in English its
-         right edge follows the end of Read post; in RTL its left edge follows
-         the end of the Hebrew Read post text. */
+         right edge follows the checkbox; in RTL its left edge follows the
+         corresponding footer edge. */
       .post-card > .post-engagement {
         position: absolute;
         right: var(--post-card-padding-inline);
@@ -368,6 +368,7 @@ function installEngagementLayout(document) {
 
 export function initializeReadStatus(document, window) {
   detachCardEngagement(document);
+  removeCardReadLinks(document);
   installEngagementLayout(document);
   const cards = [...document.querySelectorAll(".post-card[data-post-id]")];
   const article = document.querySelector("[data-reader-article]");
