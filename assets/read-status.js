@@ -45,13 +45,17 @@ function installEngagementLayout(document) {
         --post-frame-color: var(--line);
         --post-card-padding-inline: clamp(1rem, 2vw, 1.5rem);
       }
+      /* Card hover no longer changes the frame. Preserve only the unread
+         start-edge marker, which is a state marker rather than hover feedback. */
       .post-card:hover {
-        --post-frame-color: var(--accent-strong);
-        border-color: var(--accent-strong);
+        --post-frame-color: var(--line);
+        border-color: var(--line) !important;
       }
       .unread-card:hover {
-        --post-frame-color: var(--accent-strong);
-        border-color: var(--accent-strong);
+        --post-frame-color: var(--line);
+        border-block-color: var(--line) !important;
+        border-inline-end-color: var(--line) !important;
+        border-inline-start-color: var(--accent) !important;
       }
       .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card {
         --post-card-padding-inline: 1rem;
@@ -66,9 +70,9 @@ function installEngagementLayout(document) {
         padding-block-end: 2.5rem;
       }
 
-      /* Date and reading actions share one baseline. The catalogue link no
-         longer carries a trailing arrow, so its text edge is also the stable
-         alignment edge for the hanging engagement tabs. */
+      /* Date and reading actions share one baseline. Inside the action group,
+         the icon-only checkbox and Read post use the same 1.15rem-high box and
+         are centered against each other. */
       .card-footer {
         align-items: baseline;
       }
@@ -84,10 +88,13 @@ function installEngagementLayout(document) {
         align-self: baseline;
       }
       .card-links {
-        align-items: baseline;
+        align-items: center;
       }
       .read-link {
-        display: inline;
+        display: inline-flex;
+        align-items: center;
+        min-block-size: 1.15rem;
+        line-height: 1.15rem;
       }
       .read-link > span[aria-hidden="true"] {
         display: none;
@@ -100,6 +107,7 @@ function installEngagementLayout(document) {
         position: relative;
         display: inline-grid;
         place-items: center;
+        align-self: center;
         inline-size: 1.15rem;
         block-size: 1.15rem;
         min-inline-size: 1.15rem;
@@ -233,8 +241,8 @@ function installEngagementLayout(document) {
         pointer-events: none;
       }
 
-      /* Hovering the detached stats control itself must not activate the post
-         frame; only hovering the card surface should do that. */
+      /* Hovering the detached stats control itself also leaves the post frame
+         neutral. The unread start-edge marker remains visible. */
       .post-card:has(> .post-engagement:hover),
       .post-card:has(> .post-engagement:focus-within) {
         --post-frame-color: var(--line);
