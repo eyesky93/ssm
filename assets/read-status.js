@@ -314,13 +314,21 @@ function installEngagementLayout(document) {
         pointer-events: none;
       }
 
-      /* Hovering the detached stats control also leaves the card frame neutral.
-         The outside pin ribbon is independent and therefore never shifts or
-         changes when the stats control is hovered or focused. */
+      /* Hovering/focusing the detached stats control must not count as hovering
+         the post itself. Restore the post frame and any pin ribbon to their
+         resting colors while the engagement strip is active. */
       .post-card:has(> .post-engagement:hover),
       .post-card:has(> .post-engagement:focus-within) {
         --post-frame-color: var(--line);
         border-color: var(--line) !important;
+      }
+      .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:hover),
+      .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
+        box-shadow: -.32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
+      }
+      .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:hover),
+      .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
+        box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
       }
 
       /* The selected upvote stays visually below the post: its side/bottom
