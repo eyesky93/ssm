@@ -90,6 +90,18 @@ function installEngagementLayout(document) {
       .unread-card:has([data-pin-toggle][aria-pressed="true"]):hover {
         box-shadow: -.32rem 0 0 var(--accent-strong), var(--shadow);
       }
+
+      /* An upvoted card rests on the normal accent. Hovering the post body
+         strengthens only its frame; the selected upvote tab stays on --accent. */
+      .post-card:has(> .post-engagement .post-vote[aria-pressed="true"]) {
+        --post-frame-color: var(--accent);
+        border-color: var(--accent) !important;
+      }
+      .post-card:has(> .post-engagement .post-vote[aria-pressed="true"]):hover {
+        --post-frame-color: var(--accent-strong);
+        border-color: var(--accent-strong) !important;
+      }
+
       .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card {
         --post-card-padding-inline: 1rem;
       }
@@ -314,25 +326,29 @@ function installEngagementLayout(document) {
         pointer-events: none;
       }
 
-      /* Hovering the detached stats control also leaves the card frame neutral.
-         The outside pin ribbon is independent and therefore never shifts or
-         changes when the stats control is hovered or focused. */
+      /* Hovering the detached stats control does not count as hovering the post
+         frame. Neutral cards stay neutral; upvoted cards keep their normal
+         --accent frame rather than switching to --accent-strong. */
       .post-card:has(> .post-engagement:hover),
       .post-card:has(> .post-engagement:focus-within) {
         --post-frame-color: var(--line);
         border-color: var(--line) !important;
       }
+      .post-card:has(> .post-engagement .post-vote[aria-pressed="true"]):has(> .post-engagement:hover),
+      .post-card:has(> .post-engagement .post-vote[aria-pressed="true"]):has(> .post-engagement:focus-within) {
+        --post-frame-color: var(--accent);
+        border-color: var(--accent) !important;
+      }
 
-      /* The selected upvote stays visually below the post: its side/bottom
-         accent and foreground persist, while the post's bottom-frame segment
-         remains above it. Hover/focus alone raises the tab and paints its top
-         accent, without changing any geometry. */
+      /* The selected upvote stays visually below the post and remains on the
+         normal accent in every selected state. Only an unselected tab uses the
+         stronger hover/focus accent. */
       .post-engagement .post-vote[aria-pressed="true"] {
         z-index: 1;
-        color: var(--accent-strong);
-        border-block-end-color: var(--accent-strong);
-        border-inline-start-color: var(--accent-strong);
-        border-inline-end-color: var(--accent-strong);
+        color: var(--accent);
+        border-block-end-color: var(--accent);
+        border-inline-start-color: var(--accent);
+        border-inline-end-color: var(--accent);
         box-shadow: none;
         outline: none;
       }
@@ -345,13 +361,22 @@ function installEngagementLayout(document) {
         box-shadow: inset 0 1px 0 var(--accent-strong);
         outline: none;
       }
+      .post-engagement .post-vote[aria-pressed="true"]:hover:not(:disabled),
+      .post-engagement .post-vote[aria-pressed="true"]:focus-visible {
+        border-block-end-color: var(--accent);
+        border-inline-start-color: var(--accent);
+        border-inline-end-color: var(--accent);
+        box-shadow: inset 0 1px 0 var(--accent);
+      }
       .post-engagement .post-vote:hover:not(:disabled) svg,
-      .post-engagement .post-vote:focus-visible svg,
-      .post-engagement .post-vote[aria-pressed="true"] svg {
+      .post-engagement .post-vote:focus-visible svg {
         color: var(--accent-strong);
       }
+      .post-engagement .post-vote[aria-pressed="true"] svg,
+      .post-engagement .post-vote[aria-pressed="true"]:hover:not(:disabled) svg,
+      .post-engagement .post-vote[aria-pressed="true"]:focus-visible svg,
       .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
-        color: var(--accent-strong);
+        color: var(--accent);
       }
 
       .article-engagement-dock {
