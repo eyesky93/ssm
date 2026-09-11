@@ -121,6 +121,13 @@
         color: var(--line-dark);
         border-color: var(--line-dark);
       }
+      :root .post-engagement .post-vote[aria-pressed="true"] svg,
+      :root .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
+        color: var(--accent-strong);
+      }
+      :root .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
+        border-inline-start-color: var(--accent);
+      }
       :root .tag-descendant-list > .tag-subgroup {
         display: contents;
       }
