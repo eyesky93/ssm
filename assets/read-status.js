@@ -60,10 +60,10 @@ function installEngagementLayout(document) {
         content: "";
         position: absolute;
         z-index: 2;
-        left: -.29rem;
-        inset-block: .18rem;
-        width: .34rem;
-        border-radius: 999px;
+        left: -.24rem;
+        inset-block: -1px;
+        width: .30rem;
+        border-radius: .75rem 0 0 .75rem;
         background: transparent;
         pointer-events: none;
       }
