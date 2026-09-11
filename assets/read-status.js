@@ -71,8 +71,7 @@ function installEngagementLayout(document) {
       }
 
       /* Date and reading actions share one baseline. Inside the action group,
-         the icon-only checkbox and Read post use the same 1.15rem-high box and
-         are centered against each other. */
+         the checkbox is optically centered with the visible Read post glyphs. */
       .card-footer {
         align-items: baseline;
       }
@@ -115,6 +114,7 @@ function installEngagementLayout(document) {
         font-size: 0;
         line-height: 0;
         text-decoration: none;
+        transform: translateY(.18rem);
       }
       .read-toggle::before {
         content: "";
