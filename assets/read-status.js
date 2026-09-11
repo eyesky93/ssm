@@ -46,36 +46,19 @@ function installEngagementLayout(document) {
         --post-card-padding-inline: clamp(1rem, 2vw, 1.5rem);
       }
 
-      /* Read state owns the ribbon. The card itself always keeps the ordinary
-         1px frame, so read/unread never changes card width or text position.
-         The ribbon visually hugs the rounded left edge while living outside
-         the box: neutral for unread, accent for pinned+unread, absent when read. */
+      /* Read state owns the ribbon. Use a solid, horizontally shifted shadow
+         of the card itself so the ribbon follows the exact rounded card edge
+         and continues underneath it. This fills the little corner crescent
+         without changing the card's border width, dimensions, or text position. */
       .unread-card {
         --post-frame-color: var(--line);
         border-inline-start: 1px solid var(--line);
         background: var(--surface-translucent);
-        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
-      }
-      .post-card::before {
-        content: "";
-        position: absolute;
-        z-index: 2;
-        left: -.24rem;
-        inset-block: -1px;
-        width: .30rem;
-        border-radius: .75rem 0 0 .75rem;
-        background: transparent;
-        pointer-events: none;
-      }
-      .unread-card::before {
-        background: var(--line-dark);
-      }
-      .unread-card:has([data-pin-toggle][aria-pressed="true"])::before {
-        background: var(--accent);
+        box-shadow: -.32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
       }
       .unread-card:has([data-pin-toggle][aria-pressed="true"]) {
         background: var(--unread-bg);
-        box-shadow: var(--shadow);
+        box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
       }
 
       /* Card hover never changes the frame or the outside read-state ribbon. */
