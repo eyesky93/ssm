@@ -192,10 +192,15 @@ function installEngagementLayout(document) {
       }
       .read-toggle[aria-checked="true"]::before {
         content: "✓";
-        border-color: var(--accent-strong);
+        color: var(--line-dark);
+        border-color: var(--line-dark);
       }
       .read-toggle:is(:hover, :focus-visible)::before {
         border-color: var(--accent-strong);
+      }
+      .read-toggle[aria-checked="true"]:is(:hover, :focus-visible)::before {
+        color: var(--line-dark);
+        border-color: var(--line-dark);
       }
 
       .post-engagement {
