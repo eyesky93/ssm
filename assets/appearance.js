@@ -121,6 +121,9 @@
         color: var(--line-dark);
         border-color: var(--line-dark);
       }
+      :root .post-engagement .post-vote[aria-pressed="true"] {
+        background: var(--soft-accent);
+      }
       :root .post-engagement .post-vote[aria-pressed="true"] svg,
       :root .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
         color: var(--accent-strong);
