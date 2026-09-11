@@ -46,10 +46,10 @@ function installEngagementLayout(document) {
         --post-card-padding-inline: clamp(1rem, 2vw, 1.5rem);
       }
 
-      /* Read state owns the ribbon. It is drawn completely outside the card,
-         so toggling read/unread never changes border width, card size, or text
-         position. Unpinned unread posts use a neutral ribbon; pinned unread
-         posts use the accent ribbon. Read posts have no ribbon. */
+      /* Read state owns the ribbon. The card itself always keeps the ordinary
+         1px frame, so read/unread never changes card width or text position.
+         The ribbon visually hugs the rounded left edge while living outside
+         the box: neutral for unread, accent for pinned+unread, absent when read. */
       .unread-card {
         --post-frame-color: var(--line);
         border-inline-start: 1px solid var(--line);
@@ -60,10 +60,10 @@ function installEngagementLayout(document) {
         content: "";
         position: absolute;
         z-index: 2;
-        left: -.32rem;
-        inset-block: .4rem;
-        width: .32rem;
-        border-radius: .32rem 0 0 .32rem;
+        left: -.24rem;
+        inset-block: -1px;
+        width: .30rem;
+        border-radius: .75rem 0 0 .75rem;
         background: transparent;
         pointer-events: none;
       }
