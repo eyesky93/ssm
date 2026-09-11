@@ -70,8 +70,8 @@ function installEngagementLayout(document) {
         border-color: var(--line) !important;
       }
       .unread-card:hover {
-        --post-frame-color: var(--accent-strong);
-        border-color: var(--accent-strong) !important;
+        --post-frame-color: var(--accent);
+        border-color: var(--accent) !important;
       }
       .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card {
         --post-card-padding-inline: 1rem;
