@@ -323,13 +323,22 @@ function installEngagementLayout(document) {
         border-color: var(--line) !important;
       }
 
-      /* Highlighting changes only paint, never geometry. The upvote keeps the
-         same fixed segment width, grid tracks, padding and border widths. */
-      .post-engagement .post-vote:hover:not(:disabled),
-      .post-engagement .post-vote:focus-visible,
+      /* The selected upvote stays visually below the post: its side/bottom
+         accent and foreground persist, while the post's bottom-frame segment
+         remains above it. Hover/focus alone raises the tab and paints its top
+         accent, without changing any geometry. */
       .post-engagement .post-vote[aria-pressed="true"] {
+        z-index: 1;
+        color: var(--accent-strong);
+        border-block-end-color: var(--accent-strong);
+        border-inline-start-color: var(--accent-strong);
+        border-inline-end-color: var(--accent-strong);
+        box-shadow: none;
+        outline: none;
+      }
+      .post-engagement .post-vote:hover:not(:disabled),
+      .post-engagement .post-vote:focus-visible {
         z-index: 7;
-        color: var(--ink);
         border-block-end-color: var(--accent-strong);
         border-inline-start-color: var(--accent-strong);
         border-inline-end-color: var(--accent-strong);
@@ -341,7 +350,6 @@ function installEngagementLayout(document) {
       .post-engagement .post-vote[aria-pressed="true"] svg {
         color: var(--accent-strong);
       }
-      .post-engagement .post-vote[aria-pressed="true"],
       .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
         color: var(--accent-strong);
       }
