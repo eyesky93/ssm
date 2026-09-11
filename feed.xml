@@ -7,6 +7,14 @@
     <language>en-GB</language>
     <atom:link href="https://eyesky93.github.io/ssm/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>Metal example</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/metal-example/</link>
+      <guid isPermaLink="false">urn:ssm:metal-example</guid>
+      <pubDate>Fri, 11 Sep 2026 22:00:00 GMT</pubDate>
+      <description>A simple example post filed under the Metal subtag of Music.</description>
+      <category>Music / Metal</category>
+    </item>
+    <item>
       <title>A first look at conformal symmetry</title>
       <link>https://eyesky93.github.io/ssm/en/posts/conformal-symmetry-example/</link>
       <guid isPermaLink="false">urn:ssm:conformal-symmetry-example</guid>

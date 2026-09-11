@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-11T23:19:37.000Z",
+  "generatedAt": "2026-09-11T23:25:13.000Z",
   "site": {
     "url": "https://eyesky93.github.io/ssm/",
     "title": {
@@ -51,6 +51,15 @@
       }
     },
     {
+      "key": "music:metal",
+      "parent": "music",
+      "route": "music/metal",
+      "labels": {
+        "en": "Metal",
+        "he": "מטאל"
+      }
+    },
+    {
       "key": "physics:conformal-field-theory",
       "parent": "physics",
       "route": "physics/conformal-field-theory",
@@ -70,6 +79,28 @@
     }
   ],
   "posts": [
+    {
+      "id": "metal-example",
+      "slug": "metal-example",
+      "publishedAt": "2026-09-11T22:00:00.000Z",
+      "notify": true,
+      "notifyVersion": 1,
+      "tags": [
+        "music:metal"
+      ],
+      "translations": {
+        "en": {
+          "title": "Metal example",
+          "summary": "A simple example post filed under the Metal subtag of Music.",
+          "url": "https://eyesky93.github.io/ssm/en/posts/metal-example/"
+        },
+        "he": {
+          "title": "דוגמת מטאל",
+          "summary": "פוסט לדוגמה תחת תת-התג מטאל של מוזיקה.",
+          "url": "https://eyesky93.github.io/ssm/he/posts/metal-example/"
+        }
+      }
+    },
     {
       "id": "conformal-symmetry-example",
       "slug": "conformal-symmetry-example",

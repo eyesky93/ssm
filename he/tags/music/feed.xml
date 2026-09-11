@@ -7,6 +7,14 @@
     <language>he-IL</language>
     <atom:link href="https://eyesky93.github.io/ssm/he/tags/music/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>דוגמת מטאל</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/metal-example/</link>
+      <guid isPermaLink="false">urn:ssm:metal-example:he</guid>
+      <pubDate>Fri, 11 Sep 2026 22:00:00 GMT</pubDate>
+      <description>פוסט לדוגמה תחת תת-התג מטאל של מוזיקה.</description>
+      <category>מוזיקה / מטאל</category>
+    </item>
+    <item>
       <title>מקום לרעיונות שמתחברים</title>
       <link>https://eyesky93.github.io/ssm/he/posts/welcome/</link>
       <guid isPermaLink="false">urn:ssm:welcome:he</guid>

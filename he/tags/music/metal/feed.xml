@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SSM — מוזיקה / מטאל</title>
+    <link>https://eyesky93.github.io/ssm/he/tags/music/metal/</link>
+    <description>פוסטים עם התגית: מוזיקה / מטאל</description>
+    <language>he-IL</language>
+    <atom:link href="https://eyesky93.github.io/ssm/he/tags/music/metal/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>דוגמת מטאל</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/metal-example/</link>
+      <guid isPermaLink="false">urn:ssm:metal-example:he</guid>
+      <pubDate>Fri, 11 Sep 2026 22:00:00 GMT</pubDate>
+      <description>פוסט לדוגמה תחת תת-התג מטאל של מוזיקה.</description>
+      <category>מוזיקה / מטאל</category>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SSM — Music / Metal</title>
+    <link>https://eyesky93.github.io/ssm/en/tags/music/metal/</link>
+    <description>Posts tagged: Music / Metal</description>
+    <language>en-GB</language>
+    <atom:link href="https://eyesky93.github.io/ssm/en/tags/music/metal/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Metal example</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/metal-example/</link>
+      <guid isPermaLink="false">urn:ssm:metal-example:en</guid>
+      <pubDate>Fri, 11 Sep 2026 22:00:00 GMT</pubDate>
+      <description>A simple example post filed under the Metal subtag of Music.</description>
+      <category>Music / Metal</category>
+    </item>
+  </channel>
+</rss>
