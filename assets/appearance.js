@@ -135,8 +135,17 @@
       :root .tag-descendant-list:not(:has(> .tag-subgroup:not([hidden]))) {
         display: none;
       }
+      :root[dir="rtl"] .tag-list {
+        direction: rtl;
+      }
     `;
     document.head.append(tagHoverStyle);
+  }
+
+  function compareTagOptions(left, right) {
+    const a = left.dataset.tagOption ?? "";
+    const b = right.dataset.tagOption ?? "";
+    return a < b ? -1 : a > b ? 1 : 0;
   }
 
   function flattenTagNavigation() {
@@ -148,14 +157,27 @@
       const descendants = groups.filter((group) => group.dataset.tagParent !== "");
       if (!main || !descendants.length) continue;
 
+      // Keep one language-independent logical order. RTL then mirrors the LTR row
+      // instead of re-sorting the same tags by their translated labels.
+      const mainOptions = [...main.querySelectorAll("[data-tag-option]")].sort(compareTagOptions);
+      main.append(...mainOptions);
+      for (const group of descendants) {
+        const options = [...group.querySelectorAll("[data-tag-option]")].sort(compareTagOptions);
+        group.append(...options);
+      }
+
       const rootOrder = new Map(
-        [...main.querySelectorAll("[data-tag-option]")].map((option, index) => [option.dataset.tagOption, index]),
+        mainOptions.map((option, index) => [option.dataset.tagOption, index]),
       );
       descendants.sort((left, right) => {
-        const leftRoot = left.dataset.tagParent.split(":", 1)[0];
-        const rightRoot = right.dataset.tagParent.split(":", 1)[0];
-        return (rootOrder.get(leftRoot) ?? Number.MAX_SAFE_INTEGER)
+        const leftParent = left.dataset.tagParent;
+        const rightParent = right.dataset.tagParent;
+        const leftRoot = leftParent.split(":", 1)[0];
+        const rightRoot = rightParent.split(":", 1)[0];
+        const rootDifference = (rootOrder.get(leftRoot) ?? Number.MAX_SAFE_INTEGER)
           - (rootOrder.get(rightRoot) ?? Number.MAX_SAFE_INTEGER);
+        if (rootDifference) return rootDifference;
+        return leftParent < rightParent ? -1 : leftParent > rightParent ? 1 : 0;
       });
 
       const row = document.createElement("div");
