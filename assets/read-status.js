@@ -343,7 +343,7 @@ function installEngagementLayout(document) {
       }
       .post-engagement .post-vote[aria-pressed="true"],
       .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
-        color: var(--ink);
+        color: var(--accent-strong);
       }
 
       .article-engagement-dock {
