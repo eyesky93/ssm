@@ -46,32 +46,30 @@ function installEngagementLayout(document) {
         --post-card-padding-inline: clamp(1rem, 2vw, 1.5rem);
       }
 
-      /* Unread state alone no longer colors a card. The special left-edge,
-         unread background and shadow are reserved for posts that are both
-         pinned and unread. Marking a pinned post as read removes all of them. */
+      /* The left accent is a pin marker, not an unread marker. Unpinned posts
+         keep the ordinary 1px frame; pinned posts keep the accent left edge
+         whether read or unread. Read state only controls the unread fill/shadow. */
       .unread-card {
         --post-frame-color: var(--line);
-        border-inline-start: 1px solid var(--line);
         background: var(--surface-translucent);
         box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
       }
+      .post-card:has([data-pin-toggle][aria-pressed="true"]) {
+        border-left: .32rem solid var(--accent);
+      }
       .unread-card:has([data-pin-toggle][aria-pressed="true"]) {
-        border-inline-start: .32rem solid var(--accent);
         background: var(--unread-bg);
         box-shadow: var(--shadow);
       }
 
-      /* Card hover never changes the frame. Preserve the accent start edge
-         only for a post that is simultaneously pinned and unread. */
+      /* Card hover never changes the frame. A pinned post keeps its physical
+         left accent edge while all other frame edges remain neutral. */
       .post-card:hover {
         --post-frame-color: var(--line);
         border-color: var(--line) !important;
       }
-      .unread-card:has([data-pin-toggle][aria-pressed="true"]):hover {
-        --post-frame-color: var(--line);
-        border-block-color: var(--line) !important;
-        border-inline-end-color: var(--line) !important;
-        border-inline-start-color: var(--accent) !important;
+      .post-card:has([data-pin-toggle][aria-pressed="true"]):hover {
+        border-left-color: var(--accent) !important;
       }
       .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card {
         --post-card-padding-inline: 1rem;
@@ -257,23 +255,21 @@ function installEngagementLayout(document) {
         pointer-events: none;
       }
 
-      /* Hovering the detached stats control itself also leaves the post frame
-         neutral. Only a pinned unread post keeps its special start edge. */
+      /* Hovering the detached stats control also leaves the post frame neutral.
+         The physical left accent is preserved only for pinned posts. */
       .post-card:has(> .post-engagement:hover),
       .post-card:has(> .post-engagement:focus-within) {
         --post-frame-color: var(--line);
         border-block-color: var(--line) !important;
         border-inline-end-color: var(--line) !important;
       }
-      .post-card:not(.unread-card):has(> .post-engagement:hover),
-      .post-card:not(.unread-card):has(> .post-engagement:focus-within),
-      .unread-card:not(:has([data-pin-toggle][aria-pressed="true"])):has(> .post-engagement:hover),
-      .unread-card:not(:has([data-pin-toggle][aria-pressed="true"])):has(> .post-engagement:focus-within) {
-        border-inline-start-color: var(--line) !important;
+      .post-card:not(:has([data-pin-toggle][aria-pressed="true"])):has(> .post-engagement:hover),
+      .post-card:not(:has([data-pin-toggle][aria-pressed="true"])):has(> .post-engagement:focus-within) {
+        border-left-color: var(--line) !important;
       }
-      .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:hover),
-      .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
-        border-inline-start-color: var(--accent) !important;
+      .post-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:hover),
+      .post-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
+        border-left-color: var(--accent) !important;
       }
 
       /* Highlighting changes only paint, never geometry. The upvote keeps the
