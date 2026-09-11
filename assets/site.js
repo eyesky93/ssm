@@ -1,6 +1,15 @@
 const root = document.documentElement;
 const themePreference = window.matchMedia?.("(prefers-color-scheme: dark)");
 
+// Primary pointer clicks on tag filters should not focus the chip before its
+// click handler runs. This prevents the focus-visible hide-X state from
+// flashing briefly; keyboard focus and modified/new-tab gestures are untouched.
+document.addEventListener("mousedown", (event) => {
+  const chip = event.target?.closest?.("[data-tag-filter]");
+  if (!chip || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+});
+
 document.querySelectorAll("a[data-language]").forEach((link) => {
   link.addEventListener("click", () => {
     try {
