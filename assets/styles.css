@@ -490,7 +490,7 @@ h3 {
 .tag-chip:has(.tag-count) { padding-inline-end: 0.5rem; }
 .tag-option { --tag-count-size: 1.8rem; position: relative; display: inline-flex; align-items: center; max-width: 100%; border: 1px solid var(--line-dark); border-radius: 999px; background: var(--surface); }
 .tag-option:has(> .tag-chip.is-ancestor) { border-color: var(--accent-strong); }
-.tag-option:has(> .tag-chip[aria-pressed="true"]) { background: var(--soft-accent); border-color: var(--accent-strong); box-shadow: none; }
+.tag-option:has(> .tag-chip[aria-pressed="true"]) { background: var(--soft-accent); border-color: var(--accent); box-shadow: none; }
 .tag-option > .tag-chip, .tag-option > .tag-chip:is(:hover, :focus-visible) { min-width: 0; min-height: calc(2.75rem - 2px); border: 0; background: transparent; box-shadow: none; transform: none; }
 .tag-option > .tag-chip[aria-pressed="true"] { color: var(--accent-strong); }
 .tag-option.is-excluded { background: var(--code-bg); border-color: var(--line); box-shadow: none; }
