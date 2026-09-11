@@ -141,6 +141,9 @@
       :root[dir="rtl"] .tag-list {
         direction: rtl;
       }
+      :root[dir="rtl"] .post-engagement {
+        direction: rtl;
+      }
     `;
     document.head.append(tagHoverStyle);
   }
