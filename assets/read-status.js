@@ -46,30 +46,39 @@ function installEngagementLayout(document) {
         --post-card-padding-inline: clamp(1rem, 2vw, 1.5rem);
       }
 
-      /* The left accent is a pin marker, not an unread marker. Unpinned posts
-         keep the ordinary 1px frame; pinned posts keep the accent left edge
-         whether read or unread. Read state only controls the unread fill/shadow. */
+      /* Pin state must never change the card's box geometry. The ordinary card
+         keeps its 1px frame at all times; the pin marker is an independent
+         ribbon drawn just outside the physical left edge. Read state may change
+         the fill/shadow, but never the border width or content position. */
       .unread-card {
         --post-frame-color: var(--line);
+        border-inline-start: 1px solid var(--line);
         background: var(--surface-translucent);
         box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
       }
-      .post-card:has([data-pin-toggle][aria-pressed="true"]) {
-        border-left: .32rem solid var(--accent);
+      .post-card::before {
+        content: "";
+        position: absolute;
+        z-index: 2;
+        left: -.32rem;
+        inset-block: .4rem;
+        width: .32rem;
+        border-radius: .32rem 0 0 .32rem;
+        background: transparent;
+        pointer-events: none;
+      }
+      .post-card:has([data-pin-toggle][aria-pressed="true"])::before {
+        background: var(--accent);
       }
       .unread-card:has([data-pin-toggle][aria-pressed="true"]) {
         background: var(--unread-bg);
         box-shadow: var(--shadow);
       }
 
-      /* Card hover never changes the frame. A pinned post keeps its physical
-         left accent edge while all other frame edges remain neutral. */
+      /* Card hover never changes the frame or the outside pin ribbon. */
       .post-card:hover {
         --post-frame-color: var(--line);
         border-color: var(--line) !important;
-      }
-      .post-card:has([data-pin-toggle][aria-pressed="true"]):hover {
-        border-left-color: var(--accent) !important;
       }
       .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card {
         --post-card-padding-inline: 1rem;
@@ -294,21 +303,13 @@ function installEngagementLayout(document) {
         pointer-events: none;
       }
 
-      /* Hovering the detached stats control also leaves the post frame neutral.
-         The physical left accent is preserved only for pinned posts. */
+      /* Hovering the detached stats control also leaves the card frame neutral.
+         The outside pin ribbon is independent and therefore never shifts or
+         changes when the stats control is hovered or focused. */
       .post-card:has(> .post-engagement:hover),
       .post-card:has(> .post-engagement:focus-within) {
         --post-frame-color: var(--line);
-        border-block-color: var(--line) !important;
-        border-inline-end-color: var(--line) !important;
-      }
-      .post-card:not(:has([data-pin-toggle][aria-pressed="true"])):has(> .post-engagement:hover),
-      .post-card:not(:has([data-pin-toggle][aria-pressed="true"])):has(> .post-engagement:focus-within) {
-        border-left-color: var(--line) !important;
-      }
-      .post-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:hover),
-      .post-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
-        border-left-color: var(--accent) !important;
+        border-color: var(--line) !important;
       }
 
       /* Highlighting changes only paint, never geometry. The upvote keeps the
