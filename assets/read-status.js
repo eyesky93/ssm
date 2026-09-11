@@ -45,13 +45,29 @@ function installEngagementLayout(document) {
         --post-frame-color: var(--line);
         --post-card-padding-inline: clamp(1rem, 2vw, 1.5rem);
       }
-      /* Card hover no longer changes the frame. Preserve only the unread
-         start-edge marker, which is a state marker rather than hover feedback. */
+
+      /* Unread state alone no longer colors a card. The special left-edge,
+         unread background and shadow are reserved for posts that are both
+         pinned and unread. Marking a pinned post as read removes all of them. */
+      .unread-card {
+        --post-frame-color: var(--line);
+        border-inline-start: 1px solid var(--line);
+        background: var(--surface-translucent);
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
+      }
+      .unread-card:has([data-pin-toggle][aria-pressed="true"]) {
+        border-inline-start: .32rem solid var(--accent);
+        background: var(--unread-bg);
+        box-shadow: var(--shadow);
+      }
+
+      /* Card hover never changes the frame. Preserve the accent start edge
+         only for a post that is simultaneously pinned and unread. */
       .post-card:hover {
         --post-frame-color: var(--line);
         border-color: var(--line) !important;
       }
-      .unread-card:hover {
+      .unread-card:has([data-pin-toggle][aria-pressed="true"]):hover {
         --post-frame-color: var(--line);
         border-block-color: var(--line) !important;
         border-inline-end-color: var(--line) !important;
@@ -242,7 +258,7 @@ function installEngagementLayout(document) {
       }
 
       /* Hovering the detached stats control itself also leaves the post frame
-         neutral. The unread start-edge marker remains visible. */
+         neutral. Only a pinned unread post keeps its special start edge. */
       .post-card:has(> .post-engagement:hover),
       .post-card:has(> .post-engagement:focus-within) {
         --post-frame-color: var(--line);
@@ -250,11 +266,13 @@ function installEngagementLayout(document) {
         border-inline-end-color: var(--line) !important;
       }
       .post-card:not(.unread-card):has(> .post-engagement:hover),
-      .post-card:not(.unread-card):has(> .post-engagement:focus-within) {
+      .post-card:not(.unread-card):has(> .post-engagement:focus-within),
+      .unread-card:not(:has([data-pin-toggle][aria-pressed="true"])):has(> .post-engagement:hover),
+      .unread-card:not(:has([data-pin-toggle][aria-pressed="true"])):has(> .post-engagement:focus-within) {
         border-inline-start-color: var(--line) !important;
       }
-      .unread-card:has(> .post-engagement:hover),
-      .unread-card:has(> .post-engagement:focus-within) {
+      .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:hover),
+      .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
         border-inline-start-color: var(--accent) !important;
       }
 
