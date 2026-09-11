@@ -232,13 +232,23 @@ function installEngagementLayout(document) {
         white-space: nowrap;
         font-variant-numeric: tabular-nums;
       }
+
+      /* The engagement control itself is forced LTR so icon/count order stays
+         stable. Therefore use physical horizontal edges here: in English its
+         right edge follows the end of Read post; in RTL its left edge follows
+         the end of the Hebrew Read post text. */
       .post-card > .post-engagement {
         position: absolute;
-        inset-inline-end: var(--post-card-padding-inline);
+        right: var(--post-card-padding-inline);
+        left: auto;
         inset-block-start: 100%;
         inset-block-end: auto;
         margin: 0;
         transform: none;
+      }
+      [dir="rtl"] .post-card > .post-engagement {
+        left: var(--post-card-padding-inline);
+        right: auto;
       }
 
       /* The neutral stats tabs have no upper edge. Paint only the post's own
