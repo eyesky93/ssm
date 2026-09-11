@@ -114,9 +114,11 @@
         border-color: var(--accent);
       }
       :root .read-toggle[aria-checked="true"]::before {
+        color: var(--line);
         border-color: var(--line);
       }
       :root .read-toggle[aria-checked="true"]:is(:hover, :focus-visible)::before {
+        color: var(--line-dark);
         border-color: var(--line-dark);
       }
       :root .tag-descendant-list > .tag-subgroup {
