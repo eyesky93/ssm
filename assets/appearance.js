@@ -113,6 +113,12 @@
         background: var(--soft-accent);
         border-color: var(--accent);
       }
+      :root .read-toggle[aria-checked="true"]::before {
+        border-color: var(--line);
+      }
+      :root .read-toggle[aria-checked="true"]:is(:hover, :focus-visible)::before {
+        border-color: var(--line-dark);
+      }
     `;
     document.head.append(tagHoverStyle);
   }
