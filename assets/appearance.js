@@ -98,5 +98,24 @@
       apply(mode);
     },
   };
+
+  if (typeof document.createElement === "function" && document.head?.append) {
+    const tagHoverStyle = document.createElement("style");
+    tagHoverStyle.textContent = `
+      :root .tag-option:not(.is-excluded):not(:has(> .tag-chip[aria-pressed="true"])):hover {
+        border-color: var(--accent);
+      }
+      :root .tag-option:not(.is-excluded):has(> .tag-chip[aria-pressed="true"]) {
+        background: transparent;
+        border-color: var(--accent);
+      }
+      :root .tag-option:not(.is-excluded):has(> .tag-chip[aria-pressed="true"]):hover {
+        background: var(--soft-accent);
+        border-color: var(--accent);
+      }
+    `;
+    document.head.append(tagHoverStyle);
+  }
+
   apply(theme);
 })();
