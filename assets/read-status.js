@@ -49,6 +49,7 @@ function installEngagementLayout(document) {
       .post-card {
         position: relative;
         overflow: visible;
+        cursor: pointer;
         --post-frame-color: var(--line);
         --post-card-padding-inline: clamp(1rem, 2vw, 1.5rem);
       }
@@ -210,6 +211,7 @@ function installEngagementLayout(document) {
         border-radius: 0;
         overflow: visible;
         background: transparent;
+        cursor: default;
         font-size: .875rem;
         font-variant-numeric: tabular-nums;
       }
@@ -408,6 +410,16 @@ export function initializeReadStatus(document, window) {
       const persisted = store.set(card.dataset.postId, read);
       render();
       if (status) status.textContent = `${read ? status.dataset.read : status.dataset.unread}${persisted ? "" : ` ${status.dataset.temporary}`}`;
+    });
+
+    card.addEventListener("click", (event) => {
+      if (event.defaultPrevented || (typeof event.button === "number" && event.button !== 0)) return;
+      const target = event.target;
+      if (target?.closest?.("a, button, input, select, textarea, summary, [role=\"button\"], [data-post-engagement]")) return;
+      const selection = window.getSelection?.();
+      if (selection && !selection.isCollapsed && selection.toString()) return;
+      const link = card.querySelector("[data-reader-link]");
+      if (link?.href) window.location.assign(link.href);
     });
   }
   window.addEventListener("storage", (event) => {
