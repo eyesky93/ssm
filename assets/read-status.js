@@ -63,12 +63,12 @@ function installEngagementLayout(document) {
         box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
       }
 
-      /* Pinned read and unread cards both strengthen their state color on hover.
-         The read state uses a darker neutral grey; the unread state uses the
-         strong accent. The frame and ribbon use the same hover color. */
-      .post-card:hover {
-        --post-frame-color: var(--line);
-        border-color: var(--line) !important;
+      /* Read posts use a grey frame on hover. Pinned read posts strengthen that
+         grey further so their frame matches the darker ribbon. Unread posts use
+         the strong accent, with pinned unread ribbons matching it on hover. */
+      .post-card:not(.unread-card):hover {
+        --post-frame-color: var(--line-dark);
+        border-color: var(--line-dark) !important;
       }
       .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover {
         --post-frame-color: color-mix(in srgb, var(--line-dark) 72%, #000);
