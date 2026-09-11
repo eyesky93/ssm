@@ -63,15 +63,18 @@ function installEngagementLayout(document) {
         box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
       }
 
-      /* Read cards keep a neutral frame. Hovering an unread card restores the
-         accent frame without changing dimensions or the outside pin ribbon. */
+      /* Read cards keep a neutral frame. Hovering an unread card uses the
+         stronger accent for the frame; a pinned+unread ribbon uses it too. */
       .post-card:hover {
         --post-frame-color: var(--line);
         border-color: var(--line) !important;
       }
       .unread-card:hover {
-        --post-frame-color: var(--accent);
-        border-color: var(--accent) !important;
+        --post-frame-color: var(--accent-strong);
+        border-color: var(--accent-strong) !important;
+      }
+      .unread-card:has([data-pin-toggle][aria-pressed="true"]):hover {
+        box-shadow: -.32rem 0 0 var(--accent-strong), var(--shadow);
       }
       .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card {
         --post-card-padding-inline: 1rem;
