@@ -44,42 +44,21 @@ function installEngagementLayout(document) {
         overflow: visible;
         --post-frame-color: var(--line);
         --post-card-padding-inline: clamp(1rem, 2vw, 1.5rem);
-        --unread-ribbon-color: transparent;
       }
 
-      /* Read state owns the ribbon. Keep the card itself geometrically identical
-         in both states. The ribbon is an absolutely positioned strip with the
-         exact same block height as the card and a small horizontal overlap under
-         the rounded post edge, so it fills the corner crescent without adding
-         any vertical overflow or changing layout/scroll height. */
+      /* Read state owns the ribbon. Use a solid, horizontally shifted shadow
+         of the card itself so the ribbon follows the exact rounded card edge
+         and continues underneath it. This fills the little corner crescent
+         without changing the card's border width, dimensions, or text position. */
       .unread-card {
         --post-frame-color: var(--line);
-        --unread-ribbon-color: var(--line-dark);
         border-inline-start: 1px solid var(--line);
         background: var(--surface-translucent);
-        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
+        box-shadow: -.32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
       }
       .unread-card:has([data-pin-toggle][aria-pressed="true"]) {
-        --unread-ribbon-color: var(--accent);
         background: var(--unread-bg);
-        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
-      }
-      .post-card::before {
-        content: "";
-        position: absolute;
-        z-index: 0;
-        top: 0;
-        bottom: 0;
-        left: -.32rem;
-        width: .50rem;
-        box-sizing: border-box;
-        border-radius: .75rem 0 0 .75rem;
-        background: var(--unread-ribbon-color);
-        pointer-events: none;
-      }
-      .post-card > :not(.post-engagement) {
-        position: relative;
-        z-index: 1;
+        box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
       }
 
       /* Card hover never changes the frame or the outside read-state ribbon. */
