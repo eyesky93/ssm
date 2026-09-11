@@ -119,8 +119,51 @@
       :root .read-toggle[aria-checked="true"]:is(:hover, :focus-visible)::before {
         border-color: var(--line-dark);
       }
+      :root .tag-descendant-list > .tag-subgroup {
+        display: contents;
+      }
+      :root .tag-descendant-list > .tag-subgroup[hidden],
+      :root .tag-descendant-list:not(:has(> .tag-subgroup:not([hidden]))) {
+        display: none;
+      }
     `;
     document.head.append(tagHoverStyle);
+  }
+
+  function flattenTagNavigation() {
+    if (typeof document.querySelectorAll !== "function" || typeof document.createElement !== "function") return;
+    for (const navigation of document.querySelectorAll(".subject-nav")) {
+      if (navigation.querySelector?.(":scope > .tag-descendant-list")) continue;
+      const groups = [...(navigation.children ?? [])].filter((child) => typeof child.dataset?.tagParent === "string");
+      const main = groups.find((group) => group.dataset.tagParent === "");
+      const descendants = groups.filter((group) => group.dataset.tagParent !== "");
+      if (!main || !descendants.length) continue;
+
+      const rootOrder = new Map(
+        [...main.querySelectorAll("[data-tag-option]")].map((option, index) => [option.dataset.tagOption, index]),
+      );
+      descendants.sort((left, right) => {
+        const leftRoot = left.dataset.tagParent.split(":", 1)[0];
+        const rightRoot = right.dataset.tagParent.split(":", 1)[0];
+        return (rootOrder.get(leftRoot) ?? Number.MAX_SAFE_INTEGER)
+          - (rootOrder.get(rightRoot) ?? Number.MAX_SAFE_INTEGER);
+      });
+
+      const row = document.createElement("div");
+      row.className = "tag-list tag-descendant-list";
+      row.dataset.tagDescendantList = "";
+      for (const group of descendants) {
+        group.classList.add("tag-subgroup");
+        row.append(group);
+      }
+      navigation.append(row);
+    }
+  }
+
+  if (typeof document.addEventListener === "function" && document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", flattenTagNavigation, { once: true });
+  } else if (document.body) {
+    flattenTagNavigation();
   }
 
   apply(theme);
