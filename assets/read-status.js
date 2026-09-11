@@ -155,7 +155,9 @@ function installEngagementLayout(document) {
         transform: translateY(.18rem);
       }
       .read-toggle::before {
-        content: "";
+        /* Preserve the same text baseline with or without the visible checkmark,
+           so toggling read state cannot change the footer or card height. */
+        content: "\\200B";
         display: inline-grid;
         place-items: center;
         inline-size: .95rem;
