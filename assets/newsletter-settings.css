@@ -1,13 +1,241 @@
-.newsletter-settings{box-sizing:border-box;width:calc(100% - 32px);max-width:780px;margin:32px auto;padding:30px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink)}
-.newsletter-settings [hidden]{display:none!important}.settings-heading{border-bottom:1px solid var(--line);padding-bottom:16px}.settings-heading .wordmark{font-family:Georgia,'Times New Roman',serif}.settings-heading h1{font:500 clamp(28px,5vw,40px)/1.2 Georgia,'Times New Roman',serif;margin:24px 0 12px}.newsletter-settings p[data-settings-status]{color:var(--ink);line-height:1.6}.newsletter-settings p[data-settings-status]:empty{display:none}
-.newsletter-settings fieldset{border:0;border-bottom:1px solid var(--line);padding:22px 0;margin:0;min-width:0}.newsletter-settings legend{font-weight:700;padding:12px 0 0}.settings-choices{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px}.newsletter-settings .topic-option{position:relative;display:inline-flex;align-items:center;max-width:100%;cursor:pointer;border:1px solid var(--line-dark);border-radius:999px;background:var(--surface);color:var(--ink)}.newsletter-settings .topic-option input{position:absolute;width:1px;height:1px;clip:rect(0,0,0,0);overflow:hidden}.newsletter-settings .topic-option span{display:inline-block;padding:10px 15px;font-weight:600}.newsletter-settings .topic-option:has(input:checked){background:var(--soft-accent);border-color:var(--accent);color:var(--accent)}.newsletter-settings .topic-option:has(input:focus-visible){outline:2px solid var(--ink);outline-offset:3px}.newsletter-settings .topic-option:hover{border-color:var(--accent);color:var(--accent)}.newsletter-settings .topic-option:has(input:checked):hover{color:var(--accent-strong);border-color:var(--accent-strong)}
-.newsletter-settings button{border:1px solid var(--line-dark);border-radius:999px;background:var(--surface);color:var(--ink);padding:10px 16px;font-family:inherit;font-weight:600;font-size:15px;line-height:1.4;cursor:pointer}.newsletter-settings button:hover{color:var(--accent);border-color:var(--accent)}.newsletter-settings button:disabled{opacity:.55;cursor:wait}.newsletter-settings button.settings-primary{background:var(--button-fill);color:var(--on-button,#fff);border-color:var(--accent-strong)}.newsletter-settings .settings-actions{margin-top:24px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}.newsletter-settings input[type=email]{box-sizing:border-box;display:block;width:100%;max-width:440px;padding:12px;border:1px solid var(--line-dark);border-radius:8px;background:var(--paper);color:var(--ink);margin:8px 0 14px;font-size:16px}
-.settings-appearance{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:12px}.settings-theme-track{position:relative;display:flex;direction:ltr;gap:8px;border:1px solid var(--line-dark);border-radius:999px;padding:0}.settings-theme-track label{cursor:pointer;width:44px;height:44px;display:grid;place-items:center;border-radius:50%}.settings-theme-track input{position:absolute;width:1px;height:1px;clip:rect(0,0,0,0)}.settings-theme-track label:has(input:checked){background:var(--ink);color:var(--paper)}.settings-theme-track label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:3px}.settings-theme-track svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}.settings-color-menu{position:relative}.settings-color-menu summary{display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--line-dark);border-radius:50%;cursor:pointer;list-style:none}.settings-color-menu summary::-webkit-details-marker{display:none}.settings-color-menu summary svg{width:24px;height:24px;color:var(--accent)}.settings-color-panel{z-index:5;position:absolute;top:52px;inset-inline-start:0;display:flex;flex-direction:column;gap:10px;padding:12px;background:var(--surface);border:1px solid var(--line-dark);border-radius:12px}.settings-color-panel input[type=color]{width:48px;height:90px;padding:0;border:0;cursor:pointer;background:transparent}.settings-color-panel button{padding:8px;width:48px}.settings-color-panel svg{display:block;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8}
-@media(max-width:520px){.newsletter-settings{margin:16px auto;padding:20px}.settings-choices{gap:7px}.newsletter-settings .topic-option span{padding:9px 12px}.settings-heading h1{font-size:30px}} 
+.newsletter-settings {
+  box-sizing: border-box;
+  width: calc(100% - 32px);
+  max-width: 780px;
+  margin: 32px auto;
+  padding: 30px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.newsletter-settings [hidden] { display: none !important; }
+.settings-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 20px;
+}
+.settings-heading .wordmark { flex: 0 0 auto; font-family: Georgia, 'Times New Roman', serif; }
+.settings-heading h1 {
+  min-width: 0;
+  margin: 0;
+  text-align: end;
+  font: 500 clamp(18px, 4vw, 36px)/1.2 Georgia, 'Times New Roman', serif;
+}
+.newsletter-settings p[data-settings-status] { color: var(--ink); line-height: 1.6; }
+.newsletter-settings p[data-settings-status]:empty { display: none; }
+.newsletter-settings fieldset {
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  padding: 22px 0;
+  margin: 0;
+  min-width: 0;
+}
+.newsletter-settings legend { font-weight: 700; padding: 12px 0 0; }
+.settings-choices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+.settings-frequency-prefix { white-space: nowrap; color: var(--ink); }
+.settings-subject-tier { border-top: 1px solid var(--line); padding-top: 12px; }
+.newsletter-settings .topic-option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  cursor: pointer;
+  border: 1px solid var(--line-dark);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.newsletter-settings .topic-option input,
+.settings-theme-track input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  overflow: hidden;
+}
+.newsletter-settings .topic-option span { display: inline-block; padding: 10px 15px; font-weight: 600; }
+.newsletter-settings .topic-option:has(input:checked) {
+  background: var(--soft-accent);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.newsletter-settings .topic-option:has(input:focus-visible) { outline: 2px solid var(--ink); outline-offset: 3px; }
+.newsletter-settings .topic-option:hover { border-color: var(--accent); color: var(--accent); }
+.newsletter-settings .topic-option:has(input:checked):hover { color: var(--accent-strong); border-color: var(--accent-strong); }
+.newsletter-settings button {
+  border: 1px solid var(--line-dark);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 10px 16px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.newsletter-settings button:hover { color: var(--accent); border-color: var(--accent); }
+.newsletter-settings button:disabled { opacity: .55; cursor: wait; }
+/* Primary actions follow the website's neutral Subscribe button, not an email CTA. */
+.newsletter-settings button.settings-primary {
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  border-color: var(--inverse-bg);
+}
+.newsletter-settings button.settings-primary:is(:hover, :focus-visible) {
+  background: var(--accent-strong);
+  color: var(--paper);
+  border-color: var(--accent-strong);
+}
+.newsletter-settings .settings-actions { margin-top: 24px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.settings-actions .settings-unsubscribe { margin-inline-start: auto; }
+.newsletter-settings input[type=email] {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  max-width: 440px;
+  padding: 12px;
+  border: 1px solid var(--line-dark);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink);
+  margin: 8px 0 14px;
+  font-size: 16px;
+}
+.settings-appearance { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin-top: 12px; }
+/* Logical Auto / Sun / Moon order mirrors in RTL. */
+.settings-theme-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: 84px 44px 44px;
+  direction: inherit;
+  gap: 8px;
+  width: 188px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface);
+  isolation: isolate;
+  flex: 0 0 auto;
+}
+.settings-theme-track::after, .settings-color-group::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border: 1px solid var(--line-dark);
+  border-radius: inherit;
+  pointer-events: none;
+}
+.settings-theme-thumb {
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  width: 84px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--inverse-bg);
+  pointer-events: none;
+  transition: transform .18s ease, width .18s ease;
+}
+.settings-theme-track:has([value="light"]:checked) .settings-theme-thumb { width: 44px; transform: translateX(92px); }
+.settings-theme-track:has([value="dark"]:checked) .settings-theme-thumb { width: 44px; transform: translateX(144px); }
+[dir="rtl"] .settings-theme-track:has([value="light"]:checked) .settings-theme-thumb { transform: translateX(-92px); }
+[dir="rtl"] .settings-theme-track:has([value="dark"]:checked) .settings-theme-thumb { transform: translateX(-144px); }
+.settings-theme-track .settings-theme-choice {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--ink);
+  font-weight: 600;
+}
+.settings-theme-track .settings-theme-auto { width: 84px; border-radius: 999px; }
+.settings-theme-track .settings-theme-choice:has(input:checked) { color: var(--inverse-ink); cursor: default; }
+.settings-theme-track .settings-theme-choice:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 3px; }
+.settings-theme-track .settings-theme-choice:not(:has(input:checked)):hover { color: var(--accent); }
+.settings-theme-track svg { display: block; width: 20px; height: 20px; stroke: currentColor; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+/* Horizontal swatch/reset capsule, mirrored by the inherited direction. */
+.settings-color-group {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  direction: inherit;
+  align-items: center;
+  gap: 8px;
+  width: 96px;
+  height: 44px;
+  flex: 0 0 96px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface);
+  isolation: isolate;
+}
+.settings-color-group .accent-picker {
+  display: block;
+  position: relative;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-color: transparent;
+}
+.newsletter-settings button.settings-color-reset {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  padding: 0;
+  background: var(--surface);
+  color: var(--ink);
+  border-color: transparent;
+  border-radius: 50%;
+}
+.settings-color-reset svg { display: block; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.newsletter-settings button.settings-color-reset:is(:hover, :focus-visible) { z-index: 3; color: var(--accent); border-color: var(--accent); }
+.settings-color-group .accent-picker:focus-visible { z-index: 3; }
+.newsletter-settings .settings-confirm {
+  width: min(440px, calc(100vw - 40px));
+  box-sizing: border-box;
+  max-height: calc(100dvh - 40px);
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid var(--line-dark);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: inherit;
+}
+.settings-confirm::backdrop { background: rgb(0 0 0 / .5); }
+.settings-confirm h2 { margin: 0; font-size: 23px; line-height: 1.4; }
+.settings-confirm .settings-actions { justify-content: flex-end; }
+@media (prefers-reduced-motion: reduce) { .settings-theme-thumb { transition: none; } }
+@media (max-width: 520px) {
+  .newsletter-settings { margin: 16px auto; padding: 16px; }
+  .settings-heading { gap: 12px; }
+  .settings-choices { gap: 7px; }
+  .newsletter-settings .topic-option span { padding: 9px 12px; }
+  .settings-appearance { gap: 16px; }
+  .newsletter-settings .settings-actions { gap: 8px; }
+}
 
-/* Match the site's round reset control without hiding it inside the color menu. */
-.newsletter-settings button.settings-color-reset{display:grid;place-items:center;width:44px;height:44px;padding:10px;background:var(--surface);color:var(--ink);border:1px solid var(--line-dark);border-radius:50%}
-.newsletter-settings button.settings-color-reset:hover{color:var(--accent);border-color:var(--accent)}
-.settings-color-reset svg{display:block;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.settings-theme-track label:not(:has(input:checked)):hover{color:var(--accent)}
-.settings-appearance{gap:12px}
+.newsletter-settings.settings-unsubscribed { text-align: center; }
+.settings-unsubscribed h1 { margin: 24px 0 0; font: 500 clamp(24px, 5vw, 36px)/1.4 Georgia, 'Times New Roman', serif; }

@@ -2008,3 +2008,6 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 .subscribe-dialog .language-select-all:is(:hover,:focus-visible) { border-color: var(--accent-strong); }
 .subscribe-dialog .topic-option span { gap: 0; }
 .subscribe-dialog .topic-option span::before { content: none; display: none; }
+
+/* Keep the single Hebrew interval prefix level with the signup frequency pills. */
+.frequency-picker .language-options { align-items: center; }

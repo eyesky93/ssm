@@ -68,12 +68,13 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
   if (!root) return;
   const he = root.dataset.language === "he", lang = he ? "he" : "en";
   const copy = he ? {
-    frequency: "\u05EA\u05D3\u05D9\u05E8\u05D5\u05EA \u2014 \u05E4\u05E2\u05DD \u05D1\u05BE",
+    frequency: "\u05EA\u05D3\u05D9\u05E8\u05D5\u05EA:",
+    frequencyPrefix: "\u05E4\u05E2\u05DD \u05D1\u05BE",
     languages: "\u05E9\u05E4\u05D5\u05EA",
     all: "\u05D1\u05D7\u05D9\u05E8\u05EA \u05D4\u05DB\u05D5\u05DC",
     subjects: "\u05E0\u05D5\u05E9\u05D0\u05D9\u05DD",
     allSubjects: "\u05DB\u05DC \u05D4\u05E0\u05D5\u05E9\u05D0\u05D9\u05DD",
-    appearance: "\u05DE\u05E8\u05D0\u05D4 \u05D4\u05D4\u05D5\u05D3\u05E2\u05D5\u05EA",
+    appearance: "\u05EA\u05E6\u05D5\u05D2\u05D4",
     light: "\u05DE\u05E6\u05D1 \u05D1\u05D4\u05D9\u05E8",
     dark: "\u05DE\u05E6\u05D1 \u05DB\u05D4\u05D4",
     auto: "\u05D0\u05D5\u05D8\u05D5\u05DE\u05D8\u05D9",
@@ -88,15 +89,18 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
     error: "\u05DC\u05D0 \u05E0\u05D9\u05EA\u05DF \u05DC\u05D4\u05E9\u05DC\u05D9\u05DD \u05D0\u05EA \u05D4\u05D1\u05E7\u05E9\u05D4. \u05E0\u05E1\u05D5 \u05E9\u05D5\u05D1.",
     conflict: "\u05D4\u05D4\u05E2\u05D3\u05E4\u05D5\u05EA \u05D4\u05E9\u05EA\u05E0\u05D5 \u05D0\u05D5 \u05E9\u05D4\u05D5\u05D3\u05E2\u05D4 \u05E0\u05DE\u05E6\u05D0\u05EA \u05D1\u05E9\u05DC\u05D9\u05D7\u05D4. \u05E4\u05EA\u05D7\u05D5 \u05E9\u05D5\u05D1 \u05D0\u05EA \u05D4\u05D4\u05D2\u05D3\u05E8\u05D5\u05EA \u05D1\u05D4\u05DE\u05E9\u05DA.",
     invalid: "\u05D1\u05D7\u05E8\u05D5 \u05E9\u05E4\u05D4 \u05D0\u05D7\u05EA \u05DC\u05E4\u05D7\u05D5\u05EA \u05D5\u05E0\u05D5\u05E9\u05D0 \u05D0\u05D7\u05D3 \u05DC\u05E4\u05D7\u05D5\u05EA, \u05D0\u05D5 \u05D0\u05EA \u05DB\u05DC \u05D4\u05E0\u05D5\u05E9\u05D0\u05D9\u05DD.",
-    logout: "\u05E1\u05D9\u05D5\u05DD",
-    signedOut: "\u05D4\u05E2\u05E8\u05D9\u05DB\u05D4 \u05D4\u05E1\u05EA\u05D9\u05D9\u05DE\u05D4. \u05E1\u05D2\u05E8\u05D5 \u05D0\u05EA \u05D4\u05DC\u05E9\u05D5\u05E0\u05D9\u05EA."
+    unsubscribe: "\u05D4\u05E1\u05E8\u05D4",
+    unsubscribeQuestion: "\u05D4\u05D0\u05DD \u05DC\u05D4\u05E1\u05D9\u05E8 \u05D0\u05D5\u05EA\u05DA \u05DE\u05E8\u05E9\u05D9\u05DE\u05EA \u05D4\u05E2\u05D3\u05DB\u05D5\u05E0\u05D9\u05DD?",
+    cancel: "\u05D1\u05D9\u05D8\u05D5\u05DC",
+    unsubscribed: "\u05D4\u05D4\u05E8\u05E9\u05DE\u05D4 \u05D1\u05D5\u05D8\u05DC\u05D4."
   } : {
     frequency: "Frequency",
+    frequencyPrefix: "",
     languages: "Languages",
     all: "Select all",
     subjects: "Subjects",
     allSubjects: "All subjects",
-    appearance: "Email appearance",
+    appearance: "Appearance",
     light: "Light mode",
     dark: "Dark mode",
     auto: "Auto",
@@ -111,19 +115,21 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
     error: "The request could not be completed. Please try again.",
     conflict: "Settings changed or an email is being delivered. Open settings again later.",
     invalid: "Choose at least one language and one subject, or All subjects.",
-    logout: "Done",
-    signedOut: "Editing ended. You can close this tab."
+    unsubscribe: "Unsubscribe",
+    unsubscribeQuestion: "Are you sure you want to unsubscribe?",
+    cancel: "Cancel",
+    unsubscribed: "You have been unsubscribed."
   };
   const status = root.querySelector("[data-settings-status]"), form = root.querySelector("[data-settings-form]");
   const entry = root.querySelector("[data-settings-entry]"), opener = root.querySelector("[data-settings-open]");
   const recovery = root.querySelector("[data-settings-recovery]");
-  let linkToken = new URLSearchParams(window2.location.hash.slice(1)).get("token"), session = "", expiresAt = 0, revision = 0, preferences;
+  let linkToken = new URLSearchParams(window2.location.hash.slice(1)).get("token"), session = "", expiresAt = 0, revision = 0, preferences, pendingAction = false;
   if (window2.location.hash) window2.history.replaceState(null, "", window2.location.pathname + window2.location.search);
   const deviceTheme = window2.matchMedia?.("(prefers-color-scheme: dark)");
   const paint = (accent, choice2) => {
     const theme = choice2 === "auto" ? deviceTheme?.matches ? "dark" : "light" : choice2;
     const p = emailThemePalette(accent, theme);
-    for (const [key, value] of Object.entries({ paper: p.canvas, surface: p.paper, ink: p.text, muted: p.muted, line: p.line, "line-dark": p.lineDark, accent: p.accent, "accent-strong": p.ink, "soft-accent": p.soft, "on-button": p.onButton, "button-fill": p.button })) document2.documentElement.style.setProperty(`--${key}`, value);
+    for (const [key, value] of Object.entries({ paper: p.canvas, surface: p.paper, ink: p.text, muted: p.muted, line: p.line, "line-dark": p.lineDark, accent: p.accent, "accent-strong": p.ink, "soft-accent": p.soft, "inverse-bg": p.text, "inverse-ink": p.canvas })) document2.documentElement.style.setProperty(`--${key}`, value);
     document2.documentElement.dataset.theme = theme;
     document2.documentElement.style.colorScheme = theme;
   };
@@ -151,6 +157,8 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
   const expired = () => {
     session = "";
     expiresAt = 0;
+    preferences = void 0;
+    form.replaceChildren();
     form.hidden = true;
     entry.hidden = false;
     opener.hidden = true;
@@ -189,6 +197,24 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
       if (!session) recovery.hidden = false;
     }
   };
+  function clearPrivateState() {
+    session = "";
+    expiresAt = 0;
+    linkToken = "";
+    preferences = void 0;
+    form.replaceChildren();
+    form.hidden = true;
+    entry.hidden = true;
+    recovery.hidden = true;
+  }
+  async function returnHome() {
+    try {
+      if (session) await api("", { action: "logout" }, true);
+    } catch {
+    }
+    clearPrivateState();
+    window2.location.assign(root.dataset.home);
+  }
   function choice(name, value, label, checked, type = "checkbox", dir = "") {
     const wrap = document2.createElement("label");
     wrap.className = "topic-option";
@@ -219,6 +245,12 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
     form.replaceChildren();
     paint(value.accentColor, value.theme);
     const frequency = fieldset(copy.frequency);
+    if (copy.frequencyPrefix) {
+      const prefix = document2.createElement("span");
+      prefix.className = "settings-frequency-prefix";
+      prefix.textContent = copy.frequencyPrefix;
+      frequency.options.append(prefix);
+    }
     for (const f of FREQUENCIES) frequency.options.append(choice("frequency", f, FREQUENCY_LABELS[lang][f], f === value.frequency, "radio"));
     const langs = fieldset(copy.languages), all = document2.createElement("button");
     all.type = "button";
@@ -229,23 +261,47 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
       langs.options.querySelectorAll("input").forEach((i) => i.checked = true);
     });
     const subjects = fieldset(copy.subjects);
-    subjects.options.append(choice("allSubjects", "all", copy.allSubjects, !value.tags.length));
+    subjects.options.className = "settings-subject-groups";
+    const allRow = document2.createElement("div");
+    allRow.className = "settings-choices settings-subject-scope";
+    allRow.append(choice("allSubjects", "all", copy.allSubjects, !value.tags.length));
+    subjects.options.append(allRow);
     const known = new Set(value.catalog.tags.map((t) => t.key));
     const topics = [...value.catalog.tags, ...value.tags.filter((t) => !known.has(t)).map((key) => ({ key, labels: { [lang]: key.split(":").at(-1) } }))];
-    for (const tag of topics) subjects.options.append(choice("tags", tag.key, tag.labels?.[lang] || tag.key.split(":").at(-1), value.tags.includes(tag.key)));
+    const tiers = /* @__PURE__ */ new Map();
+    const labelFor = (tag) => tag.labels?.[lang] || tag.key.split(":").at(-1);
+    topics.sort((a, b) => a.key.split(":").length - b.key.split(":").length || labelFor(a).localeCompare(labelFor(b), lang));
+    for (const tag of topics) {
+      const depth = tag.key.split(":").length - 1;
+      if (!tiers.has(depth)) {
+        const row = document2.createElement("div");
+        row.className = "settings-choices settings-subject-tier";
+        row.dataset.topicDepth = String(depth);
+        tiers.set(depth, row);
+        subjects.options.append(row);
+      }
+      tiers.get(depth).append(choice("tags", tag.key, labelFor(tag), value.tags.includes(tag.key)));
+    }
     subjects.options.addEventListener("change", (e) => {
       if (e.target.name === "allSubjects" && e.target.checked) subjects.options.querySelectorAll('[name="tags"]').forEach((i) => i.checked = false);
       else if (e.target.name === "tags" && e.target.checked) subjects.options.querySelector('[name="allSubjects"]').checked = false;
     });
     const appearance = fieldset(copy.appearance);
     appearance.options.className = "settings-appearance";
-    const auto = choice("theme", "auto", copy.auto, value.theme === "auto", "radio");
-    auto.classList.add("settings-theme-auto");
     const track = document2.createElement("div");
     track.className = "settings-theme-track";
-    for (const mode of ["light", "dark"]) {
+    track.setAttribute("role", "radiogroup");
+    track.setAttribute("aria-label", copy.appearance);
+    const thumb = document2.createElement("span");
+    thumb.className = "settings-theme-thumb";
+    thumb.setAttribute("aria-hidden", "true");
+    track.append(thumb);
+    for (const mode of ["auto", "light", "dark"]) {
       const label = document2.createElement("label");
+      label.className = "settings-theme-choice";
+      label.dataset.themeChoice = mode;
       label.title = copy[mode];
+      if (mode === "auto") label.classList.add("settings-theme-auto");
       const input = document2.createElement("input");
       input.type = "radio";
       input.name = "theme";
@@ -254,21 +310,26 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
       input.setAttribute("aria-label", copy[mode]);
       label.append(input);
       const holder = document2.createElement("span");
-      holder.innerHTML = mode === "light" ? '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.4 15.2A8.5 8.5 0 0 1 8.8 3.6 8.5 8.5 0 1 0 20.4 15.2Z"/></svg>';
+      if (mode === "auto") holder.textContent = copy.auto;
+      else holder.innerHTML = mode === "light" ? '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.4 15.2A8.5 8.5 0 0 1 8.8 3.6 8.5 8.5 0 1 0 20.4 15.2Z"/></svg>';
       label.append(holder);
       track.append(label);
     }
-    const menu = document2.createElement("details");
-    menu.className = "settings-color-menu";
-    menu.innerHTML = '<summary><svg viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(45 12 12)"><path d="M9 9.5h6v8L12 21l-3-3.5Z" fill="var(--paper)" stroke="currentColor" stroke-width="1.5"/><path d="M10 13h4v4.1L12 19.45l-2-2.35Z" fill="currentColor"/><path d="M9 8.5V6a3 3 0 0 1 6 0v2.5Z" fill="currentColor"/><path d="M8 9h8" stroke="currentColor" stroke-width="2"/></g></svg></summary><div class="settings-color-panel"><input type="color" name="accentColor"></div>';
-    const summary = menu.querySelector("summary"), color = menu.querySelector("input"), reset = document2.createElement("button");
-    reset.type = "button";
-    reset.className = "settings-color-reset";
-    reset.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg>';
-    summary.title = copy.accent;
-    summary.setAttribute("aria-label", copy.accent);
-    color.setAttribute("aria-label", copy.accent);
+    const colors = document2.createElement("div");
+    colors.className = "settings-color-group";
+    colors.setAttribute("role", "group");
+    colors.setAttribute("aria-label", copy.accent);
+    const color = document2.createElement("input");
+    color.type = "color";
+    color.name = "accentColor";
+    color.className = "accent-picker";
     color.value = value.accentColor;
+    color.title = copy.accent;
+    color.setAttribute("aria-label", copy.accent);
+    const reset = document2.createElement("button");
+    reset.type = "button";
+    reset.className = "accent-reset settings-color-reset";
+    reset.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg>';
     reset.title = copy.reset;
     reset.setAttribute("aria-label", copy.reset);
     const appearanceChange = () => paint(color.value, appearance.field.querySelector('[name="theme"]:checked').value);
@@ -278,29 +339,92 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
       color.value = DEFAULT_EMAIL_ACCENT;
       appearanceChange();
     });
-    appearance.options.append(track, auto, menu, reset);
+    colors.append(color, reset);
+    appearance.options.append(track, colors);
     const actions = document2.createElement("div");
     actions.className = "settings-actions";
     const save = document2.createElement("button");
     save.type = "submit";
     save.className = "settings-primary";
     save.textContent = copy.save;
-    const done = document2.createElement("button");
-    done.type = "button";
-    done.textContent = copy.logout;
-    done.addEventListener("click", async () => {
-      done.disabled = true;
+    const cancelEdits = document2.createElement("button");
+    cancelEdits.type = "button";
+    cancelEdits.dataset.settingsCancel = "";
+    cancelEdits.textContent = copy.cancel;
+    cancelEdits.addEventListener("click", async () => {
+      if (pendingAction) return;
+      pendingAction = true;
+      cancelEdits.disabled = true;
+      await returnHome();
+    });
+    const unsubscribe = document2.createElement("button");
+    unsubscribe.type = "button";
+    unsubscribe.className = "settings-unsubscribe";
+    unsubscribe.dataset.settingsUnsubscribe = "";
+    unsubscribe.textContent = copy.unsubscribe;
+    const dialog = document2.createElement("dialog");
+    dialog.className = "settings-confirm";
+    dialog.dataset.settingsUnsubscribeDialog = "";
+    dialog.setAttribute("aria-labelledby", "settings-unsubscribe-question");
+    const question = document2.createElement("h2");
+    question.id = "settings-unsubscribe-question";
+    question.textContent = copy.unsubscribeQuestion;
+    const buttons = document2.createElement("div");
+    buttons.className = "settings-actions";
+    const cancel = document2.createElement("button");
+    cancel.type = "button";
+    cancel.textContent = copy.cancel;
+    cancel.dataset.settingsUnsubscribeCancel = "";
+    cancel.autofocus = true;
+    const confirm = document2.createElement("button");
+    confirm.type = "button";
+    confirm.className = "settings-primary";
+    confirm.dataset.settingsUnsubscribeConfirm = "";
+    confirm.textContent = copy.unsubscribe;
+    const close = () => {
+      if (typeof dialog.close === "function") dialog.close();
+      else dialog.removeAttribute("open");
+    };
+    unsubscribe.addEventListener("click", () => {
+      if (pendingAction) return;
+      if (typeof dialog.showModal === "function") dialog.showModal();
+      else dialog.setAttribute("open", "");
+      cancel.focus();
+    });
+    cancel.addEventListener("click", () => {
+      if (!pendingAction) close();
+    });
+    dialog.addEventListener("cancel", (event) => {
+      if (pendingAction) event.preventDefault();
+    });
+    dialog.addEventListener("close", () => {
+      if (form.isConnected && !form.hidden) unsubscribe.focus();
+    });
+    confirm.addEventListener("click", async () => {
+      if (pendingAction) return;
+      pendingAction = true;
+      confirm.disabled = true;
+      cancel.disabled = true;
+      dialog.setAttribute("aria-busy", "true");
       try {
-        await api("", { action: "logout" }, true);
+        await api("", { action: "unsubscribe", confirm: true }, true);
+        close();
+        clearPrivateState();
+        window2.location.assign(root.dataset.unsubscribed);
       } catch (error) {
+        close();
         fail(error);
       } finally {
-        expired();
-        tell(copy.signedOut);
+        pendingAction = false;
+        confirm.disabled = false;
+        cancel.disabled = false;
+        dialog.removeAttribute("aria-busy");
       }
     });
-    actions.append(save, done);
-    form.append(actions);
+    buttons.append(cancel, confirm);
+    dialog.append(question, buttons);
+    actions.append(save, cancelEdits, unsubscribe);
+    form.append(actions, dialog);
     entry.hidden = true;
     form.hidden = false;
   }
@@ -338,21 +462,24 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
   });
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (pendingAction) return;
     const data = new window2.FormData(form), languages = data.getAll("languages"), allSubjects = data.has("allSubjects"), tags = allSubjects ? [] : data.getAll("tags");
     if (!languages.length || !allSubjects && !tags.length) {
       tell(copy.invalid);
       return;
     }
     const submit = form.querySelector('button[type="submit"]');
+    pendingAction = true;
     submit.disabled = true;
     tell(copy.working);
     try {
       const result = await api("", { action: "save", revision, language: languages.includes(preferences.language) ? preferences.language : languages[0], languages, scope: allSubjects ? "all" : "tags", tags, frequency: data.get("frequency"), accentColor: data.get("accentColor"), theme: data.get("theme") }, true);
-      render(result.preferences);
-      tell(copy.saved);
+      if (result.ok !== true) throw new Error("save_not_confirmed");
+      await returnHome();
     } catch (error) {
       fail(error);
     } finally {
+      pendingAction = false;
       submit.disabled = false;
     }
   });
