@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-12T16:45:11.000Z",
+  "generatedAt": "2026-09-12T17:01:30.000Z",
   "site": {
     "url": "https://eyesky93.github.io/ssm/",
     "title": {
@@ -101,12 +101,18 @@
         "en": {
           "title": "Metal example",
           "summary": "A simple example post filed under the Metal subtag of Music.",
-          "url": "https://eyesky93.github.io/ssm/en/posts/metal-example/"
+          "url": "https://eyesky93.github.io/ssm/en/posts/metal-example/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-09-11T22:00:00.000Z"
         },
         "he": {
           "title": "דוגמת מטאל",
           "summary": "פוסט לדוגמה תחת תת-התג מטאל של מוזיקה.",
-          "url": "https://eyesky93.github.io/ssm/he/posts/metal-example/"
+          "url": "https://eyesky93.github.io/ssm/he/posts/metal-example/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-09-11T22:00:00.000Z"
         }
       }
     },
@@ -123,12 +129,18 @@
         "en": {
           "title": "Analytical mechanics example",
           "summary": "A sample physics post under the Analytical Mechanics subtag.",
-          "url": "https://eyesky93.github.io/ssm/en/posts/analytical-mechanics-example/"
+          "url": "https://eyesky93.github.io/ssm/en/posts/analytical-mechanics-example/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-09-11T21:10:00.000Z"
         },
         "he": {
           "title": "דוגמת מכניקה אנליטית",
           "summary": "פוסט פיזיקה לדוגמה תחת תת-התג מכניקה אנליטית.",
-          "url": "https://eyesky93.github.io/ssm/he/posts/analytical-mechanics-example/"
+          "url": "https://eyesky93.github.io/ssm/he/posts/analytical-mechanics-example/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-09-11T21:10:00.000Z"
         }
       }
     },
@@ -145,12 +157,18 @@
         "en": {
           "title": "A first look at conformal symmetry",
           "summary": "An example post in Physics → Conformal Field Theory, about symmetry and scale.",
-          "url": "https://eyesky93.github.io/ssm/en/posts/conformal-symmetry-example/"
+          "url": "https://eyesky93.github.io/ssm/en/posts/conformal-symmetry-example/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-09-07T18:00:00.000Z"
         },
         "he": {
           "title": "מבט ראשון על סימטריה קונפורמית",
           "summary": "פוסט לדוגמה בתת־הנושא תורת שדות קונפורמית בפיזיקה, על סימטריה וקנה מידה.",
-          "url": "https://eyesky93.github.io/ssm/he/posts/conformal-symmetry-example/"
+          "url": "https://eyesky93.github.io/ssm/he/posts/conformal-symmetry-example/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-09-07T18:00:00.000Z"
         }
       }
     },
@@ -168,12 +186,18 @@
         "en": {
           "title": "A place for connected ideas",
           "summary": "An introduction to this bilingual collection of essays and working notes.",
-          "url": "https://eyesky93.github.io/ssm/en/posts/welcome/"
+          "url": "https://eyesky93.github.io/ssm/en/posts/welcome/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-09-01T06:00:00.000Z"
         },
         "he": {
           "title": "מקום לרעיונות שמתחברים",
           "summary": "מבוא לאוסף הדו־לשוני הזה של מאמרים ורשימות עבודה.",
-          "url": "https://eyesky93.github.io/ssm/he/posts/welcome/"
+          "url": "https://eyesky93.github.io/ssm/he/posts/welcome/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-09-01T06:00:00.000Z"
         }
       }
     },
@@ -191,12 +215,18 @@
         "en": {
           "title": "Symmetry as a way of organizing a calculation",
           "summary": "A short example of a physics note with displayed mathematics.",
-          "url": "https://eyesky93.github.io/ssm/en/posts/symmetry-notes/"
+          "url": "https://eyesky93.github.io/ssm/en/posts/symmetry-notes/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-08-28T09:00:00.000Z"
         },
         "he": {
           "title": "סימטריה כדרך לארגן חישוב",
           "summary": "דוגמה קצרה לרשימה בפיזיקה הכוללת מתמטיקה מוצגת.",
-          "url": "https://eyesky93.github.io/ssm/he/posts/symmetry-notes/"
+          "url": "https://eyesky93.github.io/ssm/he/posts/symmetry-notes/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-08-28T09:00:00.000Z"
         }
       }
     },
@@ -214,12 +244,18 @@
         "en": {
           "title": "Listening for patterns",
           "summary": "A sample music post about repetition, variation, and expectation.",
-          "url": "https://eyesky93.github.io/ssm/en/posts/listening-for-patterns/"
+          "url": "https://eyesky93.github.io/ssm/en/posts/listening-for-patterns/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-08-20T15:30:00.000Z"
         },
         "he": {
           "title": "להקשיב לדפוסים",
           "summary": "פוסט מוזיקה לדוגמה על חזרה, שינוי וציפייה.",
-          "url": "https://eyesky93.github.io/ssm/he/posts/listening-for-patterns/"
+          "url": "https://eyesky93.github.io/ssm/he/posts/listening-for-patterns/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-08-20T15:30:00.000Z"
         }
       }
     },
@@ -236,7 +272,10 @@
         "en": {
           "title": "An English-only note",
           "summary": "Posts do not need to wait for a translation before publication.",
-          "url": "https://eyesky93.github.io/ssm/en/posts/english-only-example/"
+          "url": "https://eyesky93.github.io/ssm/en/posts/english-only-example/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-08-12T07:00:00.000Z"
         }
       }
     },
@@ -254,7 +293,10 @@
         "he": {
           "title": "רשימה בעברית בלבד",
           "summary": "אין צורך לעכב פרסום של פוסט עד שהתרגום יהיה מוכן.",
-          "url": "https://eyesky93.github.io/ssm/he/posts/hebrew-only-example/"
+          "url": "https://eyesky93.github.io/ssm/he/posts/hebrew-only-example/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-08-07T07:00:00.000Z"
         }
       }
     }

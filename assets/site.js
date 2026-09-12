@@ -457,10 +457,40 @@ subscriptionDialog?.addEventListener("close", () => {
   settingsToggle?.focus();
 });
 
+// Newsletter colors are captured during explicit signup, never by background
+// synchronization or an unauthenticated update of someone else's subscription.
+function newsletterTheme() {
+  // Read the effective appearance at submission, including a system-derived
+  // mode or an unsaved page-local choice when browser storage is unavailable.
+  if (root.dataset.theme === "light" || root.dataset.theme === "dark") return root.dataset.theme;
+  return storedTheme() || preferredTheme();
+}
+
+function newsletterAccentColor() {
+  let value;
+  try { value = window.SSMAppearance?.colors(root.dataset.theme === "dark" ? "dark" : "light")?.accent; } catch {}
+  if (typeof value !== "string" || !/^#[0-9a-f]{6}$/i.test(value)) {
+    try { value = getComputedStyle(root).getPropertyValue("--accent").trim(); } catch {}
+  }
+  return typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value) ? value.toLowerCase() : "#1c9ae9";
+}
+
 document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
   const allTopics = form.querySelector("[data-topic-all]");
   const specificTopics = form.querySelector("[data-topic-specific]");
   const topicOptions = [...form.querySelectorAll("[data-topic-tag]")];
+  const languageOptions = [...form.querySelectorAll("[data-newsletter-language]")];
+  const allLanguages = form.querySelector("[data-newsletter-language-all]");
+  const reconcileLanguages = () => {
+    allLanguages?.setAttribute("aria-pressed", String(languageOptions.length > 0 && languageOptions.every(option => option.checked)));
+  };
+  allLanguages?.addEventListener("click", () => {
+    languageOptions.forEach(option => { option.checked = true; });
+    reconcileLanguages();
+  });
+  languageOptions.forEach(option => option.addEventListener("change", reconcileLanguages));
+  form.addEventListener("reset", () => queueMicrotask(reconcileLanguages));
+  reconcileLanguages();
   const submitButton = form.querySelector('button[type="submit"]');
   const status = form.querySelector("[data-subscribe-status]");
 
@@ -502,6 +532,13 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     if (!form.reportValidity() || !submitButton || !status) return;
 
     const data = new FormData(form);
+    const languages = data.getAll("languages").filter(code => typeof code === "string");
+    if (languageOptions.length && !languages.length) {
+      status.textContent = form.dataset.languageRequired || form.dataset.error || "";
+      status.dataset.state = "error";
+      languageOptions[0]?.focus();
+      return;
+    }
     const selectedTags = data.getAll("tags").filter((tag) => typeof tag === "string");
     if (data.get("scope") === "tags" && !selectedTags.length) {
       status.textContent = form.dataset.topicRequired || form.dataset.error || "";
@@ -524,6 +561,9 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         body: JSON.stringify({
           email: data.get("email"),
           language: data.get("language"),
+          ...(languageOptions.length ? { languages } : {}),
+          accentColor: newsletterAccentColor(),
+          theme: newsletterTheme(),
           consent: data.get("consent") === "yes",
           scope: data.get("scope"),
           tags: selectedTags,
@@ -531,7 +571,11 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         }),
       });
 
-      if (!response.ok) throw new Error(`Subscription request failed: ${response.status}`);
+      if (!response.ok) {
+        const error = new Error(`Subscription request failed: ${response.status}`);
+        error.upgradePending = response.status === 404;
+        throw error;
+      }
 
       form.reset();
       selectAllTopics();
@@ -539,7 +583,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       status.dataset.state = "success";
     } catch (error) {
       console.error(error);
-      status.textContent = form.dataset.error || "";
+      status.textContent = error.upgradePending ? form.dataset.upgradePending || form.dataset.error || "" : form.dataset.error || "";
       status.dataset.state = "error";
     } finally {
       submitButton.disabled = false;

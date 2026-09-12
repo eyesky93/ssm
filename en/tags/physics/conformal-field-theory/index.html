@@ -13,7 +13,7 @@
   <link rel="alternate" hreflang="x-default" href="https://eyesky93.github.io/ssm/">
   <link rel="alternate" type="application/rss+xml" title="RSS feed" href="https://eyesky93.github.io/ssm/en/tags/physics/conformal-field-theory/feed.xml">
   <script src="/ssm/assets/appearance.js?v=ae26c1e43bfc"></script>
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=29df26ba22b5">
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=e0f561d8295c">
 </head>
 <body data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="https://ssm-pin-stats.eyesky93.workers.dev/pins" data-read-storage="ssm-read:/ssm">
   <header class="site-header">
@@ -318,21 +318,24 @@
       <div class="subscription-intro">
       <p class="eyebrow">Stay up to date</p>
         <h2 id="subscription-title">Follow new notes</h2>
-        <p id="subscription-description">Use RSS, or get an email when a new note matches the subjects you choose.</p>
+        <p id="subscription-description">Use RSS, or receive one daily email with new notes in the languages and subjects you choose.</p>
       </div>
       <div class="updates-subscription">
       <h3>Email notifications</h3>
         <form class="subscribe-form" data-subscribe-form action="https://ssm-newsletter.eyesky93.workers.dev/api/subscriptions" method="post"
         data-working="Subscribing…"
-        data-success="Check your inbox to confirm your subscription. To change subjects later, unsubscribe and rejoin."
+        data-success="Check your inbox to confirm your subscription. To change languages or subjects later, unsubscribe and rejoin."
         data-error="We couldn&#039;t start your subscription. Please try again."
-        data-topic-required="Choose at least one specific subject, or select All subjects.">
+        data-topic-required="Choose at least one specific subject, or select All subjects."
+        data-language-required="Choose at least one language."
+        data-upgrade-pending="Language subscriptions are awaiting a service update. Please try again later.">
         <input type="hidden" name="language" value="en">
         <div class="form-trap" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
         <div class="subscribe-row">
           <label class="email-field"><span>Email address</span><input type="email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required></label>
           <button class="subscribe-button" type="submit">Subscribe</button>
         </div>
+        
         <fieldset class="topic-picker">
           <legend>Subjects</legend>
           <p class="form-note">Choose all subjects or any combination.</p>
@@ -378,7 +381,7 @@
       </div>
     </div>
   </dialog>
-  <script src="/ssm/assets/site.js?v=badb36258b3f" defer></script>
+  <script src="/ssm/assets/site.js?v=3a5f8def1dc1" defer></script>
   <p class="visually-hidden" role="status" data-pin-status data-saved="Post pinned." data-removed="Post unpinned." data-temporary="Your browser cannot save this choice. It will last only on this page."></p>
   <script type="module" src="/ssm/assets/pins.js?v=59d9134c2e16"></script>
   <script type="module" src="/ssm/assets/post-browser.js?v=d978f5479565"></script>
