@@ -269,6 +269,9 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   const header = document2.querySelector(".site-header");
   const clear = control.querySelector("[data-search-clear]");
   const settingsToggle = document2.querySelector("[data-settings-toggle]");
+  const dialog = control.querySelector("[data-search-dialog]");
+  const dialogContent = control.querySelector("[data-search-dialog-content]");
+  const mobile = window2.matchMedia("(max-width: 700px)");
   const status = browser.querySelector("[data-search-result-status]");
   const language = document2.documentElement.lang;
   let index = null, pending = null, failed = false, composing = false;
@@ -281,6 +284,8 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   let previousScrollY = window2.scrollY;
   let restored = false;
   let previousOrder = null;
+  let mobileOriginal = null;
+  const appliedState = () => mobileOriginal || { query, caseSensitive, selectedTags };
   const original = new Map(cards.map((card) => {
     const title = card.querySelector("h2 [data-reader-link]");
     const summary = [...card.children].find((child) => child.tagName === "P");
@@ -288,7 +293,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   }));
   function setText(element, text, terms = []) {
     if (!element) return;
-    element.replaceChildren(...highlightSegments(text, terms, caseSensitive).map((segment) => {
+    element.replaceChildren(...highlightSegments(text, terms, appliedState().caseSensitive).map((segment) => {
       if (!segment.match) return document2.createTextNode(segment.text);
       const mark = document2.createElement("mark");
       mark.textContent = segment.text;
@@ -310,7 +315,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     renderSuggestions();
   }
   function leaveSearch() {
-    if (control.dataset.open !== "true") return;
+    if (mobile.matches || control.dataset.open !== "true") return;
     if (inputEngaged || input.value.trim() || composing) dismissSuggestions();
     else setOpen(false);
   }
@@ -318,9 +323,15 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     const bounds = shell.getBoundingClientRect();
     const anchor = control.getBoundingClientRect();
     const inside = (rect) => event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
-    return inside(bounds) || inside(anchor) || bounds.top > anchor.bottom && event.clientX >= anchor.left && event.clientX <= anchor.right && event.clientY >= anchor.bottom && event.clientY <= bounds.top;
+    return inside(bounds) || inside(anchor);
   }
   function sizeSuggestions() {
+    if (dialog.open) {
+      const viewport = window2.visualViewport;
+      dialog.style.setProperty("--search-dialog-height", `${viewport?.height || window2.innerHeight}px`);
+      dialog.style.setProperty("--search-dialog-top", `${viewport?.offsetTop || 0}px`);
+      return;
+    }
     if (primaryNav && header) {
       const anchor = control.getBoundingClientRect();
       const nav = primaryNav.getBoundingClientRect();
@@ -379,17 +390,77 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     sizeSuggestions();
     if (focusedKey) focusTag([...suggestions.children].find((button) => button.dataset.searchTag === focusedKey));
   }
-  function setOpen(open, { focus = true } = {}) {
-    if (open && settingsToggle?.getAttribute("aria-expanded") === "true") settingsToggle.click();
+  function setOpenState(open) {
     control.dataset.open = String(open);
     toggle.setAttribute("aria-expanded", String(open));
-    const label = open ? toggle.dataset.labelClose : toggle.dataset.labelOpen;
+    toggle.setAttribute("aria-controls", mobile.matches ? "search-dialog" : "search-panel");
+    if (mobile.matches) toggle.setAttribute("aria-haspopup", "dialog");
+    else toggle.removeAttribute("aria-haspopup");
+    const label = open && !mobile.matches ? toggle.dataset.labelClose : toggle.dataset.labelOpen;
     if (label) {
       toggle.setAttribute("aria-label", label);
       toggle.title = label;
     }
     panel.inert = !open;
     suggestions.inert = !open;
+  }
+  function openMobileSearch() {
+    if (!dialog.open) {
+      mobileOriginal = { query, caseSensitive, selectedTags: new Set(selectedTags) };
+      dialogContent.append(shell);
+      setOpenState(true);
+      dialog.showModal();
+    }
+    suggestionsDismissed = false;
+    input.focus({ preventScroll: true });
+    sizeSuggestions();
+    void loadIndex();
+    renderSuggestions();
+  }
+  function closeMobileSearch(commit = false, { focus = true } = {}) {
+    if (!dialog.open) return;
+    if (!commit && mobileOriginal) {
+      ({ query, caseSensitive, selectedTags } = mobileOriginal);
+      input.value = query;
+      caseButton.setAttribute("aria-pressed", String(caseSensitive));
+      clear.hidden = !query;
+    }
+    mobileOriginal = null;
+    dialog.close();
+    control.insertBefore(shell, dialog);
+    setOpenState(false);
+    inputEngaged = false;
+    openedByHover = false;
+    suggestionsDismissed = true;
+    closeSuggestions();
+    if (focus) toggle.focus({ preventScroll: true });
+  }
+  function submitSearch() {
+    if (composing) return;
+    if (dialog.open) {
+      closeMobileSearch(true);
+      change();
+      const home = contextUrl(control.dataset.searchHome);
+      const current = new URL(window2.location.href);
+      if (home.pathname !== current.pathname) {
+        for (const key of ["tag", "exclude", "filters"]) {
+          for (const value of current.searchParams.getAll(key)) home.searchParams.append(key, value);
+        }
+        window2.location.assign(home.href);
+      }
+    }
+    dismissSuggestions();
+    if (failed) void loadIndex();
+  }
+  function setOpen(open, { focus = true } = {}) {
+    if (open && settingsToggle?.getAttribute("aria-expanded") === "true") settingsToggle.click();
+    if (mobile.matches) {
+      if (open) openMobileSearch();
+      else if (dialog.open) closeMobileSearch();
+      else setOpenState(false);
+      return;
+    }
+    setOpenState(open);
     if (!open) {
       openedByHover = false;
       inputEngaged = false;
@@ -409,15 +480,16 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     if (url.href !== window2.location.href) window2.history.replaceState(null, "", url.href);
   }
   function contextUrl(href) {
+    const { query: query2, caseSensitive: caseSensitive2, selectedTags: selectedTags2 } = appliedState();
     const url = new URL(href, window2.location.href);
     url.searchParams.delete("q");
     url.searchParams.delete("case");
     url.searchParams.delete("search-tag");
-    if (query.trim()) {
-      url.searchParams.set("q", query);
+    if (query2.trim()) {
+      url.searchParams.set("q", query2);
     }
-    for (const key of selectedTags) url.searchParams.append("search-tag", key);
-    if ((query.trim() || selectedTags.size) && caseSensitive) url.searchParams.set("case", "1");
+    for (const key of selectedTags2) url.searchParams.append("search-tag", key);
+    if ((query2.trim() || selectedTags2.size) && caseSensitive2) url.searchParams.set("case", "1");
     return url;
   }
   async function loadIndex() {
@@ -465,8 +537,10 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     query = input.value.slice(0, 500);
     caseButton.setAttribute("aria-pressed", String(caseSensitive));
     clear.hidden = !query;
-    updateUrl();
-    onChange(true);
+    if (!dialog.open) {
+      updateUrl();
+      onChange(true);
+    }
     if ((query.trim() || selectedTags.size) && !index && !pending && !failed) void loadIndex();
     renderSuggestions();
   }
@@ -475,7 +549,9 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     const nextQuery = (params.get("q") || "").slice(0, 500);
     const nextCaseSensitive = params.get("case") === "1";
     const nextTags = new Set(params.getAll("search-tag").filter(Boolean).slice(0, 40));
-    if (restored && nextQuery === query && nextCaseSensitive === caseSensitive && [...nextTags].join("\n") === [...selectedTags].join("\n")) return;
+    const current = appliedState();
+    if (restored && nextQuery === current.query && nextCaseSensitive === current.caseSensitive && [...nextTags].join("\n") === [...current.selectedTags].join("\n")) return;
+    if (dialog.open) closeMobileSearch(false, { focus: false });
     restored = true;
     query = nextQuery;
     caseSensitive = nextCaseSensitive;
@@ -485,23 +561,16 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     caseButton.setAttribute("aria-pressed", String(caseSensitive));
     clear.hidden = !query;
     if (query.trim() || selectedTags.size) {
-      control.dataset.open = "true";
-      toggle.setAttribute("aria-expanded", "true");
-      if (toggle.dataset.labelClose) {
-        toggle.setAttribute("aria-label", toggle.dataset.labelClose);
-        toggle.title = toggle.dataset.labelClose;
-      }
-      panel.inert = false;
-      suggestions.inert = false;
+      setOpenState(!mobile.matches);
       void loadIndex();
     } else {
-      panel.inert = control.dataset.open !== "true";
-      suggestions.inert = panel.inert;
+      setOpenState(!mobile.matches && control.dataset.open === "true");
     }
     closeSuggestions();
   }
   function apply() {
-    const active = Boolean(query.trim() || selectedTags.size);
+    const { query: query2, caseSensitive: caseSensitive2, selectedTags: selectedTags2 } = appliedState();
+    const active = Boolean(query2.trim() || selectedTags2.size);
     stream.dataset.searchActive = String(active);
     browser.setAttribute("aria-busy", String(active && !index && !failed));
     if (!active) {
@@ -530,10 +599,10 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
       if (status) status.textContent = failed ? browser.dataset.searchError : browser.dataset.searchLoading;
       return 0;
     }
-    const parsed = parseQuery(query);
-    parsed.tags.push(...selectedTags);
+    const parsed = parseQuery(query2);
+    parsed.tags.push(...selectedTags2);
     const available = new Set(cards.filter((card) => !card.hidden).map((card) => card.dataset.postId));
-    const results = rankPosts(index.posts.filter((post) => available.has(post.id)), parsed, { language, caseSensitive, tags: index.tags });
+    const results = rankPosts(index.posts.filter((post) => available.has(post.id)), parsed, { language, caseSensitive: caseSensitive2, tags: index.tags });
     const byId = new Map(cards.map((card) => [card.dataset.postId, card]));
     for (const card of cards) card.hidden = true;
     const ordered = [];
@@ -544,10 +613,10 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
       card.hidden = false;
       card.dataset.searchResult = "true";
       setText(entry.title, result.post.title, parsed.terms);
-      const bodyHasMatch = highlightSegments(result.post.text, parsed.terms, caseSensitive).some((segment) => segment.match);
+      const bodyHasMatch = highlightSegments(result.post.text, parsed.terms, caseSensitive2).some((segment) => segment.match);
       const excerptSource = bodyHasMatch ? result.post.text : result.post.summary || result.post.text;
       const excerptLength = Math.max(240, ...parsed.terms.map((term) => term.text.length * 2));
-      const excerpt = parsed.terms.length ? searchExcerpt(excerptSource, parsed.terms, caseSensitive, excerptLength) : result.post.summary;
+      const excerpt = parsed.terms.length ? searchExcerpt(excerptSource, parsed.terms, caseSensitive2, excerptLength) : result.post.summary;
       setText(entry.summary, excerpt, parsed.terms);
       entry.summary?.classList.add("search-excerpt");
       ordered.push(card);
@@ -557,7 +626,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     return ordered.length;
   }
   bar.addEventListener("pointerenter", (event) => {
-    if (event.pointerType === "touch" || control.dataset.open === "true") return;
+    if (mobile.matches || event.pointerType === "touch" || control.dataset.open === "true") return;
     setOpen(true, { focus: false });
     openedByHover = true;
   });
@@ -566,19 +635,24 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     if (!event.relatedTarget || !pointerInsideSearch(event)) leaveSearch();
   });
   document2.addEventListener("pointermove", (event) => {
-    if (event.pointerType === "touch" || control.dataset.open !== "true") return;
+    if (mobile.matches || event.pointerType === "touch" || control.dataset.open !== "true") return;
     if (!pointerInsideSearch(event)) leaveSearch();
     else if (suggestionsDismissed && bar.contains(event.target)) resumeSuggestions();
   }, { passive: true });
   window2.addEventListener("scroll", () => {
     const nextScrollY = window2.scrollY;
-    if (nextScrollY > previousScrollY && control.dataset.open === "true") dismissSuggestions();
+    if (!dialog.open && nextScrollY > previousScrollY && control.dataset.open === "true") dismissSuggestions();
     previousScrollY = nextScrollY;
   }, { passive: true });
   window2.addEventListener("wheel", (event) => {
-    if (event.deltaY > 0 && control.dataset.open === "true" && !suggestions.contains(event.target)) dismissSuggestions();
+    if (!dialog.open && event.deltaY > 0 && control.dataset.open === "true" && !suggestions.contains(event.target)) dismissSuggestions();
   }, { passive: true });
   toggle.addEventListener("click", () => {
+    if (mobile.matches) {
+      if (dialog.open) submitSearch();
+      else setOpen(true);
+      return;
+    }
     if (openedByHover) {
       setOpen(true);
       return;
@@ -600,8 +674,12 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   });
   control.addEventListener("submit", (event) => {
     event.preventDefault();
-    dismissSuggestions();
-    if (failed) void loadIndex();
+    submitSearch();
+  });
+  control.querySelector("[data-search-dismiss]").addEventListener("click", () => closeMobileSearch());
+  dialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    closeMobileSearch();
   });
   input.addEventListener("compositionstart", () => {
     inputEngaged = true;
@@ -669,6 +747,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     } else if (event.key === "Escape") {
       event.preventDefault();
       if (showingSuggestions) dismissSuggestions();
+      else if (dialog.open) closeMobileSearch();
       else {
         input.value = "";
         selectedTags.clear();
@@ -680,6 +759,24 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   });
   restore();
   window2.addEventListener("resize", sizeSuggestions, { passive: true });
+  window2.visualViewport?.addEventListener("resize", sizeSuggestions, { passive: true });
+  window2.visualViewport?.addEventListener("scroll", sizeSuggestions, { passive: true });
+  mobile.addEventListener("change", () => {
+    if (mobile.matches) {
+      const editing = document2.activeElement === input;
+      setOpenState(false);
+      if (editing) openMobileSearch();
+    } else {
+      const editing = dialog.open;
+      if (editing) {
+        closeMobileSearch(true, { focus: false });
+        change();
+      }
+      setOpenState(false);
+      if (editing || query.trim() || selectedTags.size) setOpen(true, { focus: editing });
+    }
+    sizeSuggestions();
+  });
   if (window2.ResizeObserver && mainTags) {
     const resize = new window2.ResizeObserver(sizeSuggestions);
     resize.observe(mainTags);
@@ -687,7 +784,8 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     if (primaryNav) resize.observe(primaryNav);
   }
   return { apply, restore, contextUrl, get active() {
-    return Boolean(query.trim() || selectedTags.size);
+    const state = appliedState();
+    return Boolean(state.query.trim() || state.selectedTags.size);
   }, get pending() {
     return !index && !failed;
   } };
