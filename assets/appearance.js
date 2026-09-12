@@ -43,9 +43,15 @@
     return values[0] * 0.2126 + values[1] * 0.7152 + values[2] * 0.0722;
   }
 
-  function readableAccent(accent, text, backgrounds) {
+  function readableAccent(accent, text, backgrounds, mode) {
+    // Readability alone can accept the unchanged accent on a dark background.
+    // Start with a distinct hover shade, then retain the existing contrast check.
+    // Near-white accents need darkening instead because they have no lightening headroom.
+    const hoverAccent = mode === "dark"
+      ? mix(accent, luminance(accent) > 0.75 ? backgrounds[0] : text, 0.3)
+      : accent;
     for (let step = 0; step <= 20; step++) {
-      const candidate = mix(accent, text, step / 20);
+      const candidate = mix(hoverAccent, text, step / 20);
       const foreground = luminance(candidate);
       if (backgrounds.every((background) => {
         const backdrop = luminance(background);
@@ -61,7 +67,7 @@
     root.style.colorScheme = mode;
     const tokens = {
       paper: background, ink: text, accent,
-      "accent-strong": readableAccent(accent, text, [background, mix(background, text, 0.055), mix(background, accent, 0.12)]),
+      "accent-strong": readableAccent(accent, text, [background, mix(background, text, 0.055), mix(background, accent, 0.12)], mode),
       surface: mix(background, text, 0.025),
       "surface-translucent": mix(background, text, 0.025),
       muted: mix(background, text, 0.68),
