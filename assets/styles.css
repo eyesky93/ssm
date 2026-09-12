@@ -1775,9 +1775,10 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   flex-flow: row nowrap;
   align-items: stretch;
   direction: ltr;
-  inline-size: calc(3 * var(--stat-segment-width));
+  flex: none;
+  inline-size: max-content;
   min-inline-size: calc(3 * var(--stat-segment-width));
-  max-inline-size: calc(3 * var(--stat-segment-width));
+  max-inline-size: none;
   height: var(--stat-segment-height);
   border: 0;
   border-radius: 0;
@@ -1793,15 +1794,15 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: calc(var(--stat-segment-width) / 2 - 1px) max-content;
   align-items: center;
   justify-items: center;
   column-gap: 0;
   box-sizing: border-box;
-  flex: 0 0 var(--stat-segment-width);
-  inline-size: var(--stat-segment-width);
+  flex: 0 0 auto;
+  inline-size: max-content;
   min-inline-size: var(--stat-segment-width);
-  max-inline-size: var(--stat-segment-width);
+  max-inline-size: none;
   min-height: 0;
   height: var(--stat-segment-height);
   padding: .02rem 0;
@@ -1843,14 +1844,15 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   box-sizing: border-box;
   display: grid;
   place-items: center;
-  inline-size: 100%;
-  min-inline-size: 0;
-  max-inline-size: 100%;
+  inline-size: max-content;
+  min-inline-size: calc(var(--stat-segment-width) / 2 - 1px);
+  max-inline-size: none;
   height: 1rem;
-  padding: 0;
+  /* Intrinsic text width plus one spare digit, split between both sides. */
+  padding: 0 .5ch;
   border-inline-start: 1px solid var(--line);
   border-color: var(--line);
-  overflow: hidden;
+  overflow: visible;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
@@ -1864,7 +1866,8 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 [dir="rtl"] .post-engagement .post-vote,
 [dir="rtl"] .post-engagement .post-comments,
 [dir="rtl"] .post-engagement .post-views {
-  direction: rtl;
+  direction: ltr;
+  grid-template-columns: max-content calc(var(--stat-segment-width) / 2 - 1px);
 }
 [dir="rtl"] .post-engagement svg {
   grid-column: 2;
@@ -1967,7 +1970,7 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   color: var(--accent-strong);
 }
 
-/* Keep attached stats at their original position and fixed outer size.
+/* Keep attached stats at their original position and fixed height.
    Only their top edge is transparent. Clip the background to the
    padding box so it cannot paint over the post's bottom border. */
 .post-card > .post-engagement > :is(.post-vote, .post-comments, .post-views) {
@@ -1996,7 +1999,6 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 }
 @media (max-width: 520px) {
   .post-stream[data-layout] { row-gap: 2.45rem; }
-  .post-card > .post-engagement { max-width: 100%; }
 }
 
 /* Language preferences reuse the topic pills without checkmarks or icon slots. */
