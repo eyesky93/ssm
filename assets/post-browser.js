@@ -264,6 +264,8 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   const caseButton = control.querySelector("[data-search-case]");
   const suggestions = control.querySelector("[data-search-suggestions]");
   const mainTags = browser.querySelector(".subject-nav");
+  const primaryNav = document2.querySelector(".primary-nav");
+  const header = document2.querySelector(".site-header");
   const clear = control.querySelector("[data-search-clear]");
   const settingsToggle = document2.querySelector("[data-settings-toggle]");
   const status = browser.querySelector("[data-search-result-status]");
@@ -318,6 +320,13 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     return inside(bounds) || inside(anchor) || bounds.top > anchor.bottom && event.clientX >= anchor.left && event.clientX <= anchor.right && event.clientY >= anchor.bottom && event.clientY <= bounds.top;
   }
   function sizeSuggestions() {
+    if (primaryNav && header) {
+      const anchor = control.getBoundingClientRect();
+      const nav = primaryNav.getBoundingClientRect();
+      const gap = parseFloat(window2.getComputedStyle(header).columnGap) || 0;
+      const available = document2.documentElement.dir === "rtl" ? nav.left - anchor.right - gap : anchor.left - nav.right - gap;
+      control.style.setProperty("--search-available-width", `${Math.max(0, available)}px`);
+    }
     if (control.dataset.open !== "true" || !mainTags) return;
     const height = Math.max(0, Math.floor(mainTags.getBoundingClientRect().bottom - bar.getBoundingClientRect().bottom));
     suggestions.style.setProperty("--search-suggestions-max-height", `${height}px`);
@@ -672,6 +681,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     const resize = new window2.ResizeObserver(sizeSuggestions);
     resize.observe(mainTags);
     resize.observe(bar);
+    if (primaryNav) resize.observe(primaryNav);
   }
   return { apply, restore, contextUrl, get active() {
     return Boolean(query.trim() || selectedTags.size);

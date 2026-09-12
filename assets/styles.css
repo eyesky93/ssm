@@ -223,7 +223,7 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
 /* Local post search grows toward the start of the line; logical properties
    mirror the field and its controls in Hebrew. */
 .site-search {
-  --search-width: min(25rem, calc(100vw - 42rem));
+  --search-width: min(25rem, var(--search-available-width, calc(100vw - 42rem)));
   position: relative;
   z-index: 25;
   flex: 0 0 var(--header-control-size);
@@ -412,7 +412,7 @@ html[lang="he"] .search-tag { font-family: var(--font-interface-hebrew), var(--f
   line-height: 1.6;
   -webkit-line-clamp: unset;
 }
-@media (max-width: 1100px) {
+@media (max-width: 700px) {
   .site-header { position: relative; }
   .site-search { position: static; }
   .search-shell {
