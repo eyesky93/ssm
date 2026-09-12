@@ -51,6 +51,22 @@ function timeoutSignal(window, milliseconds) {
   return implementation?.timeout ? implementation.timeout(milliseconds) : undefined;
 }
 
+export function attachArticleEngagement(document) {
+  const header = document.querySelector?.(".article-header");
+  const dock = document.querySelector?.(".article-engagement-dock");
+  if (!header || !dock) return false;
+
+  header.style.position = "relative";
+  dock.style.position = "absolute";
+  dock.style.insetBlockStart = "calc(100% + 1px)";
+  dock.style.insetInlineEnd = "0";
+  dock.style.margin = "0";
+  dock.style.padding = "0";
+  dock.style.zIndex = "2";
+  if (dock.parentElement !== header) header.append(dock);
+  return true;
+}
+
 export function initializePostVotes(document, window, { randomId } = {}) {
   const endpoint = (document.body?.dataset.postVotesEndpoint || "").replace(/\/$/, "");
   const storageKey = document.body?.dataset.voteStorage || "ssm-post-voter";
@@ -267,4 +283,7 @@ export function initializePostVotes(document, window, { randomId } = {}) {
   };
 }
 
-if (typeof document !== "undefined") initializePostVotes(document, window);
+if (typeof document !== "undefined") {
+  attachArticleEngagement(document);
+  initializePostVotes(document, window);
+}
