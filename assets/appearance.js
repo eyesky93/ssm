@@ -112,6 +112,14 @@
       :root .tag-option:not(.is-excluded):not(:has(> .tag-chip[aria-pressed="true"])):hover {
         border-color: var(--accent);
       }
+      /* Unselected counts keep the base accent; only their label changes
+         to that same accent on hover or visible keyboard focus. */
+      :root .tag-option:not(.is-excluded) > .tag-chip:not([aria-pressed="true"]) .tag-count {
+        color: var(--accent);
+      }
+      :root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip:not([aria-pressed="true"]) {
+        color: var(--accent);
+      }
       /* Selected tags keep the soft fill while their label, count and frame
          share one accent state. Excluded tags and the delayed hide action keep
          their existing neutral styling and behavior. */
