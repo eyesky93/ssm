@@ -1924,10 +1924,17 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   border-block-start: 1px solid transparent;
   background-clip: padding-box;
 }
-/* The selected/hovered vote's inset top stroke must stay invisible
-   too; its existing side/bottom borders and accent colors remain. */
+/* Active upvotes reveal the existing top border without changing geometry.
+   Suppress the old inset stroke so the top edge is painted only once. */
 .post-card > .post-engagement > .post-vote:is([aria-pressed="true"], :hover, :focus-visible) {
   box-shadow: none;
+}
+.post-card > .post-engagement > .post-vote[aria-pressed="true"] {
+  border-block-start-color: var(--accent);
+}
+.post-card > .post-engagement > .post-vote:hover:not(:disabled),
+.post-card > .post-engagement > .post-vote:focus-visible {
+  border-block-start-color: var(--accent-strong);
 }
 
 .article-engagement-dock {
