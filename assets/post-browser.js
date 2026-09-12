@@ -259,6 +259,8 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   const input = control.querySelector("[data-search-input]");
   const toggle = control.querySelector("[data-search-toggle]");
   const panel = control.querySelector("[data-search-panel]");
+  const shell = control.querySelector(".search-shell") || control;
+  const bar = control.querySelector(".search-bar") || toggle;
   const caseButton = control.querySelector("[data-search-case]");
   const suggestions = control.querySelector("[data-search-suggestions]");
   const clear = control.querySelector("[data-search-clear]");
@@ -270,6 +272,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   let selectedTags = /* @__PURE__ */ new Set();
   let showingSuggestions = false;
   let openedByHover = false;
+  let closeAfterClear = false;
   let restored = false;
   let previousOrder = null;
   const original = new Map(cards.map((card) => {
@@ -339,8 +342,10 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
       toggle.title = label;
     }
     panel.inert = !open;
+    suggestions.inert = !open;
     if (!open) {
       openedByHover = false;
+      closeAfterClear = false;
       closeSuggestions();
     } else {
       if (focus) {
@@ -409,6 +414,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     renderTagRow(completion?.options.filter((tag) => !selectedTags.has(tag.key)) || []);
   }
   function change() {
+    closeAfterClear = false;
     query = input.value.slice(0, 500);
     caseButton.setAttribute("aria-pressed", String(caseSensitive));
     clear.hidden = !query;
@@ -428,6 +434,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     caseSensitive = nextCaseSensitive;
     selectedTags = nextTags;
     input.value = query;
+    closeAfterClear = false;
     caseButton.setAttribute("aria-pressed", String(caseSensitive));
     clear.hidden = !query;
     if (query.trim() || selectedTags.size) {
@@ -438,7 +445,11 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
         toggle.title = toggle.dataset.labelClose;
       }
       panel.inert = false;
+      suggestions.inert = false;
       void loadIndex();
+    } else {
+      panel.inert = control.dataset.open !== "true";
+      suggestions.inert = panel.inert;
     }
     closeSuggestions();
   }
@@ -498,13 +509,14 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     if (status) status.textContent = (browser.dataset.searchResults || "{count}").replace("{count}", String(ordered.length));
     return ordered.length;
   }
-  toggle.addEventListener("pointerenter", (event) => {
-    if (event.pointerType === "touch" || !window2.matchMedia("(any-hover: hover) and (any-pointer: fine)").matches || control.dataset.open === "true") return;
+  bar.addEventListener("pointerenter", (event) => {
+    if (event.pointerType === "touch" || control.dataset.open === "true") return;
     setOpen(true, { focus: false });
     openedByHover = true;
   });
-  toggle.addEventListener("pointerleave", () => {
-    openedByHover = false;
+  shell.addEventListener("pointerleave", (event) => {
+    if (event.pointerType === "touch" || shell.contains(event.relatedTarget)) return;
+    if (closeAfterClear) setOpen(false);
   });
   toggle.addEventListener("click", () => {
     if (openedByHover) {
@@ -512,11 +524,6 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
       return;
     }
     const open = control.dataset.open !== "true";
-    if (!open) {
-      input.value = "";
-      selectedTags.clear();
-      change();
-    }
     setOpen(open);
   });
   settingsToggle?.addEventListener("click", () => setOpen(false));
@@ -528,6 +535,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   clear.addEventListener("click", () => {
     input.value = "";
     change();
+    closeAfterClear = true;
     input.focus({ preventScroll: true });
   });
   control.addEventListener("submit", (event) => {
@@ -537,12 +545,14 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   });
   input.addEventListener("compositionstart", () => {
     composing = true;
+    closeAfterClear = false;
   });
   input.addEventListener("compositionend", () => {
     composing = false;
     change();
   });
   input.addEventListener("input", () => {
+    closeAfterClear = false;
     if (!composing) change();
   });
   input.addEventListener("click", renderSuggestions);
