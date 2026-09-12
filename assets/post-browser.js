@@ -156,6 +156,7 @@ export function initializePostBrowser(document, window) {
   const tagsByCard = new Map(cards.map((card) => [card, JSON.parse(card.dataset.postTags)]));
   const chips = [...document.querySelectorAll("[data-tag-filter]")];
   const selectorChips = chips.filter((chip) => chip.closest("[data-tag-parent]"));
+  const articleTagChips = chips.filter((chip) => chip.classList.contains("article-tag"));
   const groups = [...browser.querySelectorAll("[data-tag-parent]")];
   const optionsByGroup = new Map(groups.map((group) => [group, [...group.querySelectorAll("[data-tag-option]")]]));
   const excludeButtons = [...browser.querySelectorAll("[data-exclude-tag]")];
@@ -290,6 +291,9 @@ export function initializePostBrowser(document, window) {
       chip.setAttribute("aria-pressed", String(selected.has(tag)));
       chip.disabled = false; // Selecting an excluded tag also restores it.
       chip.classList.toggle("is-ancestor", [...selected].some((other) => other.startsWith(`${tag}:`)));
+    }
+    for (const chip of articleTagChips) {
+      chip.setAttribute("aria-pressed", String(selected.has(chip.dataset.tagFilter)));
     }
     for (const button of excludeButtons) {
       const active = excluded.has(button.dataset.excludeTag);

@@ -138,6 +138,22 @@
       :root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[aria-pressed="true"] .tag-count {
         color: var(--accent-strong);
       }
+      /* Article-page tags mirror the filter-chip palette. Their selected state
+         is exposed by post-browser through aria-pressed, without changing tag
+         navigation behavior or geometry. */
+      :root .article-tag[aria-pressed="true"] {
+        background: var(--soft-accent);
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      :root .article-tag[aria-pressed="true"]:is(:hover, :focus-visible) {
+        color: var(--accent-strong);
+        border-color: var(--accent-strong);
+      }
+      :root .article-tag:not([aria-pressed="true"]):is(:hover, :focus-visible) {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
       :root .read-toggle[aria-checked="true"]::before {
         color: var(--line);
         border-color: var(--line);
