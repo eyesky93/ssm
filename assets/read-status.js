@@ -302,6 +302,26 @@ function installEngagementLayout(document) {
         font-variant-numeric: tabular-nums;
       }
 
+      /* Mirror the entire engagement strip in RTL: the logical order remains
+         upvote, comments, views when read right-to-left, and each icon/count
+         pair mirrors with the icon on the reading-start side. */
+      [dir="rtl"] .post-engagement {
+        flex-direction: row-reverse;
+      }
+      [dir="rtl"] .post-engagement .post-vote,
+      [dir="rtl"] .post-engagement .post-comments,
+      [dir="rtl"] .post-engagement .post-views {
+        direction: rtl;
+      }
+      [dir="rtl"] .post-engagement svg {
+        grid-column: 2;
+      }
+      [dir="rtl"] .post-engagement .post-vote-count,
+      [dir="rtl"] .post-engagement .post-comment-count,
+      [dir="rtl"] .post-engagement .post-view-count {
+        grid-column: 1;
+      }
+
       /* The engagement control itself is forced LTR so icon/count order stays
          stable. Therefore use physical horizontal edges here: in English its
          right edge follows the checkbox; in RTL its left edge follows the
