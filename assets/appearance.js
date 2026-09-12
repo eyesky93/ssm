@@ -131,6 +131,9 @@
       :root .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
         border-inline-start-color: var(--accent);
       }
+      :root .post-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > .post-engagement::before {
+        z-index: 8;
+      }
       :root .tag-descendant-list > .tag-subgroup {
         display: contents;
       }
