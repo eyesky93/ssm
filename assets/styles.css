@@ -804,6 +804,8 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 .post-stream {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: 1fr;
+  align-items: stretch;
   gap: 1rem;
 }
 
