@@ -145,6 +145,35 @@
       :root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[aria-pressed="true"] .tag-count {
         color: var(--accent-strong);
       }
+      /* On desktop, reveal the hide action only from explicit pointer events.
+         This deliberately overrides the base :hover swap: layout reordering can
+         move a tag underneath a stationary pointer, but it must not manufacture
+         a fresh hide-X hover. */
+      @media (hover: hover) and (pointer: fine) {
+        :root .tag-option:not(.is-excluded) .tag-exclude {
+          opacity: 0 !important;
+          visibility: hidden !important;
+          transition: none !important;
+        }
+        :root .tag-option:not(.is-excluded) .tag-count {
+          opacity: 1 !important;
+          transition: none !important;
+        }
+        :root .tag-option:not(.is-excluded).tag-hide-action-visible .tag-exclude {
+          opacity: 1 !important;
+          visibility: visible !important;
+        }
+        :root .tag-option:not(.is-excluded).tag-hide-action-visible .tag-count {
+          opacity: 0 !important;
+        }
+        :root .tag-option.tag-hide-action-suppressed .tag-exclude {
+          opacity: 0 !important;
+          visibility: hidden !important;
+        }
+        :root .tag-option.tag-hide-action-suppressed .tag-count {
+          opacity: 1 !important;
+        }
+      }
       /* Article-page tags mirror the filter-chip palette. Their selected state
          is exposed by post-browser through aria-pressed, without changing tag
          navigation behavior or geometry. */
@@ -336,6 +365,150 @@
       }
     `;
     document.head.append(tagHoverStyle);
+  }
+
+  function initializeTagHideHover() {
+    const finePointer = window.matchMedia?.("(hover: hover) and (pointer: fine)")?.matches ?? false;
+    if (!finePointer || typeof document.querySelectorAll !== "function") return;
+
+    const options = [...document.querySelectorAll("[data-tag-option]")];
+    if (!options.length) return;
+
+    const states = new WeakMap();
+    let suppressUntilPointerMove = false;
+
+    const isExcluded = (option) => option.classList.contains("is-excluded") || option.querySelector("[data-exclude-tag]")?.getAttribute("aria-pressed") === "true";
+    const stateFor = (option) => states.get(option);
+    const setVisible = (option, visible) => option.classList.toggle("tag-hide-action-visible", visible && !isExcluded(option));
+
+    const reset = (option) => {
+      const state = stateFor(option);
+      if (!state) return;
+      if (state.timer) window.clearTimeout(state.timer);
+      state.timer = null;
+      state.inside = false;
+      setVisible(option, false);
+    };
+
+    const schedule = (option) => {
+      const state = stateFor(option);
+      if (!state || state.timer || option.classList.contains("tag-hide-action-visible") || suppressUntilPointerMove || isExcluded(option)) return;
+      state.timer = window.setTimeout(() => {
+        state.timer = null;
+        if (state.inside && !suppressUntilPointerMove && !isExcluded(option)) setVisible(option, true);
+      }, 700);
+    };
+
+    for (const option of options) {
+      const count = option.querySelector(".tag-count");
+      const button = option.querySelector("[data-exclude-tag]");
+      if (!count || !button) continue;
+      states.set(option, { timer: null, inside: false });
+      setVisible(option, false);
+
+      count.addEventListener("pointerenter", () => {
+        const state = stateFor(option);
+        if (!state || suppressUntilPointerMove || isExcluded(option)) return;
+        state.inside = true;
+        schedule(option);
+      });
+      count.addEventListener("pointerleave", (event) => {
+        if (event.relatedTarget === button && option.classList.contains("tag-hide-action-visible")) return;
+        reset(option);
+      });
+      button.addEventListener("pointerenter", () => {
+        const state = stateFor(option);
+        if (state && option.classList.contains("tag-hide-action-visible")) state.inside = true;
+      });
+      button.addEventListener("pointerleave", (event) => {
+        if (event.relatedTarget === count) {
+          const state = stateFor(option);
+          if (state) state.inside = true;
+          return;
+        }
+        reset(option);
+      });
+      option.addEventListener("pointerleave", () => reset(option));
+      option.addEventListener("focusin", (event) => {
+        if (suppressUntilPointerMove || isExcluded(option) || !event.target.matches?.(":focus-visible")) return;
+        const state = stateFor(option);
+        if (state?.timer) window.clearTimeout(state.timer);
+        if (state) state.timer = null;
+        setVisible(option, true);
+      });
+      option.addEventListener("focusout", () => {
+        queueMicrotask(() => {
+          if (!option.contains(document.activeElement)) reset(option);
+        });
+      });
+    }
+
+    document.addEventListener("pointermove", (event) => {
+      if (suppressUntilPointerMove) {
+        suppressUntilPointerMove = false;
+        for (const option of options) option.classList.remove("tag-hide-action-suppressed");
+      }
+
+      const option = event.target?.closest?.("[data-tag-option]");
+      if (!option) return;
+      const state = stateFor(option);
+      if (!state || isExcluded(option)) return;
+      const count = option.querySelector(".tag-count");
+      const button = option.querySelector("[data-exclude-tag]");
+      const targetCount = event.target?.closest?.(".tag-count");
+      const targetButton = event.target?.closest?.("[data-exclude-tag]");
+
+      if (targetCount === count) {
+        state.inside = true;
+        schedule(option);
+      } else if (targetButton === button && option.classList.contains("tag-hide-action-visible")) {
+        state.inside = true;
+      } else {
+        reset(option);
+      }
+    }, true);
+
+    document.addEventListener("click", (event) => {
+      const button = event.target?.closest?.("[data-exclude-tag]");
+      if (!button || event.button !== 0 || event.detail === 0) return;
+      queueMicrotask(() => {
+        // aria-pressed=false after the click means this click restored a hidden
+        // tag. Reset every desktop hide-hover state before the browser can paint
+        // the reordered row, then require real pointer movement before any new
+        // 0.7 s countdown can begin.
+        if (button.getAttribute("aria-pressed") !== "false") return;
+        suppressUntilPointerMove = true;
+        for (const option of options) {
+          reset(option);
+          if (!isExcluded(option)) option.classList.add("tag-hide-action-suppressed");
+        }
+        const focusedOption = document.activeElement?.closest?.("[data-tag-option]");
+        if (focusedOption) document.activeElement.blur?.();
+      });
+    });
+
+    if (window.MutationObserver) {
+      new window.MutationObserver((records) => {
+        for (const record of records) {
+          if (record.type !== "attributes" || record.attributeName !== "aria-pressed") continue;
+          const button = record.target;
+          if (!button.matches?.("[data-exclude-tag]")) continue;
+          const option = button.closest?.("[data-tag-option]");
+          if (!option) continue;
+          reset(option);
+          if (button.getAttribute("aria-pressed") === "true") option.classList.remove("tag-hide-action-suppressed");
+        }
+      }).observe(document.documentElement, { subtree: true, attributes: true, attributeFilter: ["aria-pressed"] });
+    }
+  }
+
+  const fineTagPointer = window.matchMedia?.("(hover: hover) and (pointer: fine)")?.matches ?? false;
+  if (fineTagPointer) {
+    if (document.readyState === "loading" && typeof document.addEventListener === "function") {
+      document.addEventListener("DOMContentLoaded", initializeTagHideHover, { once: true });
+    } else {
+      initializeTagHideHover();
+    }
   }
 
   apply(theme);
