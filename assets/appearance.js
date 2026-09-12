@@ -193,12 +193,18 @@
         border-left-color: var(--accent);
         border-right-color: var(--accent);
       }
+      :root[dir="rtl"] .post-engagement:has(.post-vote[aria-pressed="true"]) .post-comments {
+        border-right-color: var(--accent);
+      }
       :root[dir="rtl"] .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
         border-left-color: var(--accent);
         border-right: 0;
       }
       :root[dir="rtl"] .post-engagement .post-vote[aria-pressed="true"]:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
         border-left-color: var(--accent-strong);
+      }
+      :root[dir="rtl"] .post-engagement:has(.post-vote[aria-pressed="true"]:is(:hover, :focus-visible):not(:disabled)) .post-comments {
+        border-right-color: var(--accent-strong);
       }
       :root[dir="rtl"] .post-engagement .post-vote:is(:hover, :focus-visible):not(:disabled) {
         border-left-color: var(--accent-strong);
