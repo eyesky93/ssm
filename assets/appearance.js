@@ -109,6 +109,13 @@
   if (typeof document.createElement === "function" && document.head?.append) {
     const tagHoverStyle = document.createElement("style");
     tagHoverStyle.textContent = `
+      /* The pin ring needs more accent strength against dark surfaces.
+         Keep light mode, the pin artwork, and shared soft fills unchanged. */
+      :root[data-theme="dark"] .pin-toggle[aria-pressed="false"]:not(:disabled):is(:hover, :focus-visible),
+      :root[data-theme="dark"] .pin-toggle[aria-pressed="true"]:hover {
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--paper), var(--accent) 40%);
+      }
+
       /* Very compact cards use the same complete localized date as the other views. */
       :root .post-stream[data-layout="compact"] .post-date-full {
         display: inline;
