@@ -562,6 +562,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
           email: data.get("email"),
           language: data.get("language"),
           ...(languageOptions.length ? { languages } : {}),
+          ...(data.has("frequency") ? { frequency: data.get("frequency") } : {}),
           accentColor: newsletterAccentColor(),
           theme: newsletterTheme(),
           consent: data.get("consent") === "yes",
