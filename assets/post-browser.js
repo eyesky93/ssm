@@ -423,7 +423,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
       ({ query, caseSensitive, selectedTags } = mobileOriginal);
       input.value = query;
       caseButton.setAttribute("aria-pressed", String(caseSensitive));
-      clear.hidden = !query;
+      clear.hidden = !(query || selectedTags.size);
     }
     mobileOriginal = null;
     dialog.close();
@@ -536,7 +536,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     suggestionsDismissed = false;
     query = input.value.slice(0, 500);
     caseButton.setAttribute("aria-pressed", String(caseSensitive));
-    clear.hidden = !query;
+    clear.hidden = !(query || selectedTags.size);
     if (!dialog.open) {
       updateUrl();
       onChange(true);
@@ -559,7 +559,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     input.value = query;
     suggestionsDismissed = false;
     caseButton.setAttribute("aria-pressed", String(caseSensitive));
-    clear.hidden = !query;
+    clear.hidden = !(query || selectedTags.size);
     if (query.trim() || selectedTags.size) {
       setOpenState(!mobile.matches);
       void loadIndex();
@@ -668,6 +668,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   });
   clear.addEventListener("click", () => {
     input.value = "";
+    selectedTags.clear();
     change();
     input.focus({ preventScroll: true });
     inputEngaged = false;
