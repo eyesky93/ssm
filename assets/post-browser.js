@@ -269,6 +269,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   let query = "", caseSensitive = false, completion = null;
   let selectedTags = /* @__PURE__ */ new Set();
   let showingSuggestions = false;
+  let openedByHover = false;
   let restored = false;
   let previousOrder = null;
   const original = new Map(cards.map((card) => {
@@ -328,7 +329,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     if (focusedKey) [...suggestions.children].find((button) => button.dataset.searchTag === focusedKey)?.focus({ preventScroll: true });
     sizeTagRow();
   }
-  function setOpen(open) {
+  function setOpen(open, { focus = true } = {}) {
     if (open && settingsToggle?.getAttribute("aria-expanded") === "true") settingsToggle.click();
     control.dataset.open = String(open);
     toggle.setAttribute("aria-expanded", String(open));
@@ -338,9 +339,14 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
       toggle.title = label;
     }
     panel.inert = !open;
-    if (!open) closeSuggestions();
-    else {
-      input.focus({ preventScroll: true });
+    if (!open) {
+      openedByHover = false;
+      closeSuggestions();
+    } else {
+      if (focus) {
+        openedByHover = false;
+        input.focus({ preventScroll: true });
+      }
       void loadIndex();
       renderSuggestions();
     }
@@ -492,7 +498,19 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     if (status) status.textContent = (browser.dataset.searchResults || "{count}").replace("{count}", String(ordered.length));
     return ordered.length;
   }
+  toggle.addEventListener("pointerenter", (event) => {
+    if (event.pointerType === "touch" || !window2.matchMedia("(any-hover: hover) and (any-pointer: fine)").matches || control.dataset.open === "true") return;
+    setOpen(true, { focus: false });
+    openedByHover = true;
+  });
+  toggle.addEventListener("pointerleave", () => {
+    openedByHover = false;
+  });
   toggle.addEventListener("click", () => {
+    if (openedByHover) {
+      setOpen(true);
+      return;
+    }
     const open = control.dataset.open !== "true";
     if (!open) {
       input.value = "";
@@ -528,7 +546,10 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     if (!composing) change();
   });
   input.addEventListener("click", renderSuggestions);
-  input.addEventListener("focus", renderSuggestions);
+  input.addEventListener("focus", () => {
+    openedByHover = false;
+    renderSuggestions();
+  });
   input.addEventListener("keyup", (event) => {
     if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) renderSuggestions();
   });

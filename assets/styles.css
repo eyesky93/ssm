@@ -282,6 +282,10 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
   color: var(--accent-strong);
   outline: none;
 }
+.search-case[aria-pressed="true"] {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
 .search-panel {
   position: absolute;
   inset-inline-end: calc(100% + var(--header-control-gap));
@@ -306,6 +310,8 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
   visibility: visible;
   opacity: 1;
   pointer-events: auto;
+  /* Make the input focusable during the opening tap, before animation paints. */
+  transition: opacity 160ms ease;
 }
 .site-search[data-open="true"] .search-field-row { width: 100%; }
 .search-field {
@@ -357,33 +363,25 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
   flex-wrap: wrap;
   align-items: center;
   gap: 0.35rem;
-  margin-block-start: 0.4rem;
-  padding: 0;
-}
-.search-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  max-width: 100%;
-  min-height: 1.85rem;
-  padding: 0.15rem 0.65rem;
+  /* Continue beneath the straight bottom edge between the field's curves. */
+  margin-inline: calc(var(--header-control-size) / 2);
+  padding: 0.5rem;
   border: 1px solid var(--line-dark);
-  border-radius: 999px;
+  border-block-start: 0;
+  border-radius: 0 0 0.65rem 0.65rem;
   background: var(--paper);
-  color: var(--ink);
-  font: inherit;
-  font-size: 0.85rem;
-  line-height: 1.35;
-  text-align: start;
-  overflow-wrap: anywhere;
-  cursor: pointer;
 }
+.search-tag { overflow-wrap: anywhere; }
 .search-tag:is(:hover, :focus-visible, [aria-pressed="true"]) {
-  border-color: var(--accent-strong);
-  color: var(--accent-strong);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .search-tag[aria-pressed="true"] {
-  background: color-mix(in srgb, var(--accent) 10%, var(--paper));
+  background: var(--soft-accent);
+}
+.search-tag[aria-pressed="true"]:is(:hover, :focus-visible) {
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
 }
 .search-tag-remove { flex: 0 0 auto; font-size: 1rem; line-height: 1; }
 html[lang="he"] .search-tag { font-family: var(--font-interface-hebrew), var(--font-content); }
@@ -656,7 +654,8 @@ h3 {
   direction: ltr;
 }
 
-.tag-chip {
+.tag-chip,
+.search-tag {
   max-width: 100%;
   display: inline-flex;
   align-items: center;
