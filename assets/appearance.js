@@ -128,6 +128,9 @@
       :root .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
         color: var(--accent);
       }
+      :root .post-engagement .post-vote:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
+        color: var(--accent-strong);
+      }
       :root .post-engagement .post-vote[aria-pressed="true"]:is(:hover, :focus-visible):not(:disabled) svg,
       :root .post-engagement .post-vote[aria-pressed="true"]:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
         color: var(--accent-strong);
@@ -209,6 +212,22 @@
       :root[dir="rtl"] .post-engagement .post-vote:is(:hover, :focus-visible):not(:disabled) {
         border-left-color: var(--accent-strong);
         border-right-color: var(--accent-strong);
+      }
+
+      /* Hovering the detached engagement strip must never highlight its card in
+         RTL. Keep the card frame and any pin ribbon at their resting colors. */
+      :root[dir="rtl"] .post-card:has(> .post-engagement:hover),
+      :root[dir="rtl"] .post-card:has(> .post-engagement:focus-within) {
+        --post-frame-color: var(--line) !important;
+        border-color: var(--line) !important;
+      }
+      :root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:hover),
+      :root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
+        box-shadow: .32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03) !important;
+      }
+      :root[dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:hover),
+      :root[dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
+        box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
       }
     `;
     document.head.append(tagHoverStyle);
