@@ -144,16 +144,6 @@
       :root .post-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > .post-engagement::before {
         z-index: 8;
       }
-      :root .tag-descendant-list > .tag-subgroup {
-        display: contents;
-      }
-      :root .tag-descendant-list > .tag-subgroup[hidden],
-      :root .tag-descendant-list:not(:has(> .tag-subgroup:not([hidden]))) {
-        display: none;
-      }
-      :root[dir="rtl"] .tag-list {
-        direction: rtl;
-      }
 
       /* Keep RTL engagement geometry physical and explicit. The three segments
          are mirrored as a strip and each cell is mirrored too: number on the
@@ -237,61 +227,6 @@
       }
     `;
     document.head.append(tagHoverStyle);
-  }
-
-  function compareTagOptions(left, right) {
-    const a = left.dataset.tagOption ?? "";
-    const b = right.dataset.tagOption ?? "";
-    return a < b ? -1 : a > b ? 1 : 0;
-  }
-
-  function flattenTagNavigation() {
-    if (typeof document.querySelectorAll !== "function" || typeof document.createElement !== "function") return;
-    for (const navigation of document.querySelectorAll(".subject-nav")) {
-      if (navigation.querySelector?.(":scope > .tag-descendant-list")) continue;
-      const groups = [...(navigation.children ?? [])].filter((child) => typeof child.dataset?.tagParent === "string");
-      const main = groups.find((group) => group.dataset.tagParent === "");
-      const descendants = groups.filter((group) => group.dataset.tagParent !== "");
-      if (!main || !descendants.length) continue;
-
-      // Keep one language-independent logical order. RTL then mirrors the LTR row
-      // instead of re-sorting the same tags by their translated labels.
-      const mainOptions = [...main.querySelectorAll("[data-tag-option]")].sort(compareTagOptions);
-      main.append(...mainOptions);
-      for (const group of descendants) {
-        const options = [...group.querySelectorAll("[data-tag-option]")].sort(compareTagOptions);
-        group.append(...options);
-      }
-
-      const rootOrder = new Map(
-        mainOptions.map((option, index) => [option.dataset.tagOption, index]),
-      );
-      descendants.sort((left, right) => {
-        const leftParent = left.dataset.tagParent;
-        const rightParent = right.dataset.tagParent;
-        const leftRoot = leftParent.split(":", 1)[0];
-        const rightRoot = rightParent.split(":", 1)[0];
-        const rootDifference = (rootOrder.get(leftRoot) ?? Number.MAX_SAFE_INTEGER)
-          - (rootOrder.get(rightRoot) ?? Number.MAX_SAFE_INTEGER);
-        if (rootDifference) return rootDifference;
-        return leftParent < rightParent ? -1 : leftParent > rightParent ? 1 : 0;
-      });
-
-      const row = document.createElement("div");
-      row.className = "tag-list tag-descendant-list";
-      row.dataset.tagDescendantList = "";
-      for (const group of descendants) {
-        group.classList.add("tag-subgroup");
-        row.append(group);
-      }
-      navigation.append(row);
-    }
-  }
-
-  if (typeof document.addEventListener === "function" && document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", flattenTagNavigation, { once: true });
-  } else if (document.body) {
-    flattenTagNavigation();
   }
 
   apply(theme);
