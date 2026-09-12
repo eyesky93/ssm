@@ -53,7 +53,12 @@ function expandPostTagHierarchies() {
           proxy.dataset.postTagTopic = topic;
           proxy.classList.remove("is-topic-hovered");
           const text = proxy.querySelector("span");
-          if (text) text.textContent = meta.label;
+          // The build emits one element per hierarchy level, separated by text.
+          // Preserve that level's icon/image/shorthand instead of replacing it
+          // with the full menu label. Older pages still use the text fallback.
+          const compactPart = source.querySelector(".compact-post-tag")?.children[depth - 1];
+          if (text && compactPart) text.replaceChildren(compactPart.cloneNode(true));
+          else if (text) text.textContent = meta.label;
           proxy.setAttribute("aria-label", meta.title);
           proxy.title = meta.title;
           const href = new URL(proxy.href, window.location.href);
