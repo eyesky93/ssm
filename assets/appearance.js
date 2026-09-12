@@ -292,6 +292,16 @@
       :root[dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
         box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
       }
+
+      /* Subscription topic pills indicate selection only through their existing
+         border/text styling. Do not reserve an icon slot for a hidden checkmark. */
+      :root .subscribe-dialog .topic-option span {
+        gap: 0;
+      }
+      :root .subscribe-dialog .topic-option span::before {
+        content: none;
+        display: none;
+      }
     `;
     document.head.append(tagHoverStyle);
   }
