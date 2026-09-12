@@ -271,8 +271,9 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   let query = "", caseSensitive = false, completion = null;
   let selectedTags = /* @__PURE__ */ new Set();
   let showingSuggestions = false;
+  let suggestionsDismissed = false;
   let openedByHover = false;
-  let closeAfterClear = false;
+  let previousScrollY = window2.scrollY;
   let restored = false;
   let previousOrder = null;
   const original = new Map(cards.map((card) => {
@@ -292,6 +293,27 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   function closeSuggestions() {
     completion = null;
     renderTagRow([]);
+  }
+  function dismissSuggestions() {
+    if (suggestionsDismissed) return;
+    if (suggestions.contains(document2.activeElement)) input.focus({ preventScroll: true });
+    suggestionsDismissed = true;
+    closeSuggestions();
+  }
+  function resumeSuggestions() {
+    suggestionsDismissed = false;
+    renderSuggestions();
+  }
+  function leaveSearch() {
+    if (control.dataset.open !== "true") return;
+    if (input.value.trim() || composing) dismissSuggestions();
+    else setOpen(false);
+  }
+  function pointerInsideSearch(event) {
+    const bounds = shell.getBoundingClientRect();
+    const anchor = control.getBoundingClientRect();
+    const inside = (rect) => event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
+    return inside(bounds) || inside(anchor) || bounds.top > anchor.bottom && event.clientX >= anchor.left && event.clientX <= anchor.right && event.clientY >= anchor.bottom && event.clientY <= bounds.top;
   }
   function sizeTagRow() {
     const height = control.dataset.open === "true" && !suggestions.hidden ? suggestions.getBoundingClientRect().height : 0;
@@ -345,9 +367,9 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     suggestions.inert = !open;
     if (!open) {
       openedByHover = false;
-      closeAfterClear = false;
-      closeSuggestions();
+      dismissSuggestions();
     } else {
+      suggestionsDismissed = false;
       if (focus) {
         openedByHover = false;
         input.focus({ preventScroll: true });
@@ -409,12 +431,12 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     change();
   }
   function renderSuggestions() {
-    if (!index || control.dataset.open !== "true" || document2.activeElement !== input) return closeSuggestions();
+    if (suggestionsDismissed || !index || control.dataset.open !== "true" || document2.activeElement !== input) return closeSuggestions();
     completion = autocompleteTags(input.value, input.selectionStart ?? input.value.length, index.tags);
     renderTagRow(completion?.options.filter((tag) => !selectedTags.has(tag.key)) || []);
   }
   function change() {
-    closeAfterClear = false;
+    suggestionsDismissed = false;
     query = input.value.slice(0, 500);
     caseButton.setAttribute("aria-pressed", String(caseSensitive));
     clear.hidden = !query;
@@ -434,7 +456,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     caseSensitive = nextCaseSensitive;
     selectedTags = nextTags;
     input.value = query;
-    closeAfterClear = false;
+    suggestionsDismissed = false;
     caseButton.setAttribute("aria-pressed", String(caseSensitive));
     clear.hidden = !query;
     if (query.trim() || selectedTags.size) {
@@ -514,10 +536,23 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     setOpen(true, { focus: false });
     openedByHover = true;
   });
-  shell.addEventListener("pointerleave", (event) => {
-    if (event.pointerType === "touch" || shell.contains(event.relatedTarget)) return;
-    if (closeAfterClear) setOpen(false);
+  control.addEventListener("pointerleave", (event) => {
+    if (event.pointerType === "touch" || control.contains(event.relatedTarget)) return;
+    if (!event.relatedTarget || !pointerInsideSearch(event)) leaveSearch();
   });
+  document2.addEventListener("pointermove", (event) => {
+    if (event.pointerType === "touch" || control.dataset.open !== "true") return;
+    if (!pointerInsideSearch(event)) leaveSearch();
+    else if (suggestionsDismissed && bar.contains(event.target)) resumeSuggestions();
+  }, { passive: true });
+  window2.addEventListener("scroll", () => {
+    const nextScrollY = window2.scrollY;
+    if (nextScrollY > previousScrollY && control.dataset.open === "true") dismissSuggestions();
+    previousScrollY = nextScrollY;
+  }, { passive: true });
+  window2.addEventListener("wheel", (event) => {
+    if (event.deltaY > 0 && control.dataset.open === "true") dismissSuggestions();
+  }, { passive: true });
   toggle.addEventListener("click", () => {
     if (openedByHover) {
       setOpen(true);
@@ -535,36 +570,35 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   clear.addEventListener("click", () => {
     input.value = "";
     change();
-    closeAfterClear = true;
     input.focus({ preventScroll: true });
   });
   control.addEventListener("submit", (event) => {
     event.preventDefault();
-    closeSuggestions();
+    dismissSuggestions();
     if (failed) void loadIndex();
   });
   input.addEventListener("compositionstart", () => {
     composing = true;
-    closeAfterClear = false;
+    suggestionsDismissed = false;
   });
   input.addEventListener("compositionend", () => {
     composing = false;
     change();
   });
   input.addEventListener("input", () => {
-    closeAfterClear = false;
+    suggestionsDismissed = false;
     if (!composing) change();
   });
-  input.addEventListener("click", renderSuggestions);
+  input.addEventListener("click", resumeSuggestions);
   input.addEventListener("focus", () => {
     openedByHover = false;
-    renderSuggestions();
+    resumeSuggestions();
   });
   input.addEventListener("keyup", (event) => {
-    if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) renderSuggestions();
+    if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) resumeSuggestions();
   });
   control.addEventListener("focusout", (event) => {
-    if (!control.contains(event.relatedTarget)) closeSuggestions();
+    if (!control.contains(event.relatedTarget)) dismissSuggestions();
   });
   suggestions.addEventListener("keydown", (event) => {
     const buttons = [...suggestions.children];
@@ -580,7 +614,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     } else if (event.key === "Escape") {
       event.preventDefault();
       input.focus({ preventScroll: true });
-      closeSuggestions();
+      dismissSuggestions();
     }
     if (target !== void 0) {
       event.preventDefault();
@@ -590,7 +624,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   input.addEventListener("keydown", (event) => {
     if (composing || event.isComposing) return;
     if (["ArrowDown", "ArrowUp"].includes(event.key)) {
-      if (suggestions.hidden) renderSuggestions();
+      if (suggestions.hidden || suggestionsDismissed) resumeSuggestions();
       const buttons = [...suggestions.children];
       if (!buttons.length) return;
       event.preventDefault();
@@ -599,7 +633,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
       choices[event.key === "ArrowDown" ? 0 : choices.length - 1].focus({ preventScroll: true });
     } else if (event.key === "Escape") {
       event.preventDefault();
-      if (showingSuggestions) closeSuggestions();
+      if (showingSuggestions) dismissSuggestions();
       else {
         input.value = "";
         selectedTags.clear();
