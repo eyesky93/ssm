@@ -59,7 +59,7 @@ function emailThemePalette(value, mode = "light") {
 var FREQUENCIES = ["daily", "weekly", "fortnightly", "monthly", "semiannual", "annual"];
 var FREQUENCY_LABELS = {
   en: { daily: "Daily", weekly: "Weekly", fortnightly: "Every two weeks", monthly: "Monthly", semiannual: "Every six months", annual: "Yearly" },
-  he: { daily: "\u05DB\u05DC \u05D9\u05D5\u05DD", weekly: "\u05DB\u05DC \u05E9\u05D1\u05D5\u05E2", fortnightly: "\u05DB\u05DC \u05E9\u05D1\u05D5\u05E2\u05D9\u05D9\u05DD", monthly: "\u05DB\u05DC \u05D7\u05D5\u05D3\u05E9", semiannual: "\u05DB\u05DC \u05D7\u05E6\u05D9 \u05E9\u05E0\u05D4", annual: "\u05DB\u05DC \u05E9\u05E0\u05D4" }
+  he: { daily: "\u05D9\u05D5\u05DD", weekly: "\u05E9\u05D1\u05D5\u05E2", fortnightly: "\u05E9\u05D1\u05D5\u05E2\u05D9\u05D9\u05DD", monthly: "\u05D7\u05D5\u05D3\u05E9", semiannual: "\u05D7\u05E6\u05D9 \u05E9\u05E0\u05D4", annual: "\u05E9\u05E0\u05D4" }
 };
 
 // src/newsletter-settings.js
@@ -68,8 +68,7 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
   if (!root) return;
   const he = root.dataset.language === "he", lang = he ? "he" : "en";
   const copy = he ? {
-    frequency: "\u05EA\u05D3\u05D9\u05E8\u05D5\u05EA",
-    frequencyNote: "\u05D1\u05E8\u05D9\u05E8\u05EA \u05D4\u05DE\u05D7\u05D3\u05DC \u05D4\u05D9\u05D0 \u05E9\u05D1\u05D5\u05E2. \u05D4\u05D4\u05D5\u05D3\u05E2\u05D4 \u05E0\u05E9\u05DC\u05D7\u05EA \u05D1\u05E9\u05E2\u05D4 20:00 \u05DC\u05E4\u05D9 \u05E9\u05E2\u05D5\u05DF \u05D9\u05E9\u05E8\u05D0\u05DC, \u05D5\u05E8\u05E7 \u05D0\u05DD \u05D9\u05E9 \u05E2\u05D3\u05DB\u05D5\u05E0\u05D9\u05DD \u05DE\u05EA\u05D0\u05D9\u05DE\u05D9\u05DD. \u05D7\u05D5\u05D3\u05E9, \u05D7\u05E6\u05D9 \u05E9\u05E0\u05D4 \u05D5\u05E9\u05E0\u05D4 \u05E0\u05DE\u05D3\u05D3\u05D9\u05DD \u05DC\u05E4\u05D9 \u05DC\u05D5\u05D7 \u05D4\u05E9\u05E0\u05D4.",
+    frequency: "\u05EA\u05D3\u05D9\u05E8\u05D5\u05EA \u2014 \u05E4\u05E2\u05DD \u05D1\u05BE",
     languages: "\u05E9\u05E4\u05D5\u05EA",
     all: "\u05D1\u05D7\u05D9\u05E8\u05EA \u05D4\u05DB\u05D5\u05DC",
     subjects: "\u05E0\u05D5\u05E9\u05D0\u05D9\u05DD",
@@ -77,6 +76,7 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
     appearance: "\u05DE\u05E8\u05D0\u05D4 \u05D4\u05D4\u05D5\u05D3\u05E2\u05D5\u05EA",
     light: "\u05DE\u05E6\u05D1 \u05D1\u05D4\u05D9\u05E8",
     dark: "\u05DE\u05E6\u05D1 \u05DB\u05D4\u05D4",
+    auto: "\u05D0\u05D5\u05D8\u05D5\u05DE\u05D8\u05D9",
     accent: "\u05E6\u05D1\u05E2 \u05D4\u05D3\u05D2\u05E9\u05D4",
     reset: "\u05D0\u05D9\u05E4\u05D5\u05E1 \u05E6\u05D1\u05E2 \u05D4\u05D4\u05D3\u05D2\u05E9\u05D4",
     save: "\u05E9\u05DE\u05D9\u05E8\u05EA \u05D4\u05E9\u05D9\u05E0\u05D5\u05D9\u05D9\u05DD",
@@ -88,15 +88,10 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
     error: "\u05DC\u05D0 \u05E0\u05D9\u05EA\u05DF \u05DC\u05D4\u05E9\u05DC\u05D9\u05DD \u05D0\u05EA \u05D4\u05D1\u05E7\u05E9\u05D4. \u05E0\u05E1\u05D5 \u05E9\u05D5\u05D1.",
     conflict: "\u05D4\u05D4\u05E2\u05D3\u05E4\u05D5\u05EA \u05D4\u05E9\u05EA\u05E0\u05D5 \u05D0\u05D5 \u05E9\u05D4\u05D5\u05D3\u05E2\u05D4 \u05E0\u05DE\u05E6\u05D0\u05EA \u05D1\u05E9\u05DC\u05D9\u05D7\u05D4. \u05E4\u05EA\u05D7\u05D5 \u05E9\u05D5\u05D1 \u05D0\u05EA \u05D4\u05D4\u05D2\u05D3\u05E8\u05D5\u05EA \u05D1\u05D4\u05DE\u05E9\u05DA.",
     invalid: "\u05D1\u05D7\u05E8\u05D5 \u05E9\u05E4\u05D4 \u05D0\u05D7\u05EA \u05DC\u05E4\u05D7\u05D5\u05EA \u05D5\u05E0\u05D5\u05E9\u05D0 \u05D0\u05D7\u05D3 \u05DC\u05E4\u05D7\u05D5\u05EA, \u05D0\u05D5 \u05D0\u05EA \u05DB\u05DC \u05D4\u05E0\u05D5\u05E9\u05D0\u05D9\u05DD.",
-    account: "\u05D4\u05D5\u05D3\u05E2\u05D5\u05EA \u05E2\u05D1\u05D5\u05E8",
-    session: "\u05D4\u05E7\u05D9\u05E9\u05D5\u05E8 \u05D0\u05D9\u05E9\u05D9 \u05D5\u05D7\u05D3\u05BE\u05E4\u05E2\u05DE\u05D9. \u05E0\u05D9\u05EA\u05DF \u05DC\u05E2\u05E8\u05D5\u05DA \u05D1\u05DE\u05E9\u05DA 20 \u05D3\u05E7\u05D5\u05EA; \u05D4\u05D5\u05D3\u05E2\u05D4 \u05D7\u05D3\u05E9\u05D4 \u05DE\u05D1\u05D8\u05DC\u05EA \u05D2\u05DD \u05D0\u05EA \u05D4\u05D4\u05EA\u05D7\u05D1\u05E8\u05D5\u05EA \u05D4\u05D6\u05D0\u05EA.",
     logout: "\u05E1\u05D9\u05D5\u05DD",
-    signedOut: "\u05D4\u05E2\u05E8\u05D9\u05DB\u05D4 \u05D4\u05E1\u05EA\u05D9\u05D9\u05DE\u05D4. \u05E1\u05D2\u05E8\u05D5 \u05D0\u05EA \u05D4\u05DC\u05E9\u05D5\u05E0\u05D9\u05EA.",
-    next: "\u05DC\u05D0 \u05DC\u05E4\u05E0\u05D9",
-    schedule: "\u05D1\u05E9\u05E2\u05D4 20:00 \u05DC\u05E4\u05D9 Asia/Jerusalem, \u05D5\u05E8\u05E7 \u05DB\u05E9\u05D9\u05E9 \u05E2\u05D3\u05DB\u05D5\u05E0\u05D9\u05DD \u05DE\u05EA\u05D0\u05D9\u05DE\u05D9\u05DD."
+    signedOut: "\u05D4\u05E2\u05E8\u05D9\u05DB\u05D4 \u05D4\u05E1\u05EA\u05D9\u05D9\u05DE\u05D4. \u05E1\u05D2\u05E8\u05D5 \u05D0\u05EA \u05D4\u05DC\u05E9\u05D5\u05E0\u05D9\u05EA."
   } : {
     frequency: "Frequency",
-    frequencyNote: "Weekly by default. Delivery is at 20:00 Israel time, only when matching updates exist. Month, half-year and year intervals use the calendar.",
     languages: "Languages",
     all: "Select all",
     subjects: "Subjects",
@@ -104,6 +99,7 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
     appearance: "Email appearance",
     light: "Light mode",
     dark: "Dark mode",
+    auto: "Auto",
     accent: "Accent color",
     reset: "Reset accent color",
     save: "Save changes",
@@ -115,19 +111,17 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
     error: "The request could not be completed. Please try again.",
     conflict: "Settings changed or an email is being delivered. Open settings again later.",
     invalid: "Choose at least one language and one subject, or All subjects.",
-    account: "Emails for",
-    session: "Your personal link is single-use. Edit for 20 minutes; a newer email also ends this session.",
     logout: "Done",
-    signedOut: "Editing ended. You can close this tab.",
-    next: "Not before",
-    schedule: "at 20:00 Asia/Jerusalem, and only when matching updates exist."
+    signedOut: "Editing ended. You can close this tab."
   };
   const status = root.querySelector("[data-settings-status]"), form = root.querySelector("[data-settings-form]");
   const entry = root.querySelector("[data-settings-entry]"), opener = root.querySelector("[data-settings-open]");
   const recovery = root.querySelector("[data-settings-recovery]");
   let linkToken = new URLSearchParams(window2.location.hash.slice(1)).get("token"), session = "", expiresAt = 0, revision = 0, preferences;
   if (window2.location.hash) window2.history.replaceState(null, "", window2.location.pathname + window2.location.search);
-  const paint = (accent, theme) => {
+  const deviceTheme = window2.matchMedia?.("(prefers-color-scheme: dark)");
+  const paint = (accent, choice2) => {
+    const theme = choice2 === "auto" ? deviceTheme?.matches ? "dark" : "light" : choice2;
     const p = emailThemePalette(accent, theme);
     for (const [key, value] of Object.entries({ paper: p.canvas, surface: p.paper, ink: p.text, muted: p.muted, line: p.line, "line-dark": p.lineDark, accent: p.accent, "accent-strong": p.ink, "soft-accent": p.soft, "on-button": p.onButton, "button-fill": p.button })) document2.documentElement.style.setProperty(`--${key}`, value);
     document2.documentElement.dataset.theme = theme;
@@ -141,6 +135,13 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
   } catch {
   }
   paint(initialAccent, initialTheme);
+  const followDevice = () => {
+    if (form.querySelector('[name="theme"]:checked')?.value === "auto") {
+      paint(form.querySelector('[name="accentColor"]').value, "auto");
+    }
+  };
+  if (deviceTheme?.addEventListener) deviceTheme.addEventListener("change", followDevice);
+  else deviceTheme?.addListener?.(followDevice);
   if (root.dataset.enabled !== "true") return;
   opener.hidden = !linkToken;
   if (linkToken) recovery.hidden = true;
@@ -202,16 +203,10 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
     wrap.append(input, span);
     return wrap;
   }
-  function fieldset(title, note = "") {
+  function fieldset(title) {
     const field = document2.createElement("fieldset"), legend = document2.createElement("legend");
     legend.textContent = title;
     field.append(legend);
-    if (note) {
-      const p = document2.createElement("p");
-      p.className = "form-note";
-      p.textContent = note;
-      field.append(p);
-    }
     const options = document2.createElement("div");
     options.className = "settings-choices";
     field.append(options);
@@ -223,11 +218,7 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
     revision = value.revision;
     form.replaceChildren();
     paint(value.accentColor, value.theme);
-    const account = document2.createElement("p");
-    account.className = "settings-email";
-    account.textContent = `${copy.account}: ${value.email}`;
-    form.append(account);
-    const frequency = fieldset(copy.frequency, copy.frequencyNote);
+    const frequency = fieldset(copy.frequency);
     for (const f of FREQUENCIES) frequency.options.append(choice("frequency", f, FREQUENCY_LABELS[lang][f], f === value.frequency, "radio"));
     const langs = fieldset(copy.languages), all = document2.createElement("button");
     all.type = "button";
@@ -248,6 +239,8 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
     });
     const appearance = fieldset(copy.appearance);
     appearance.options.className = "settings-appearance";
+    const auto = choice("theme", "auto", copy.auto, value.theme === "auto", "radio");
+    auto.classList.add("settings-theme-auto");
     const track = document2.createElement("div");
     track.className = "settings-theme-track";
     for (const mode of ["light", "dark"]) {
@@ -267,38 +260,25 @@ function initializeNewsletterSettings(document2, window2, fetcher = window2.fetc
     }
     const menu = document2.createElement("details");
     menu.className = "settings-color-menu";
-    menu.innerHTML = '<summary><svg viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(45 12 12)"><path d="M9 9.5h6v8L12 21l-3-3.5Z" fill="var(--paper)" stroke="currentColor" stroke-width="1.5"/><path d="M10 13h4v4.1L12 19.45l-2-2.35Z" fill="currentColor"/><path d="M9 8.5V6a3 3 0 0 1 6 0v2.5Z" fill="currentColor"/><path d="M8 9h8" stroke="currentColor" stroke-width="2"/></g></svg></summary><div class="settings-color-panel"><input type="color" name="accentColor"><button type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></div>';
-    const summary = menu.querySelector("summary"), color = menu.querySelector("input"), reset = menu.querySelector("button");
+    menu.innerHTML = '<summary><svg viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(45 12 12)"><path d="M9 9.5h6v8L12 21l-3-3.5Z" fill="var(--paper)" stroke="currentColor" stroke-width="1.5"/><path d="M10 13h4v4.1L12 19.45l-2-2.35Z" fill="currentColor"/><path d="M9 8.5V6a3 3 0 0 1 6 0v2.5Z" fill="currentColor"/><path d="M8 9h8" stroke="currentColor" stroke-width="2"/></g></svg></summary><div class="settings-color-panel"><input type="color" name="accentColor"></div>';
+    const summary = menu.querySelector("summary"), color = menu.querySelector("input"), reset = document2.createElement("button");
+    reset.type = "button";
+    reset.className = "settings-color-reset";
+    reset.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg>';
     summary.title = copy.accent;
     summary.setAttribute("aria-label", copy.accent);
     color.setAttribute("aria-label", copy.accent);
     color.value = value.accentColor;
     reset.title = copy.reset;
     reset.setAttribute("aria-label", copy.reset);
-    const colorValue = document2.createElement("span");
-    colorValue.className = "settings-color-value";
-    colorValue.textContent = value.accentColor;
-    const appearanceChange = () => {
-      paint(color.value, track.querySelector("input:checked").value);
-      colorValue.textContent = color.value;
-    };
+    const appearanceChange = () => paint(color.value, appearance.field.querySelector('[name="theme"]:checked').value);
     color.addEventListener("input", appearanceChange);
-    track.addEventListener("change", appearanceChange);
+    appearance.options.addEventListener("change", appearanceChange);
     reset.addEventListener("click", () => {
-      color.value = "#1c9ae9";
+      color.value = DEFAULT_EMAIL_ACCENT;
       appearanceChange();
     });
-    appearance.options.append(track, menu, colorValue);
-    const note = document2.createElement("p");
-    note.className = "form-note";
-    note.textContent = copy.session;
-    form.append(note);
-    if (value.nextDeliveryDate) {
-      const due = document2.createElement("p");
-      due.className = "form-note";
-      due.textContent = `${copy.next} ${value.nextDeliveryDate}, ${copy.schedule}`;
-      form.append(due);
-    }
+    appearance.options.append(track, auto, menu, reset);
     const actions = document2.createElement("div");
     actions.className = "settings-actions";
     const save = document2.createElement("button");
