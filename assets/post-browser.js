@@ -214,7 +214,9 @@ export function initializePostBrowser(document, window) {
     catch { /* Keep the current page usable without persistent storage. */ }
   }
   function setUrl(replace = false) {
-    const url = selectionUrl(window.location.href, selected, initial, excluded);
+    // Keep an explicit empty tag in catalogue mode so reset does not collapse
+    // an inline post browser back to the article, including after reload.
+    const url = selectionUrl(window.location.href, selected, initial || (inline && browsing), excluded);
     if (inline && browsing) url.searchParams.delete("reader");
     if (inline && !browsing && url.searchParams.has("reader") && !selected.size) url.searchParams.set("tag", "");
     if (url.href !== window.location.href) window.history[replace ? "replaceState" : "pushState"](null, "", url.href);
@@ -296,8 +298,8 @@ export function initializePostBrowser(document, window) {
     clear.disabled = !hasFilters();
     empty.hidden = count > 0;
     if (inline) {
-      browser.hidden = !browsing || !hasFilters();
-      if (article) article.hidden = browsing && hasFilters();
+      browser.hidden = !browsing;
+      if (article) article.hidden = browsing;
     }
     renderNavigation();
     if (announce) status.textContent = status.dataset.resultMessage.replace("{count}", String(count));
@@ -310,7 +312,7 @@ export function initializePostBrowser(document, window) {
     save();
     render(true);
     // A tag button can disappear when filtering a card or backing out of a branch.
-    if (inline && !hasFilters()) returnFocus?.focus();
+    if (inline && !browsing) returnFocus?.focus();
     else if (source && (wasHidden || !source.checkVisibility?.({ visibilityProperty: true }))) {
       const target = selectorChips.find((chip) => selected.has(chip.dataset.tagFilter) && chip.checkVisibility?.())
         || selectorChips.find((chip) => chip.closest("[data-tag-parent]")?.dataset.tagParent === "") || excludeButtons[0];
