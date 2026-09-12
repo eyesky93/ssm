@@ -717,6 +717,29 @@ h3 {
 .tag-option:has(:focus-visible) .tag-exclude, .tag-option.is-excluded .tag-exclude { opacity: 1; visibility: visible; transition: none; }
 .tag-option:has(:focus-visible) .tag-count, .tag-option.is-excluded .tag-count { opacity: 0; transition: none; }
 .tag-exclude:hover { background: var(--line-dark); }
+/* The count remains the hover target until the pointer moves. Use that same
+   target for the delayed message so revealing X never needs another movement. */
+.tag-option:has(.tag-count:hover, .tag-exclude:hover, .tag-exclude:focus-visible) { z-index: 4; }
+.tag-exclude::after {
+  content: attr(aria-label);
+  position: absolute;
+  inset-block-start: calc(100% + 0.55rem);
+  inset-inline-end: 0;
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--line-dark);
+  border-radius: 0.35rem;
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  font: 600 0.8125rem/1.4 var(--font-interface);
+  text-align: start;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+.tag-option:has(.tag-count:hover, .tag-exclude:hover) .tag-exclude::after { opacity: 1; visibility: visible; transition: opacity 0s 1.2s, visibility 0s 1.2s; }
+.tag-exclude:focus-visible::after { opacity: 1; visibility: visible; transition: none; }
 .tag-exclude svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .tag-exclude [data-exclude-icon="restore"], .tag-exclude[aria-pressed="true"] [data-exclude-icon="remove"] { display: none; }
 .tag-exclude[aria-pressed="true"] [data-exclude-icon="restore"] { display: block; }

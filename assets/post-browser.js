@@ -1093,7 +1093,6 @@ function initializePostBrowser(document2, window2) {
       const active = excluded.has(button.dataset.excludeTag);
       button.setAttribute("aria-pressed", String(active));
       button.setAttribute("aria-label", active ? button.dataset.labelRestore : button.dataset.labelExclude);
-      button.title = button.getAttribute("aria-label");
       const option = button.closest("[data-tag-option]");
       if (option) {
         if (active) option.classList.toggle("is-restored", false);
