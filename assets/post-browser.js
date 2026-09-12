@@ -335,8 +335,11 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     if (primaryNav && header) {
       const anchor = control.getBoundingClientRect();
       const nav = primaryNav.getBoundingClientRect();
-      const gap = parseFloat(window2.getComputedStyle(header).columnGap) || 0;
-      const available = document2.documentElement.dir === "rtl" ? nav.left - anchor.right - gap : anchor.left - nav.right - gap;
+      const minimumGap = parseFloat(window2.getComputedStyle(header).columnGap) || 0;
+      const rem = parseFloat(window2.getComputedStyle(document2.documentElement).fontSize) || 16;
+      const space = document2.documentElement.dir === "rtl" ? nav.left - anchor.right : anchor.left - nav.right;
+      const gap = Math.max(minimumGap, Math.min(9 * rem, space + anchor.width - 16 * rem));
+      const available = space - gap;
       control.style.setProperty("--search-available-width", `${Math.max(0, available)}px`);
     }
     if (control.dataset.open !== "true" || !mainTags) return;
