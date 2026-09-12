@@ -203,7 +203,7 @@ html[lang="he"] .card-tag,
 html[lang="he"] .article-tag,
 html[lang="he"] .tag-chip,
 html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-interface-hebrew), var(--font-content); }
-.site-main.home-main { padding-block-start: 0.5rem; }
+.site-main.home-main { padding-block-start: 0; }
 .home-main > .subject-nav { border-block-start: 0; }
 .about-page { max-width: 65rem; }
 .about-page .page-heading h1 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.025em; }
