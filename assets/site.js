@@ -10,6 +10,39 @@ document.addEventListener("mousedown", (event) => {
   event.preventDefault();
 });
 
+// Restoring a hidden tag can leave the browser's hover state attached to the
+// exclude control after the tag list reorders. Keep the restored count visible
+// until the pointer actually moves again, so Restore cannot immediately turn
+// back into X without a fresh hover gesture.
+document.addEventListener("click", (event) => {
+  const button = event.target?.closest?.("[data-exclude-tag]");
+  if (!button || event.button !== 0 || event.detail === 0 || button.getAttribute("aria-pressed") !== "false") return;
+  const option = button.closest("[data-tag-option]");
+  const count = option?.querySelector(".tag-count");
+  if (!option || !count) return;
+
+  button.style.opacity = "0";
+  button.style.visibility = "hidden";
+  button.style.transition = "none";
+  count.style.opacity = "1";
+  count.style.transition = "none";
+
+  let cleared = false;
+  const clearRestoreSuppression = () => {
+    if (cleared) return;
+    cleared = true;
+    button.style.removeProperty("opacity");
+    button.style.removeProperty("visibility");
+    button.style.removeProperty("transition");
+    count.style.removeProperty("opacity");
+    count.style.removeProperty("transition");
+    window.removeEventListener("pointermove", clearRestoreSuppression, true);
+    window.removeEventListener("pointerdown", clearRestoreSuppression, true);
+  };
+  window.addEventListener("pointermove", clearRestoreSuppression, { once: true, capture: true, passive: true });
+  window.addEventListener("pointerdown", clearRestoreSuppression, { once: true, capture: true, passive: true });
+});
+
 // Post/card tags are rendered by the build as one leaf chip. Expand each leaf
 // into its visible hierarchy without changing the original functional anchor:
 // Physics:Conformal-Field-Theory becomes separate Physics and Conformal Field
