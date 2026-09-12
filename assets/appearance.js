@@ -112,13 +112,23 @@
       :root .tag-option:not(.is-excluded):not(:has(> .tag-chip[aria-pressed="true"])):hover {
         border-color: var(--accent);
       }
+      /* Selected tags keep the soft fill while their label, count and frame
+         share one accent state. Excluded tags and the delayed hide action keep
+         their existing neutral styling and behavior. */
       :root .tag-option:not(.is-excluded):has(> .tag-chip[aria-pressed="true"]) {
-        background: transparent;
-        border-color: var(--accent);
-      }
-      :root .tag-option:not(.is-excluded):has(> .tag-chip[aria-pressed="true"]):hover {
         background: var(--soft-accent);
         border-color: var(--accent);
+      }
+      :root .tag-option:not(.is-excluded) > .tag-chip[aria-pressed="true"],
+      :root .tag-option:not(.is-excluded) > .tag-chip[aria-pressed="true"] .tag-count {
+        color: var(--accent);
+      }
+      :root .tag-option:not(.is-excluded):has(> .tag-chip[aria-pressed="true"]):is(:hover, :has(:focus-visible)) {
+        border-color: var(--accent-strong);
+      }
+      :root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[aria-pressed="true"],
+      :root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[aria-pressed="true"] .tag-count {
+        color: var(--accent-strong);
       }
       :root .read-toggle[aria-checked="true"]::before {
         color: var(--line);
