@@ -263,6 +263,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   const bar = control.querySelector(".search-bar") || toggle;
   const caseButton = control.querySelector("[data-search-case]");
   const suggestions = control.querySelector("[data-search-suggestions]");
+  const mainTags = browser.querySelector(".subject-nav");
   const clear = control.querySelector("[data-search-clear]");
   const settingsToggle = document2.querySelector("[data-settings-toggle]");
   const status = browser.querySelector("[data-search-result-status]");
@@ -315,9 +316,20 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     const inside = (rect) => event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
     return inside(bounds) || inside(anchor) || bounds.top > anchor.bottom && event.clientX >= anchor.left && event.clientX <= anchor.right && event.clientY >= anchor.bottom && event.clientY <= bounds.top;
   }
-  function sizeTagRow() {
-    const height = control.dataset.open === "true" && !suggestions.hidden ? suggestions.getBoundingClientRect().height : 0;
-    document2.querySelector(".site-header")?.style.setProperty("--search-tags-height", `${height}px`);
+  function sizeSuggestions() {
+    if (control.dataset.open !== "true" || !mainTags) return;
+    const height = Math.max(0, Math.floor(mainTags.getBoundingClientRect().bottom - bar.getBoundingClientRect().bottom));
+    suggestions.style.setProperty("--search-suggestions-max-height", `${height}px`);
+  }
+  function focusTag(button) {
+    if (!button) return;
+    button.focus({ preventScroll: true });
+    const bounds = suggestions.getBoundingClientRect();
+    const tagBounds = button.getBoundingClientRect();
+    const top = bounds.top + suggestions.clientTop;
+    const bottom = top + suggestions.clientHeight;
+    if (tagBounds.top < top) suggestions.scrollTop -= top - tagBounds.top;
+    else if (tagBounds.bottom > bottom) suggestions.scrollTop += tagBounds.bottom - bottom;
   }
   function renderTagRow(options) {
     showingSuggestions = options.length > 0;
@@ -351,8 +363,8 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
       return button;
     }));
     suggestions.hidden = !tags.length;
-    if (focusedKey) [...suggestions.children].find((button) => button.dataset.searchTag === focusedKey)?.focus({ preventScroll: true });
-    sizeTagRow();
+    sizeSuggestions();
+    if (focusedKey) focusTag([...suggestions.children].find((button) => button.dataset.searchTag === focusedKey));
   }
   function setOpen(open, { focus = true } = {}) {
     if (open && settingsToggle?.getAttribute("aria-expanded") === "true") settingsToggle.click();
@@ -377,7 +389,6 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
       void loadIndex();
       renderSuggestions();
     }
-    sizeTagRow();
   }
   function updateUrl() {
     const url = contextUrl(window2.location.href);
@@ -551,7 +562,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     previousScrollY = nextScrollY;
   }, { passive: true });
   window2.addEventListener("wheel", (event) => {
-    if (event.deltaY > 0 && control.dataset.open === "true") dismissSuggestions();
+    if (event.deltaY > 0 && control.dataset.open === "true" && !suggestions.contains(event.target)) dismissSuggestions();
   }, { passive: true });
   toggle.addEventListener("click", () => {
     if (openedByHover) {
@@ -618,7 +629,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     }
     if (target !== void 0) {
       event.preventDefault();
-      buttons[target].focus({ preventScroll: true });
+      focusTag(buttons[target]);
     }
   });
   input.addEventListener("keydown", (event) => {
@@ -630,7 +641,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
       event.preventDefault();
       const candidates = buttons.filter((button) => button.getAttribute("aria-pressed") === "false");
       const choices = candidates.length ? candidates : buttons;
-      choices[event.key === "ArrowDown" ? 0 : choices.length - 1].focus({ preventScroll: true });
+      focusTag(choices[event.key === "ArrowDown" ? 0 : choices.length - 1]);
     } else if (event.key === "Escape") {
       event.preventDefault();
       if (showingSuggestions) dismissSuggestions();
@@ -644,7 +655,12 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     }
   });
   restore();
-  if (window2.ResizeObserver) new window2.ResizeObserver(sizeTagRow).observe(suggestions);
+  window2.addEventListener("resize", sizeSuggestions, { passive: true });
+  if (window2.ResizeObserver && mainTags) {
+    const resize = new window2.ResizeObserver(sizeSuggestions);
+    resize.observe(mainTags);
+    resize.observe(bar);
+  }
   return { apply, restore, contextUrl, get active() {
     return Boolean(query.trim() || selectedTags.size);
   }, get pending() {

@@ -369,6 +369,10 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
   border-block-start: 0;
   border-radius: 0 0 0.65rem 0.65rem;
   background: var(--paper);
+  max-block-size: var(--search-suggestions-max-height, 0px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
 }
 .search-tag { overflow-wrap: anywhere; }
 .search-tag:is(:hover, :focus-visible, [aria-pressed="true"]) {
@@ -384,7 +388,6 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
 }
 .search-tag-remove { flex: 0 0 auto; font-size: 1rem; line-height: 1; }
 html[lang="he"] .search-tag { font-family: var(--font-interface-hebrew), var(--font-content); }
-.site-header:has(.site-search[data-open="true"] .search-suggestions:not([hidden])) { margin-block-end: calc(var(--search-tags-height, 0px) + 0.4rem); }
 .search-result-status {
   margin: 0 0 1rem;
   color: var(--muted);
@@ -422,8 +425,8 @@ html[lang="he"] .search-tag { font-family: var(--font-interface-hebrew), var(--f
     inset-block-start: calc(100% + 0.6rem);
     width: min(38rem, 100%);
   }
-  .site-header:has(.site-search[data-open="true"]) { margin-block-end: calc(3.95rem + var(--search-tags-height, 0px)); }
-  .site-header:has(.site-search[data-open="true"] .search-suggestions:not([hidden])) { margin-block-end: calc(4.35rem + var(--search-tags-height, 0px)); }
+  /* Reserve space for the bar; its suggestions overlay the menu below. */
+  .site-header:has(.site-search[data-open="true"]) { margin-block-end: 3.95rem; }
 }
 .header-controls > .language-nav {
   flex: 0 0 var(--header-control-size);
