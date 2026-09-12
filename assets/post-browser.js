@@ -220,14 +220,36 @@ function searchExcerpt(text, terms, caseSensitive = false, maxLength = 240) {
 function autocompleteTags(query, cursor, catalog) {
   const source = string(query);
   const position = Math.max(0, Math.min(source.length, Number.isFinite(cursor) ? cursor : source.length));
-  const token = tokens(source).find((entry) => entry.operator && position >= entry.valueStart && position <= entry.valueEnd);
+  const queryTokens = tokens(source);
+  const token = queryTokens.findLast((entry) => position >= entry.valueStart && position <= entry.end);
   if (!token) return null;
-  const partial = tagName(source.slice(token.valueStart, position));
-  const options = catalog.map((tag) => {
-    const names = catalogNames(tag, catalog);
-    return { tag, starts: names.some((name) => name.startsWith(partial)), includes: names.some((name) => name.includes(partial)) };
-  }).filter((entry) => entry.includes).sort((left, right) => Number(right.starts) - Number(left.starts) || string(left.tag.label).localeCompare(string(right.tag.label)) || string(left.tag.key).localeCompare(string(right.tag.key))).slice(0, 12).map((entry) => entry.tag);
-  return { start: token.start, end: token.end, prefix: token.operator, options };
+  const entries = catalog.map((tag) => ({ tag, names: catalogNames(tag, catalog) }));
+  const matchingOptions = (partial) => entries.map(({ tag, names }) => ({
+    tag,
+    exact: names.includes(partial),
+    starts: names.some((name) => name.startsWith(partial)),
+    includes: names.some((name) => name.includes(partial))
+  })).filter((entry) => entry.includes).sort((left, right) => Number(right.exact) - Number(left.exact) || Number(right.starts) - Number(left.starts) || string(left.tag.label).localeCompare(string(right.tag.label)) || string(left.tag.key).localeCompare(string(right.tag.key))).slice(0, 12).map((entry) => entry.tag);
+  if (token.operator) {
+    const partial = tagName(source.slice(token.valueStart, Math.min(position, token.valueEnd)));
+    return { start: token.start, end: token.end, prefix: token.operator, options: matchingOptions(partial) };
+  }
+  if (token.quoted || position <= token.valueStart) return null;
+  const currentIndex = queryTokens.indexOf(token);
+  let firstIndex = currentIndex;
+  while (firstIndex > 0) {
+    const previous = queryTokens[firstIndex - 1];
+    const gap = source.slice(previous.end, queryTokens[firstIndex].start);
+    if (previous.operator || previous.quoted || !/^\s+$/u.test(gap)) break;
+    firstIndex--;
+  }
+  for (let index = firstIndex; index <= currentIndex; index++) {
+    const start = queryTokens[index].start;
+    const partial = tagName(source.slice(start, position));
+    const options = matchingOptions(partial);
+    if (options.length) return { start, end: token.end, prefix: "", options };
+  }
+  return null;
 }
 
 // src/search.js
@@ -244,7 +266,9 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   const status = browser.querySelector("[data-search-result-status]");
   const language = document2.documentElement.lang;
   let index = null, pending = null, failed = false, composing = false;
-  let query = "", caseSensitive = false, activeOption = -1, completion = null;
+  let query = "", caseSensitive = false, completion = null;
+  let selectedTags = /* @__PURE__ */ new Set();
+  let showingSuggestions = false;
   let restored = false;
   let previousOrder = null;
   const original = new Map(cards.map((card) => {
@@ -263,10 +287,46 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   }
   function closeSuggestions() {
     completion = null;
-    activeOption = -1;
-    suggestions.hidden = true;
-    input.setAttribute("aria-expanded", "false");
-    input.removeAttribute("aria-activedescendant");
+    renderTagRow([]);
+  }
+  function sizeTagRow() {
+    const height = control.dataset.open === "true" && !suggestions.hidden ? suggestions.getBoundingClientRect().height : 0;
+    document2.querySelector(".site-header")?.style.setProperty("--search-tags-height", `${height}px`);
+  }
+  function renderTagRow(options) {
+    showingSuggestions = options.length > 0;
+    const selected = [...selectedTags].map((key) => index?.tags.find((tag) => tag.key === key) || { key, label: key.split(":").at(-1).replaceAll("-", " ") });
+    const tags = [...selected, ...options.filter((tag) => !selectedTags.has(tag.key))];
+    const focusedKey = suggestions.contains(document2.activeElement) ? document2.activeElement.dataset.searchTag : null;
+    suggestions.replaceChildren(...tags.map((tag) => {
+      const button = document2.createElement("button");
+      button.type = "button";
+      button.className = "search-tag";
+      button.dataset.searchTag = tag.key;
+      const pressed = selectedTags.has(tag.key);
+      button.setAttribute("aria-pressed", String(pressed));
+      button.textContent = tag.label;
+      if (pressed) {
+        const remove = document2.createElement("span");
+        remove.className = "search-tag-remove";
+        remove.setAttribute("aria-hidden", "true");
+        remove.textContent = "\xD7";
+        button.append(remove);
+        button.setAttribute("aria-label", (control.dataset.removeTagLabel || "{tag}").replace("{tag}", tag.label));
+      }
+      button.addEventListener("pointerdown", (event) => event.preventDefault());
+      button.addEventListener("click", () => {
+        if (pressed) {
+          selectedTags.delete(tag.key);
+          change();
+          input.focus({ preventScroll: true });
+        } else chooseSuggestion(tag);
+      });
+      return button;
+    }));
+    suggestions.hidden = !tags.length;
+    if (focusedKey) [...suggestions.children].find((button) => button.dataset.searchTag === focusedKey)?.focus({ preventScroll: true });
+    sizeTagRow();
   }
   function setOpen(open) {
     if (open && settingsToggle?.getAttribute("aria-expanded") === "true") settingsToggle.click();
@@ -282,7 +342,9 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     else {
       input.focus({ preventScroll: true });
       void loadIndex();
+      renderSuggestions();
     }
+    sizeTagRow();
   }
   function updateUrl() {
     const url = contextUrl(window2.location.href);
@@ -292,10 +354,12 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     const url = new URL(href, window2.location.href);
     url.searchParams.delete("q");
     url.searchParams.delete("case");
+    url.searchParams.delete("search-tag");
     if (query.trim()) {
       url.searchParams.set("q", query);
-      if (caseSensitive) url.searchParams.set("case", "1");
     }
+    for (const key of selectedTags) url.searchParams.append("search-tag", key);
+    if ((query.trim() || selectedTags.size) && caseSensitive) url.searchParams.set("case", "1");
     return url;
   }
   async function loadIndex() {
@@ -316,48 +380,27 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
       } finally {
         pending = null;
         onChange(false);
-        if (document2.activeElement === input) renderSuggestions();
+        renderSuggestions();
       }
     })();
     return pending;
   }
   function chooseSuggestion(option) {
     if (!completion) return;
-    const value = /\s/.test(option.label) ? `"${option.label}"` : option.label;
-    const replacement = `${completion.prefix}${value} `;
-    input.value = input.value.slice(0, completion.start) + replacement + input.value.slice(completion.end).replace(/^\s+/, "");
-    const cursor = completion.start + replacement.length;
-    closeSuggestions();
+    selectedTags.add(option.key);
+    const before = input.value.slice(0, completion.start);
+    const after = input.value.slice(completion.end).replace(/^\s+/, "");
+    input.value = (before + after).trim();
+    const cursor = Math.min(before.length, input.value.length);
+    completion = null;
     input.focus({ preventScroll: true });
     input.setSelectionRange(cursor, cursor);
     change();
   }
-  function activateOption(position) {
-    activeOption = position;
-    [...suggestions.children].forEach((option2, i) => option2.setAttribute("aria-selected", String(i === position)));
-    const option = suggestions.children[position];
-    if (option) {
-      input.setAttribute("aria-activedescendant", option.id);
-      option.scrollIntoView({ block: "nearest" });
-    } else input.removeAttribute("aria-activedescendant");
-  }
   function renderSuggestions() {
-    closeSuggestions();
-    if (!index || control.dataset.open !== "true") return;
+    if (!index || control.dataset.open !== "true" || document2.activeElement !== input) return closeSuggestions();
     completion = autocompleteTags(input.value, input.selectionStart ?? input.value.length, index.tags);
-    if (!completion?.options.length) return closeSuggestions();
-    suggestions.replaceChildren(...completion.options.map((tag, i) => {
-      const option = document2.createElement("li");
-      option.id = `search-tag-option-${i}`;
-      option.setAttribute("role", "option");
-      option.setAttribute("aria-selected", "false");
-      option.textContent = tag.label;
-      option.addEventListener("pointerdown", (event) => event.preventDefault());
-      option.addEventListener("click", () => chooseSuggestion(tag));
-      return option;
-    }));
-    suggestions.hidden = false;
-    input.setAttribute("aria-expanded", "true");
+    renderTagRow(completion?.options.filter((tag) => !selectedTags.has(tag.key)) || []);
   }
   function change() {
     query = input.value.slice(0, 500);
@@ -365,21 +408,23 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     clear.hidden = !query;
     updateUrl();
     onChange(true);
-    if (query.trim() && !index && !pending && !failed) void loadIndex();
+    if ((query.trim() || selectedTags.size) && !index && !pending && !failed) void loadIndex();
     renderSuggestions();
   }
   function restore() {
     const params = new URL(window2.location.href).searchParams;
     const nextQuery = (params.get("q") || "").slice(0, 500);
     const nextCaseSensitive = params.get("case") === "1";
-    if (restored && nextQuery === query && nextCaseSensitive === caseSensitive) return;
+    const nextTags = new Set(params.getAll("search-tag").filter(Boolean).slice(0, 40));
+    if (restored && nextQuery === query && nextCaseSensitive === caseSensitive && [...nextTags].join("\n") === [...selectedTags].join("\n")) return;
     restored = true;
     query = nextQuery;
     caseSensitive = nextCaseSensitive;
+    selectedTags = nextTags;
     input.value = query;
     caseButton.setAttribute("aria-pressed", String(caseSensitive));
     clear.hidden = !query;
-    if (query.trim()) {
+    if (query.trim() || selectedTags.size) {
       control.dataset.open = "true";
       toggle.setAttribute("aria-expanded", "true");
       if (toggle.dataset.labelClose) {
@@ -392,7 +437,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     closeSuggestions();
   }
   function apply() {
-    const active = Boolean(query.trim());
+    const active = Boolean(query.trim() || selectedTags.size);
     stream.dataset.searchActive = String(active);
     browser.setAttribute("aria-busy", String(active && !index && !failed));
     if (!active) {
@@ -422,6 +467,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
       return 0;
     }
     const parsed = parseQuery(query);
+    parsed.tags.push(...selectedTags);
     const available = new Set(cards.filter((card) => !card.hidden).map((card) => card.dataset.postId));
     const results = rankPosts(index.posts.filter((post) => available.has(post.id)), parsed, { language, caseSensitive, tags: index.tags });
     const byId = new Map(cards.map((card) => [card.dataset.postId, card]));
@@ -450,6 +496,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     const open = control.dataset.open !== "true";
     if (!open) {
       input.value = "";
+      selectedTags.clear();
       change();
     }
     setOpen(open);
@@ -488,22 +535,43 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   control.addEventListener("focusout", (event) => {
     if (!control.contains(event.relatedTarget)) closeSuggestions();
   });
+  suggestions.addEventListener("keydown", (event) => {
+    const buttons = [...suggestions.children];
+    const current = buttons.indexOf(document2.activeElement);
+    if (current < 0) return;
+    const rtl = document2.documentElement.dir === "rtl";
+    let target;
+    if (event.key === "Home") target = 0;
+    else if (event.key === "End") target = buttons.length - 1;
+    else if (["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(event.key)) {
+      const forward = event.key === "ArrowDown" || event.key === (rtl ? "ArrowLeft" : "ArrowRight");
+      target = (current + (forward ? 1 : buttons.length - 1)) % buttons.length;
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      input.focus({ preventScroll: true });
+      closeSuggestions();
+    }
+    if (target !== void 0) {
+      event.preventDefault();
+      buttons[target].focus({ preventScroll: true });
+    }
+  });
   input.addEventListener("keydown", (event) => {
     if (composing || event.isComposing) return;
     if (["ArrowDown", "ArrowUp"].includes(event.key)) {
       if (suggestions.hidden) renderSuggestions();
-      if (!completion?.options.length) return;
+      const buttons = [...suggestions.children];
+      if (!buttons.length) return;
       event.preventDefault();
-      const length = completion.options.length;
-      activateOption(activeOption < 0 ? event.key === "ArrowDown" ? 0 : length - 1 : (activeOption + (event.key === "ArrowDown" ? 1 : length - 1)) % length);
-    } else if (event.key === "Enter" && activeOption >= 0 && completion) {
-      event.preventDefault();
-      chooseSuggestion(completion.options[activeOption]);
+      const candidates = buttons.filter((button) => button.getAttribute("aria-pressed") === "false");
+      const choices = candidates.length ? candidates : buttons;
+      choices[event.key === "ArrowDown" ? 0 : choices.length - 1].focus({ preventScroll: true });
     } else if (event.key === "Escape") {
       event.preventDefault();
-      if (!suggestions.hidden) closeSuggestions();
+      if (showingSuggestions) closeSuggestions();
       else {
         input.value = "";
+        selectedTags.clear();
         change();
         setOpen(false);
         toggle.focus({ preventScroll: true });
@@ -511,8 +579,9 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     }
   });
   restore();
+  if (window2.ResizeObserver) new window2.ResizeObserver(sizeTagRow).observe(suggestions);
   return { apply, restore, contextUrl, get active() {
-    return Boolean(query.trim());
+    return Boolean(query.trim() || selectedTags.size);
   }, get pending() {
     return !index && !failed;
   } };
@@ -687,7 +756,7 @@ function initializePostBrowser(document2, window2) {
   const temporaryFilters = () => new URL(window2.location.href).searchParams.get("filters") === "temporary";
   const explicitFilters = () => {
     const params = new URL(window2.location.href).searchParams;
-    return Boolean(initial || params.has("tag") || params.has("exclude") || params.get("q")?.trim() || temporaryFilters());
+    return Boolean(initial || params.has("tag") || params.has("exclude") || params.get("q")?.trim() || params.has("search-tag") || temporaryFilters());
   };
   function normalize(selectedValues, excludedValues) {
     const excluded2 = new Set(tagKeys(excludedValues).filter((tag) => known.has(tag)));

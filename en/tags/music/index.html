@@ -13,7 +13,7 @@
   <link rel="alternate" hreflang="x-default" href="https://eyesky93.github.io/ssm/">
   <link rel="alternate" type="application/rss+xml" title="RSS feed" href="https://eyesky93.github.io/ssm/en/tags/music/feed.xml">
   <script src="/ssm/assets/appearance.js?v=ae26c1e43bfc"></script>
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=e0f561d8295c">
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=9d5b487d39ba">
 </head>
 <body data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="https://ssm-pin-stats.eyesky93.workers.dev/pins" data-read-storage="ssm-read:/ssm">
   <header class="site-header">
@@ -22,18 +22,17 @@
       <a class="about-link" data-filter-context-link href="/ssm/en/about/">About</a>
     </nav>
     <div class="header-controls">
-      <form class="site-search" role="search" data-search data-open="false" data-tag-prefix="tag" aria-label="Search posts">
+      <form class="site-search" role="search" data-search data-open="false" data-tag-prefix="tag" data-remove-tag-label="Remove {tag}" aria-label="Search posts">
     <div class="search-panel" id="search-panel" data-search-panel inert>
       <div class="search-field-row">
         <div class="search-field">
           <label class="visually-hidden" for="post-search-input">Search posts</label>
-          <input id="post-search-input" data-search-input type="search" role="combobox" aria-autocomplete="list" aria-controls="search-suggestions" aria-expanded="false" aria-describedby="search-help" placeholder="Search posts…" maxlength="500" autocomplete="off" spellcheck="false">
+          <input id="post-search-input" data-search-input type="search" aria-controls="search-suggestions" placeholder="Search posts…" maxlength="500" autocomplete="off" spellcheck="false">
           <button class="search-clear" type="button" data-search-clear aria-label="Clear search" title="Clear search" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg></button>
+          <button class="search-case" type="button" data-search-case aria-pressed="false" aria-label="Match uppercase and lowercase exactly" title="Match uppercase and lowercase exactly"><span dir="ltr">Aa</span></button>
         </div>
-        <button class="search-case" type="button" data-search-case aria-pressed="false" aria-label="Match uppercase and lowercase exactly" title="Match uppercase and lowercase exactly"><span dir="ltr">Aa</span></button>
       </div>
-      <p class="search-help" id="search-help" data-search-help>Use tag:music to filter by tag, or &quot;exact phrase&quot; for exact text.</p>
-      <ul class="search-suggestions" id="search-suggestions" data-search-suggestions role="listbox" aria-label="Suggested tags" hidden></ul>
+      <div class="search-suggestions" id="search-suggestions" data-search-suggestions role="group" aria-label="Search tags" hidden></div>
     </div>
     <button class="search-toggle" type="button" data-search-toggle aria-expanded="false" aria-controls="search-panel" aria-label="Search posts" title="Search posts" data-label-open="Search posts" data-label-close="Close search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></button>
   </form>
@@ -91,7 +90,7 @@
       </div>
     </div>
   </header>
-  <main id="main" class="site-main"><section class="post-browser" data-post-browser data-initial-tag="music" data-inline-browser="false" data-filter-storage="ssm-filters:/ssm" data-known-tags="[&quot;physics&quot;,&quot;music&quot;,&quot;notes&quot;,&quot;music:metal&quot;,&quot;physics:analytical-mechanics&quot;,&quot;physics:conformal-field-theory&quot;,&quot;culture&quot;]" data-search-index="/ssm/en/search-index.json?v=45150a3ee29f" data-search-results="{count} results" data-search-loading="Searching…" data-search-error="Search could not load. Please try again." aria-label="All posts">
+  <main id="main" class="site-main"><section class="post-browser" data-post-browser data-initial-tag="music" data-inline-browser="false" data-filter-storage="ssm-filters:/ssm" data-known-tags="[&quot;physics&quot;,&quot;music&quot;,&quot;notes&quot;,&quot;music:metal&quot;,&quot;physics:analytical-mechanics&quot;,&quot;physics:conformal-field-theory&quot;,&quot;culture&quot;]" data-search-index="/ssm/en/search-index.json?v=100557df43cf" data-search-results="{count} results" data-search-loading="Searching…" data-search-error="Search could not load. Please try again." aria-label="All posts">
     <h1 class="visually-hidden">All posts</h1>
     <div class="browser-toolbar">
       <div class="filter-controls">
@@ -384,7 +383,7 @@
   <script src="/ssm/assets/site.js?v=3a5f8def1dc1" defer></script>
   <p class="visually-hidden" role="status" data-pin-status data-saved="Post pinned." data-removed="Post unpinned." data-temporary="Your browser cannot save this choice. It will last only on this page."></p>
   <script type="module" src="/ssm/assets/pins.js?v=59d9134c2e16"></script>
-  <script type="module" src="/ssm/assets/post-browser.js?v=d978f5479565"></script>
+  <script type="module" src="/ssm/assets/post-browser.js?v=b96d34e63a1d"></script>
   <p class="visually-hidden" role="status" data-read-status data-read="Post marked as read." data-unread="Post marked as unread." data-temporary="Your browser cannot save this choice. It will last only on this page."></p>
   <script type="module" src="/ssm/assets/read-status.js?v=89444c6f1b3a"></script>
   <p class="visually-hidden" role="status" aria-live="polite" data-post-vote-status data-saved="Upvote added." data-removed="Upvote removed." data-unavailable="Upvotes are temporarily unavailable."></p>
