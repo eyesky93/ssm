@@ -81,6 +81,7 @@ export function initializePins(document, window) {
     }
     const focused = document.activeElement;
     document.querySelectorAll(".post-stream").forEach((stream) => {
+      if (stream.dataset.searchActive === "true") return;
       const current = [...stream.children].filter((card) => card.dataset.postId);
       const sorted = [...current].sort((a, b) => compareReaderPosts(metadata(a), metadata(b), store.isPinned));
       if (sorted.some((card, index) => card !== current[index])) sorted.forEach((card) => stream.append(card));
@@ -130,6 +131,7 @@ export function initializePins(document, window) {
   });
   window.addEventListener("pageshow", () => { store.refresh(); render(); void flush(); });
   window.addEventListener("online", () => { void flush(); });
+  window.addEventListener("ssm:search-cleared", render);
   render();
   void flush();
 }
