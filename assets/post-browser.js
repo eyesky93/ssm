@@ -374,6 +374,41 @@ export function initializePostBrowser(document, window) {
     ({ selected, excluded } = normalize(selected, excluded));
     update(button);
     const option = button.closest("[data-tag-option]");
+    if (restoring && event.detail > 0 && typeof document.elementFromPoint === "function") {
+      // Restoring reorders the tag list. A different tag can move underneath a
+      // stationary pointer and inherit :hover even though the user never moved
+      // onto it. Keep that newly-under-pointer tag showing its number until the
+      // pointer actually moves; then the normal 0.7 s hover delay applies again.
+      const underPointer = document.elementFromPoint(event.clientX, event.clientY)?.closest?.("[data-tag-option]");
+      if (underPointer && !underPointer.classList.contains("is-excluded")) {
+        const hoverButton = underPointer.querySelector("[data-exclude-tag]");
+        const hoverCount = underPointer.querySelector(".tag-count");
+        if (hoverButton && hoverCount) {
+          hoverButton.style.opacity = "0";
+          hoverButton.style.visibility = "hidden";
+          hoverButton.style.transition = "none";
+          hoverCount.style.opacity = "1";
+          hoverCount.style.transition = "none";
+          const originX = event.clientX;
+          const originY = event.clientY;
+          let cleared = false;
+          const clearStickyHover = (pointerEvent) => {
+            if (cleared) return;
+            if (pointerEvent.type === "pointermove" && pointerEvent.clientX === originX && pointerEvent.clientY === originY) return;
+            cleared = true;
+            hoverButton.style.removeProperty("opacity");
+            hoverButton.style.removeProperty("visibility");
+            hoverButton.style.removeProperty("transition");
+            hoverCount.style.removeProperty("opacity");
+            hoverCount.style.removeProperty("transition");
+            window.removeEventListener("pointermove", clearStickyHover, true);
+            window.removeEventListener("pointerdown", clearStickyHover, true);
+          };
+          window.addEventListener("pointermove", clearStickyHover, { capture: true, passive: true });
+          window.addEventListener("pointerdown", clearStickyHover, { once: true, capture: true, passive: true });
+        }
+      }
+    }
     if (restoring && event.detail === 0 && option?.checkVisibility?.({ visibilityProperty: true })) {
       option.querySelector("[data-tag-filter]")?.focus({ preventScroll: true });
     } else if (restoring && option?.contains(document.activeElement)) {
