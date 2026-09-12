@@ -256,6 +256,7 @@ function installEngagementLayout(document) {
         border-block-start: 0;
         border-block-end: 1px solid var(--line);
         border-radius: 0;
+        direction: ltr;
       }
       .post-engagement .post-vote {
         border-inline-start: 1px solid var(--line);
@@ -274,6 +275,8 @@ function installEngagementLayout(document) {
         border-end-end-radius: .5rem;
       }
       .post-engagement svg {
+        grid-column: 1;
+        grid-row: 1;
         justify-self: center;
         flex: none;
         width: .74rem;
@@ -282,6 +285,8 @@ function installEngagementLayout(document) {
       .post-engagement .post-vote-count,
       .post-engagement .post-comment-count,
       .post-engagement .post-view-count {
+        grid-column: 2;
+        grid-row: 1;
         box-sizing: border-box;
         display: grid;
         place-items: center;
