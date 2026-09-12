@@ -5,9 +5,122 @@ const themePreference = window.matchMedia?.("(prefers-color-scheme: dark)");
 // click handler runs. This prevents the focus-visible hide-X state from
 // flashing briefly; keyboard focus and modified/new-tab gestures are untouched.
 document.addEventListener("mousedown", (event) => {
-  const chip = event.target?.closest?.("[data-tag-filter]");
+  const chip = event.target?.closest?.("[data-tag-filter], [data-post-tag-topic]");
   if (!chip || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
+});
+
+// Post/card tags are rendered by the build as one leaf chip. Expand each leaf
+// into its visible hierarchy without changing the original functional anchor:
+// Physics:Conformal-Field-Theory becomes separate Physics and Conformal Field
+// Theory chips. The hidden original keeps the existing post-browser click
+// behavior, while the visible proxies can address any hierarchy level.
+const postTagProxySources = new WeakMap();
+
+function expandPostTagHierarchies() {
+  const menuMeta = new Map();
+  document.querySelectorAll("[data-tag-parent] [data-tag-filter]").forEach((chip) => {
+    const topic = chip.dataset.tagFilter;
+    const label = chip.querySelector("span")?.textContent?.trim();
+    if (!topic || !label) return;
+    menuMeta.set(topic, { label, title: chip.title || chip.getAttribute("aria-label") || label });
+  });
+
+  for (const selector of [".card-tags", ".article-tags"]) {
+    document.querySelectorAll(selector).forEach((container) => {
+      if (container.dataset.postTagsExpanded === "true") return;
+      const originals = [...container.children].filter((chip) => chip.matches?.("[data-tag-filter]"));
+      if (!originals.length) return;
+      const seen = new Set();
+      const proxies = [];
+
+      for (const source of originals) {
+        const leaf = source.dataset.tagFilter;
+        if (!leaf) continue;
+        source.hidden = true;
+        const parts = leaf.split(":");
+        for (let depth = 1; depth <= parts.length; depth++) {
+          const topic = parts.slice(0, depth).join(":");
+          if (seen.has(topic)) continue;
+          const meta = menuMeta.get(topic);
+          if (!meta) continue;
+          seen.add(topic);
+
+          const proxy = source.cloneNode(true);
+          proxy.hidden = false;
+          proxy.removeAttribute("data-tag-filter");
+          proxy.removeAttribute("aria-pressed");
+          proxy.dataset.postTagTopic = topic;
+          proxy.classList.remove("is-topic-hovered");
+          const text = proxy.querySelector("span");
+          if (text) text.textContent = meta.label;
+          proxy.setAttribute("aria-label", meta.title);
+          proxy.title = meta.title;
+          const href = new URL(proxy.href, window.location.href);
+          href.searchParams.set("tag", topic);
+          proxy.href = href.href;
+          postTagProxySources.set(proxy, source);
+          proxies.push(proxy);
+        }
+      }
+
+      container.append(...proxies);
+      container.dataset.postTagsExpanded = "true";
+    });
+  }
+}
+
+function selectedTagTopics() {
+  return new Set([...document.querySelectorAll('[data-tag-parent] [data-tag-filter][aria-pressed="true"]')]
+    .map((chip) => chip.dataset.tagFilter)
+    .filter(Boolean));
+}
+
+function syncPostTagVisibility() {
+  const selected = selectedTagTopics();
+  document.querySelectorAll("[data-post-tag-topic]").forEach((chip) => {
+    chip.hidden = selected.has(chip.dataset.postTagTopic);
+  });
+}
+
+expandPostTagHierarchies();
+syncPostTagVisibility();
+
+const postBrowser = document.querySelector("[data-post-browser]");
+if (postBrowser && window.MutationObserver) {
+  new window.MutationObserver((records) => {
+    if (records.some((record) => record.type === "attributes" && record.attributeName === "aria-pressed")) {
+      syncPostTagVisibility();
+    }
+  }).observe(postBrowser, { subtree: true, attributes: true, attributeFilter: ["aria-pressed"] });
+}
+
+// Preserve the existing tag interaction model for the visible hierarchy chips.
+// Normal clicks are delegated to the hidden original anchor from the same card
+// or article, temporarily substituting the requested hierarchy level. Modified
+// and middle-click/new-tab gestures keep using the proxy's own native href.
+document.addEventListener("click", (event) => {
+  const proxy = event.target?.closest?.("[data-post-tag-topic]");
+  if (!proxy || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  const source = postTagProxySources.get(proxy);
+  if (!source) return;
+  event.preventDefault();
+  const previousTopic = source.dataset.tagFilter;
+  source.dataset.tagFilter = proxy.dataset.postTagTopic;
+  source.dispatchEvent(new MouseEvent("click", {
+    bubbles: true,
+    cancelable: true,
+    button: 0,
+    detail: event.detail,
+  }));
+  source.dataset.tagFilter = previousTopic;
+});
+
+document.addEventListener("keydown", (event) => {
+  const proxy = event.target?.closest?.("[data-post-tag-topic]");
+  if (!proxy || event.defaultPrevented || event.key !== " " || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  if (!event.repeat) proxy.click();
 });
 
 // Keep every visible rendering of the same tag/topic visually linked while
@@ -17,6 +130,8 @@ let pointerTagTopic = "";
 let focusedTagTopic = "";
 
 function topicFromTagTarget(target) {
+  const postChip = target?.closest?.("[data-post-tag-topic]");
+  if (postChip?.dataset?.postTagTopic) return postChip.dataset.postTagTopic;
   const chip = target?.closest?.("[data-tag-filter]");
   if (chip?.dataset?.tagFilter) return chip.dataset.tagFilter;
   return target?.closest?.("[data-tag-option]")?.dataset?.tagOption ?? "";
@@ -24,8 +139,9 @@ function topicFromTagTarget(target) {
 
 function syncTagTopicHover() {
   const active = new Set([pointerTagTopic, focusedTagTopic].filter(Boolean));
-  document.querySelectorAll("[data-tag-filter]").forEach((chip) => {
-    chip.classList.toggle("is-topic-hovered", active.has(chip.dataset.tagFilter));
+  document.querySelectorAll("[data-tag-filter], [data-post-tag-topic]").forEach((chip) => {
+    const topic = chip.dataset.tagFilter || chip.dataset.postTagTopic;
+    chip.classList.toggle("is-topic-hovered", active.has(topic));
   });
 }
 
