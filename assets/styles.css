@@ -320,7 +320,7 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
 .accent-picker::-webkit-color-swatch-wrapper { padding: 0; }
 .accent-picker::-webkit-color-swatch { border: 0; border-radius: 50%; }
 .accent-picker::-moz-color-swatch { border: 0; border-radius: 50%; }
-.accent-reset { display: flex; align-items: center; justify-content: center; flex: 0 0 2.75rem; width: 2.75rem; height: 2.75rem; padding: 0; border: 1px solid var(--line-dark); border-radius: 50%; background: var(--paper); color: var(--ink); cursor: pointer; }
+.accent-reset { display: flex; align-items: center; justify-content: center; flex: 0 0 2.75rem; width: 2.75rem; height: 2.75rem; padding: 0; border: 1px solid var(--line-dark); border-radius: 50%; background: var(--surface); color: var(--ink); cursor: pointer; }
 .view-control svg { display: none; }
 .view-settings[data-active-view="list"] [data-view-icon="list"],
 .view-settings[data-active-view="grid"] [data-view-icon="grid"],
