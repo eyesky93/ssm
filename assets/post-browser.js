@@ -305,7 +305,7 @@ export function initializePostBrowser(document, window) {
     if (announce) status.textContent = status.dataset.resultMessage.replace("{count}", String(count));
   }
 
-  function update(source) {
+  function update(source, moveFocus = true) {
     const wasHidden = browser.hidden;
     if (inline && source && article?.contains(source)) { returnFocus = source; browsing = true; }
     setUrl();
@@ -313,7 +313,7 @@ export function initializePostBrowser(document, window) {
     render(true);
     // A tag button can disappear when filtering a card or backing out of a branch.
     if (inline && !browsing) returnFocus?.focus();
-    else if (source && (wasHidden || !source.checkVisibility?.({ visibilityProperty: true }))) {
+    else if (moveFocus && source && (wasHidden || !source.checkVisibility?.({ visibilityProperty: true }))) {
       const target = selectorChips.find((chip) => selected.has(chip.dataset.tagFilter) && chip.checkVisibility?.())
         || selectorChips.find((chip) => chip.closest("[data-tag-parent]")?.dataset.tagParent === "") || excludeButtons[0];
       target?.focus({ preventScroll: true });
@@ -334,7 +334,9 @@ export function initializePostBrowser(document, window) {
       for (const choice of selected) if (choice === tag || choice.startsWith(`${tag}:`)) selected.delete(choice);
     } else selected.add(tag);
     ({ selected, excluded } = normalize(selected, excluded));
-    update(chip);
+    // Move focus when a keyboard action hides its source, but do not draw the
+    // keyboard focus ring around a tag after an ordinary pointer/touch click.
+    update(chip, event.detail === 0);
     // Pointer/touch selection should not leave the hide-X exposed through focus.
     // Keyboard activation keeps focus so the hide control remains accessible.
     if (event.detail > 0) queueMicrotask(() => chip.blur?.());
