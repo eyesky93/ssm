@@ -952,7 +952,9 @@ function initializePostBrowser(document2, window2) {
     for (const [link, href] of languageLinks) link.href = languageUrl(href);
     for (const [option, href] of languageOptions) option.value = languageUrl(href);
     if (!navigation) return;
-    const sequence = readingSequence(navigationPosts, article.dataset.postId, selected, excluded);
+    const resultIds = search?.active ? new Set(cards.filter((card) => !card.hidden).map((card) => card.dataset.postId)) : null;
+    const sequencePosts = resultIds ? navigationPosts.filter((post) => resultIds.has(post.id)) : navigationPosts;
+    const sequence = readingSequence(sequencePosts, article.dataset.postId, search?.active ? [] : selected, excluded);
     const position = navigation.querySelector("[data-post-position]");
     position.textContent = `${sequence.current ?? "\u2014"}/${sequence.total}`;
     position.setAttribute("aria-label", (sequence.current === null ? navigation.dataset.outsideLabel : navigation.dataset.positionLabel).replace("{current}", String(sequence.current)).replace("{total}", String(sequence.total)));
@@ -974,7 +976,7 @@ function initializePostBrowser(document2, window2) {
   function render(announce = false) {
     let count = 0;
     for (const card of cards) {
-      card.hidden = !matchesTag(tagsByCard.get(card), selected, excluded);
+      card.hidden = !matchesTag(tagsByCard.get(card), search?.active ? [] : selected, excluded);
       if (!card.hidden) count++;
     }
     if (search) count = search.apply();
