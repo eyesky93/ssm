@@ -274,6 +274,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   let showingSuggestions = false;
   let suggestionsDismissed = false;
   let openedByHover = false;
+  let inputEngaged = false;
   let previousScrollY = window2.scrollY;
   let restored = false;
   let previousOrder = null;
@@ -307,7 +308,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
   }
   function leaveSearch() {
     if (control.dataset.open !== "true") return;
-    if (input.value.trim() || composing) dismissSuggestions();
+    if (inputEngaged || input.value.trim() || composing) dismissSuggestions();
     else setOpen(false);
   }
   function pointerInsideSearch(event) {
@@ -379,6 +380,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     suggestions.inert = !open;
     if (!open) {
       openedByHover = false;
+      inputEngaged = false;
       dismissSuggestions();
     } else {
       suggestionsDismissed = false;
@@ -582,6 +584,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     input.value = "";
     change();
     input.focus({ preventScroll: true });
+    inputEngaged = false;
   });
   control.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -589,6 +592,7 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     if (failed) void loadIndex();
   });
   input.addEventListener("compositionstart", () => {
+    inputEngaged = true;
     composing = true;
     suggestionsDismissed = false;
   });
@@ -597,11 +601,16 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     change();
   });
   input.addEventListener("input", () => {
+    inputEngaged = true;
     suggestionsDismissed = false;
     if (!composing) change();
   });
-  input.addEventListener("click", resumeSuggestions);
+  input.addEventListener("click", () => {
+    inputEngaged = true;
+    resumeSuggestions();
+  });
   input.addEventListener("focus", () => {
+    inputEngaged = true;
     openedByHover = false;
     resumeSuggestions();
   });
@@ -609,7 +618,10 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
     if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) resumeSuggestions();
   });
   control.addEventListener("focusout", (event) => {
-    if (!control.contains(event.relatedTarget)) dismissSuggestions();
+    if (!control.contains(event.relatedTarget)) {
+      inputEngaged = false;
+      dismissSuggestions();
+    }
   });
   suggestions.addEventListener("keydown", (event) => {
     const buttons = [...suggestions.children];
