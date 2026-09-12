@@ -223,13 +223,14 @@ function autocompleteTags(query, cursor, catalog) {
   const queryTokens = tokens(source);
   const token = queryTokens.findLast((entry) => position >= entry.valueStart && position <= entry.end);
   if (!token) return null;
-  const entries = catalog.map((tag) => ({ tag, names: catalogNames(tag, catalog) }));
-  const matchingOptions = (partial) => entries.map(({ tag, names }) => ({
+  const entries = catalog.map((tag) => ({ tag, depth: string(tag.key).split(":").length, names: catalogNames(tag, catalog) }));
+  const matchingOptions = (partial) => entries.map(({ tag, depth, names }) => ({
     tag,
+    depth,
     exact: names.includes(partial),
     starts: names.some((name) => name.startsWith(partial)),
     includes: names.some((name) => name.includes(partial))
-  })).filter((entry) => entry.includes).sort((left, right) => Number(right.exact) - Number(left.exact) || Number(right.starts) - Number(left.starts) || string(left.tag.label).localeCompare(string(right.tag.label)) || string(left.tag.key).localeCompare(string(right.tag.key))).slice(0, 12).map((entry) => entry.tag);
+  })).filter((entry) => entry.includes).sort((left, right) => left.depth - right.depth || Number(right.exact) - Number(left.exact) || Number(right.starts) - Number(left.starts) || string(left.tag.label).localeCompare(string(right.tag.label)) || string(left.tag.key).localeCompare(string(right.tag.key))).slice(0, 12).map((entry) => entry.tag);
   if (token.operator) {
     const partial = tagName(source.slice(token.valueStart, Math.min(position, token.valueEnd)));
     return { start: token.start, end: token.end, prefix: token.operator, options: matchingOptions(partial) };
