@@ -149,6 +149,22 @@
       :root .post-engagement .post-vote[aria-pressed="true"]:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
         border-inline-start-color: var(--accent-strong);
       }
+      /* Neutral hover shades strengthen toward the foreground, not toward
+         black in both themes. Keep the existing light-mode grey unchanged. */
+      :root {
+        --line-strong: color-mix(in srgb, var(--line-dark) 72%, #000);
+      }
+      :root[data-theme="dark"] {
+        --line-strong: color-mix(in srgb, var(--line-dark) 72%, var(--ink));
+      }
+      :root .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+        --post-frame-color: var(--line-strong);
+        border-color: var(--line-strong) !important;
+        box-shadow: -.32rem 0 0 var(--line-strong), 0 1px 0 rgba(0, 0, 0, 0.03);
+      }
+      :root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+        box-shadow: .32rem 0 0 var(--line-strong), 0 1px 0 rgba(0, 0, 0, 0.03);
+      }
       :root .post-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > .post-engagement::before {
         z-index: 8;
       }
