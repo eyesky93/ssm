@@ -167,6 +167,11 @@ export function initializePostBrowser(document, window) {
   const status = browser.querySelector("[data-filter-status]");
   const article = document.querySelector("[data-reader-article]");
   const inline = browser.dataset.inlineBrowser === "true";
+  // Keep the original translation targets: menu rendering rewrites these URLs,
+  // but returning to the article must recover that article's translations.
+  const languageLinks = new Map([...document.querySelectorAll("a[data-language]")].map((link) => [link, link.href]));
+  const languageOptions = new Map([...document.querySelectorAll("[data-language-select]")]
+    .flatMap((select) => [...select.options].map((option) => [option, option.value])));
   const storageKey = browser.dataset.filterStorage;
   const temporaryFilters = () => new URL(window.location.href).searchParams.get("filters") === "temporary";
   const explicitFilters = () => {
@@ -206,7 +211,9 @@ export function initializePostBrowser(document, window) {
     url: card.dataset.postUrl, title: card.dataset.postTitle,
   }));
   const hasFilters = () => Boolean(selected.size || excluded.size);
-  let returnFocus = article?.querySelector("[data-tag-filter]");
+  // Only a keyboard action that actually leaves the article has a return target.
+  // Loading a post must never autofocus its first tag.
+  let returnFocus = null;
 
   function save() {
     if (temporaryFilters()) return;
@@ -222,6 +229,23 @@ export function initializePostBrowser(document, window) {
     if (url.href !== window.location.href) window.history[replace ? "replaceState" : "pushState"](null, "", url.href);
   }
 
+  function languageUrl(href) {
+    const url = filterContextUrl(href, window.location.href);
+    const postPath = url.pathname.lastIndexOf("/posts/");
+    if (!browsing && postPath >= 0) return readerUrl(url, selected, excluded).href;
+    if (browsing) {
+      if (postPath >= 0) {
+        // The offline owner edition uses index.html instead of directory URLs.
+        const index = url.pathname.endsWith("/index.html") ? "index.html" : "";
+        url.pathname = `${url.pathname.slice(0, postPath + 1)}${index}`;
+        url.hash = "";
+      }
+      url.searchParams.delete("missing");
+    }
+    url.searchParams.delete("reader");
+    return selectionUrl(url, selected, true, excluded).href;
+  }
+
   function renderNavigation() {
     renderFilterContextLinks(document, window);
     for (const card of cards) {
@@ -235,16 +259,8 @@ export function initializePostBrowser(document, window) {
       url.searchParams.delete("reader");
       back.href = url.href;
     }
-    if (inline) {
-      for (const link of document.querySelectorAll("a[data-language]")) {
-        if (new URL(link.href, window.location.href).pathname.includes("/posts/")) link.href = readerUrl(new URL(link.href, window.location.href), selected, excluded).href;
-      }
-      for (const select of document.querySelectorAll("[data-language-select]")) {
-        for (const option of select.options) {
-          if (new URL(option.value, window.location.href).pathname.includes("/posts/")) option.value = readerUrl(new URL(option.value, window.location.href), selected, excluded).href;
-        }
-      }
-    }
+    for (const [link, href] of languageLinks) link.href = languageUrl(href);
+    for (const [option, href] of languageOptions) option.value = languageUrl(href);
     if (!navigation) return;
     const sequence = readingSequence(navigationPosts, article.dataset.postId, selected, excluded);
     const position = navigation.querySelector("[data-post-position]");
@@ -307,7 +323,7 @@ export function initializePostBrowser(document, window) {
 
   function update(source, moveFocus = true) {
     const wasHidden = browser.hidden;
-    if (inline && source && article?.contains(source)) { returnFocus = source; browsing = true; }
+    if (inline && source && article?.contains(source)) { returnFocus = moveFocus ? source : null; browsing = true; }
     setUrl();
     save();
     render(true);
@@ -362,12 +378,13 @@ export function initializePostBrowser(document, window) {
     }
   }));
   clear.addEventListener("click", () => { selected.clear(); excluded.clear(); update(clear); });
-  function restoreHistory() {
+  function restoreHistory(event) {
+    const wasBrowsing = browsing;
     browsing = isBrowsing();
     ({ selected, excluded } = inline && !explicitFilters() ? readSaved() : readUrl());
     if (browsing) save();
     render();
-    if (inline && !browsing) returnFocus?.focus({ preventScroll: true });
+    if (event.type === "popstate" && inline && wasBrowsing && !browsing) returnFocus?.focus({ preventScroll: true });
   }
   window.addEventListener("popstate", restoreHistory);
   window.addEventListener("pageshow", restoreHistory);
