@@ -144,8 +144,52 @@
       :root[dir="rtl"] .tag-list {
         direction: rtl;
       }
+
+      /* Mirror engagement geometry explicitly. Do not flip the component's
+         writing direction: that also flips its logical borders and dividers. */
       :root[dir="rtl"] .post-engagement {
-        direction: rtl;
+        direction: ltr;
+      }
+      :root[dir="rtl"] .post-engagement .post-views {
+        grid-column: 1;
+        border-left: 1px solid var(--line);
+        border-right-color: transparent;
+        border-radius: 0;
+        border-bottom-left-radius: .5rem;
+      }
+      :root[dir="rtl"] .post-engagement .post-comments {
+        grid-column: 2;
+        border-left: 1px solid var(--line);
+        border-right-color: transparent;
+      }
+      :root[dir="rtl"] .post-engagement .post-vote {
+        grid-column: 3;
+        border-left: 1px solid var(--line);
+        border-right: 1px solid var(--line);
+        border-radius: 0;
+        border-bottom-right-radius: .5rem;
+      }
+      :root[dir="rtl"] .post-engagement :is(.post-vote, .post-comments, .post-views) > svg {
+        grid-column: 2;
+        grid-row: 1;
+      }
+      :root[dir="rtl"] .post-engagement :is(.post-vote-count, .post-comment-count, .post-view-count) {
+        grid-column: 1;
+        grid-row: 1;
+        border-left: 0;
+        border-right: 1px solid var(--line);
+      }
+      :root[dir="rtl"] .post-engagement .post-vote[aria-pressed="true"] {
+        border-left-color: var(--accent);
+        border-right-color: var(--accent);
+      }
+      :root[dir="rtl"] .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
+        border-left: 0;
+        border-right-color: var(--accent);
+      }
+      :root[dir="rtl"] .post-engagement .post-vote:is(:hover, :focus-visible):not(:disabled) {
+        border-left-color: var(--accent-strong);
+        border-right-color: var(--accent-strong);
       }
     `;
     document.head.append(tagHoverStyle);
