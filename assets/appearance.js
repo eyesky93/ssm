@@ -112,6 +112,13 @@
       :root .tag-option:not(.is-excluded):not(:has(> .tag-chip[aria-pressed="true"])):hover {
         border-color: var(--accent);
       }
+      /* The legacy combined post-tag anchor remains in the DOM only as the
+         behavior source for split hierarchy chips. Its hidden state must win
+         over the base .tag-chip display rule. */
+      :root .card-tags > .tag-chip[hidden],
+      :root .article-tags > .tag-chip[hidden] {
+        display: none !important;
+      }
       /* Unselected counts keep the base accent; only their label changes
          to that same accent on hover or visible keyboard focus. */
       :root .tag-option:not(.is-excluded) > .tag-chip:not([aria-pressed="true"]) .tag-count {
