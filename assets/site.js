@@ -424,6 +424,7 @@ if (backToTop) {
 const params = new URLSearchParams(window.location.search);
 const notice = document.querySelector("[data-translation-notice]");
 if (params.has("missing") && notice) {
+  notice.querySelector("[data-dismiss-notice]")?.style.setProperty("align-self", "center");
   notice.hidden = false;
 }
 
