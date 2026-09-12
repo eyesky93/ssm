@@ -10,6 +10,58 @@ document.addEventListener("mousedown", (event) => {
   event.preventDefault();
 });
 
+// Keep every visible rendering of the same tag/topic visually linked while
+// one copy is hovered or keyboard-focused. The appearance stylesheet owns the
+// colors; this only synchronizes the shared state class.
+let pointerTagTopic = "";
+let focusedTagTopic = "";
+
+function topicFromTagTarget(target) {
+  const chip = target?.closest?.("[data-tag-filter]");
+  if (chip?.dataset?.tagFilter) return chip.dataset.tagFilter;
+  return target?.closest?.("[data-tag-option]")?.dataset?.tagOption ?? "";
+}
+
+function syncTagTopicHover() {
+  const active = new Set([pointerTagTopic, focusedTagTopic].filter(Boolean));
+  document.querySelectorAll("[data-tag-filter]").forEach((chip) => {
+    chip.classList.toggle("is-topic-hovered", active.has(chip.dataset.tagFilter));
+  });
+}
+
+document.addEventListener("pointerover", (event) => {
+  const topic = topicFromTagTarget(event.target);
+  const previous = topicFromTagTarget(event.relatedTarget);
+  if (!topic || topic === previous) return;
+  pointerTagTopic = topic;
+  syncTagTopicHover();
+});
+
+document.addEventListener("pointerout", (event) => {
+  const topic = topicFromTagTarget(event.target);
+  if (!topic || topic !== pointerTagTopic) return;
+  const next = topicFromTagTarget(event.relatedTarget);
+  if (next === topic) return;
+  pointerTagTopic = next;
+  syncTagTopicHover();
+});
+
+document.addEventListener("focusin", (event) => {
+  const topic = topicFromTagTarget(event.target);
+  if (!topic || topic === focusedTagTopic) return;
+  focusedTagTopic = topic;
+  syncTagTopicHover();
+});
+
+document.addEventListener("focusout", (event) => {
+  const topic = topicFromTagTarget(event.target);
+  if (!topic || topic !== focusedTagTopic) return;
+  const next = topicFromTagTarget(event.relatedTarget);
+  if (next === topic) return;
+  focusedTagTopic = next;
+  syncTagTopicHover();
+});
+
 document.querySelectorAll("a[data-language]").forEach((link) => {
   link.addEventListener("click", () => {
     try {

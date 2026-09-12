@@ -154,6 +154,21 @@
         color: var(--accent);
         border-color: var(--accent);
       }
+      /* Hovering or keyboard-focusing one tag highlights every visible copy of
+         that exact topic across the menu, post cards and article page. Keep
+         selected fills intact; synchronize only text/count and frame color. */
+      :root .tag-option:not(.is-excluded):has(> .tag-chip.is-topic-hovered) {
+        border-color: var(--accent) !important;
+      }
+      :root .tag-option:not(.is-excluded) > .tag-chip.is-topic-hovered,
+      :root .card-tag.is-topic-hovered,
+      :root .article-tag.is-topic-hovered {
+        color: var(--accent) !important;
+        border-color: var(--accent) !important;
+      }
+      :root .tag-option:not(.is-excluded) > .tag-chip.is-topic-hovered .tag-count {
+        color: var(--accent) !important;
+      }
       :root .read-toggle[aria-checked="true"]::before {
         color: var(--line);
         border-color: var(--line);
