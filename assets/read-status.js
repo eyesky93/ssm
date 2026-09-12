@@ -70,6 +70,12 @@ function installEngagementLayout(document) {
         background: var(--unread-bg);
         box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
       }
+      [dir="rtl"] .post-card:has([data-pin-toggle][aria-pressed="true"]) {
+        box-shadow: .32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
+      }
+      [dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]) {
+        box-shadow: .32rem 0 0 var(--accent), var(--shadow);
+      }
 
       /* Read posts use a grey frame on hover. Pinned read posts strengthen that
          grey further so their frame matches the darker ribbon. Hovering the
@@ -89,6 +95,12 @@ function installEngagementLayout(document) {
       }
       .unread-card:has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
         box-shadow: -.32rem 0 0 var(--accent-strong), var(--shadow);
+      }
+      [dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+        box-shadow: .32rem 0 0 color-mix(in srgb, var(--line-dark) 72%, #000), 0 1px 0 rgba(0, 0, 0, 0.03);
+      }
+      [dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+        box-shadow: .32rem 0 0 var(--accent-strong), var(--shadow);
       }
       .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card {
         --post-card-padding-inline: 1rem;
@@ -206,8 +218,10 @@ function installEngagementLayout(document) {
       .post-engagement {
         --stat-segment-width: 3rem;
         --stat-segment-height: 2rem;
-        display: inline-grid;
-        grid-template-columns: repeat(3, var(--stat-segment-width));
+        display: inline-flex;
+        flex-flow: row nowrap;
+        align-items: stretch;
+        direction: ltr;
         inline-size: calc(3 * var(--stat-segment-width));
         min-inline-size: calc(3 * var(--stat-segment-width));
         max-inline-size: calc(3 * var(--stat-segment-width));
@@ -231,6 +245,7 @@ function installEngagementLayout(document) {
         justify-items: center;
         column-gap: 0;
         box-sizing: border-box;
+        flex: 0 0 var(--stat-segment-width);
         inline-size: var(--stat-segment-width);
         min-inline-size: var(--stat-segment-width);
         max-inline-size: var(--stat-segment-width);
@@ -330,6 +345,14 @@ function installEngagementLayout(document) {
       .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:hover),
       .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:focus-within) {
         box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
+      }
+      [dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:hover),
+      [dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:focus-within) {
+        box-shadow: .32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
+      }
+      [dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:hover),
+      [dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:focus-within) {
+        box-shadow: .32rem 0 0 var(--accent), var(--shadow);
       }
 
       /* A selected upvote sits above the post boundary. Its resting selected
