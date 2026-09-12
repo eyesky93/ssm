@@ -846,15 +846,14 @@ function renderFilterContextLinks(document2, window2) {
   }
 }
 function readingSequence(posts, currentId, selected, excluded = []) {
-  const chronological = [...posts].sort((a, b) => a.published - b.published || a.id.localeCompare(b.id));
-  const selectedPosts = chronological.filter((post) => matchesTag(post.tags, selected, excluded));
+  const selectedPosts = posts.filter((post) => matchesTag(post.tags, selected, excluded));
   const index = selectedPosts.findIndex((post) => post.id === currentId);
-  const currentIndex = chronological.findIndex((post) => post.id === currentId);
+  const currentIndex = posts.findIndex((post) => post.id === currentId);
   return {
     current: index < 0 ? null : index + 1,
     total: selectedPosts.length,
-    previous: selectedPosts.filter((post) => chronological.indexOf(post) < currentIndex).at(-1) ?? null,
-    next: selectedPosts.find((post) => chronological.indexOf(post) > currentIndex) ?? null
+    previous: selectedPosts.filter((post) => posts.indexOf(post) < currentIndex).at(-1) ?? null,
+    next: selectedPosts.find((post) => posts.indexOf(post) > currentIndex) ?? null
   };
 }
 function readerUrl(href, selected, excluded = []) {
@@ -995,13 +994,13 @@ function initializePostBrowser(document2, window2) {
   const isBrowsing = () => !inline || explicitFilters() && new URL(window2.location.href).searchParams.get("reader") !== "1";
   let browsing = isBrowsing();
   const navigation = article?.querySelector("[data-post-navigation]");
-  const navigationPosts = cards.map((card) => ({
+  const navigationPosts = new Map(cards.map((card) => [card, {
     id: card.dataset.postId,
     tags: tagsByCard.get(card),
     published: Number(card.dataset.published),
     url: card.dataset.postUrl,
     title: card.dataset.postTitle
-  }));
+  }]));
   const hasFilters = () => Boolean(selected.size || excluded.size);
   let returnFocus = null;
   const search = initializeSearch(document2, window2, { browser, stream, cards, onChange(navigate) {
@@ -1054,8 +1053,7 @@ function initializePostBrowser(document2, window2) {
     for (const [link, href] of languageLinks) link.href = languageUrl(href);
     for (const [option, href] of languageOptions) option.value = languageUrl(href);
     if (!navigation) return;
-    const resultIds = search?.active ? new Set(cards.filter((card) => !card.hidden).map((card) => card.dataset.postId)) : null;
-    const sequencePosts = resultIds ? navigationPosts.filter((post) => resultIds.has(post.id)) : navigationPosts;
+    const sequencePosts = [...stream.children].filter((card) => navigationPosts.has(card) && (!search?.active || !card.hidden)).map((card) => navigationPosts.get(card));
     const sequence = readingSequence(sequencePosts, article.dataset.postId, search?.active ? [] : selected, excluded);
     const position = navigation.querySelector("[data-post-position]");
     position.textContent = `${sequence.current ?? "\u2014"}/${sequence.total}`;
@@ -1188,6 +1186,7 @@ function initializePostBrowser(document2, window2) {
   }
   window2.addEventListener("popstate", restoreHistory);
   window2.addEventListener("pageshow", restoreHistory);
+  window2.addEventListener("ssm:post-order-changed", renderNavigation);
   if (browsing) {
     setUrl(true);
     save();

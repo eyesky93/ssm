@@ -60,7 +60,8 @@ function expandPostTagHierarchies() {
           if (text && compactPart) text.replaceChildren(compactPart.cloneNode(true));
           else if (text) text.textContent = meta.label;
           proxy.setAttribute("aria-label", meta.title);
-          proxy.title = meta.title;
+          if (text?.textContent.trim() === meta.label) proxy.removeAttribute("title");
+          else proxy.title = meta.title;
           const href = new URL(proxy.href, window.location.href);
           href.searchParams.set("tag", topic);
           proxy.href = href.href;

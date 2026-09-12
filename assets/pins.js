@@ -87,6 +87,7 @@ export function initializePins(document, window) {
       if (sorted.some((card, index) => card !== current[index])) sorted.forEach((card) => stream.append(card));
     });
     if (focused?.matches("[data-pin-toggle]") && document.activeElement !== focused) focused.focus({ preventScroll: true });
+    window.dispatchEvent(new window.Event("ssm:post-order-changed"));
   }
   // Optional telemetry never gates a reader's bookmarks, and never records automatic defaults.
   const endpoint = document.body.dataset.pinStatsEndpoint;
