@@ -109,6 +109,14 @@
   if (typeof document.createElement === "function" && document.head?.append) {
     const tagHoverStyle = document.createElement("style");
     tagHoverStyle.textContent = `
+      /* Very compact cards use the same complete localized date as the other views. */
+      :root .post-stream[data-layout="compact"] .post-date-full {
+        display: inline;
+      }
+      :root .post-stream[data-layout="compact"] .post-date-compact {
+        display: none;
+      }
+
       :root .tag-option:not(.is-excluded):not(:has(> .tag-chip[aria-pressed="true"])):hover {
         border-color: var(--accent);
       }
