@@ -92,7 +92,8 @@
       apply(mode);
     },
     set(mode, key, value) {
-      if (!Object.hasOwn(defaults, mode) || key !== "accent" || !valid(value)) return;
+      if (!Object.hasOwn(defaults, mode)) return;
+      if (key !== "accent" || !valid(value)) return;
       preferences = { accent: value };
       save();
       apply(mode);
@@ -130,6 +131,7 @@
       }
       :root .post-engagement .post-vote:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
         color: var(--accent-strong);
+        border-inline-start-color: var(--accent-strong);
       }
       :root .post-engagement .post-vote[aria-pressed="true"]:is(:hover, :focus-visible):not(:disabled) svg,
       :root .post-engagement .post-vote[aria-pressed="true"]:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
@@ -145,9 +147,10 @@
         z-index: 8;
       }
 
-      /* Keep RTL engagement geometry physical and explicit. The three segments
-         are mirrored as a strip and each cell is mirrored too: number on the
-         left, icon on the right, exactly opposite the English version. */
+      /* Mirror the English geometry, including border ownership. The upvote
+         owns both of its side borders; the neighboring stats keep a transparent
+         border on that side instead of painting a second highlighted line.
+         Reserve the same border widths at rest and on hover so nothing shifts. */
       :root[dir="rtl"] .post-engagement {
         direction: ltr;
         flex-direction: row-reverse;
@@ -157,17 +160,17 @@
       }
       :root[dir="rtl"] .post-engagement .post-views {
         border-left: 1px solid var(--line);
-        border-right: 1px solid var(--line);
+        border-right: 1px solid transparent;
         border-radius: 0;
         border-bottom-left-radius: .5rem;
       }
       :root[dir="rtl"] .post-engagement .post-comments {
-        border-left: 0;
-        border-right: 1px solid var(--line);
+        border-left: 1px solid var(--line);
+        border-right: 1px solid transparent;
         border-radius: 0;
       }
       :root[dir="rtl"] .post-engagement .post-vote {
-        border-left: 0;
+        border-left: 1px solid var(--line);
         border-right: 1px solid var(--line);
         border-radius: 0;
         border-bottom-right-radius: .5rem;
@@ -186,28 +189,21 @@
         border-left-color: var(--accent);
         border-right-color: var(--accent);
       }
-      :root[dir="rtl"] .post-engagement:has(.post-vote[aria-pressed="true"]) .post-comments {
-        border-right-color: var(--accent);
-      }
       :root[dir="rtl"] .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
         border-left: 0;
         border-right: 1px solid var(--accent);
       }
 
-      /* Hover/focus on the RTL upvote colors the complete mirrored control:
-         arrow, number, internal divider, left separator and outer edge. */
+      /* Change colors only, for selected and unselected upvotes alike. The
+         divider is on the count's right in RTL, and on its left in LTR. */
       :root[dir="rtl"] .post-engagement .post-vote:is(:hover, :focus-visible):not(:disabled) {
-        border-left: 1px solid var(--accent-strong) !important;
-        border-right: 1px solid var(--accent-strong) !important;
-        border-block-end-color: var(--accent-strong) !important;
+        border-left-color: var(--accent-strong);
+        border-right-color: var(--accent-strong);
+        border-block-end-color: var(--accent-strong);
       }
       :root[dir="rtl"] .post-engagement .post-vote:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
         color: var(--accent-strong);
-        border-left: 0;
-        border-right: 1px solid var(--accent-strong) !important;
-      }
-      :root[dir="rtl"] .post-engagement:has(.post-vote:is(:hover, :focus-visible):not(:disabled)) .post-comments {
-        border-right-color: var(--accent-strong) !important;
+        border-right-color: var(--accent-strong);
       }
 
       /* Hovering the detached engagement strip must never highlight its card in
