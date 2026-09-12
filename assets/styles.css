@@ -1841,7 +1841,7 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   position: absolute;
   right: var(--post-card-padding-inline);
   left: auto;
-  inset-block-start: calc(100% + 1px);
+  inset-block-start: 100%;
   inset-block-end: auto;
   margin: 0;
   transform: none;
@@ -1851,9 +1851,6 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   right: auto;
 }
 
-/* The engagement strip starts immediately below the post's own 1px
-   bottom border. The card therefore owns the shared horizontal line;
-   the stats tabs do not redraw or cover it. */
 /* Hovering/focusing the detached stats control must not count as hovering
    the post itself. Restore the post frame and any pin ribbon to their
    resting colors while the engagement strip is active. Descendant :has()
@@ -1918,6 +1915,19 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 .post-engagement .post-vote[aria-pressed="true"]:hover:not(:disabled) .post-vote-count,
 .post-engagement .post-vote[aria-pressed="true"]:focus-visible .post-vote-count {
   color: var(--accent-strong);
+}
+
+/* Keep attached stats at their original position and fixed outer size.
+   Only their top edge is transparent. Clip the background to the
+   padding box so it cannot paint over the post's bottom border. */
+.post-card > .post-engagement > :is(.post-vote, .post-comments, .post-views) {
+  border-block-start: 1px solid transparent;
+  background-clip: padding-box;
+}
+/* The selected/hovered vote's inset top stroke must stay invisible
+   too; its existing side/bottom borders and accent colors remain. */
+.post-card > .post-engagement > .post-vote:is([aria-pressed="true"], :hover, :focus-visible) {
+  box-shadow: none;
 }
 
 .article-engagement-dock {
