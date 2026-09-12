@@ -176,6 +176,31 @@
       :root .tag-option:not(.is-excluded) > .tag-chip.is-topic-hovered .tag-count {
         color: var(--accent) !important;
       }
+
+      /* Every unread post owns the outside accent ribbon, independent of pin
+         state. Keep it as an outside shadow so toggling read state never changes
+         card dimensions. RTL mirrors the ribbon to the right. */
+      :root .unread-card {
+        box-shadow: -.32rem 0 0 var(--accent), var(--shadow) !important;
+      }
+      :root[dir="rtl"] .unread-card {
+        box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
+      }
+      :root .unread-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+        box-shadow: -.32rem 0 0 var(--accent-strong), var(--shadow) !important;
+      }
+      :root[dir="rtl"] .unread-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+        box-shadow: .32rem 0 0 var(--accent-strong), var(--shadow) !important;
+      }
+      :root .unread-card:has(.post-engagement:hover),
+      :root .unread-card:has(.post-engagement:focus-within) {
+        box-shadow: -.32rem 0 0 var(--accent), var(--shadow) !important;
+      }
+      :root[dir="rtl"] .unread-card:has(.post-engagement:hover),
+      :root[dir="rtl"] .unread-card:has(.post-engagement:focus-within) {
+        box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
+      }
+
       :root .read-toggle[aria-checked="true"]::before {
         color: var(--line);
         border-color: var(--line);
