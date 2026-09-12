@@ -328,7 +328,9 @@ function initializeSearch(document2, window2, { browser, stream, cards, onChange
       control.style.setProperty("--search-available-width", `${Math.max(0, available)}px`);
     }
     if (control.dataset.open !== "true" || !mainTags) return;
-    const height = Math.max(0, Math.floor(mainTags.getBoundingClientRect().bottom - bar.getBoundingClientRect().bottom));
+    const top = bar.getBoundingClientRect().bottom;
+    const tagAreaHeight = mainTags.getBoundingClientRect().bottom - top;
+    const height = Math.max(0, Math.floor(Math.min(2 * tagAreaHeight, window2.innerHeight - top - 8)));
     suggestions.style.setProperty("--search-suggestions-max-height", `${height}px`);
   }
   function focusTag(button) {
