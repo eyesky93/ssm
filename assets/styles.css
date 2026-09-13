@@ -2134,3 +2134,8 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 .map-zoom-panel:focus-within { border-color: var(--accent); }
 
 .article-body span.map-node { cursor: default; }
+
+.article-body .map-node > a.map-node-copy { color: inherit; text-decoration: none; }
+.map-node > a.map-node-copy::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.article-body .map-node > a.tag-count { position: relative; z-index: 1; color: var(--accent); text-decoration: none; cursor: pointer; }
+.article-body .map-node:focus-within { color: var(--accent); border-color: var(--accent); }
