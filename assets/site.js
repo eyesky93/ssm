@@ -742,10 +742,12 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         const x1 = (from.x + from.width / 2 - origin.x) / scale;
         const x2 = (to.x + to.width / 2 - origin.x) / scale;
         const forwards = to.top >= from.bottom;
-        const y1 = ((forwards ? from.bottom : from.top) - origin.y) / scale;
-        const y2 = ((forwards ? to.top : to.bottom) - origin.y) / scale;
-        const bend = Math.max(28, Math.abs(y2 - y1) / 2) * (forwards ? 1 : -1);
-        path.setAttribute("d", `M${x1},${y1} C${x1},${y1 + bend} ${x2},${y2 - bend} ${x2},${y2}`);
+        const direction = forwards ? 1 : -1;
+        const y1 = ((forwards ? from.bottom : from.top) - origin.y) / scale + direction * 3;
+        const y2 = ((forwards ? to.top : to.bottom) - origin.y) / scale - direction * 5;
+        const stem = Math.min(16, Math.abs(y2 - y1) / 4) * direction;
+        const middle = (y1 + y2) / 2;
+        path.setAttribute("d", `M${x1},${y1} L${x1},${y1 + stem} C${x1},${middle} ${x2},${middle} ${x2},${y2 - stem} L${x2},${y2}`);
       }
       state.width = canvas.offsetWidth;
       state.height = canvas.offsetHeight;
@@ -762,6 +764,16 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       state.viewWidth = width;
       const maxHeight = parseFloat(getComputedStyle(state.viewport).maxHeight) || 608;
       state.viewport.style.height = `${Math.max(128, Math.min(state.height, maxHeight))}px`;
+      // Keep the scaled tree within reach, with a small responsive overscan.
+      const padding = Math.min(24, width * 0.06);
+      const bound = (position, frame, content) => {
+        const center = (frame - content) / 2;
+        const low = content > frame ? frame - content - padding : center - padding;
+        const high = content > frame ? padding : center + padding;
+        return Math.max(low, Math.min(high, position));
+      };
+      state.x = bound(state.x, width, state.width * state.scale);
+      state.y = bound(state.y, state.viewport.clientHeight, state.height * state.scale);
       state.canvas.style.transform = `translate(${state.x}px, ${state.y}px) scale(${state.scale})`;
       if (state === active) {
         const percent = Math.round(state.scale * 100);
