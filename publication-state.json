@@ -1,6 +1,14 @@
 {
-  "generatedAt": "2026-09-13T11:20:21.000Z",
+  "generatedAt": "2026-09-13T11:24:36.000Z",
   "posts": [
+    {
+      "id": "tag-hierarchy",
+      "publishAt": "2026-09-13T00:00:00Z"
+    },
+    {
+      "id": "post-hierarchy",
+      "publishAt": "2026-09-13T00:00:00Z"
+    },
     {
       "id": "welcome",
       "publishAt": "2026-09-01T09:00:00+03:00"

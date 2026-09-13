@@ -7,6 +7,22 @@
     <language>he-IL</language>
     <atom:link href="https://eyesky93.github.io/ssm/he/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>עץ הפוסטים</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/post-hierarchy/</link>
+      <guid isPermaLink="false">urn:ssm:post-hierarchy:he</guid>
+      <pubDate>Sun, 13 Sep 2026 00:00:00 GMT</pubDate>
+      <description>מפת הקשרים בין הפוסטים, דרישות הקדם וסדר ההרצאות בכל קורס.</description>
+      <category>רשימות</category>
+    </item>
+    <item>
+      <title>עץ התגים</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/tag-hierarchy/</link>
+      <guid isPermaLink="false">urn:ssm:tag-hierarchy:he</guid>
+      <pubDate>Sun, 13 Sep 2026 00:00:00 GMT</pubDate>
+      <description>מפת הנושאים ותתי־הנושאים. המפה מתעדכנת אוטומטית עם הוספת תגים.</description>
+      <category>רשימות</category>
+    </item>
+    <item>
       <title>דוגמת מטאל</title>
       <link>https://eyesky93.github.io/ssm/he/posts/metal-example/</link>
       <guid isPermaLink="false">urn:ssm:metal-example:he</guid>

@@ -618,3 +618,170 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     }
   });
 });
+
+// Bundled into site.js so existing offline owner editions receive this runtime.
+(() => {
+  for (const root of document.querySelectorAll("[data-hierarchy-map]")) {
+    const views = [...root.querySelectorAll("[data-map-view]")];
+    const toolbar = root.querySelector("[data-map-toolbar]");
+    const back = root.querySelector("[data-map-back]");
+    const output = root.querySelector("[data-map-scale]");
+    const states = new Map();
+    let active;
+    let scheduled = false;
+
+    function measure(state) {
+      const { canvas, viewport } = state;
+      if (!viewport || viewport.closest("[hidden]")) return;
+      const scale = state.scale || 1;
+      const origin = canvas.getBoundingClientRect();
+      const nodes = new Map([...canvas.querySelectorAll("[data-map-node]")].map((node) => [node.dataset.mapNode, node]));
+      for (const path of canvas.querySelectorAll("[data-map-edge]")) {
+        const from = nodes.get(path.dataset.from)?.getBoundingClientRect();
+        const to = nodes.get(path.dataset.to)?.getBoundingClientRect();
+        if (!from || !to) continue;
+        const x1 = (from.x + from.width / 2 - origin.x) / scale;
+        const x2 = (to.x + to.width / 2 - origin.x) / scale;
+        const forwards = to.top >= from.bottom;
+        const y1 = ((forwards ? from.bottom : from.top) - origin.y) / scale;
+        const y2 = ((forwards ? to.top : to.bottom) - origin.y) / scale;
+        const bend = Math.max(28, Math.abs(y2 - y1) / 2) * (forwards ? 1 : -1);
+        path.setAttribute("d", `M${x1},${y1} C${x1},${y1 + bend} ${x2},${y2 - bend} ${x2},${y2}`);
+      }
+      state.width = canvas.offsetWidth;
+      state.height = canvas.offsetHeight;
+      const svg = canvas.querySelector("[data-map-edges]");
+      svg.setAttribute("width", state.width);
+      svg.setAttribute("height", state.height);
+      size(state);
+    }
+
+    function size(state) {
+      if (!state.viewport) return;
+      state.canvas.style.transform = `scale(${state.scale})`;
+      state.canvas.parentElement.style.width = `${state.width * state.scale}px`;
+      state.canvas.parentElement.style.height = `${state.height * state.scale}px`;
+      if (state === active) output.textContent = `${Math.round(state.scale * 100)}%`;
+    }
+
+    function zoom(state, value, center = true) {
+      if (!state?.viewport) return;
+      const viewport = state.viewport;
+      const x = (viewport.scrollLeft + viewport.clientWidth / 2) / state.scale;
+      const y = (viewport.scrollTop + viewport.clientHeight / 2) / state.scale;
+      state.scale = Math.max(0.15, Math.min(2, value));
+      size(state);
+      if (center) {
+        viewport.scrollLeft = x * state.scale - viewport.clientWidth / 2;
+        viewport.scrollTop = y * state.scale - viewport.clientHeight / 2;
+      }
+    }
+
+    function fit(state) {
+      if (!state?.viewport) return;
+      measure(state);
+      zoom(state, Math.min(1, state.viewport.clientWidth / state.width, (parseFloat(getComputedStyle(state.viewport).maxHeight) || state.viewport.clientHeight) / state.height), false);
+      state.viewport.scrollLeft = 0;
+      state.viewport.scrollTop = 0;
+    }
+
+    function show(id, focus = false) {
+      const view = views.find((candidate) => candidate.id === id) || views[0];
+      views.forEach((candidate) => { candidate.hidden = candidate !== view; });
+      back.hidden = view === views[0];
+      active = states.get(view.id);
+      root.querySelectorAll("[data-map-zoom]").forEach((button) => { button.disabled = !active.viewport; });
+      if (active.viewport) {
+        measure(active);
+        if (!active.initialized) {
+          // Keep labels readable on phones; the viewport can pan horizontally.
+          zoom(active, Math.max(0.7, Math.min(1, active.viewport.clientWidth / active.width)), false);
+          active.viewport.scrollLeft = Math.max(0, (active.width * active.scale - active.viewport.clientWidth) / 2);
+          active.initialized = true;
+        }
+        size(active);
+      } else output.textContent = "";
+      if (focus) view.focus({ preventScroll: true });
+    }
+
+    for (const view of views) {
+      const viewport = view.querySelector("[data-map-viewport]");
+      const canvas = view.querySelector("[data-map-canvas]");
+      const state = { viewport, canvas, scale: 1, width: 0, height: 0 };
+      states.set(view.id, state);
+      if (!viewport) continue;
+      viewport.classList.add("map-enhanced");
+      let drag = null;
+      let suppressClick = false;
+      viewport.addEventListener("pointerdown", (event) => {
+        if (event.pointerType !== "mouse" || event.button !== 0) return;
+        suppressClick = false;
+        drag = { id: event.pointerId, x: event.clientX, y: event.clientY, left: viewport.scrollLeft, top: viewport.scrollTop, moved: false };
+      });
+      viewport.addEventListener("pointermove", (event) => {
+        if (!drag || drag.id !== event.pointerId) return;
+        const dx = event.clientX - drag.x;
+        const dy = event.clientY - drag.y;
+        if (!drag.moved && Math.hypot(dx, dy) < 6) return;
+        drag.moved = true;
+        viewport.setPointerCapture(event.pointerId);
+        viewport.classList.add("is-panning");
+        viewport.scrollLeft = drag.left - dx;
+        viewport.scrollTop = drag.top - dy;
+        event.preventDefault();
+      });
+      const finish = () => {
+        if (!drag) return;
+        suppressClick = drag.moved;
+        if (viewport.hasPointerCapture(drag.id)) viewport.releasePointerCapture(drag.id);
+        drag = null;
+        viewport.classList.remove("is-panning");
+      };
+      viewport.addEventListener("pointerup", finish);
+      viewport.addEventListener("pointercancel", finish);
+      viewport.addEventListener("lostpointercapture", finish);
+      viewport.addEventListener("pointerleave", () => { if (drag && !drag.moved) drag = null; });
+      viewport.addEventListener("dragstart", (event) => event.preventDefault());
+      viewport.addEventListener("click", (event) => {
+        if (!suppressClick) return;
+        suppressClick = false;
+        event.preventDefault();
+        event.stopPropagation();
+      }, true);
+      viewport.addEventListener("focusin", (event) => {
+        if (event.target.matches("[data-map-node]")) event.target.scrollIntoView({ block: "nearest", inline: "nearest" });
+      });
+    }
+    root.addEventListener("click", (event) => {
+      const link = event.target.closest("[data-map-course], [data-map-back]");
+      if (link && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
+        event.preventDefault();
+        const id = link.getAttribute("href").slice(1);
+        if (window.location.hash !== `#${id}`) window.history.pushState(null, "", `#${id}`);
+        show(id, true);
+        return;
+      }
+      const button = event.target.closest("[data-map-zoom]");
+      if (!button || !active?.viewport) return;
+      const action = button.dataset.mapZoom;
+      if (action === "fit") fit(active);
+      else zoom(active, action === "reset" ? 1 : active.scale * (action === "in" ? 1.2 : 1 / 1.2));
+    });
+    const currentId = () => window.location.hash.slice(1);
+    window.addEventListener("popstate", () => show(currentId()));
+    window.addEventListener("hashchange", () => show(currentId()));
+    const refresh = () => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(() => { scheduled = false; if (active?.viewport) measure(active); });
+    };
+    if (typeof ResizeObserver !== "undefined") {
+      const observer = new ResizeObserver(refresh);
+      for (const state of states.values()) if (state.canvas) observer.observe(state.canvas);
+      observer.observe(root);
+    } else window.addEventListener("resize", refresh);
+    toolbar.hidden = false;
+    show(currentId());
+    document.fonts?.ready.then(refresh);
+  }
+})();

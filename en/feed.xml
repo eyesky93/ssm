@@ -7,6 +7,22 @@
     <language>en-GB</language>
     <atom:link href="https://eyesky93.github.io/ssm/en/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>Post hierarchy</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/post-hierarchy/</link>
+      <guid isPermaLink="false">urn:ssm:post-hierarchy:en</guid>
+      <pubDate>Sun, 13 Sep 2026 00:00:00 GMT</pubDate>
+      <description>Explore the connections between posts, their prerequisites, and the lecture order within each course.</description>
+      <category>Notes</category>
+    </item>
+    <item>
+      <title>Tag hierarchy</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/tag-hierarchy/</link>
+      <guid isPermaLink="false">urn:ssm:tag-hierarchy:en</guid>
+      <pubDate>Sun, 13 Sep 2026 00:00:00 GMT</pubDate>
+      <description>Explore the subjects and their branches. This map updates automatically as tags are added.</description>
+      <category>Notes</category>
+    </item>
+    <item>
       <title>Metal example</title>
       <link>https://eyesky93.github.io/ssm/en/posts/metal-example/</link>
       <guid isPermaLink="false">urn:ssm:metal-example:en</guid>
