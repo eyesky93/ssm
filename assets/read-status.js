@@ -70,7 +70,7 @@ export function initializeReadStatus(document, window) {
     card.addEventListener("click", (event) => {
       if (event.defaultPrevented || (typeof event.button === "number" && event.button !== 0)) return;
       const target = event.target;
-      if (target?.closest?.("a, button, input, select, textarea, summary, [role=\"button\"], [data-post-engagement]")) return;
+      if (target?.closest?.("a, button, input, select, textarea, summary, [role=\"button\"], [data-post-engagement], [data-share-menu]")) return;
       const selection = window.getSelection?.();
       if (selection && !selection.isCollapsed && selection.toString()) return;
       const link = card.querySelector("[data-reader-link]");

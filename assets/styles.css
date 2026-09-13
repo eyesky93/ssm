@@ -1109,19 +1109,48 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 [dir="rtl"] .article-actions { flex-direction: row-reverse; }
 .share-menu { position: relative; display: inline-block; font-family: var(--font-interface); font-size: 0.95rem; }
 .share-menu summary { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 1px solid var(--line-dark); border-radius: 50%; background: var(--surface); color: var(--ink); padding: 0.65rem; cursor: pointer; list-style: none; }
-.share-menu summary:hover { box-shadow: 0 0 0 3px var(--soft-accent); }
+.share-menu summary:is(:hover, :focus-visible) { box-shadow: 0 0 0 3px var(--soft-accent); }
+.share-menu[open] { z-index: 20; }
 .share-menu summary::-webkit-details-marker { display: none; }
 .share-menu summary svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.7; }
-.share-options { position: absolute; z-index: 5; inset-inline-end: calc(-0.5rem - 1px); inset-block-start: calc(100% + 0.5rem); display: flex; flex-direction: column; align-items: flex-end; width: max-content; gap: 0.5rem; padding: 0.65rem 0.5rem; border: 1px solid var(--line-dark); border-radius: 1rem; background: var(--surface); box-shadow: var(--shadow); }
-.share-options a, .share-options button { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 1px solid var(--line-dark); border-radius: 50%; background: var(--surface); color: var(--ink); padding: 0.7rem; font: inherit; text-decoration: none; cursor: pointer; }
+.share-options { position: absolute; overflow-y: auto; overscroll-behavior: contain; z-index: 5; inset-inline-end: calc(-0.5rem - 1px); inset-block-start: calc(100% + 0.5rem); display: flex; flex-direction: column; align-items: flex-end; width: max-content; gap: 0.5rem; padding: 0.65rem 0.5rem; border: 1px solid var(--line-dark); border-radius: 1rem; background: var(--surface); box-shadow: var(--shadow); }
+.share-options a, .share-options button { flex: 0 0 auto; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 1px solid var(--line-dark); border-radius: 50%; background: var(--surface); color: var(--ink); padding: 0.7rem; font: inherit; text-decoration: none; cursor: pointer; }
 .share-options a:hover, .share-options button:hover { background: var(--soft-accent); border-color: var(--accent-strong); }
 .share-options svg { width: 100%; height: 100%; fill: currentColor; }
 .share-options .share-line-icon { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .share-options [hidden] { display: none; }
-.share-options input { width: 100%; min-width: 0; border: 1px solid var(--line-dark); border-radius: 0.4rem; background: var(--paper); color: var(--ink); padding: 0.65rem; font: inherit; }
-.share-options .share-instagram-open { width: auto; height: auto; border: 0; border-radius: 0; padding: 0; font-size: 0.875rem; text-decoration: underline; }
-.share-status:empty { display: none; }
-.share-status { max-width: 12.5rem; padding: 0.4rem 0.75rem; font-size: 0.875rem; color: var(--muted); }
+/* Feedback is a sibling popover, never part of the icon column's width. */
+.share-feedback {
+  position: absolute;
+  z-index: 6;
+  inset-inline-end: calc(100% + 1rem);
+  inset-block-start: calc(100% + 0.5rem);
+  width: max-content;
+  max-width: min(16rem, calc(100vw - 7rem));
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--line-dark);
+  border-radius: 0.4rem;
+  background: var(--surface);
+  color: var(--muted);
+  box-shadow: var(--shadow);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  cursor: default;
+}
+.share-feedback[hidden], .share-feedback [hidden], .share-status:empty { display: none; }
+.share-feedback input { display: block; width: 100%; min-width: 0; margin-block-start: 0.4rem; border: 1px solid var(--line-dark); border-radius: 0.4rem; background: var(--paper); color: var(--ink); padding: 0.45rem; font: inherit; }
+.share-menu[data-share-side="above"] > :is(.share-options, .share-feedback) { inset-block-start: auto; inset-block-end: calc(100% + 0.5rem); }
+
+/* Reserve a narrow action lane rather than increasing the heading height.
+   Grid/compact views and mobile keep their existing pin-only card controls. */
+.card-actions { display: contents; }
+.card-share-menu { display: none; }
+@media (min-width: 701px) {
+  .post-stream[data-layout="list"] .card-actions { position: relative; display: inline-flex; flex: 0 0 auto; align-self: flex-start; }
+  .post-stream[data-layout="list"] .card-share-menu { position: absolute; display: inline-block; inset-inline-end: 0; inset-block-start: calc(100% + 0.5rem); }
+  .post-stream[data-layout="list"] .post-card > p { padding-inline-end: 3.55rem; }
+}
 #disqus_thread { color: var(--ink); background: var(--paper); border-radius: 0.75rem; min-height: 8rem; color-scheme: inherit; }
 #disqus_thread iframe { color-scheme: inherit; }
 

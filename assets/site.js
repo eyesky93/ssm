@@ -288,52 +288,92 @@ if (themePreference?.addEventListener) {
 }
 
 
+// Keep icon menus within the viewport, including shares on lower list cards.
+function positionShareMenu(menu) {
+  if (!menu.open) return;
+  const summary = menu.querySelector("summary");
+  if (!summary.getClientRects().length) { menu.open = false; return; }
+  const options = menu.querySelector(".share-options");
+  const bounds = summary.getBoundingClientRect();
+  const below = Math.max(0, window.innerHeight - bounds.bottom - 20);
+  const above = Math.max(0, bounds.top - 20);
+  const opensAbove = below < options.scrollHeight && above > below;
+  menu.dataset.shareSide = opensAbove ? "above" : "below";
+  options.style.maxBlockSize = `${Math.floor(opensAbove ? above : below)}px`;
+}
+
 document.querySelectorAll("[data-share-menu]").forEach((menu) => {
   const status = menu.querySelector(".share-status");
-  const fallback = () => {
-    const field = menu.querySelector("[data-share-url]");
-    field.hidden = false;
-    field.focus();
-    field.select();
-    status.textContent = status.dataset.copyFailed;
+  const feedback = menu.querySelector("[data-share-feedback]");
+  const field = menu.querySelector("[data-share-url]");
+  const showStatus = (message) => {
+    status.textContent = message;
+    feedback.hidden = !message && field.hidden;
   };
+  const fallback = (message = status.dataset.copyFailed) => {
+    field.hidden = false;
+    showStatus(message);
+    field.focus({ preventScroll: true });
+    field.select();
+  };
+  const resetFeedback = () => {
+    field.hidden = true;
+    showStatus("");
+  };
+  menu.addEventListener("toggle", () => {
+    if (menu.open) positionShareMenu(menu);
+    else resetFeedback();
+  });
   menu.querySelector("[data-copy-link]").addEventListener("click", async () => {
+    resetFeedback();
     try {
       await navigator.clipboard.writeText(menu.dataset.url);
-      status.textContent = status.dataset.copied;
+      showStatus(status.dataset.copied);
     } catch { fallback(); }
   });
   const instagram = menu.querySelector("[data-instagram-share]");
-  const openInstagram = menu.querySelector("[data-open-instagram]");
-  instagram?.addEventListener("click", async () => {
-    if (navigator.share) {
-      status.textContent = status.dataset.instagramChoose;
+  let instagramDirect = !window.matchMedia?.("(hover: none) and (pointer: coarse)").matches;
+  instagram?.addEventListener("click", async (event) => {
+    if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    resetFeedback();
+    // Keep touch sharing native when available. Desktop uses the icon's real
+    // link, so opening Instagram does not depend on an asynchronous popup.
+    if (!instagramDirect && typeof navigator.share === "function") {
+      event.preventDefault();
+      showStatus(status.dataset.instagramChoose);
       try {
         await navigator.share({ title: menu.dataset.title, text: menu.dataset.title, url: menu.dataset.url });
-        status.textContent = "";
+        showStatus("");
         return;
       } catch (error) {
-        if (error.name === "AbortError") { status.textContent = ""; return; }
+        if (error?.name === "AbortError") { showStatus(""); return; }
       }
+      // A failed native share turns this same icon into the direct link.
+      // Never append another "Open Instagram" action to the icon column.
+      instagramDirect = true;
+      instagram.title = instagram.dataset.labelOpen;
     }
+    // Start copying in the click gesture. The anchor's normal new-tab action
+    // is deliberately not prevented in the direct-link path.
     try {
       await navigator.clipboard.writeText(menu.dataset.url);
-      status.textContent = status.dataset.instagramCopied;
-    } catch {
-      fallback();
-      status.textContent = status.dataset.instagramCopy;
-    }
-    openInstagram.hidden = false;
+      showStatus(status.dataset.instagramCopied);
+    } catch { fallback(status.dataset.instagramCopy); }
   });
   const native = menu.querySelector("[data-native-share]");
   native.hidden = false;
   native.addEventListener("click", async () => {
-    if (!navigator.share) { fallback(); return; }
+    resetFeedback();
+    if (typeof navigator.share !== "function") { fallback(); return; }
     try {
       await navigator.share({ title: menu.dataset.title, url: menu.dataset.url });
-    } catch (error) { if (error.name !== "AbortError") fallback(); }
+    } catch (error) { if (error?.name !== "AbortError") fallback(); }
   });
 });
+
+const repositionShareMenus = () => document.querySelectorAll("[data-share-menu][open]").forEach(positionShareMenu);
+window.addEventListener("resize", repositionShareMenus);
+window.addEventListener("scroll", repositionShareMenus, { passive: true });
 
 const settings = document.querySelector("[data-header-settings]");
 const settingsToggle = settings?.querySelector("[data-settings-toggle]");
