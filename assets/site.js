@@ -631,6 +631,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     const states = new Map();
     let active;
     let scheduled = false;
+    let restoreFilters = () => {};
     if (!views.length || !toolbar || !back || !forward) continue;
     const overview = views[0].id;
     const page = window.location.pathname;
@@ -689,6 +690,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     }
 
     function restoreHistory() {
+      restoreFilters();
       const id = currentId();
       const saved = record();
       if (saved && saved.trail[saved.position] === id) {
@@ -731,6 +733,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       const origin = canvas.getBoundingClientRect();
       const nodes = new Map([...canvas.querySelectorAll("[data-map-node]")].map((node) => [node.dataset.mapNode, node]));
       for (const path of canvas.querySelectorAll("[data-map-edge]")) {
+        if (path.hasAttribute("hidden")) continue;
         const from = nodes.get(path.dataset.from)?.getBoundingClientRect();
         const to = nodes.get(path.dataset.to)?.getBoundingClientRect();
         if (!from || !to) continue;
@@ -786,8 +789,8 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       if (overviewLink) overviewLink.hidden = view === views[0];
       updateHistoryButtons();
       active = states.get(view.id);
-      root.querySelectorAll("[data-map-zoom]").forEach((button) => { button.disabled = !active.viewport; });
-      if (active.viewport) {
+      root.querySelectorAll("[data-map-zoom]").forEach((button) => { button.disabled = !active.viewport || active.viewport.hidden; });
+      if (active.viewport && !active.viewport.hidden) {
         measure(active);
         if (!active.initialized) {
           // Keep labels readable on phones; the viewport can pan horizontally.
@@ -851,6 +854,138 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         if (event.target.matches("[data-map-node]")) event.target.scrollIntoView({ block: "nearest", inline: "nearest" });
       });
     }
+    // These controls use their own data attributes and URL parameters so the
+    // embedded homepage browser never takes over a map-filter click.
+    const filterMenu = root.querySelector("[data-map-filters]");
+    if (filterMenu) {
+      const chips = [...filterMenu.querySelectorAll("[data-map-filter-tag]")];
+      const known = new Set(chips.map((chip) => chip.dataset.mapFilterTag));
+      const excludeButtons = [...filterMenu.querySelectorAll("[data-map-exclude-tag]")];
+      const clear = filterMenu.querySelector("[data-map-clear-filter]");
+      const groups = [...filterMenu.querySelectorAll("[data-map-filter-parent]")];
+      const options = new Map(groups.map((group) => [group, [...group.querySelectorAll("[data-map-filter-option]")]]));
+      const view = views[0];
+      const levels = view.querySelector(".map-levels");
+      const nodes = [...view.querySelectorAll("[data-map-member-tags]")];
+      const members = new Map(nodes.map((node) => [node, JSON.parse(node.dataset.mapMemberTags)]));
+      const edges = [...view.querySelectorAll("[data-map-edge]")];
+      const empty = view.querySelector("[data-map-filter-empty]");
+      let selected = new Set(), excluded = new Set();
+      const includes = (tags, key) => tags.some((tag) => tag === key || tag.startsWith(`${key}:`));
+
+      function normalize() {
+        excluded = new Set([...excluded].filter((tag) => known.has(tag)));
+        const choices = new Set();
+        for (const tag of selected) {
+          if (!known.has(tag) || [...excluded].some((hidden) => includes([tag], hidden))) continue;
+          const parts = tag.split(":");
+          for (let i = 1; i <= parts.length; i++) {
+            const parent = parts.slice(0, i).join(":");
+            if (known.has(parent)) choices.add(parent);
+          }
+        }
+        selected = choices;
+      }
+
+      function applyFilters() {
+        for (const chip of chips) {
+          const tag = chip.dataset.mapFilterTag;
+          chip.setAttribute("aria-pressed", String(selected.has(tag)));
+          chip.classList.toggle("is-ancestor", [...selected].some((other) => other.startsWith(`${tag}:`)));
+        }
+        for (const button of excludeButtons) {
+          const hidden = excluded.has(button.dataset.mapExcludeTag);
+          button.setAttribute("aria-pressed", String(hidden));
+          button.setAttribute("aria-label", hidden ? button.dataset.labelRestore : button.dataset.labelExclude);
+          const option = button.closest("[data-map-filter-option]");
+          if (hidden) option.classList.remove("is-restored");
+          else if (option.classList.contains("is-excluded")) option.classList.add("is-restored");
+          option.classList.toggle("is-excluded", hidden);
+        }
+        for (const group of groups) {
+          const parent = group.dataset.mapFilterParent;
+          group.hidden = Boolean(parent) && ![...selected].some((tag) => includes([tag], parent)) && ![...excluded].some((tag) => tag.startsWith(`${parent}:`));
+          const original = options.get(group);
+          const ordered = [...original.filter((option) => !excluded.has(option.dataset.mapFilterOption)), ...original.filter((option) => excluded.has(option.dataset.mapFilterOption))];
+          const current = [...group.querySelectorAll("[data-map-filter-option]")];
+          if (ordered.some((option, index) => current[index] !== option)) group.append(...ordered);
+        }
+        clear.disabled = !selected.size && !excluded.size;
+        if (!levels) return;
+        const leaves = [...selected].filter((tag) => ![...selected].some((other) => other.startsWith(`${tag}:`)));
+        const visible = nodes.filter((node) => clear.disabled || members.get(node).some((tags) => leaves.every((tag) => includes(tags, tag)) && ![...excluded].some((tag) => includes(tags, tag))));
+        const ids = new Set(visible.map((node) => node.dataset.mapNode));
+        for (const edge of edges) edge.toggleAttribute("hidden", !ids.has(edge.dataset.from) || !ids.has(edge.dataset.to));
+        // Recompute levels after filtering so hidden prerequisites leave no
+        // dangling arrows, blank rows or empty grid columns.
+        const pending = new Set(ids);
+        const rows = [];
+        while (pending.size) {
+          const blocked = new Set(edges.filter((edge) => !edge.hasAttribute("hidden") && pending.has(edge.dataset.from)).map((edge) => edge.dataset.to));
+          let row = visible.filter((node) => pending.has(node.dataset.mapNode) && !blocked.has(node.dataset.mapNode));
+          if (!row.length) row = [visible.find((node) => pending.has(node.dataset.mapNode))];
+          const element = document.createElement("div");
+          element.className = "map-level";
+          element.style.setProperty("--map-columns", Math.min(3, row.length));
+          element.append(...row);
+          rows.push(element);
+          row.forEach((node) => pending.delete(node.dataset.mapNode));
+        }
+        levels.replaceChildren(...rows);
+        if (empty) empty.hidden = visible.length > 0;
+        const state = states.get(overview);
+        state.viewport.hidden = !visible.length;
+      }
+
+      restoreFilters = () => {
+        const params = new URL(window.location.href).searchParams;
+        selected = new Set(params.getAll("map-tag"));
+        excluded = new Set(params.getAll("map-exclude"));
+        normalize(); applyFilters();
+      };
+      function updateFilters(source, keyboard) {
+        normalize(); applyFilters();
+        states.get(overview).initialized = false;
+        // Finish in the overview. A series can then be opened with its full
+        // published lecture order, even when only one lecture matches a tag.
+        visit(overview, false);
+        try {
+          const url = new URL(window.location.href);
+          url.searchParams.delete("map-tag"); url.searchParams.delete("map-exclude");
+          selected.forEach((tag) => url.searchParams.append("map-tag", tag));
+          excluded.forEach((tag) => url.searchParams.append("map-exclude", tag));
+          window.history.replaceState(window.history.state, "", url.href);
+        } catch { /* Offline editions can still filter when history is restricted. */ }
+        if (keyboard && !source.checkVisibility?.({ visibilityProperty: true })) {
+          (chips.find((chip) => selected.has(chip.dataset.mapFilterTag) && chip.checkVisibility?.()) || clear).focus({ preventScroll: true });
+        } else if (!keyboard) source.blur?.();
+      }
+      chips.forEach((chip) => {
+        chip.addEventListener("click", (event) => {
+          if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          const tag = chip.dataset.mapFilterTag;
+          chip.closest("[data-map-filter-option]").classList.remove("is-restored");
+          for (const hidden of excluded) if (includes([tag], hidden)) excluded.delete(hidden);
+          if (selected.has(tag)) {
+            for (const choice of selected) if (includes([choice], tag)) selected.delete(choice);
+          } else selected.add(tag);
+          updateFilters(chip, event.detail === 0);
+        });
+        chip.addEventListener("keydown", (event) => {
+          if (event.key !== " " || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          if (!event.repeat) chip.click();
+        });
+      });
+      excludeButtons.forEach((button) => button.addEventListener("click", (event) => {
+        const tag = button.dataset.mapExcludeTag;
+        if (excluded.has(tag)) excluded.delete(tag); else excluded.add(tag);
+        updateFilters(button, event.detail === 0);
+      }));
+      clear.addEventListener("click", (event) => { selected.clear(); excluded.clear(); updateFilters(clear, event.detail === 0); });
+    }
+
     root.addEventListener("click", (event) => {
       if (event.defaultPrevented) return;
       const historyButton = event.target.closest("[data-map-back], [data-map-forward]");
@@ -884,6 +1019,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       observer.observe(root);
     } else window.addEventListener("resize", refresh);
     toolbar.hidden = false;
+    restoreFilters();
     initializeHistory();
     document.fonts?.ready.then(refresh);
   }
