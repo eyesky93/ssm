@@ -626,7 +626,9 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     const toolbar = root.querySelector("[data-map-toolbar]");
     const back = root.querySelector("[data-map-back]");
     const forward = root.querySelector("[data-map-forward]");
-    const overviewLink = root.querySelector("[data-map-overview]");
+    const zoomButton = root.querySelector("[data-map-zoom-toggle]");
+    const zoomPanel = root.querySelector("[data-map-zoom-panel]");
+    const zoomSlider = root.querySelector("[data-map-zoom-slider]");
     const output = root.querySelector("[data-map-scale]");
     const states = new Map();
     let active;
@@ -758,7 +760,12 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       state.canvas.style.transform = `scale(${state.scale})`;
       state.canvas.parentElement.style.width = `${state.width * state.scale}px`;
       state.canvas.parentElement.style.height = `${state.height * state.scale}px`;
-      if (state === active) output.textContent = `${Math.round(state.scale * 100)}%`;
+      if (state === active) {
+        const percent = Math.round(state.scale * 100);
+        output.textContent = `${percent}%`;
+        if (zoomButton) zoomButton.setAttribute("aria-label", `${zoomButton.dataset.mapZoomLabel}: ${percent}%`);
+        if (zoomSlider) { zoomSlider.value = percent; zoomSlider.setAttribute("aria-valuetext", `${percent}%`); }
+      }
     }
 
     function zoom(state, value, center = true) {
@@ -774,27 +781,19 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       }
     }
 
-    function fit(state) {
-      if (!state?.viewport) return;
-      measure(state);
-      zoom(state, Math.min(1, state.viewport.clientWidth / state.width, (parseFloat(getComputedStyle(state.viewport).maxHeight) || state.viewport.clientHeight) / state.height), false);
-      state.viewport.scrollLeft = 0;
-      state.viewport.scrollTop = 0;
-    }
-
     function show(id, focus = false) {
       const view = views.find((candidate) => candidate.id === id) || views[0];
       if (active?.viewport) { active.left = active.viewport.scrollLeft; active.top = active.viewport.scrollTop; }
       views.forEach((candidate) => { candidate.hidden = candidate !== view; });
-      if (overviewLink) overviewLink.hidden = view === views[0];
+      if (zoomPanel) { zoomPanel.hidden = true; zoomButton.setAttribute("aria-expanded", "false"); }
       updateHistoryButtons();
       active = states.get(view.id);
-      root.querySelectorAll("[data-map-zoom]").forEach((button) => { button.disabled = !active.viewport || active.viewport.hidden; });
+      if (zoomButton) zoomButton.disabled = !active.viewport || active.viewport.hidden;
       if (active.viewport && !active.viewport.hidden) {
         measure(active);
         if (!active.initialized) {
-          // Keep labels readable on phones; the viewport can pan horizontally.
-          zoom(active, Math.max(0.7, Math.min(1, active.viewport.clientWidth / active.width)), false);
+          // Each newly opened view starts at actual size; wide maps can pan.
+          zoom(active, 1, false);
           active.viewport.scrollLeft = Math.max(0, (active.width * active.scale - active.viewport.clientWidth) / 2);
           active.initialized = true;
         } else {
@@ -802,7 +801,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
           active.viewport.scrollTop = active.top || 0;
         }
         size(active);
-      } else output.textContent = "";
+      } else output.textContent = "100%";
       if (focus) view.focus({ preventScroll: true });
     }
 
@@ -993,19 +992,35 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         if (!historyButton.disabled) travel(historyButton === back ? -1 : 1, event.detail === 0);
         return;
       }
-      const link = event.target.closest("[data-map-course], [data-map-tag], [data-map-overview]");
+      const link = event.target.closest("[data-map-course], [data-map-tag]");
       if (link && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
         event.preventDefault();
         const id = link.getAttribute("href").slice(1);
         visit(id, event.detail === 0);
         return;
       }
-      const button = event.target.closest("[data-map-zoom]");
-      if (!button || !active?.viewport) return;
-      const action = button.dataset.mapZoom;
-      if (action === "fit") fit(active);
-      else zoom(active, action === "reset" ? 1 : active.scale * (action === "in" ? 1.2 : 1 / 1.2));
     });
+    if (zoomButton && zoomPanel && zoomSlider) {
+      const closeZoom = () => { zoomPanel.hidden = true; zoomButton.setAttribute("aria-expanded", "false"); };
+      zoomButton.addEventListener("click", () => {
+        zoomPanel.hidden = !zoomPanel.hidden;
+        zoomButton.setAttribute("aria-expanded", String(!zoomPanel.hidden));
+        if (!zoomPanel.hidden) zoomSlider.focus({ preventScroll: true });
+      });
+      zoomSlider.addEventListener("input", () => zoom(active, Number(zoomSlider.value) / 100));
+      root.addEventListener("wheel", (event) => {
+        const selected = !zoomPanel.hidden || document.activeElement === zoomButton || document.activeElement === zoomSlider;
+        if (!selected || zoomButton.disabled || event.ctrlKey || !event.deltaY || !event.target.closest(".map-stage")) return;
+        event.preventDefault();
+        zoom(active, active.scale + (event.deltaY < 0 ? .05 : -.05));
+      }, { passive: false });
+      document.addEventListener("pointerdown", (event) => {
+        if (!event.target.closest("[data-map-zoom-control]")) closeZoom();
+      });
+      root.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !zoomPanel.hidden) { event.preventDefault(); closeZoom(); zoomButton.focus({ preventScroll: true }); }
+      });
+    }
     window.addEventListener("popstate", restoreHistory);
     window.addEventListener("hashchange", restoreHistory);
     const refresh = () => {
