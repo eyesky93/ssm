@@ -138,3 +138,27 @@ html { scrollbar-gutter: stable; }
   padding: 0;
   border-radius: 50%;
 }
+
+/* Settle each strip's initial values and geometry before its first visible paint.
+   Visibility preserves its box (and IntersectionObserver loading). No-JS readers
+   still see the unavailable placeholders instead of a permanently hidden strip. */
+@media (scripting: enabled) {
+  .post-engagement:not([data-engagement-ready="true"]) { visibility: hidden; }
+}
+
+/* Two actual digits MINIMUM, plus the existing one-digit breathing room and
+   divider. The old half-tab minimum included padding/border and could therefore
+   grow even for a two-digit value. Keep the existing end-edge anchors and RTL
+   ordering; only the count column is allowed to grow. */
+.post-engagement .post-vote-count,
+.post-engagement .post-comment-count,
+.post-engagement .post-view-count {
+  min-inline-size: max(calc(var(--stat-segment-width) / 2 - 1px), calc((var(--stat-count-chars, 2) + 1) * 1ch + 1px));
+  /* Use the system interface stack for numerals in both languages, so the
+     asynchronously loaded Hebrew text font cannot resize the digit slots. */
+  font-family: var(--font-interface);
+}
+
+/* Loading/refreshing must not fade the upvote while the other tabs stay solid.
+   The disabled state, cursor, accessible labels and busy state remain intact. */
+.post-engagement .post-vote:disabled { opacity: 1; }

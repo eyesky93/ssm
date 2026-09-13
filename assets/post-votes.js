@@ -46,6 +46,16 @@ function localizedNumber(value, lang) {
   catch { return String(value); }
 }
 
+// Reserve at least two characters, growing for localized separators as well as
+// digits. Retain the widest value for this element so refreshes never shrink it.
+function renderCount(element, text) {
+  if (!element) return;
+  const previous = Number(element.style?.getPropertyValue?.("--stat-count-chars")) || 2;
+  const characters = Math.max(2, previous, Array.from(text).length);
+  element.style?.setProperty("--stat-count-chars", String(characters));
+  if (element.textContent !== text) element.textContent = text;
+}
+
 function timeoutSignal(window, milliseconds) {
   const implementation = window.AbortSignal || globalThis.AbortSignal;
   return implementation?.timeout ? implementation.timeout(milliseconds) : undefined;
@@ -81,11 +91,12 @@ export function initializePostVotes(document, window, { randomId } = {}) {
     const postId = button.dataset.postId;
     if (!postId || postId.length > 160) {
       button.disabled = true;
+      button.closest?.("[data-post-engagement]")?.setAttribute?.("data-engagement-ready", "true");
       continue;
     }
     if (!groups.has(postId)) groups.set(postId, {
       postId, buttons: [], count: null, views: null, comments: null, commentsUpdated: 0, upvoted: false, available: false,
-      loading: null, mutating: false, requested: false,
+      loading: null, mutating: false, requested: false, initialLoadComplete: !endpoint,
     });
     groups.get(postId).buttons.push(button);
   }
@@ -116,14 +127,14 @@ export function initializePostVotes(document, window, { randomId } = {}) {
   function render(group) {
     for (const button of group.buttons) {
       const part = pieces(button);
-      const busy = Boolean(group.loading || group.mutating);
+      const busy = Boolean(!group.initialLoadComplete || group.loading || group.mutating);
       button.disabled = busy || !group.available;
       button.setAttribute("aria-pressed", String(group.upvoted));
       if (busy) button.setAttribute("aria-busy", "true");
       else button.removeAttribute("aria-busy");
-      if (part.count) part.count.textContent = group.count === null
+      renderCount(part.count, group.count === null
         ? "—"
-        : localizedNumber(group.count, document.documentElement?.lang);
+        : localizedNumber(group.count, document.documentElement?.lang));
       const label = group.available
         ? accessibleLabel(button, group)
         : (button.dataset.labelUnavailable || "");
@@ -137,18 +148,21 @@ export function initializePostVotes(document, window, { randomId } = {}) {
       const comments = button.closest?.('[data-post-engagement]')?.querySelector('[data-post-comments]');
       if (comments) {
         const count = group.comments === null ? '—' : localizedNumber(group.comments, document.documentElement?.lang);
-        comments.querySelector('[data-post-comment-count]').textContent = count;
+        renderCount(comments.querySelector('[data-post-comment-count]'), count);
         const label = group.comments === null ? comments.dataset.labelUnavailable : comments.dataset.labelCount.replace('{count}', count);
         comments.setAttribute('aria-label', label); comments.title = label;
       }
       const views = button.closest?.('[data-post-engagement]')?.querySelector('[data-post-views]');
       if (views) {
         const count = group.views === null ? '—' : localizedNumber(group.views, document.documentElement?.lang);
-        views.querySelector('[data-post-view-count]').textContent = count;
+        renderCount(views.querySelector('[data-post-view-count]'), count);
         const label = group.views === null ? views.dataset.labelUnavailable : views.dataset.labelCount.replace('{count}', count);
         views.setAttribute('aria-label', label);
         views.title = label;
       }
+      // Reveal the entire strip only after the initial read settles. Counts and
+      // widths are committed together above; later refreshes never hide it again.
+      button.closest?.("[data-post-engagement]")?.setAttribute?.("data-engagement-ready", String(group.initialLoadComplete));
     }
   }
   function unavailable(group, notify = true) {
@@ -193,7 +207,7 @@ export function initializePostVotes(document, window, { randomId } = {}) {
       render(group);
       try { return apply(group, await request(url.href)); }
       catch { unavailable(group); return null; }
-      finally { group.loading = null; render(group); }
+      finally { group.loading = null; group.initialLoadComplete = true; render(group); }
     })();
     return group.loading;
   }
