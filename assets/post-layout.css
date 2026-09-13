@@ -8,9 +8,9 @@ html { scrollbar-gutter: stable; }
    Other links and keyboard-focus outlines keep their existing styling. */
 .post-card h2 a:hover { text-decoration: none; }
 
-/* Match About and Read Post without shifting the Home link or its arrow. */
-.article-topline .back-link { text-underline-offset: 0.25em; }
-.article-topline .back-link:is(:hover, :focus-visible) { text-decoration: underline; }
+/* Only the Home label is underlined; the arrow remains part of the same link. */
+.article-topline .back-link { text-decoration: none; text-underline-offset: 0.25em; }
+.article-topline .back-link:is(:hover, :focus-visible) > .back-link-label { text-decoration: underline; }
 
 /* Post tags scroll as one row; the main topic/filter menu is unchanged. */
 .card-tags,
