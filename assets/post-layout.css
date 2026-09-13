@@ -1,0 +1,77 @@
+/* Reserve the same page width when a view adds/removes the vertical scrollbar. */
+html { scrollbar-gutter: stable; }
+
+.post-heading,
+.post-tools { min-width: 0; }
+
+/* Post tags scroll as one row; the main topic/filter menu is unchanged. */
+.card-tags,
+.article-tags,
+.post-tools :is(.card-tags, .article-tags) {
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+  touch-action: auto;
+  /* Leave room for the existing focus/hover outlines without moving the pills. */
+  padding: 3px;
+  margin: -3px;
+  scroll-padding-inline: 3px;
+}
+.card-tags::-webkit-scrollbar,
+.article-tags::-webkit-scrollbar { display: none; }
+
+.card-tags > :not([hidden]),
+.article-tags > :not([hidden]) {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+/* Auto margin right-aligns short rows, but becomes zero on overflow. Unlike
+   justify-content:flex-end, this keeps every overflowing tag reachable, in
+   both LTR and RTL. Hidden original anchors do not count as the first pill. */
+.card-tags > :nth-child(1 of :not([hidden])),
+.article-tags > :nth-child(1 of :not([hidden])) { margin-inline-start: auto; }
+
+:is(.card-tags, .article-tags).is-scrollable,
+:is(.card-tags, .article-tags).is-scrollable * {
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+:is(.card-tags, .article-tags).is-dragging,
+:is(.card-tags, .article-tags).is-dragging * { cursor: grabbing; }
+
+/* Each tiled view defines its own complete heading geometry. No column-flex
+   title growth or intrinsic tag wrapping can carry over from list mode. */
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-heading > h2 {
+  flex: none;
+  width: 100%;
+}
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-tools {
+  flex: none;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 701px) {
+  /* Let short titles leave all remaining space to the tags. Long titles keep
+     up to 60%, and the two regions always retain a 1.5rem (24px) gap. */
+  .post-stream[data-layout="list"] .post-heading {
+    display: grid;
+    grid-template-columns: fit-content(60%) minmax(0, 1fr);
+    align-items: start;
+    column-gap: 1.5rem;
+  }
+  .post-stream[data-layout="list"] .post-heading > h2 { flex: none; }
+  .post-stream[data-layout="list"] .post-tools {
+    width: 100%;
+    max-width: none;
+  }
+}
