@@ -113,3 +113,19 @@ html { scrollbar-gutter: stable; }
   background: var(--soft-accent);
   color: var(--accent-strong);
 }
+
+/* Every Directory graph control uses the same circular 44px target. */
+[data-directory] .map-switch > a,
+[data-directory] .map-toolbar .map-history-button,
+[data-directory] .map-zoom-control > button {
+  box-sizing: border-box;
+  width: 44px;
+  min-width: 44px;
+  max-width: 44px;
+  height: 44px;
+  min-height: 44px;
+  max-height: 44px;
+  flex: 0 0 44px;
+  padding: 0;
+  border-radius: 50%;
+}
