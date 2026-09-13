@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-13T19:52:21.000Z",
+  "generatedAt": "2026-09-13T19:56:08.000Z",
   "site": {
     "url": "https://eyesky93.github.io/ssm/",
     "title": {
@@ -174,7 +174,7 @@
       "translations": {
         "en": {
           "title": "Directory",
-          "summary": "Explore tags, posts and series.",
+          "summary": "Directory",
           "url": "https://eyesky93.github.io/ssm/en/posts/directory/",
           "notifyVersion": 1,
           "notify": true,
@@ -182,7 +182,7 @@
         },
         "he": {
           "title": "מקרא",
-          "summary": "תגים, פוסטים וסדרות.",
+          "summary": "מקרא",
           "url": "https://eyesky93.github.io/ssm/he/posts/directory/",
           "notifyVersion": 1,
           "notify": true,

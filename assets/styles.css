@@ -2103,7 +2103,7 @@ html[lang="he"] .map-filters { font-family: var(--font-interface-hebrew), var(--
 .map-filter-empty { display: flex; align-items: center; justify-content: center; padding: 1rem 7.5rem; }
 
 .map-switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: max-content; max-width: 100%; padding: 5px; margin-bottom: 1rem; border: 1px solid var(--line-dark); border-radius: 999px; background: var(--surface); }
-.article-body .map-switch a { position: relative; display: flex; justify-content: center; min-width: 5.5rem; padding: .5rem 1rem; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--ink); text-decoration: none; font-family: var(--font-interface); }
+.article-body .map-switch a { position: relative; display: flex; justify-content: center; min-width: 3rem; min-height: 2.75rem; align-items: center; padding: .5rem .75rem; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--ink); text-decoration: none; font-family: var(--font-interface); }
 .article-body .map-switch [aria-current="true"] { color: var(--accent); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 15%, var(--paper)); }
 html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-hebrew), var(--font-content); }
 
@@ -2111,3 +2111,5 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 .map-ready .map-stage { height: clamp(22rem, 60vh, 38rem); }
 .map-ready [data-map-view], .map-ready .map-viewport, .map-ready .map-filter-empty { height: 100%; }
 .map-ready .map-viewport { min-height: 0; max-height: none; }
+
+.map-switch svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
