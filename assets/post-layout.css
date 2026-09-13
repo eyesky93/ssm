@@ -8,9 +8,16 @@ html { scrollbar-gutter: stable; }
    Other links and keyboard-focus outlines keep their existing styling. */
 .post-card h2 a:hover { text-decoration: none; }
 
-/* Only the Home label is underlined; the arrow remains part of the same link. */
-.article-topline .back-link { text-decoration: none; text-underline-offset: 0.25em; }
-.article-topline .back-link:is(:hover, :focus-visible) > .back-link-label { text-decoration: underline; }
+/* SSM is the home link. Away from the main page only its background uses
+   the selected accent; the theme's existing lettering color stays unchanged. */
+.wordmark:not([aria-current="page"]) { background: var(--accent); }
+.wordmark,
+.wordmark:is(:hover, :focus-visible, :active, :visited) {
+  color: var(--inverse-ink);
+  text-decoration: none;
+}
+/* Removing the separate Home link must not move the date away from the edge. */
+.article-topline .article-meta { margin-inline-start: auto; }
 
 /* Post tags scroll as one row; the main topic/filter menu is unchanged. */
 .card-tags,

@@ -1077,7 +1077,7 @@
           link.href = searchUrl(readerUrl(filterContextUrl(card.dataset.postUrl, window2.location.href), selected, excluded)).href;
         }
       }
-      const back = article?.querySelector("[data-reader-back]");
+      const back = document2.querySelector("[data-reader-back]");
       if (back) {
         const url = selectionUrl(filterContextUrl(back.href, window2.location.href), selected, true, excluded);
         url.searchParams.delete("reader");
