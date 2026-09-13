@@ -2105,3 +2105,8 @@ html[lang="he"] .map-filters { font-family: var(--font-interface-hebrew), var(--
 .map-switch { display: flex; gap: .5rem; margin-bottom: 1rem; }
 .article-body .map-switch a { color: var(--ink); text-decoration: none; font-family: var(--font-interface); }
 .map-switch [aria-current="true"] { border-color: var(--accent); color: var(--accent); }
+
+/* One stable frame for every Directory view, including empty results. */
+.map-ready .map-stage { height: clamp(22rem, 60vh, 38rem); }
+.map-ready [data-map-view], .map-ready .map-viewport, .map-ready .map-filter-empty { height: 100%; }
+.map-ready .map-viewport { min-height: 0; max-height: none; }

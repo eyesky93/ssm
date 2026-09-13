@@ -635,6 +635,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     let scheduled = false;
     let restoreFilters = () => {};
     if (!views.length || !toolbar || !back || !forward) continue;
+    root.classList.add("map-ready");
     const overview = views[0].id;
     const page = window.location.pathname;
     const validId = (id) => views.some((view) => view.id === id);
@@ -762,8 +763,6 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       const width = state.viewport.clientWidth;
       if (state.initialized && state.viewWidth !== undefined) state.x += (width - state.viewWidth) / 2;
       state.viewWidth = width;
-      const maxHeight = parseFloat(getComputedStyle(state.viewport).maxHeight) || 608;
-      state.viewport.style.height = `${Math.max(128, Math.min(state.height * state.scale, maxHeight))}px`;
       // Keep the scaled tree within reach, with a small responsive overscan.
       const padding = Math.min(24, width * 0.06);
       const bound = (position, frame, content) => {
