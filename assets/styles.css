@@ -2073,11 +2073,7 @@ html[dir="rtl"] .map-level { direction: rtl; }
 .map-edge { fill: none; stroke: currentColor; stroke-width: 1.6; }
 .map-edge-prerequisite { stroke-dasharray: 7 5; }
 .map-edge-sequence { stroke-dasharray: 2 5; }
-.map-outline { margin-block: 1rem; font-size: 1rem; }
-.map-outline summary { cursor: pointer; color: var(--muted); }
-.map-outline li { margin-block: .75rem; }
-.map-outline li > div { color: var(--muted); font-size: .9rem; }
-.hierarchy-map :is(a, button, summary, [tabindex]):focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 3px; }
+.hierarchy-map :is(a, button, [tabindex]):focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 3px; }
 html[lang="he"] .hierarchy-map { font-family: var(--font-interface-hebrew), var(--font-content); }
 @media (max-width: 700px) { .map-toolbar { gap: .4rem; } .map-toolbar button, .map-toolbar > a { font-size: .88rem; padding-inline: .65rem; } }
 
