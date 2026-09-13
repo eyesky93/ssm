@@ -1015,7 +1015,7 @@
     };
     let browsing = isBrowsing();
     const navigation = article?.querySelector("[data-post-navigation]");
-    const navigationPosts = new Map(cards.map((card) => [card, {
+    const navigationPosts = new Map(cards.filter((card) => card.dataset.directory === void 0).map((card) => [card, {
       id: card.dataset.postId,
       tags: tagsByCard.get(card),
       published: Number(card.dataset.published),

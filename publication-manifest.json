@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-13T21:16:15.000Z",
+  "generatedAt": "2026-09-13T21:19:10.000Z",
   "site": {
     "url": "https://eyesky93.github.io/ssm/",
     "title": {
@@ -24,15 +24,6 @@
   "fallbackLanguage": "en",
   "tags": [
     {
-      "key": "notes",
-      "parent": null,
-      "route": "notes",
-      "labels": {
-        "en": "Notes",
-        "he": "רשימות"
-      }
-    },
-    {
       "key": "physics",
       "parent": null,
       "route": "physics",
@@ -48,6 +39,15 @@
       "labels": {
         "en": "Music",
         "he": "מוזיקה"
+      }
+    },
+    {
+      "key": "notes",
+      "parent": null,
+      "route": "notes",
+      "labels": {
+        "en": "Notes",
+        "he": "רשימות"
       }
     },
     {
@@ -168,9 +168,7 @@
       "publishedAt": "2026-09-13T00:00:00.000Z",
       "notify": false,
       "notifyVersion": 1,
-      "tags": [
-        "notes"
-      ],
+      "tags": [],
       "translations": {
         "en": {
           "title": "Directory",

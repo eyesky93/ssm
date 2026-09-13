@@ -38,6 +38,7 @@ export function initializeReadStatus(document, window) {
 
   function render() {
     for (const card of cards) {
+      if (card.dataset.directory !== undefined) continue;
       const read = store.isRead(card.dataset.postId);
       card.classList.toggle("unread-card", !read);
       const button = card.querySelector("[data-read-toggle]");
@@ -53,7 +54,7 @@ export function initializeReadStatus(document, window) {
   }
 
   function markVisibleArticle() {
-    if (article && !article.hidden && document.visibilityState !== "hidden" && !store.isRead(article.dataset.postId)) {
+    if (article && article.dataset.directory === undefined && !article.hidden && document.visibilityState !== "hidden" && !store.isRead(article.dataset.postId)) {
       store.set(article.dataset.postId, true);
       render();
     }
@@ -92,3 +93,4 @@ export function initializeReadStatus(document, window) {
 }
 
 if (typeof document !== "undefined") initializeReadStatus(document, window);
+

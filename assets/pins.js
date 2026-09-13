@@ -52,6 +52,7 @@ export function createPinStore(storage, key, randomId = () => crypto.randomUUID(
 export function compareReaderPosts(a, b, isPinned) {
   const aPinned = isPinned(a.id, a.defaultPinned);
   const bPinned = isPinned(b.id, b.defaultPinned);
+  if (Boolean(a.directory) !== Boolean(b.directory)) return a.directory ? (aPinned ? -1 : 1) : (bPinned ? 1 : -1);
   if (aPinned !== bPinned) return aPinned ? -1 : 1;
   if (aPinned && bPinned && a.pinOrder !== b.pinOrder) return a.pinOrder - b.pinOrder;
   return b.published - a.published || a.id.localeCompare(b.id);
@@ -67,7 +68,7 @@ export function initializePins(document, window) {
   const store = createPinStore(storage, key);
   const status = document.querySelector("[data-pin-status]");
   const metadata = (card) => ({
-    id: card.dataset.postId, defaultPinned: card.dataset.defaultPinned === "true",
+    id: card.dataset.postId, directory: card.dataset.directory !== undefined, defaultPinned: card.dataset.defaultPinned === "true",
     pinOrder: Number(card.dataset.pinOrder), published: Number(card.dataset.published),
   });
   function render() {
@@ -138,3 +139,4 @@ export function initializePins(document, window) {
 }
 
 if (typeof document !== "undefined") initializePins(document, window);
+
