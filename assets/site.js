@@ -628,6 +628,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     const forward = root.querySelector("[data-map-forward]");
     const zoomButton = root.querySelector("[data-map-zoom-toggle]");
     const zoomPanel = root.querySelector("[data-map-zoom-panel]");
+    const zoomNumber = root.querySelector("[data-map-zoom-number]");
     const zoomSlider = root.querySelector("[data-map-zoom-slider]");
     const output = root.querySelector("[data-map-scale]");
     const states = new Map();
@@ -821,6 +822,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         const percent = Math.round(state.scale * 100);
         output.textContent = `${percent}%`;
         if (zoomButton) zoomButton.setAttribute("aria-label", `${zoomButton.dataset.mapZoomLabel}: ${percent}%`);
+        if (zoomNumber && document.activeElement !== zoomNumber) zoomNumber.value = percent;
         if (zoomSlider) { zoomSlider.value = percent; zoomSlider.setAttribute("aria-valuetext", `${percent}%`); }
       }
     }
@@ -1092,9 +1094,18 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       zoomButton.addEventListener("click", () => {
         zoomPanel.hidden = !zoomPanel.hidden;
         zoomButton.setAttribute("aria-expanded", String(!zoomPanel.hidden));
-        if (!zoomPanel.hidden) zoomSlider.focus({ preventScroll: true });
+        if (!zoomPanel.hidden) { zoomNumber.value = Math.round(active.scale * 100); zoomNumber.focus({ preventScroll: true }); zoomNumber.select(); }
       });
-      zoomSlider.addEventListener("input", () => zoom(active, Number(zoomSlider.value) / 100));
+      const commitNumber = () => {
+        const value = zoomNumber.valueAsNumber;
+        if (Number.isFinite(value)) zoom(active, value / 100);
+        zoomNumber.value = Math.round(active.scale * 100);
+      };
+      zoomNumber.addEventListener("change", commitNumber);
+      zoomNumber.addEventListener("keydown", event => {
+        if (event.key === "Enter") { event.preventDefault(); commitNumber(); closeZoom(); zoomButton.focus({ preventScroll: true }); }
+      });
+      zoomSlider.addEventListener("input", () => { zoom(active, Number(zoomSlider.value) / 100); zoomNumber.value = Math.round(active.scale * 100); });
       root.addEventListener("wheel", (event) => {
         const selected = !zoomPanel.hidden || document.activeElement === zoomButton || document.activeElement === zoomSlider;
         if (!selected || zoomButton.disabled || event.ctrlKey || !event.deltaY || !event.target.closest(".map-stage")) return;

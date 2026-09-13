@@ -2108,8 +2108,27 @@ html[lang="he"] .map-filters { font-family: var(--font-interface-hebrew), var(--
 html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-hebrew), var(--font-content); }
 
 /* One stable frame for every Directory view, including empty results. */
-.map-ready .map-stage { height: clamp(22rem, 60vh, 38rem); }
+.map-ready .map-stage { height: clamp(33rem, 90vh, 57rem); }
 .map-ready [data-map-view], .map-ready .map-viewport, .map-ready .map-filter-empty { height: 100%; }
 .map-ready .map-viewport { min-height: 0; max-height: none; }
 
 .map-switch svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Controls overlay the fixed frame in a single vertical column. */
+.map-stage > .map-switch { position: absolute; z-index: 4; inset-inline-start: .5rem; top: .5rem; margin: 0; }
+.map-toolbar { width: 44px; gap: 8px; }
+.map-history-controls { flex-direction: column; gap: 8px; align-items: center; }
+.map-toolbar .map-history-button { flex-basis: 32px; }
+.map-zoom-control { order: -1; width: 44px; height: 44px; }
+.map-zoom-control > button { position: relative; width: 44px; height: 44px; min-height: 44px; padding: 0; border-radius: 50%; font-size: 12px; }
+.map-zoom-control:has([aria-expanded="true"]) > button { visibility: hidden; }
+.map-zoom-panel { inset-inline-start: 0; bottom: 0; width: 44px; height: 220px; padding: 14px 0 52px; border-radius: 22px; justify-content: center; background: var(--paper); transform-origin: bottom; animation: map-zoom-open .16s ease-out; }
+.map-zoom-panel [type="range"] { writing-mode: vertical-lr; direction: rtl; width: 24px; height: 100%; }
+.map-zoom-entry { position: absolute; bottom: 0; left: 0; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; direction: ltr; font-size: 11px; }
+.map-zoom-entry input { appearance: textfield; width: 26px; padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; text-align: right; }
+.map-zoom-entry input::-webkit-inner-spin-button, .map-zoom-entry input::-webkit-outer-spin-button { appearance: none; margin: 0; }
+@keyframes map-zoom-open { from { clip-path: inset(80% 0 0 round 22px); } to { clip-path: inset(0 round 22px); } }
+@media (prefers-reduced-motion: reduce) { .map-zoom-panel { animation: none; } }
+
+.map-zoom-entry input:focus-visible { outline: none; }
+.map-zoom-panel:focus-within { border-color: var(--accent); }
