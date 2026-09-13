@@ -631,6 +631,9 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     const zoomNumber = root.querySelector("[data-map-zoom-number]");
     const zoomSlider = root.querySelector("[data-map-zoom-slider]");
     const output = root.querySelector("[data-map-scale]");
+    const zoomKey = `ssm-directory-zoom:${window.location.pathname.split("/posts/")[0].replace(/\/[^/]+$/, "")}`;
+    let preferredZoom = 1;
+    try { const saved = Number(localStorage.getItem(zoomKey)); if (saved >= .15 && saved <= 2) preferredZoom = saved; } catch {}
     const states = new Map();
     let active;
     let scheduled = false;
@@ -833,6 +836,8 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       const x = (viewport.clientWidth / 2 - state.x) / state.scale;
       const y = (viewport.clientHeight / 2 - state.y) / state.scale;
       state.scale = Math.max(0.15, Math.min(2, value));
+      preferredZoom = state.scale;
+      try { localStorage.setItem(zoomKey, String(preferredZoom)); } catch {}
       if (center) {
         state.x = viewport.clientWidth / 2 - x * state.scale;
         state.y = viewport.clientHeight / 2 - y * state.scale;
@@ -854,13 +859,14 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         measure(active);
         if (!active.initialized) {
           // Each newly opened view starts at actual size; wide maps can pan.
-          zoom(active, 1, false);
-          active.x = (active.viewport.clientWidth - active.width) / 2;
+          zoom(active, preferredZoom, false);
+          active.x = (active.viewport.clientWidth - active.width * active.scale) / 2;
           active.y = 0;
           active.initialized = true;
         }
+        if (active.scale !== preferredZoom) zoom(active, preferredZoom);
         size(active);
-      } else output.textContent = "100%";
+      } else output.textContent = `${Math.round(preferredZoom * 100)}%`;
       if (focus) view.focus({ preventScroll: true });
     }
 

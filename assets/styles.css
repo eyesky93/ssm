@@ -2132,3 +2132,5 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 
 .map-zoom-entry input:focus-visible { outline: none; }
 .map-zoom-panel:focus-within { border-color: var(--accent); }
+
+.article-body span.map-node, .article-body span.map-node:hover { cursor: default; color: var(--ink); border-color: var(--line-dark); }
