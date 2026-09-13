@@ -91,9 +91,25 @@ html { scrollbar-gutter: stable; }
 .post-stream[data-layout="list"] > .directory-card {
   grid-column: 1 / -1;
   min-height: 0;
-  padding-block: .65rem;
+  padding-block: .4rem;
 }
 .directory-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-.post-stream[data-layout] .directory-heading h2 { margin: 0; font-size: 1.3rem; line-height: 1.3; }
+.post-stream[data-layout] .directory-heading h2 { margin: 0; }
 .post-stream[data-layout] .directory-heading h2 a { display: block; }
 .directory-heading > .pin-toggle { flex: 0 0 auto; }
+
+/* Keep the Directory frame near its heading, with room for the filter below. */
+[data-reader-article][data-directory] > .article-header { padding-block-end: .75rem; }
+[data-reader-article][data-directory] > .article-body { padding-block-start: .75rem; }
+[data-reader-article][data-directory] .hierarchy-map { margin-block-start: 0; }
+[data-reader-article][data-directory] .map-stage + .map-filter-bar { margin-block-start: 1.5rem; }
+
+/* Count links have their own visible hit target inside each tree pill. */
+[data-directory] .map-node > a[data-map-count] {
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+[data-directory] .map-node > a[data-map-count]:is(:hover, :focus-visible) {
+  box-shadow: inset 0 0 0 2px var(--accent), 0 0 0 3px var(--soft-accent);
+  background: var(--soft-accent);
+  color: var(--accent-strong);
+}
