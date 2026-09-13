@@ -763,7 +763,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       if (state.initialized && state.viewWidth !== undefined) state.x += (width - state.viewWidth) / 2;
       state.viewWidth = width;
       const maxHeight = parseFloat(getComputedStyle(state.viewport).maxHeight) || 608;
-      state.viewport.style.height = `${Math.max(128, Math.min(state.height, maxHeight))}px`;
+      state.viewport.style.height = `${Math.max(128, Math.min(state.height * state.scale, maxHeight))}px`;
       // Keep the scaled tree within reach, with a small responsive overscan.
       const padding = Math.min(24, width * 0.06);
       const bound = (position, frame, content) => {
@@ -799,6 +799,9 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     function show(id, focus = false) {
       const view = views.find((candidate) => candidate.id === id) || views[0];
       views.forEach((candidate) => { candidate.hidden = candidate !== view; });
+      const filters = root.querySelector(".map-filter-bar");
+      if (filters) filters.hidden = view.dataset.mapKind === "tags";
+      root.querySelectorAll("[data-map-switch]").forEach(button => button.setAttribute("aria-current", String(button.dataset.mapSwitch === view.dataset.mapKind)));
       if (zoomPanel) { zoomPanel.hidden = true; zoomButton.setAttribute("aria-expanded", "false"); }
       updateHistoryButtons();
       active = states.get(view.id);
@@ -896,7 +899,8 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       const clear = filterMenu.querySelector("[data-map-clear-filter]");
       const groups = [...filterMenu.querySelectorAll("[data-map-filter-parent]")];
       const options = new Map(groups.map((group) => [group, [...group.querySelectorAll("[data-map-filter-option]")]]));
-      const view = views[0];
+      const view = views.find(candidate => candidate.id === "map-posts-overview") || views[0];
+      const filterOverview = view.id;
       const levels = view.querySelector(".map-levels");
       const nodes = [...view.querySelectorAll("[data-map-member-tags]")];
       const members = new Map(nodes.map((node) => [node, JSON.parse(node.dataset.mapMemberTags)]));
@@ -965,7 +969,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         }
         levels.replaceChildren(...rows);
         if (empty) empty.hidden = visible.length > 0;
-        const state = states.get(overview);
+        const state = states.get(filterOverview);
         state.viewport.hidden = !visible.length;
       }
 
@@ -977,10 +981,10 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       };
       function updateFilters(source, keyboard) {
         normalize(); applyFilters();
-        states.get(overview).initialized = false;
+        states.get(filterOverview).initialized = false;
         // Finish in the overview. A series can then be opened with its full
         // published lecture order, even when only one lecture matches a tag.
-        visit(overview, false);
+        visit(filterOverview, false);
         try {
           const url = new URL(window.location.href);
           url.searchParams.delete("map-tag"); url.searchParams.delete("map-exclude");
@@ -1020,6 +1024,10 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
 
     root.addEventListener("click", (event) => {
       if (event.defaultPrevented) return;
+      const tab = event.target.closest("[data-map-switch]");
+      if (tab && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && event.button === 0) {
+        event.preventDefault(); visit(tab.hash.slice(1), false); return;
+      }
       const historyButton = event.target.closest("[data-map-back], [data-map-forward]");
       if (historyButton && root.contains(historyButton)) {
         if (!historyButton.disabled) travel(historyButton === back ? -1 : 1, event.detail === 0);

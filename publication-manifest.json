@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-13T17:35:26.000Z",
+  "generatedAt": "2026-09-13T18:05:00.000Z",
   "site": {
     "url": "https://eyesky93.github.io/ssm/",
     "title": {
@@ -163,8 +163,8 @@
       }
     },
     {
-      "id": "post-hierarchy",
-      "slug": "post-hierarchy",
+      "id": "directory",
+      "slug": "directory",
       "publishedAt": "2026-09-13T00:00:00.000Z",
       "notify": false,
       "notifyVersion": 1,
@@ -173,48 +173,20 @@
       ],
       "translations": {
         "en": {
-          "title": "Post hierarchy",
-          "summary": "Explore the connections between posts, their prerequisites, and the lecture order within each course.",
-          "url": "https://eyesky93.github.io/ssm/en/posts/post-hierarchy/",
+          "title": "Directory",
+          "summary": "Explore tags, posts and series.",
+          "url": "https://eyesky93.github.io/ssm/en/posts/directory/",
           "notifyVersion": 1,
           "notify": true,
-          "availableAt": "2026-09-13T11:24:36.000Z"
+          "availableAt": "2026-09-13T18:05:00.000Z"
         },
         "he": {
-          "title": "עץ הפוסטים",
-          "summary": "מפת הקשרים בין הפוסטים, דרישות הקדם וסדר ההרצאות בכל קורס.",
-          "url": "https://eyesky93.github.io/ssm/he/posts/post-hierarchy/",
+          "title": "מקרא",
+          "summary": "תגים, פוסטים וסדרות.",
+          "url": "https://eyesky93.github.io/ssm/he/posts/directory/",
           "notifyVersion": 1,
           "notify": true,
-          "availableAt": "2026-09-13T11:24:36.000Z"
-        }
-      }
-    },
-    {
-      "id": "tag-hierarchy",
-      "slug": "tag-hierarchy",
-      "publishedAt": "2026-09-13T00:00:00.000Z",
-      "notify": false,
-      "notifyVersion": 1,
-      "tags": [
-        "notes"
-      ],
-      "translations": {
-        "en": {
-          "title": "Tag hierarchy",
-          "summary": "Explore the subjects and their branches. This map updates automatically as tags are added.",
-          "url": "https://eyesky93.github.io/ssm/en/posts/tag-hierarchy/",
-          "notifyVersion": 1,
-          "notify": true,
-          "availableAt": "2026-09-13T11:24:36.000Z"
-        },
-        "he": {
-          "title": "עץ התגים",
-          "summary": "מפת הנושאים ותתי־הנושאים. המפה מתעדכנת אוטומטית עם הוספת תגים.",
-          "url": "https://eyesky93.github.io/ssm/he/posts/tag-hierarchy/",
-          "notifyVersion": 1,
-          "notify": true,
-          "availableAt": "2026-09-13T11:24:36.000Z"
+          "availableAt": "2026-09-13T18:05:00.000Z"
         }
       }
     },

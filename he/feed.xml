@@ -23,19 +23,11 @@
       <category>מתמטיקה / רקע מתמטי</category>
     </item>
     <item>
-      <title>עץ הפוסטים</title>
-      <link>https://eyesky93.github.io/ssm/he/posts/post-hierarchy/</link>
-      <guid isPermaLink="false">urn:ssm:post-hierarchy:he</guid>
+      <title>מקרא</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/directory/</link>
+      <guid isPermaLink="false">urn:ssm:directory:he</guid>
       <pubDate>Sun, 13 Sep 2026 00:00:00 GMT</pubDate>
-      <description>מפת הקשרים בין הפוסטים, דרישות הקדם וסדר ההרצאות בכל קורס.</description>
-      <category>רשימות</category>
-    </item>
-    <item>
-      <title>עץ התגים</title>
-      <link>https://eyesky93.github.io/ssm/he/posts/tag-hierarchy/</link>
-      <guid isPermaLink="false">urn:ssm:tag-hierarchy:he</guid>
-      <pubDate>Sun, 13 Sep 2026 00:00:00 GMT</pubDate>
-      <description>מפת הנושאים ותתי־הנושאים. המפה מתעדכנת אוטומטית עם הוספת תגים.</description>
+      <description>תגים, פוסטים וסדרות.</description>
       <category>רשימות</category>
     </item>
     <item>

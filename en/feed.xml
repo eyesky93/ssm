@@ -23,19 +23,11 @@
       <category>Mathematics / Mathematical background</category>
     </item>
     <item>
-      <title>Post hierarchy</title>
-      <link>https://eyesky93.github.io/ssm/en/posts/post-hierarchy/</link>
-      <guid isPermaLink="false">urn:ssm:post-hierarchy:en</guid>
+      <title>Directory</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/directory/</link>
+      <guid isPermaLink="false">urn:ssm:directory:en</guid>
       <pubDate>Sun, 13 Sep 2026 00:00:00 GMT</pubDate>
-      <description>Explore the connections between posts, their prerequisites, and the lecture order within each course.</description>
-      <category>Notes</category>
-    </item>
-    <item>
-      <title>Tag hierarchy</title>
-      <link>https://eyesky93.github.io/ssm/en/posts/tag-hierarchy/</link>
-      <guid isPermaLink="false">urn:ssm:tag-hierarchy:en</guid>
-      <pubDate>Sun, 13 Sep 2026 00:00:00 GMT</pubDate>
-      <description>Explore the subjects and their branches. This map updates automatically as tags are added.</description>
+      <description>Explore tags, posts and series.</description>
       <category>Notes</category>
     </item>
     <item>
