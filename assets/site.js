@@ -625,10 +625,104 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     const views = [...root.querySelectorAll("[data-map-view]")];
     const toolbar = root.querySelector("[data-map-toolbar]");
     const back = root.querySelector("[data-map-back]");
+    const forward = root.querySelector("[data-map-forward]");
+    const overviewLink = root.querySelector("[data-map-overview]");
     const output = root.querySelector("[data-map-scale]");
     const states = new Map();
     let active;
     let scheduled = false;
+    if (!views.length || !toolbar || !back || !forward) continue;
+    const overview = views[0].id;
+    const page = window.location.pathname;
+    const validId = (id) => views.some((view) => view.id === id);
+    const currentId = () => validId(window.location.hash.slice(1)) ? window.location.hash.slice(1) : overview;
+    let trail = [overview], position = 0;
+    let token = `${Date.now()}-${Math.random()}`;
+    let nativeHistory = true, travelling = false, focusAfterTravel = false;
+
+    function record() {
+      const saved = window.history.state?.ssmHierarchy;
+      return saved?.page === page && typeof saved.token === "string"
+        && Array.isArray(saved.trail) && saved.trail.length && saved.trail.every(validId)
+        && Number.isInteger(saved.position) && saved.position >= 0 && saved.position < saved.trail.length
+        ? saved : null;
+    }
+
+    function writeHistory(replace, id) {
+      if (!nativeHistory) return;
+      try {
+        const url = new URL(window.location.href);
+        if (id !== undefined) url.hash = id;
+        const state = { ...window.history.state, ssmHierarchy: { page, token, trail: [...trail], position } };
+        window.history[replace ? "replaceState" : "pushState"](state, "", url.href);
+      } catch { nativeHistory = false; } // Restricted/file URLs still get local navigation.
+    }
+
+    function updateHistoryButtons() {
+      back.disabled = travelling || position === 0;
+      forward.disabled = travelling || position === trail.length - 1;
+    }
+
+    function visit(id, focus = false) {
+      if (!validId(id) || travelling) return;
+      if (id !== trail[position]) {
+        trail = [...trail.slice(0, position + 1), id];
+        position++;
+        writeHistory(false, id);
+      }
+      show(id, focus);
+    }
+
+    function travel(offset, focus) {
+      if (travelling || position + offset < 0 || position + offset >= trail.length) return;
+      const saved = record();
+      if (nativeHistory && saved?.token === token && saved.position === position) {
+        travelling = true;
+        focusAfterTravel = focus;
+        updateHistoryButtons();
+        try { window.history.go(offset); return; }
+        catch { nativeHistory = false; travelling = false; }
+      }
+      position += offset;
+      writeHistory(true, trail[position]);
+      show(trail[position], focus);
+    }
+
+    function restoreHistory() {
+      const id = currentId();
+      const saved = record();
+      if (saved && saved.trail[saved.position] === id) {
+        // Older history entries have shorter snapshots. Keep a known forward
+        // branch, then stamp it on this entry so a reload retains Forward.
+        if (saved.token !== token || trail[saved.position] !== id || saved.trail.length > trail.length) trail = [...saved.trail];
+        token = saved.token;
+        position = saved.position;
+      } else {
+        // An external hash link created its own browser entry; do not push twice.
+        if (id !== trail[position]) {
+          trail = [...trail.slice(0, position + 1), id];
+          position++;
+        }
+      }
+      travelling = false;
+      writeHistory(true);
+      show(id, focusAfterTravel);
+      focusAfterTravel = false;
+    }
+
+    function initializeHistory() {
+      const id = currentId();
+      const saved = record();
+      if (saved && saved.trail[saved.position] === id) {
+        trail = [...saved.trail]; position = saved.position; token = saved.token;
+      } else {
+        // A directly opened branch also has a safe Back destination inside the
+        // map, rather than sending the visitor away from the post.
+        writeHistory(true, id === overview ? undefined : overview);
+        if (id !== overview) { trail.push(id); position = 1; writeHistory(false, id); }
+      }
+      show(id);
+    }
 
     function measure(state) {
       const { canvas, viewport } = state;
@@ -687,8 +781,10 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
 
     function show(id, focus = false) {
       const view = views.find((candidate) => candidate.id === id) || views[0];
+      if (active?.viewport) { active.left = active.viewport.scrollLeft; active.top = active.viewport.scrollTop; }
       views.forEach((candidate) => { candidate.hidden = candidate !== view; });
-      back.hidden = view === views[0];
+      if (overviewLink) overviewLink.hidden = view === views[0];
+      updateHistoryButtons();
       active = states.get(view.id);
       root.querySelectorAll("[data-map-zoom]").forEach((button) => { button.disabled = !active.viewport; });
       if (active.viewport) {
@@ -698,6 +794,9 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
           zoom(active, Math.max(0.7, Math.min(1, active.viewport.clientWidth / active.width)), false);
           active.viewport.scrollLeft = Math.max(0, (active.width * active.scale - active.viewport.clientWidth) / 2);
           active.initialized = true;
+        } else {
+          active.viewport.scrollLeft = active.left || 0;
+          active.viewport.scrollTop = active.top || 0;
         }
         size(active);
       } else output.textContent = "";
@@ -753,12 +852,17 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       });
     }
     root.addEventListener("click", (event) => {
-      const link = event.target.closest("[data-map-course], [data-map-tag], [data-map-back]");
+      if (event.defaultPrevented) return;
+      const historyButton = event.target.closest("[data-map-back], [data-map-forward]");
+      if (historyButton && root.contains(historyButton)) {
+        if (!historyButton.disabled) travel(historyButton === back ? -1 : 1, event.detail === 0);
+        return;
+      }
+      const link = event.target.closest("[data-map-course], [data-map-tag], [data-map-overview]");
       if (link && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
         event.preventDefault();
         const id = link.getAttribute("href").slice(1);
-        if (window.location.hash !== `#${id}`) window.history.pushState(null, "", `#${id}`);
-        show(id, true);
+        visit(id, event.detail === 0);
         return;
       }
       const button = event.target.closest("[data-map-zoom]");
@@ -767,9 +871,8 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       if (action === "fit") fit(active);
       else zoom(active, action === "reset" ? 1 : active.scale * (action === "in" ? 1.2 : 1 / 1.2));
     });
-    const currentId = () => window.location.hash.slice(1);
-    window.addEventListener("popstate", () => show(currentId()));
-    window.addEventListener("hashchange", () => show(currentId()));
+    window.addEventListener("popstate", restoreHistory);
+    window.addEventListener("hashchange", restoreHistory);
     const refresh = () => {
       if (scheduled) return;
       scheduled = true;
@@ -781,7 +884,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       observer.observe(root);
     } else window.addEventListener("resize", refresh);
     toolbar.hidden = false;
-    show(currentId());
+    initializeHistory();
     document.fonts?.ready.then(refresh);
   }
 })();

@@ -2045,7 +2045,7 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 .hierarchy-map [hidden] { display: none !important; }
 .map-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; margin-block: 1rem; }
 .map-toolbar button, .map-toolbar > a { display: inline-flex; justify-content: center; align-items: center; min-width: 2.75rem; min-height: 2.75rem; padding: .4rem .8rem; border: 1px solid var(--line-dark); border-radius: 1.5rem; color: var(--ink); background: var(--paper); font: inherit; font-size: .95rem; line-height: 1.2; text-decoration: none; cursor: pointer; }
-.map-toolbar button:hover, .map-toolbar > a:hover { color: var(--accent-strong); border-color: var(--accent-strong); }
+.map-toolbar button:not(:disabled):is(:hover, :focus-visible), .map-toolbar > a:hover { color: var(--accent-strong); border-color: var(--accent-strong); }
 .map-toolbar button:disabled { opacity: .45; cursor: default; }
 .map-toolbar output { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
 .map-legend { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; color: var(--muted); font-size: .9rem; margin-block: .8rem; }
@@ -2078,8 +2078,7 @@ html[lang="he"] .map-node { font-family: var(--font-interface-hebrew), var(--fon
 html[lang="he"] .hierarchy-map { font-family: var(--font-interface-hebrew), var(--font-content); }
 @media (max-width: 700px) { .map-toolbar { gap: .4rem; } .map-toolbar button, .map-toolbar > a { font-size: .88rem; padding-inline: .65rem; } }
 
-.hierarchy-map [data-map-title] { font-size: 1.3rem; margin: 1rem 0; }
-
-.map-branch-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem 1rem; margin-block: 1rem; }
-.hierarchy-map .map-branch-heading [data-map-title] { margin: 0; }
-.map-branch-heading > a { font-size: 1rem; }
+/* The navigation arrows use the same round frames and accent as post controls. */
+.map-toolbar .map-history-button { flex: 0 0 2.75rem; width: 2.75rem; height: 2.75rem; padding: .65rem; border-radius: 50%; }
+.map-history-button svg { width: 1.3rem; height: 1.3rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+html[dir="rtl"] .map-history-button svg { transform: scaleX(-1); }
