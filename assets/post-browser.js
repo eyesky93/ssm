@@ -255,7 +255,7 @@
   }
 
   // src/search.js
-  function initializeSearch(document2, window2, { browser, stream, cards, onChange }) {
+  function initializeSearch(document2, window2, { browser, stream, cards, onChange, isReading = () => false, isHidden = () => false, resultsUrl = (href) => new URL(href, window2.location.href) }) {
     const control = document2.querySelector("[data-search]");
     if (!control || !browser.dataset.searchIndex) return null;
     const input = control.querySelector("[data-search-input]");
@@ -286,7 +286,11 @@
     let restored = false;
     let previousOrder = null;
     let mobileOriginal = null;
-    const appliedState = () => mobileOriginal || { query, caseSensitive, selectedTags };
+    let committed = { query, caseSensitive, selectedTags: new Set(selectedTags) };
+    const appliedState = () => committed;
+    const commitDraft = () => {
+      committed = { query, caseSensitive, selectedTags: new Set(selectedTags) };
+    };
     const original = new Map(cards.map((card) => {
       const title = card.querySelector("h2 [data-reader-link]");
       const summary = [...card.children].find((child) => child.tagName === "P");
@@ -337,16 +341,18 @@
         const anchor = control.getBoundingClientRect();
         const nav = primaryNav.getBoundingClientRect();
         const minimumGap = parseFloat(window2.getComputedStyle(header).columnGap) || 0;
-        const rem = parseFloat(window2.getComputedStyle(document2.documentElement).fontSize) || 16;
+        const rem2 = parseFloat(window2.getComputedStyle(document2.documentElement).fontSize) || 16;
         const space = document2.documentElement.dir === "rtl" ? nav.left - anchor.right : anchor.left - nav.right;
-        const gap = Math.max(minimumGap, Math.min(9 * rem, space + anchor.width - 16 * rem));
+        const gap = Math.max(minimumGap, Math.min(9 * rem2, space + anchor.width - 16 * rem2));
         const available = space - gap;
         control.style.setProperty("--search-available-width", `${Math.max(0, available)}px`);
       }
-      if (control.dataset.open !== "true" || !mainTags) return;
+      if (control.dataset.open !== "true") return;
       const top = bar.getBoundingClientRect().bottom;
-      const tagAreaHeight = mainTags.getBoundingClientRect().bottom - top;
-      const height = Math.max(0, Math.floor(Math.min(2 * tagAreaHeight, window2.innerHeight - top - 8)));
+      const tagAreaHeight = (mainTags?.getBoundingClientRect().bottom || 0) - top;
+      const rem = parseFloat(window2.getComputedStyle(document2.documentElement).fontSize) || 16;
+      const limit = tagAreaHeight > 0 ? 2 * tagAreaHeight : 18 * rem;
+      const height = Math.max(0, Math.floor(Math.min(limit, window2.innerHeight - top - 8)));
       suggestions.style.setProperty("--search-suggestions-max-height", `${height}px`);
     }
     function focusTag(button) {
@@ -400,7 +406,7 @@
       toggle.setAttribute("aria-controls", mobile.matches ? "search-dialog" : "search-panel");
       if (mobile.matches) toggle.setAttribute("aria-haspopup", "dialog");
       else toggle.removeAttribute("aria-haspopup");
-      const label = open && !mobile.matches ? toggle.dataset.labelClose : toggle.dataset.labelOpen;
+      const label = open && !mobile.matches && !(query.trim() || selectedTags.size) ? toggle.dataset.labelClose : toggle.dataset.labelOpen;
       if (label) {
         toggle.setAttribute("aria-label", label);
         toggle.title = label;
@@ -441,18 +447,18 @@
     }
     function submitSearch() {
       if (composing) return;
-      if (dialog.open) {
-        closeMobileSearch(true);
-        change();
-        const home = contextUrl(control.dataset.searchHome);
-        const current = new URL(window2.location.href);
-        if (home.pathname !== current.pathname) {
-          for (const key of ["tag", "exclude", "filters"]) {
-            for (const value of current.searchParams.getAll(key)) home.searchParams.append(key, value);
-          }
-          window2.location.assign(home.href);
-        }
+      const fromReader = isReading();
+      const fromDialog = dialog.open;
+      query = input.value.slice(0, 500);
+      if (fromDialog) closeMobileSearch(true);
+      commitDraft();
+      const home = resultsUrl(contextUrl(control.dataset.searchHome));
+      if (fromReader || fromDialog && home.pathname !== window2.location.pathname) {
+        window2.location.assign(home.href);
+        return;
       }
+      updateUrl();
+      onChange(true);
       dismissSuggestions();
       if (failed) void loadIndex();
     }
@@ -541,7 +547,9 @@
       query = input.value.slice(0, 500);
       caseButton.setAttribute("aria-pressed", String(caseSensitive));
       clear.hidden = !(query || selectedTags.size);
-      if (!dialog.open) {
+      setOpenState(control.dataset.open === "true");
+      if (!dialog.open && !isReading()) {
+        commitDraft();
         updateUrl();
         onChange(true);
       }
@@ -560,6 +568,7 @@
       query = nextQuery;
       caseSensitive = nextCaseSensitive;
       selectedTags = nextTags;
+      commitDraft();
       input.value = query;
       suggestionsDismissed = false;
       caseButton.setAttribute("aria-pressed", String(caseSensitive));
@@ -576,6 +585,7 @@
       const { query: query2, caseSensitive: caseSensitive2, selectedTags: selectedTags2 } = appliedState();
       const active = Boolean(query2.trim() || selectedTags2.size);
       stream.dataset.searchActive = String(active);
+      browser.dataset.searchActive = String(active);
       browser.setAttribute("aria-busy", String(active && !index && !failed));
       if (!active) {
         if (previousOrder) {
@@ -605,9 +615,9 @@
       }
       const parsed = parseQuery(query2);
       parsed.tags.push(...selectedTags2);
-      const available = new Set(cards.filter((card) => !card.hidden).map((card) => card.dataset.postId));
-      const results = rankPosts(index.posts.filter((post) => available.has(post.id)), parsed, { language, caseSensitive: caseSensitive2, tags: index.tags });
       const byId = new Map(cards.map((card) => [card.dataset.postId, card]));
+      const results = rankPosts(index.posts.filter((post) => byId.has(post.id)), parsed, { language, caseSensitive: caseSensitive2, tags: index.tags });
+      results.sort((left, right) => Number(isHidden(byId.get(left.post.id))) - Number(isHidden(byId.get(right.post.id))));
       for (const card of cards) card.hidden = true;
       const ordered = [];
       for (const result of results) {
@@ -655,6 +665,10 @@
       if (mobile.matches) {
         if (dialog.open) submitSearch();
         else setOpen(true);
+        return;
+      }
+      if (control.dataset.open === "true" && (query.trim() || selectedTags.size)) {
+        submitSearch();
         return;
       }
       if (openedByHover) {
@@ -749,6 +763,9 @@
         const candidates = buttons.filter((button) => button.getAttribute("aria-pressed") === "false");
         const choices = candidates.length ? candidates : buttons;
         focusTag(choices[event.key === "ArrowDown" ? 0 : choices.length - 1]);
+      } else if (event.key === "Enter") {
+        event.preventDefault();
+        submitSearch();
       } else if (event.key === "Escape") {
         event.preventDefault();
         if (showingSuggestions) dismissSuggestions();
@@ -964,7 +981,7 @@
     const temporaryFilters = () => new URL(window2.location.href).searchParams.get("filters") === "temporary";
     const explicitFilters = () => {
       const params = new URL(window2.location.href).searchParams;
-      return Boolean(initial || params.has("tag") || params.has("exclude") || params.get("q")?.trim() || params.has("search-tag") || temporaryFilters());
+      return Boolean(initial || params.has("tag") || params.has("exclude") || temporaryFilters());
     };
     function normalize(selectedValues, excludedValues) {
       const excluded2 = new Set(tagKeys(excludedValues).filter((tag) => known.has(tag)));
@@ -992,7 +1009,10 @@
       return normalize([], []);
     }
     let { selected, excluded } = explicitFilters() ? readUrl() : readSaved();
-    const isBrowsing = () => !inline || explicitFilters() && new URL(window2.location.href).searchParams.get("reader") !== "1";
+    const isBrowsing = () => {
+      const params = new URL(window2.location.href).searchParams;
+      return !inline || (explicitFilters() || params.get("q")?.trim() || params.has("search-tag")) && params.get("reader") !== "1";
+    };
     let browsing = isBrowsing();
     const navigation = article?.querySelector("[data-post-navigation]");
     const navigationPosts = new Map(cards.map((card) => [card, {
@@ -1004,11 +1024,23 @@
     }]));
     const hasFilters = () => Boolean(selected.size || excluded.size);
     let returnFocus = null;
-    const search = initializeSearch(document2, window2, { browser, stream, cards, onChange(navigate) {
-      if (navigate && search?.active) browsing = true;
-      if (navigate) setUrl(true);
-      render(true);
-    } });
+    const search = initializeSearch(document2, window2, {
+      browser,
+      stream,
+      cards,
+      isReading: () => inline && !browsing,
+      isHidden: (card) => !matchesTag(tagsByCard.get(card), [], excluded),
+      resultsUrl(href) {
+        const url = selectionUrl(filterContextUrl(href, window2.location.href), selected, true, excluded);
+        url.searchParams.delete("reader");
+        return url;
+      },
+      onChange(navigate) {
+        if (navigate && search?.active) browsing = true;
+        if (navigate) setUrl(true);
+        render(true);
+      }
+    });
     const searchUrl = (href) => search ? search.contextUrl(href) : new URL(href, window2.location.href);
     function save() {
       if (temporaryFilters()) return;
@@ -1055,7 +1087,7 @@
       for (const [option, href] of languageOptions) option.value = languageUrl(href);
       if (!navigation) return;
       const sequencePosts = [...stream.children].filter((card) => navigationPosts.has(card) && (!search?.active || !card.hidden)).map((card) => navigationPosts.get(card));
-      const sequence = readingSequence(sequencePosts, article.dataset.postId, search?.active ? [] : selected, excluded);
+      const sequence = readingSequence(sequencePosts, article.dataset.postId, search?.active ? [] : selected, search?.active ? [] : excluded);
       const position = navigation.querySelector("[data-post-position]");
       position.textContent = `${sequence.current ?? "\u2014"}/${sequence.total}`;
       position.setAttribute("aria-label", (sequence.current === null ? navigation.dataset.outsideLabel : navigation.dataset.positionLabel).replace("{current}", String(sequence.current)).replace("{total}", String(sequence.total)));
@@ -1077,7 +1109,7 @@
     function render(announce = false) {
       let count = 0;
       for (const card of cards) {
-        card.hidden = !matchesTag(tagsByCard.get(card), search?.active ? [] : selected, excluded);
+        card.hidden = !matchesTag(tagsByCard.get(card), search?.active ? [] : selected, search?.active ? [] : excluded);
         if (!card.hidden) count++;
       }
       if (search) count = search.apply();
