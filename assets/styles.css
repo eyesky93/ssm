@@ -2139,3 +2139,20 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 .map-node > a.map-node-copy::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
 .article-body .map-node > a.tag-count { position: relative; z-index: 1; color: var(--accent); text-decoration: none; cursor: pointer; }
 .article-body .map-node:focus-within { color: var(--accent); border-color: var(--accent); }
+
+/* Library filters overlay the frame beside the mode switch. */
+[data-reader-article][data-directory] .map-stage > .map-filter-bar {
+  position: absolute;
+  z-index: 4;
+  inset-block-start: .5rem;
+  inset-inline-start: 120px;
+  inset-inline-end: .75rem;
+  margin: 0;
+  padding: 6px 0;
+  max-height: 35%;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+[data-directory] .map-filter-bar .tag-list { flex-wrap: nowrap; }
+[data-directory] .map-filter-bar .tag-option { flex: 0 0 auto; }
+[data-directory] .map-filter-bar .tag-descendant-list:empty { display: none; }

@@ -98,11 +98,13 @@ html { scrollbar-gutter: stable; }
 .post-stream[data-layout] .directory-heading h2 a { display: block; }
 .directory-heading > .pin-toggle { flex: 0 0 auto; }
 
-/* Keep the Directory frame near its heading, with room for the filter below. */
+/* Keep the Directory frame near its heading. */
 [data-reader-article][data-directory] > .article-header { padding-block-end: .75rem; }
 [data-reader-article][data-directory] > .article-body { padding-block-start: .75rem; }
 [data-reader-article][data-directory] .hierarchy-map { margin-block-start: 0; }
-[data-reader-article][data-directory] .map-stage + .map-filter-bar { margin-block-start: 1.5rem; }
+[data-reader-article][data-directory] .hierarchy-map { margin-block-end: 0; }
+[data-reader-article][data-directory] > .article-body { padding-block-end: 0; }
+.site-main:has(> [data-reader-article][data-directory]:not([hidden])) { padding-block-end: 1rem; }
 
 /* Count links have their own visible hit target inside each tree pill. */
 [data-directory] .map-node > a[data-map-count] {
