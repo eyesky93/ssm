@@ -1090,7 +1090,12 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       const link = event.target.closest("[data-map-course], [data-map-tag]");
       if (link && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
         event.preventDefault();
-        const id = link.getAttribute("href").slice(1);
+        let id = link.getAttribute("href").slice(1);
+        if (link.hasAttribute("data-map-tag") && views.some(view => view.id === id && !view.hidden)) {
+          const key = link.closest("[data-map-node]").dataset.mapNode.slice(4);
+          const parent = key.split(":").slice(0, -1).join(":");
+          id = parent ? `map-tag-${[...new TextEncoder().encode(parent)].map(byte => byte.toString(16).padStart(2, "0")).join("")}` : "map-overview";
+        }
         visit(id, event.detail === 0);
         return;
       }
