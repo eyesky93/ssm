@@ -83,7 +83,3 @@ html { scrollbar-gutter: stable; }
     max-width: none;
   }
 }
-
-/* Search results reuse the home layout, without its main tag/filter menu. */
-.post-browser[data-search-active="true"] { padding-block-start: 1rem; }
-.post-browser[data-search-active="true"] > .browser-toolbar { display: none; }
