@@ -332,29 +332,13 @@ document.querySelectorAll("[data-share-menu]").forEach((menu) => {
     } catch { fallback(); }
   });
   const instagram = menu.querySelector("[data-instagram-share]");
-  let instagramDirect = !window.matchMedia?.("(hover: none) and (pointer: coarse)").matches;
   instagram?.addEventListener("click", async (event) => {
     if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
     resetFeedback();
-    // Keep touch sharing native when available. Desktop uses the icon's real
-    // link, so opening Instagram does not depend on an asynchronous popup.
-    if (!instagramDirect && typeof navigator.share === "function") {
-      event.preventDefault();
-      showStatus(status.dataset.instagramChoose);
-      try {
-        await navigator.share({ title: menu.dataset.title, text: menu.dataset.title, url: menu.dataset.url });
-        showStatus("");
-        return;
-      } catch (error) {
-        if (error?.name === "AbortError") { showStatus(""); return; }
-      }
-      // A failed native share turns this same icon into the direct link.
-      // Never append another "Open Instagram" action to the icon column.
-      instagramDirect = true;
-      instagram.title = instagram.dataset.labelOpen;
-    }
-    // Start copying in the click gesture. The anchor's normal new-tab action
-    // is deliberately not prevented in the direct-link path.
+    // Instagram is a direct destination on every device. Do not call
+    // navigator.share here: it opens a generic chooser, not Instagram.
+    // Start copying in this click gesture and keep the anchor's new-tab action.
+    // The reader still needs to paste the link and send it inside Instagram.
     try {
       await navigator.clipboard.writeText(menu.dataset.url);
       showStatus(status.dataset.instagramCopied);
