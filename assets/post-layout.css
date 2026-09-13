@@ -162,3 +162,18 @@ html { scrollbar-gutter: stable; }
 /* Loading/refreshing must not fade the upvote while the other tabs stay solid.
    The disabled state, cursor, accessible labels and busy state remain intact. */
 .post-engagement .post-vote:disabled { opacity: 1; }
+
+/* The generated dock is already inside its final containing block. These
+   match attachArticleEngagement's legacy fallback, so starting the vote
+   module cannot relocate the controls or pull navigation up by a row. */
+.article-header:has(> .article-engagement-dock) { position: relative; }
+.article-header > .article-engagement-dock {
+  position: absolute;
+  inset-block-start: calc(100% + 1px);
+  inset-inline-end: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 2;
+}
+/* Font loading must not change the date row's height and move all controls. */
+.article-topline .article-meta { line-height: 1.4; }
