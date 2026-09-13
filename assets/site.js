@@ -757,9 +757,12 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
 
     function size(state) {
       if (!state.viewport) return;
-      state.canvas.style.transform = `scale(${state.scale})`;
-      state.canvas.parentElement.style.width = `${state.width * state.scale}px`;
-      state.canvas.parentElement.style.height = `${state.height * state.scale}px`;
+      const width = state.viewport.clientWidth;
+      if (state.initialized && state.viewWidth !== undefined) state.x += (width - state.viewWidth) / 2;
+      state.viewWidth = width;
+      const maxHeight = parseFloat(getComputedStyle(state.viewport).maxHeight) || 608;
+      state.viewport.style.height = `${Math.max(128, Math.min(state.height, maxHeight))}px`;
+      state.canvas.style.transform = `translate(${state.x}px, ${state.y}px) scale(${state.scale})`;
       if (state === active) {
         const percent = Math.round(state.scale * 100);
         output.textContent = `${percent}%`;
@@ -771,19 +774,18 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     function zoom(state, value, center = true) {
       if (!state?.viewport) return;
       const viewport = state.viewport;
-      const x = (viewport.scrollLeft + viewport.clientWidth / 2) / state.scale;
-      const y = (viewport.scrollTop + viewport.clientHeight / 2) / state.scale;
+      const x = (viewport.clientWidth / 2 - state.x) / state.scale;
+      const y = (viewport.clientHeight / 2 - state.y) / state.scale;
       state.scale = Math.max(0.15, Math.min(2, value));
-      size(state);
       if (center) {
-        viewport.scrollLeft = x * state.scale - viewport.clientWidth / 2;
-        viewport.scrollTop = y * state.scale - viewport.clientHeight / 2;
+        state.x = viewport.clientWidth / 2 - x * state.scale;
+        state.y = viewport.clientHeight / 2 - y * state.scale;
       }
+      size(state);
     }
 
     function show(id, focus = false) {
       const view = views.find((candidate) => candidate.id === id) || views[0];
-      if (active?.viewport) { active.left = active.viewport.scrollLeft; active.top = active.viewport.scrollTop; }
       views.forEach((candidate) => { candidate.hidden = candidate !== view; });
       if (zoomPanel) { zoomPanel.hidden = true; zoomButton.setAttribute("aria-expanded", "false"); }
       updateHistoryButtons();
@@ -794,11 +796,9 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         if (!active.initialized) {
           // Each newly opened view starts at actual size; wide maps can pan.
           zoom(active, 1, false);
-          active.viewport.scrollLeft = Math.max(0, (active.width * active.scale - active.viewport.clientWidth) / 2);
+          active.x = (active.viewport.clientWidth - active.width) / 2;
+          active.y = 0;
           active.initialized = true;
-        } else {
-          active.viewport.scrollLeft = active.left || 0;
-          active.viewport.scrollTop = active.top || 0;
         }
         size(active);
       } else output.textContent = "100%";
@@ -808,16 +808,16 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     for (const view of views) {
       const viewport = view.querySelector("[data-map-viewport]");
       const canvas = view.querySelector("[data-map-canvas]");
-      const state = { viewport, canvas, scale: 1, width: 0, height: 0 };
+      const state = { viewport, canvas, scale: 1, width: 0, height: 0, x: 0, y: 0 };
       states.set(view.id, state);
       if (!viewport) continue;
       viewport.classList.add("map-enhanced");
       let drag = null;
       let suppressClick = false;
       viewport.addEventListener("pointerdown", (event) => {
-        if (event.pointerType !== "mouse" || event.button !== 0) return;
+        if (event.button !== 0 || event.isPrimary === false) return;
         suppressClick = false;
-        drag = { id: event.pointerId, x: event.clientX, y: event.clientY, left: viewport.scrollLeft, top: viewport.scrollTop, moved: false };
+        drag = { id: event.pointerId, x: event.clientX, y: event.clientY, left: state.x, top: state.y, moved: false };
       });
       viewport.addEventListener("pointermove", (event) => {
         if (!drag || drag.id !== event.pointerId) return;
@@ -827,8 +827,9 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         drag.moved = true;
         viewport.setPointerCapture(event.pointerId);
         viewport.classList.add("is-panning");
-        viewport.scrollLeft = drag.left - dx;
-        viewport.scrollTop = drag.top - dy;
+        state.x = drag.left + dx;
+        state.y = drag.top + dy;
+        size(state);
         event.preventDefault();
       });
       const finish = () => {
@@ -849,8 +850,28 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         event.preventDefault();
         event.stopPropagation();
       }, true);
+      viewport.addEventListener("keydown", (event) => {
+        if (event.target !== viewport || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+        event.preventDefault();
+        state.x += event.key === "ArrowLeft" ? 40 : event.key === "ArrowRight" ? -40 : 0;
+        state.y += event.key === "ArrowUp" ? 40 : event.key === "ArrowDown" ? -40 : 0;
+        size(state);
+      });
       viewport.addEventListener("focusin", (event) => {
-        if (event.target.matches("[data-map-node]")) event.target.scrollIntoView({ block: "nearest", inline: "nearest" });
+        if (!event.target.matches("[data-map-node]")) return;
+        const box = event.target.getBoundingClientRect(), frame = viewport.getBoundingClientRect();
+        if (box.left < frame.left + 8) state.x += frame.left + 8 - box.left;
+        else if (box.right > frame.right - 8) state.x -= box.right - frame.right + 8;
+        if (box.top < frame.top + 8) state.y += frame.top + 8 - box.top;
+        else if (box.bottom > frame.bottom - 8) state.y -= box.bottom - frame.bottom + 8;
+        size(state);
+        const visible = event.target.getBoundingClientRect(), controls = toolbar.getBoundingClientRect();
+        const cx = visible.left + visible.width / 2, cy = visible.top + visible.height / 2;
+        if (cx >= controls.left && cx <= controls.right && cy >= controls.top && cy <= controls.bottom) {
+          state.x += frame.left + frame.width / 2 - cx;
+          state.y += frame.top + frame.height / 2 - cy;
+          size(state);
+        }
       });
     }
     // These controls use their own data attributes and URL parameters so the
