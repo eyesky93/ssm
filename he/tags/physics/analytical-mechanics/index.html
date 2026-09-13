@@ -411,9 +411,9 @@
       </div>
       <div class="updates-subscription">
       <h3>עדכונים בדוא״ל</h3>
-        <form class="subscribe-form" data-subscribe-form action="https://ssm-newsletter.eyesky93.workers.dev/api/subscriptions" method="post"
+        <form class="subscribe-form" data-subscribe-form action="https://ssm-newsletter.eyesky93.workers.dev/api/subscriptions/v2" method="post"
         data-working="מתבצעת הרשמה…"
-        data-success="בדקו את תיבת הדוא״ל ואשרו את ההרשמה."
+        data-success="בדקו את תיבת הדוא״ל ואשרו את ההרשמה. בהמשך אפשר לשנות שפות, נושאים, תדירות ומראה דרך כפתור שינוי ההגדרות בהודעות."
         data-error="לא הצלחנו להתחיל את ההרשמה. אפשר לנסות שוב."
         data-topic-required="יש לבחור לפחות נושא מסוים אחד, או לבחור בכל הנושאים."
         data-language-required="יש לבחור שפה אחת לפחות."
@@ -424,8 +424,20 @@
           <label class="email-field"><span>כתובת דוא״ל</span><input type="email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required></label>
           <button class="subscribe-button" type="submit">הרשמה</button>
         </div>
-        
-        
+        <fieldset class="topic-picker frequency-picker">
+          <legend>תדירות:</legend>
+          <div class="language-options"><span class="newsletter-frequency-prefix">פעם ב־</span><label class="topic-option"><input type="radio" name="frequency" value="daily" ><span>יום</span></label><label class="topic-option"><input type="radio" name="frequency" value="weekly" checked><span>שבוע</span></label><label class="topic-option"><input type="radio" name="frequency" value="fortnightly" ><span>שבועיים</span></label><label class="topic-option"><input type="radio" name="frequency" value="monthly" ><span>חודש</span></label><label class="topic-option"><input type="radio" name="frequency" value="semiannual" ><span>חצי שנה</span></label><label class="topic-option"><input type="radio" name="frequency" value="annual" ><span>שנה</span></label></div>
+        </fieldset>
+        <fieldset class="topic-picker language-picker">
+          <legend>שפות</legend>
+          <p class="form-note">בחרו שפה אחת או יותר. שפת האתר הנוכחית נבחרת כברירת מחדל.</p>
+          <div class="language-options">
+            <button class="language-select-all" type="button" data-newsletter-language-all aria-pressed="false">בחירת הכול</button>
+            <label class="topic-option"><input type="checkbox" name="languages" value="en" data-newsletter-language ><span lang="en" dir="ltr">English</span></label><label class="topic-option"><input type="checkbox" name="languages" value="he" data-newsletter-language checked><span lang="he" dir="rtl">עברית</span></label>
+          </div>
+          <p class="form-note">ברירת המחדל היא הודעה שבועית בשעה 20:00 לפי שעון ישראל. רק עדכונים מתאימים נשלחים, בהודעה אחת. אפשר לשנות את ההעדפות דרך הקישור בהודעות.</p>
+          <p class="form-note"><a href="/ssm/he/newsletter-settings/">כבר נרשמתם? שינוי הגדרות עדכונים</a></p>
+        </fieldset>
         <fieldset class="topic-picker">
           <legend>נושאים</legend>
           <p class="form-note">אפשר לבחור את כל הנושאים או כל שילוב ביניהם.</p>
