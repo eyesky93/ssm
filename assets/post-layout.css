@@ -4,6 +4,10 @@ html { scrollbar-gutter: stable; }
 .post-heading,
 .post-tools { min-width: 0; }
 
+/* The whole post card is clickable; its title needs no extra hover underline.
+   Other links and keyboard-focus outlines keep their existing styling. */
+.post-card h2 a:hover { text-decoration: none; }
+
 /* Post tags scroll as one row; the main topic/filter menu is unchanged. */
 .card-tags,
 .article-tags,
