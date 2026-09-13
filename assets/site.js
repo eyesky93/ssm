@@ -636,7 +636,11 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     let restoreFilters = () => {};
     if (!views.length || !toolbar || !back || !forward) continue;
     root.classList.add("map-ready");
-    const overview = views[0].id;
+    let overview = views[0].id;
+    const directory = root.querySelectorAll("[data-map-switch]").length > 0;
+    const kindOf = id => views.find(view => view.id === id)?.dataset?.mapKind || "tags";
+    let currentKind = kindOf(overview);
+    const optionTrails = {};
     const page = window.location.pathname;
     const validId = (id) => views.some((view) => view.id === id);
     const currentId = () => validId(window.location.hash.slice(1)) ? window.location.hash.slice(1) : overview;
@@ -644,10 +648,20 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     let token = `${Date.now()}-${Math.random()}`;
     let nativeHistory = true, travelling = false, focusAfterTravel = false;
 
+    function selectKind(id, save = true) {
+      if (!directory || kindOf(id) === currentKind) return;
+      if (save) optionTrails[currentKind] = { trail: [...trail], position };
+      currentKind = kindOf(id);
+      overview = currentKind === "posts" ? "map-posts-overview" : views[0].id;
+      const saved = optionTrails[currentKind];
+      trail = saved ? [...saved.trail] : [overview];
+      position = saved?.position || 0;
+    }
+
     function record() {
       const saved = window.history.state?.ssmHierarchy;
       return saved?.page === page && typeof saved.token === "string"
-        && Array.isArray(saved.trail) && saved.trail.length && saved.trail.every(validId)
+        && Array.isArray(saved.trail) && saved.trail.length && saved.trail.every(id => validId(id) && (!directory || kindOf(id) === currentKind))
         && Number.isInteger(saved.position) && saved.position >= 0 && saved.position < saved.trail.length
         ? saved : null;
     }
@@ -657,7 +671,8 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       try {
         const url = new URL(window.location.href);
         if (id !== undefined) url.hash = id;
-        const state = { ...window.history.state, ssmHierarchy: { page, token, trail: [...trail], position } };
+        if (directory) optionTrails[currentKind] = { trail: [...trail], position };
+        const state = { ...window.history.state, ssmHierarchy: { page, token, trail: [...trail], position, options: directory ? { ...optionTrails } : undefined } };
         window.history[replace ? "replaceState" : "pushState"](state, "", url.href);
       } catch { nativeHistory = false; } // Restricted/file URLs still get local navigation.
     }
@@ -680,7 +695,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     function travel(offset, focus) {
       if (travelling || position + offset < 0 || position + offset >= trail.length) return;
       const saved = record();
-      if (nativeHistory && saved?.token === token && saved.position === position) {
+      if (!directory && nativeHistory && saved?.token === token && saved.position === position) {
         travelling = true;
         focusAfterTravel = focus;
         updateHistoryButtons();
@@ -695,6 +710,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     function restoreHistory() {
       restoreFilters();
       const id = currentId();
+      selectKind(id);
       const saved = record();
       if (saved && saved.trail[saved.position] === id) {
         // Older history entries have shorter snapshots. Keep a known forward
@@ -716,7 +732,12 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     }
 
     function initializeHistory() {
+      const stored = window.history.state?.ssmHierarchy;
+      if (directory && stored?.page === page) for (const [kind, saved] of Object.entries(stored.options || {})) {
+        if (["tags", "posts"].includes(kind) && Array.isArray(saved.trail) && saved.trail.length && saved.trail.every(id => validId(id) && kindOf(id) === kind) && Number.isInteger(saved.position) && saved.position >= 0 && saved.position < saved.trail.length) optionTrails[kind] = saved;
+      }
       const id = currentId();
+      selectKind(id, false);
       const saved = record();
       if (saved && saved.trail[saved.position] === id) {
         trail = [...saved.trail]; position = saved.position; token = saved.token;
@@ -735,20 +756,42 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       const scale = state.scale || 1;
       const origin = canvas.getBoundingClientRect();
       const nodes = new Map([...canvas.querySelectorAll("[data-map-node]")].map((node) => [node.dataset.mapNode, node]));
+      canvas.querySelectorAll("[data-map-trunk]").forEach(path => path.remove());
+      const groups = new Map();
       for (const path of canvas.querySelectorAll("[data-map-edge]")) {
         if (path.hasAttribute("hidden")) continue;
         const from = nodes.get(path.dataset.from)?.getBoundingClientRect();
         const to = nodes.get(path.dataset.to)?.getBoundingClientRect();
         if (!from || !to) continue;
+        const direction = to.top >= from.bottom ? 1 : -1;
         const x1 = (from.x + from.width / 2 - origin.x) / scale;
         const x2 = (to.x + to.width / 2 - origin.x) / scale;
-        const forwards = to.top >= from.bottom;
-        const direction = forwards ? 1 : -1;
-        const y1 = ((forwards ? from.bottom : from.top) - origin.y) / scale + direction * 3;
-        const y2 = ((forwards ? to.top : to.bottom) - origin.y) / scale - direction * 5;
-        const stem = Math.min(16, Math.abs(y2 - y1) / 4) * direction;
-        const middle = (y1 + y2) / 2;
-        path.setAttribute("d", `M${x1},${y1} L${x1},${y1 + stem} C${x1},${middle} ${x2},${middle} ${x2},${y2 - stem} L${x2},${y2}`);
+        const parentEdge = ((direction > 0 ? from.bottom : from.top) - origin.y) / scale;
+        const childEdge = ((direction > 0 ? to.top : to.bottom) - origin.y) / scale;
+        const key = `${path.dataset.from}:${path.getAttribute("class")}:${Math.round(childEdge)}`;
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push({ path, x1, x2, parentEdge, childEdge, direction });
+      }
+      for (const group of groups.values()) {
+        const { x1, parentEdge, childEdge, direction } = group[0];
+        const midpoint = (Math.min(...group.map(edge => edge.x2)) + Math.max(...group.map(edge => edge.x2))) / 2;
+        const middle = (parentEdge + childEdge) / 2;
+        const start = parentEdge + direction * 3;
+        const neck = middle - direction * Math.min(8, Math.abs(middle - start) / 3);
+        const bend = (start + neck) / 2;
+        const trunk = `M${x1},${start} C${x1},${bend} ${midpoint},${bend} ${midpoint},${neck} L${midpoint},${middle}`;
+        const shared = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        shared.setAttribute("data-map-trunk", "");
+        shared.setAttribute("class", group[0].path.getAttribute("class"));
+        shared.setAttribute("d", trunk);
+        canvas.querySelector("[data-map-edges]").append(shared);
+        group.forEach(({ path, x2, childEdge }) => {
+          const end = childEdge - direction * 5;
+          const side = Math.sign(x2 - midpoint);
+          const radius = Math.min(6, Math.abs(x2 - midpoint), Math.abs(end - middle) / 2);
+          const branch = side ? `M${midpoint},${middle} L${x2 - side * radius},${middle} Q${x2},${middle} ${x2},${middle + direction * radius} L${x2},${end}` : `M${midpoint},${middle} L${x2},${end}`;
+          path.setAttribute("d", branch);
+        });
       }
       state.width = canvas.offsetWidth;
       state.height = canvas.offsetHeight;
@@ -1025,7 +1068,11 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       if (event.defaultPrevented) return;
       const tab = event.target.closest("[data-map-switch]");
       if (tab && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && event.button === 0) {
-        event.preventDefault(); visit(tab.hash.slice(1), false); return;
+        event.preventDefault();
+        selectKind(tab.hash.slice(1));
+        writeHistory(true, trail[position]);
+        show(trail[position], false);
+        return;
       }
       const historyButton = event.target.closest("[data-map-back], [data-map-forward]");
       if (historyButton && root.contains(historyButton)) {
