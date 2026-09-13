@@ -18,7 +18,10 @@ document.addEventListener("mousedown", (event) => {
 const postTagProxySources = new WeakMap();
 
 function expandPostTagHierarchies() {
-  const menuMeta = new Map();
+  // Post chips use the complete catalogue, not just the main menu. Monographs
+  // intentionally have no main-menu entry but remain visible on every post.
+  const catalogue = document.querySelector?.("[data-post-browser]")?.dataset.postTagCatalogue;
+  const menuMeta = new Map(Object.entries(JSON.parse(catalogue || "{}")));
   document.querySelectorAll("[data-tag-parent] [data-tag-filter]").forEach((chip) => {
     const topic = chip.dataset.tagFilter;
     const label = chip.querySelector("span")?.textContent?.trim();
@@ -647,7 +650,10 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
     const optionTrails = {};
     const page = window.location.pathname;
     const validId = (id) => views.some((view) => view.id === id);
-    const currentId = () => validId(window.location.hash.slice(1)) ? window.location.hash.slice(1) : overview;
+    const currentId = () => {
+      const id = window.location.hash.slice(1).replace(/^map-series-/, "map-monograph-");
+      return validId(id) ? id : overview;
+    };
     let trail = [overview], position = 0;
     let token = `${Date.now()}-${Math.random()}`;
     let nativeHistory = true, travelling = false, focusAfterTravel = false;
@@ -1032,7 +1038,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       function updateFilters(source, keyboard) {
         normalize(); applyFilters();
         states.get(filterOverview).initialized = false;
-        // Finish in the overview. A series can then be opened with its full
+        // Finish in the overview. A monograph can then be opened with its full
         // published lecture order, even when only one lecture matches a tag.
         visit(filterOverview, false);
         try {

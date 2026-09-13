@@ -2040,9 +2040,9 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 
 /* Keep the single Hebrew interval prefix level with the signup frequency pills. */
 .frequency-picker .language-options { align-items: center; }
-.post-series { margin: .25rem 0; color: var(--muted); font: .85rem/1.5 var(--font-interface); }
-.post-series a { color: inherit; }
-.post-series a:hover { color: var(--accent-strong); text-decoration: underline; }
+.post-monograph { margin: .25rem 0; color: var(--muted); font: .85rem/1.5 var(--font-interface); }
+.post-monograph a { color: inherit; }
+.post-monograph a:hover { color: var(--accent-strong); text-decoration: underline; }
 
 .hierarchy-map { min-width: 0; margin-block: 1.5rem; font-family: var(--font-content); }
 .hierarchy-map [hidden] { display: none !important; }
