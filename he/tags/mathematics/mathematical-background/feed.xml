@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SSM — מתמטיקה / רקע מתמטי</title>
+    <link>https://eyesky93.github.io/ssm/he/tags/mathematics/mathematical-background/</link>
+    <description>פוסטים עם התגית: מתמטיקה / רקע מתמטי</description>
+    <language>he-IL</language>
+    <atom:link href="https://eyesky93.github.io/ssm/he/tags/mathematics/mathematical-background/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>פונקציות</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/mathematical-background-1/</link>
+      <guid isPermaLink="false">urn:ssm:mathematical-background-1:he</guid>
+      <pubDate>Sun, 13 Sep 2026 00:05:00 GMT</pubDate>
+      <description>חלק 1 בסדרת רקע מתמטי: פונקציות וסימונים.</description>
+      <category>מתמטיקה / רקע מתמטי</category>
+    </item>
+    <item>
+      <title>נגזרות</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/mathematical-background-2/</link>
+      <guid isPermaLink="false">urn:ssm:mathematical-background-2:he</guid>
+      <pubDate>Sun, 13 Sep 2026 00:05:00 GMT</pubDate>
+      <description>חלק 2 בסדרת רקע מתמטי: נגזרות ושינוי מקומי.</description>
+      <category>מתמטיקה / רקע מתמטי</category>
+    </item>
+  </channel>
+</rss>

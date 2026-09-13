@@ -753,7 +753,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       });
     }
     root.addEventListener("click", (event) => {
-      const link = event.target.closest("[data-map-course], [data-map-back]");
+      const link = event.target.closest("[data-map-course], [data-map-tag], [data-map-back]");
       if (link && event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
         event.preventDefault();
         const id = link.getAttribute("href").slice(1);

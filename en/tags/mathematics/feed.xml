@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>SSM — Mathematics</title>
+    <link>https://eyesky93.github.io/ssm/en/tags/mathematics/</link>
+    <description>Posts tagged: Mathematics</description>
+    <language>en-GB</language>
+    <atom:link href="https://eyesky93.github.io/ssm/en/tags/mathematics/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Functions</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/mathematical-background-1/</link>
+      <guid isPermaLink="false">urn:ssm:mathematical-background-1:en</guid>
+      <pubDate>Sun, 13 Sep 2026 00:05:00 GMT</pubDate>
+      <description>Part 1 of Mathematical background: functions and notation.</description>
+      <category>Mathematics / Mathematical background</category>
+    </item>
+    <item>
+      <title>Derivatives</title>
+      <link>https://eyesky93.github.io/ssm/en/posts/mathematical-background-2/</link>
+      <guid isPermaLink="false">urn:ssm:mathematical-background-2:en</guid>
+      <pubDate>Sun, 13 Sep 2026 00:05:00 GMT</pubDate>
+      <description>Part 2 of Mathematical background: derivatives and local change.</description>
+      <category>Mathematics / Mathematical background</category>
+    </item>
+  </channel>
+</rss>

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-13T11:57:37.000Z",
+  "generatedAt": "2026-09-13T12:01:10.000Z",
   "posts": [
     {
       "id": "tag-hierarchy",
@@ -16,6 +16,14 @@
     {
       "id": "symmetry-notes",
       "publishAt": "2026-08-28T12:00:00+03:00"
+    },
+    {
+      "id": "mathematical-background-1",
+      "publishAt": "2026-09-13T00:05:00Z"
+    },
+    {
+      "id": "mathematical-background-2",
+      "publishAt": "2026-09-13T00:05:00Z"
     },
     {
       "id": "metal-example",

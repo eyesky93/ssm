@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-09-13T11:57:37.000Z",
+  "generatedAt": "2026-09-13T12:01:10.000Z",
   "site": {
     "url": "https://eyesky93.github.io/ssm/",
     "title": {
@@ -51,6 +51,24 @@
       }
     },
     {
+      "key": "mathematics",
+      "parent": null,
+      "route": "mathematics",
+      "labels": {
+        "en": "Mathematics",
+        "he": "מתמטיקה"
+      }
+    },
+    {
+      "key": "mathematics:mathematical-background",
+      "parent": "mathematics",
+      "route": "mathematics/mathematical-background",
+      "labels": {
+        "en": "Mathematical background",
+        "he": "רקע מתמטי"
+      }
+    },
+    {
       "key": "music:metal",
       "parent": "music",
       "route": "music/metal",
@@ -88,6 +106,62 @@
     }
   ],
   "posts": [
+    {
+      "id": "mathematical-background-1",
+      "slug": "mathematical-background-1",
+      "publishedAt": "2026-09-13T00:05:00.000Z",
+      "notify": false,
+      "notifyVersion": 1,
+      "tags": [
+        "mathematics:mathematical-background"
+      ],
+      "translations": {
+        "en": {
+          "title": "Functions",
+          "summary": "Part 1 of Mathematical background: functions and notation.",
+          "url": "https://eyesky93.github.io/ssm/en/posts/mathematical-background-1/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-09-13T12:01:10.000Z"
+        },
+        "he": {
+          "title": "פונקציות",
+          "summary": "חלק 1 בסדרת רקע מתמטי: פונקציות וסימונים.",
+          "url": "https://eyesky93.github.io/ssm/he/posts/mathematical-background-1/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-09-13T12:01:10.000Z"
+        }
+      }
+    },
+    {
+      "id": "mathematical-background-2",
+      "slug": "mathematical-background-2",
+      "publishedAt": "2026-09-13T00:05:00.000Z",
+      "notify": false,
+      "notifyVersion": 1,
+      "tags": [
+        "mathematics:mathematical-background"
+      ],
+      "translations": {
+        "en": {
+          "title": "Derivatives",
+          "summary": "Part 2 of Mathematical background: derivatives and local change.",
+          "url": "https://eyesky93.github.io/ssm/en/posts/mathematical-background-2/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-09-13T12:01:10.000Z"
+        },
+        "he": {
+          "title": "נגזרות",
+          "summary": "חלק 2 בסדרת רקע מתמטי: נגזרות ושינוי מקומי.",
+          "url": "https://eyesky93.github.io/ssm/he/posts/mathematical-background-2/",
+          "notifyVersion": 1,
+          "notify": true,
+          "availableAt": "2026-09-13T12:01:10.000Z"
+        }
+      }
+    },
     {
       "id": "post-hierarchy",
       "slug": "post-hierarchy",
