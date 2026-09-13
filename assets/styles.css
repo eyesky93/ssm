@@ -2149,10 +2149,9 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
   inset-inline-end: .75rem;
   margin: 0;
   padding: 6px 0;
-  max-height: 35%;
-  overflow: auto;
-  scrollbar-width: thin;
+  overflow: visible;
 }
-[data-directory] .map-filter-bar .tag-list { flex-wrap: nowrap; }
+[data-directory] .map-filter-bar .tag-list { flex-wrap: wrap; }
+[data-directory] .map-filter-bar .tag-list.tag-subgroup { display: flex; flex-basis: 100%; }
 [data-directory] .map-filter-bar .tag-option { flex: 0 0 auto; }
 [data-directory] .map-filter-bar .tag-descendant-list:empty { display: none; }
