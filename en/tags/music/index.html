@@ -12,7 +12,430 @@
   <link rel="alternate" hreflang="he" href="https://eyesky93.github.io/ssm/he/tags/music/">
   <link rel="alternate" hreflang="x-default" href="https://eyesky93.github.io/ssm/">
   <link rel="alternate" type="application/rss+xml" title="RSS feed" href="https://eyesky93.github.io/ssm/en/tags/music/feed.xml">
-  <script src="/ssm/assets/appearance.js?v=ae26c1e43bfc"></script>
+  <!-- ssm-home-first-paint:start -->
+<style data-home-first-paint>
+  html { background: var(--paper, #ffffff); color: var(--ink, #171717); }
+  html[data-home-starting] body, html[data-home-starting] body * { visibility: hidden !important; }
+  html[data-home-starting] body * { transition: none !important; }
+</style>
+<script data-home-first-paint data-home-state-scripts="[&quot;site&quot;,&quot;pins&quot;,&quot;post-browser&quot;,&quot;read-status&quot;,&quot;post-votes&quot;,&quot;post-tag-scroll&quot;]">// Only localized home/catalogue pages install this before their first paint.
+// Offline owner editions retain their own startup and make no new requests.
+(() => {
+  if (window.location.protocol === "file:") return;
+  const root = document.documentElement;
+  const pending = new Set(JSON.parse(document.currentScript?.dataset.homeStateScripts || "[]"));
+  let released = false;
+  let settling = false;
+  let timer;
+
+  function reveal() {
+    if (released) return;
+    released = true;
+    window.clearTimeout(timer);
+    root.removeAttribute("data-home-starting");
+    document.removeEventListener("load", scriptFinished, true);
+    document.removeEventListener("error", scriptFinished, true);
+    document.removeEventListener("DOMContentLoaded", settle);
+    window.removeEventListener("pageshow", restorePage);
+  }
+
+  function settle() {
+    if (released || settling || pending.size || !document.body) return;
+    settling = true;
+    // Visibility, unlike display:none, preserves layout and starts used fonts.
+    // Flush the restored layout before reading the FontFaceSet's ready promise.
+    document.body.getBoundingClientRect();
+    Promise.resolve(document.fonts?.ready).catch(() => {}).then(() => {
+      if (released) return;
+      // Let existing ResizeObservers/tag-row measurements settle before reveal.
+      window.requestAnimationFrame(() => window.requestAnimationFrame(reveal));
+    });
+  }
+
+  function scriptFinished(event) {
+    const name = event.target?.getAttribute?.("data-home-state-script");
+    if (pending.delete(name)) settle();
+  }
+
+  function restorePage(event) {
+    if (event.persisted) reveal(); // Never hide a restored back/forward snapshot.
+  }
+
+  document.addEventListener("load", scriptFinished, true);
+  document.addEventListener("error", scriptFinished, true);
+  document.addEventListener("DOMContentLoaded", settle);
+  window.addEventListener("pageshow", restorePage);
+  // Failure/blocked-resource escape hatch, not a minimum display delay. Ready
+  // pages reveal immediately; analytics, votes and comments responses never gate it.
+  timer = window.setTimeout(reveal, 2000);
+  root.setAttribute("data-home-starting", "");
+})();
+</script>
+<link rel="preload" as="script" href="/ssm/assets/site.js?v=1d8f9a9a057f">
+<link rel="modulepreload" href="/ssm/assets/pins.js?v=66b437a30c51">
+<link rel="modulepreload" href="/ssm/assets/post-browser.js?v=73f44a45f161">
+<link rel="modulepreload" href="/ssm/assets/read-status.js?v=c050102d3494">
+<link rel="modulepreload" href="/ssm/assets/post-votes.js?v=5e999b6c7fb0">
+<link rel="modulepreload" href="/ssm/assets/post-tag-scroll.js?v=8af3738348c3">
+<script data-home-appearance-src="/ssm/assets/appearance.js?v=ae26c1e43bfc">(() => {
+  const root = document.documentElement;
+  const defaults = {
+    light: { background: "#ffffff", text: "#171717", accent: "#1c9ae9" },
+    dark: { background: "#000000", text: "#f5f5f5", accent: "#1c9ae9" },
+  };
+  const valid = (value) => typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value);
+  let preferences = {};
+  let theme;
+  try { theme = localStorage.getItem("ssm-theme"); } catch { /* Use the system preference. */ }
+  if (theme !== "light" && theme !== "dark") {
+    theme = window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  }
+  try {
+    const stored = JSON.parse(localStorage.getItem("ssm-colors") || "{}");
+    const accent = [stored?.accent, stored?.[theme]?.accent, stored?.light?.accent, stored?.dark?.accent].find(valid);
+    if (accent) {
+      preferences = { accent };
+      // Adopt the current mode's old choice once, then retire both per-mode values.
+      if (!valid(stored?.accent) || stored?.light || stored?.dark) save();
+    }
+  } catch { /* Browser storage is optional. */ }
+
+  function colors(mode) {
+    const result = { ...defaults[mode] };
+    if (valid(preferences.accent)) result.accent = preferences.accent;
+    return result;
+  }
+
+  function mix(from, to, weight) {
+    const channels = [1, 3, 5].map((offset) => Math.round(
+      parseInt(from.slice(offset, offset + 2), 16) * (1 - weight) +
+      parseInt(to.slice(offset, offset + 2), 16) * weight,
+    ).toString(16).padStart(2, "0"));
+    return `#${channels.join("")}`;
+  }
+
+  function luminance(hex) {
+    const values = [1, 3, 5].map((offset) => {
+      const value = parseInt(hex.slice(offset, offset + 2), 16) / 255;
+      return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+    });
+    return values[0] * 0.2126 + values[1] * 0.7152 + values[2] * 0.0722;
+  }
+
+  function readableAccent(accent, text, backgrounds, mode) {
+    // Readability alone can accept the unchanged accent on a dark background.
+    // Start with a distinct hover shade, then retain the existing contrast check.
+    // Near-white accents need darkening instead because they have no lightening headroom.
+    const hoverAccent = mode === "dark"
+      ? mix(accent, luminance(accent) > 0.75 ? backgrounds[0] : text, 0.3)
+      : accent;
+    for (let step = 0; step <= 20; step++) {
+      const candidate = mix(hoverAccent, text, step / 20);
+      const foreground = luminance(candidate);
+      if (backgrounds.every((background) => {
+        const backdrop = luminance(background);
+        return (Math.max(foreground, backdrop) + 0.05) / (Math.min(foreground, backdrop) + 0.05) >= 4.5;
+      })) return candidate;
+    }
+    return text;
+  }
+
+  function apply(mode) {
+    const { background, text, accent } = colors(mode);
+    root.dataset.theme = mode;
+    root.style.colorScheme = mode;
+    const tokens = {
+      paper: background, ink: text, accent,
+      "accent-strong": readableAccent(accent, text, [background, mix(background, text, 0.055), mix(background, accent, 0.12)], mode),
+      surface: mix(background, text, 0.025),
+      "surface-translucent": mix(background, text, 0.025),
+      muted: mix(background, text, 0.68),
+      line: mix(background, text, 0.2), "line-dark": mix(background, text, 0.4),
+      "inverse-bg": text, "inverse-ink": background,
+      "soft-accent": mix(background, accent, 0.12),
+      "code-bg": mix(background, text, 0.055),
+      "notice-bg": mix(background, text, 0.055),
+      "notice-border": mix(background, text, 0.4), "notice-ink": text,
+      "unread-bg": mix(background, text, 0.055),
+    };
+    for (const [name, value] of Object.entries(tokens)) root.style.setProperty(`--${name}`, value);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", background);
+    return colors(mode);
+  }
+
+  function save() {
+    try { localStorage.setItem("ssm-colors", JSON.stringify(preferences)); } catch { /* Keep this page usable. */ }
+  }
+
+  window.SSMAppearance = {
+    apply,
+    colors,
+    reset(mode) {
+      if (!Object.hasOwn(defaults, mode)) return;
+      preferences = {};
+      save();
+      apply(mode);
+    },
+    set(mode, key, value) {
+      if (!Object.hasOwn(defaults, mode)) return;
+      if (key !== "accent" || !valid(value)) return;
+      preferences = { accent: value };
+      save();
+      apply(mode);
+    },
+  };
+
+  if (typeof document.createElement === "function" && document.head?.append) {
+    const tagHoverStyle = document.createElement("style");
+    tagHoverStyle.textContent = `
+      /* The pin ring needs more accent strength against dark surfaces.
+         Keep light mode, the pin artwork, and shared soft fills unchanged. */
+      :root[data-theme="dark"] .pin-toggle[aria-pressed="false"]:not(:disabled):is(:hover, :focus-visible),
+      :root[data-theme="dark"] .pin-toggle[aria-pressed="true"]:hover {
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--paper), var(--accent) 40%);
+      }
+
+      /* Very compact cards use the same complete localized date as the other views. */
+      :root .post-stream[data-layout="compact"] .post-date-full {
+        display: inline;
+      }
+      :root .post-stream[data-layout="compact"] .post-date-compact {
+        display: none;
+      }
+
+      :root .tag-option:not(.is-excluded):not(:has(> .tag-chip[aria-pressed="true"])):hover {
+        border-color: var(--accent);
+      }
+      /* The legacy combined post-tag anchor remains in the DOM only as the
+         behavior source for split hierarchy chips. Its hidden state must win
+         over the base .tag-chip display rule. */
+      :root .card-tags > .tag-chip[hidden],
+      :root .article-tags > .tag-chip[hidden] {
+        display: none !important;
+      }
+      /* Unselected counts keep the base accent; only their label changes
+         to that same accent on hover or visible keyboard focus. */
+      :root .tag-option:not(.is-excluded) > .tag-chip:not([aria-pressed="true"]) .tag-count {
+        color: var(--accent);
+      }
+      :root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip:not([aria-pressed="true"]) {
+        color: var(--accent);
+      }
+      /* Selected tags keep the soft fill while their label, count and frame
+         share one accent state. Excluded tags and the delayed hide action keep
+         their existing neutral styling and behavior. */
+      :root .tag-option:not(.is-excluded):has(> .tag-chip[aria-pressed="true"]) {
+        background: var(--soft-accent);
+        border-color: var(--accent);
+      }
+      :root .tag-option:not(.is-excluded) > .tag-chip[aria-pressed="true"],
+      :root .tag-option:not(.is-excluded) > .tag-chip[aria-pressed="true"] .tag-count {
+        color: var(--accent);
+      }
+      :root .tag-option:not(.is-excluded):has(> .tag-chip[aria-pressed="true"]):is(:hover, :has(:focus-visible)) {
+        border-color: var(--accent-strong);
+      }
+      :root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[aria-pressed="true"],
+      :root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[aria-pressed="true"] .tag-count {
+        color: var(--accent-strong);
+      }
+      /* Article-page tags mirror the filter-chip palette. Their selected state
+         is exposed by post-browser through aria-pressed, without changing tag
+         navigation behavior or geometry. */
+      :root .article-tag[aria-pressed="true"] {
+        background: var(--soft-accent);
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      :root .article-tag[aria-pressed="true"]:is(:hover, :focus-visible) {
+        color: var(--accent-strong);
+        border-color: var(--accent-strong);
+      }
+      :root .article-tag:not([aria-pressed="true"]):is(:hover, :focus-visible) {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      /* Hovering or keyboard-focusing one tag highlights every visible copy of
+         that exact topic across the menu, post cards and article page. Keep
+         selected fills intact; synchronize only text/count and frame color. */
+      :root .tag-option:not(.is-excluded):has(> .tag-chip.is-topic-hovered) {
+        border-color: var(--accent) !important;
+      }
+      :root .tag-option:not(.is-excluded) > .tag-chip.is-topic-hovered,
+      :root .card-tag.is-topic-hovered,
+      :root .article-tag.is-topic-hovered {
+        color: var(--accent) !important;
+        border-color: var(--accent) !important;
+      }
+      :root .tag-option:not(.is-excluded) > .tag-chip.is-topic-hovered .tag-count {
+        color: var(--accent) !important;
+      }
+
+      /* Every unread post owns the outside accent ribbon, independent of pin
+         state. Keep it as an outside shadow so toggling read state never changes
+         card dimensions. RTL mirrors the ribbon to the right. */
+      :root .unread-card {
+        box-shadow: -.32rem 0 0 var(--accent), var(--shadow) !important;
+      }
+      :root[dir="rtl"] .unread-card {
+        box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
+      }
+      :root .unread-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+        box-shadow: -.32rem 0 0 var(--accent-strong), var(--shadow) !important;
+      }
+      :root[dir="rtl"] .unread-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+        box-shadow: .32rem 0 0 var(--accent-strong), var(--shadow) !important;
+      }
+      :root .unread-card:has(.post-engagement:hover),
+      :root .unread-card:has(.post-engagement:focus-within) {
+        box-shadow: -.32rem 0 0 var(--accent), var(--shadow) !important;
+      }
+      :root[dir="rtl"] .unread-card:has(.post-engagement:hover),
+      :root[dir="rtl"] .unread-card:has(.post-engagement:focus-within) {
+        box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
+      }
+
+      :root .read-toggle[aria-checked="true"]::before {
+        color: var(--line);
+        border-color: var(--line);
+      }
+      :root .read-toggle[aria-checked="true"]:is(:hover, :focus-visible)::before {
+        color: var(--line-dark);
+        border-color: var(--line-dark);
+      }
+      :root .post-engagement .post-vote[aria-pressed="true"] {
+        background: var(--soft-accent);
+      }
+      :root .post-engagement .post-vote[aria-pressed="true"] svg,
+      :root .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
+        color: var(--accent);
+      }
+      :root .post-engagement .post-vote:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
+        color: var(--accent-strong);
+        border-inline-start-color: var(--accent-strong);
+      }
+      :root .post-engagement .post-vote[aria-pressed="true"]:is(:hover, :focus-visible):not(:disabled) svg,
+      :root .post-engagement .post-vote[aria-pressed="true"]:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
+        color: var(--accent-strong);
+      }
+      :root .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
+        border-inline-start-color: var(--accent);
+      }
+      :root .post-engagement .post-vote[aria-pressed="true"]:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
+        border-inline-start-color: var(--accent-strong);
+      }
+      /* Neutral hover shades strengthen toward the foreground, not toward
+         black in both themes. Keep the existing light-mode grey unchanged. */
+      :root {
+        --line-strong: color-mix(in srgb, var(--line-dark) 72%, #000);
+      }
+      :root[data-theme="dark"] {
+        --line-strong: color-mix(in srgb, var(--line-dark) 72%, var(--ink));
+      }
+      :root .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+        --post-frame-color: var(--line-strong);
+        border-color: var(--line-strong) !important;
+        box-shadow: -.32rem 0 0 var(--line-strong), 0 1px 0 rgba(0, 0, 0, 0.03);
+      }
+      :root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+        box-shadow: .32rem 0 0 var(--line-strong), 0 1px 0 rgba(0, 0, 0, 0.03);
+      }
+      :root .post-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > .post-engagement::before {
+        z-index: 8;
+      }
+
+      /* Mirror the English geometry, including border ownership. The upvote
+         owns both of its side borders; the neighboring stats keep a transparent
+         border on that side instead of painting a second highlighted line.
+         Reserve the same border widths at rest and on hover so nothing shifts. */
+      :root[dir="rtl"] .post-engagement {
+        direction: ltr;
+        flex-direction: row-reverse;
+      }
+      :root[dir="rtl"] .post-engagement :is(.post-vote, .post-comments, .post-views) {
+        direction: ltr;
+      }
+      :root[dir="rtl"] .post-engagement .post-views {
+        border-left: 1px solid var(--line);
+        border-right: 1px solid transparent;
+        border-radius: 0;
+        border-bottom-left-radius: .5rem;
+      }
+      :root[dir="rtl"] .post-engagement .post-comments {
+        border-left: 1px solid var(--line);
+        border-right: 1px solid transparent;
+        border-radius: 0;
+      }
+      :root[dir="rtl"] .post-engagement .post-vote {
+        border-left: 1px solid var(--line);
+        border-right: 1px solid var(--line);
+        border-radius: 0;
+        border-bottom-right-radius: .5rem;
+      }
+      :root[dir="rtl"] .post-engagement :is(.post-vote, .post-comments, .post-views) > svg {
+        grid-column: 2;
+        grid-row: 1;
+      }
+      :root[dir="rtl"] .post-engagement :is(.post-vote-count, .post-comment-count, .post-view-count) {
+        grid-column: 1;
+        grid-row: 1;
+        border-left: 0;
+        border-right: 1px solid var(--line);
+      }
+      :root[dir="rtl"] .post-engagement .post-vote[aria-pressed="true"] {
+        border-left-color: var(--accent);
+        border-right-color: var(--accent);
+      }
+      :root[dir="rtl"] .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
+        border-left: 0;
+        border-right: 1px solid var(--accent);
+      }
+
+      /* Change colors only, for selected and unselected upvotes alike. The
+         divider is on the count's right in RTL, and on its left in LTR. */
+      :root[dir="rtl"] .post-engagement .post-vote:is(:hover, :focus-visible):not(:disabled) {
+        border-left-color: var(--accent-strong);
+        border-right-color: var(--accent-strong);
+        border-block-end-color: var(--accent-strong);
+      }
+      :root[dir="rtl"] .post-engagement .post-vote:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
+        color: var(--accent-strong);
+        border-right-color: var(--accent-strong);
+      }
+
+      /* Hovering the detached engagement strip must never highlight its card in
+         RTL. Keep the card frame and any pin ribbon at their resting colors. */
+      :root[dir="rtl"] .post-card:has(> .post-engagement:hover),
+      :root[dir="rtl"] .post-card:has(> .post-engagement:focus-within) {
+        --post-frame-color: var(--line) !important;
+        border-color: var(--line) !important;
+      }
+      :root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:hover),
+      :root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
+        box-shadow: .32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03) !important;
+      }
+      :root[dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:hover),
+      :root[dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
+        box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
+      }
+
+      /* Subscription topic pills indicate selection only through their existing
+         border/text styling. Do not reserve an icon slot for a hidden checkmark. */
+      :root .subscribe-dialog .topic-option span {
+        gap: 0;
+      }
+      :root .subscribe-dialog .topic-option span::before {
+        content: none;
+        display: none;
+      }
+    `;
+    document.head.append(tagHoverStyle);
+  }
+
+  apply(theme);
+})();
+</script>
+<!-- ssm-home-first-paint:end -->
   <link rel="stylesheet" href="/ssm/assets/styles.css?v=ecbefc9182c7">
   <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=60c2fcee64f5" data-post-layout-styles>
   <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=cfb790f04b85" data-control-sizing-styles>
@@ -583,15 +1006,15 @@
       </div>
     </div>
   </dialog>
-  <script src="/ssm/assets/site.js?v=1d8f9a9a057f" defer></script>
+  <script data-home-state-script="site" src="/ssm/assets/site.js?v=1d8f9a9a057f" defer></script>
   <p class="visually-hidden" role="status" data-pin-status data-saved="Post pinned." data-removed="Post unpinned." data-temporary="Your browser cannot save this choice. It will last only on this page."></p>
-  <script type="module" src="/ssm/assets/pins.js?v=66b437a30c51"></script>
-  <script type="module" src="/ssm/assets/post-browser.js?v=73f44a45f161"></script>
+  <script data-home-state-script="pins" type="module" src="/ssm/assets/pins.js?v=66b437a30c51"></script>
+  <script data-home-state-script="post-browser" type="module" src="/ssm/assets/post-browser.js?v=73f44a45f161"></script>
   <p class="visually-hidden" role="status" data-read-status data-read="Post marked as read." data-unread="Post marked as unread." data-temporary="Your browser cannot save this choice. It will last only on this page."></p>
-  <script type="module" src="/ssm/assets/read-status.js?v=c050102d3494"></script>
+  <script data-home-state-script="read-status" type="module" src="/ssm/assets/read-status.js?v=c050102d3494"></script>
   <p class="visually-hidden" role="status" aria-live="polite" data-post-vote-status data-saved="Upvote added." data-removed="Upvote removed." data-unavailable="Upvotes are temporarily unavailable."></p>
-  <script type="module" src="/ssm/assets/post-votes.js?v=5e999b6c7fb0"></script>
+  <script data-home-state-script="post-votes" type="module" src="/ssm/assets/post-votes.js?v=5e999b6c7fb0"></script>
   <script type="module" src="/ssm/assets/statistics-tracker.js?v=359e2e98b8d7"></script>
-<script type="module" src="/ssm/assets/post-tag-scroll.js?v=8af3738348c3" data-post-tag-scroll></script>
+<script data-home-state-script="post-tag-scroll" type="module" src="/ssm/assets/post-tag-scroll.js?v=8af3738348c3" data-post-tag-scroll></script>
 </body>
 </html>
