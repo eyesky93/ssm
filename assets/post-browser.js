@@ -1,4 +1,81 @@
 (() => {
+  // src/read-state.js
+  var READ_TAG = "@read";
+  var registryKey = Symbol.for("ssm.read-stores");
+  var ReadStore = class {
+    constructor(storage, key) {
+      this.storage = storage;
+      this.key = key;
+      this.read = /* @__PURE__ */ new Set();
+      this.memoryOnly = false;
+      this.listeners = /* @__PURE__ */ new Set();
+      this.refresh(false);
+    }
+    refresh(notify = true) {
+      if (this.memoryOnly) return;
+      try {
+        const saved = JSON.parse(this.storage.getItem(this.key));
+        const next = new Set(saved?.version === 1 && Array.isArray(saved.read) ? saved.read.filter((id) => typeof id === "string" && id.length > 0) : []);
+        const changed = next.size !== this.read.size || [...next].some((id) => !this.read.has(id));
+        this.read = next;
+        if (changed && notify) this.notify();
+      } catch {
+      }
+    }
+    isRead(id) {
+      return this.read.has(id);
+    }
+    set(id, value) {
+      if (typeof id !== "string" || !id) return false;
+      this.refresh(false);
+      if (value) this.read.add(id);
+      else this.read.delete(id);
+      let persisted = false;
+      try {
+        this.storage.setItem(this.key, JSON.stringify({ version: 1, read: [...this.read] }));
+        this.memoryOnly = false;
+        persisted = true;
+      } catch {
+        this.memoryOnly = true;
+      }
+      this.notify();
+      return persisted;
+    }
+    count(ids) {
+      return [...new Set(ids)].filter((id) => this.isRead(id)).length;
+    }
+    subscribe(listener) {
+      this.listeners.add(listener);
+      return () => this.listeners.delete(listener);
+    }
+    notify() {
+      for (const listener of this.listeners) listener();
+    }
+  };
+  function createReadStore(storage, key) {
+    return new ReadStore(storage, key);
+  }
+  function getReadStore(document2, window2) {
+    const key = document2.body?.dataset?.readStorage;
+    const stores = window2[registryKey] ??= /* @__PURE__ */ new Map();
+    if (!stores.has(key)) {
+      let storage;
+      try {
+        storage = window2.localStorage;
+      } catch {
+      }
+      stores.set(key, createReadStore(storage, key));
+    }
+    return stores.get(key);
+  }
+  function tagsWithReadState(tags, id, store, eligible = true) {
+    return eligible && store.isRead(id) ? [...tags, READ_TAG] : tags;
+  }
+  function matchesReadState(id, store, selected, excluded, eligible = true) {
+    const read = eligible && store.isRead(id);
+    return (!selected.has(READ_TAG) || read) && (!excluded.has(READ_TAG) || !read);
+  }
+
   // src/search-engine.js
   var whitespace = /\s/u;
   var wordCharacter = /[\p{L}\p{N}\p{M}_]/u;
@@ -275,6 +352,14 @@
     const mobile = window2.matchMedia("(max-width: 700px)");
     const status = browser.querySelector("[data-search-result-status]");
     const language = document2.documentElement.lang;
+    const readStore = getReadStore(document2, window2);
+    const readFilterLabel = browser.querySelector("[data-personal-read-filter] [data-tag-filter]")?.firstElementChild?.textContent?.trim() || (language.split("-")[0] === "he" ? "\u05E0\u05E7\u05E8\u05D0" : "Read");
+    const readSearchTag = {
+      key: READ_TAG,
+      label: readFilterLabel,
+      fullLabel: readFilterLabel,
+      aliases: ["read", "\u05E0\u05E7\u05E8\u05D0", "\u05E0\u05E7\u05E8\u05D0\u05D5"]
+    };
     let index = null, pending = null, failed = false, composing = false;
     let query = "", caseSensitive = false, completion = null;
     let selectedTags = /* @__PURE__ */ new Set();
@@ -367,7 +452,7 @@
     }
     function renderTagRow(options) {
       showingSuggestions = options.length > 0;
-      const selected = [...selectedTags].map((key) => index?.tags.find((tag) => tag.key === key) || { key, label: key.split(":").at(-1).replaceAll("-", " ") });
+      const selected = [...selectedTags].map((key) => index?.tags.find((tag) => tag.key === key) || (key === READ_TAG ? readSearchTag : { key, label: key.split(":").at(-1).replaceAll("-", " ") }));
       const tags = [...selected, ...options.filter((tag) => !selectedTags.has(tag.key))];
       const focusedKey = suggestions.contains(document2.activeElement) ? document2.activeElement.dataset.searchTag : null;
       suggestions.replaceChildren(...tags.map((tag) => {
@@ -514,7 +599,7 @@
           if (!response.ok) throw new Error("Search index unavailable");
           const data = await response.json();
           if (data.language !== language || !Array.isArray(data.posts) || !Array.isArray(data.tags)) throw new Error("Invalid search index");
-          index = data;
+          index = { ...data, tags: [...data.tags.filter((tag) => tag.key !== READ_TAG), readSearchTag] };
         } catch {
           failed = true;
         } finally {
@@ -616,7 +701,13 @@
       const parsed = parseQuery(query2);
       parsed.tags.push(...selectedTags2);
       const byId = new Map(cards.map((card) => [card.dataset.postId, card]));
-      const results = rankPosts(index.posts.filter((post) => byId.has(post.id) && isEligible(byId.get(post.id))), parsed, { language, caseSensitive: caseSensitive2, tags: index.tags });
+      const searchablePosts = index.posts.filter((post) => byId.has(post.id) && isEligible(byId.get(post.id))).map((post) => ({ ...post, tags: tagsWithReadState(
+        post.tags ?? [],
+        post.id,
+        readStore,
+        byId.get(post.id).dataset.directory === void 0
+      ) }));
+      const results = rankPosts(searchablePosts, parsed, { language, caseSensitive: caseSensitive2, tags: index.tags });
       results.sort((left, right) => Number(isHidden(byId.get(left.post.id))) - Number(isHidden(byId.get(right.post.id))));
       for (const card of cards) card.hidden = true;
       const ordered = [];
@@ -836,83 +927,6 @@
     }, get pending() {
       return !index && !failed;
     } };
-  }
-
-  // src/read-state.js
-  var READ_TAG = "@read";
-  var registryKey = Symbol.for("ssm.read-stores");
-  var ReadStore = class {
-    constructor(storage, key) {
-      this.storage = storage;
-      this.key = key;
-      this.read = /* @__PURE__ */ new Set();
-      this.memoryOnly = false;
-      this.listeners = /* @__PURE__ */ new Set();
-      this.refresh(false);
-    }
-    refresh(notify = true) {
-      if (this.memoryOnly) return;
-      try {
-        const saved = JSON.parse(this.storage.getItem(this.key));
-        const next = new Set(saved?.version === 1 && Array.isArray(saved.read) ? saved.read.filter((id) => typeof id === "string" && id.length > 0) : []);
-        const changed = next.size !== this.read.size || [...next].some((id) => !this.read.has(id));
-        this.read = next;
-        if (changed && notify) this.notify();
-      } catch {
-      }
-    }
-    isRead(id) {
-      return this.read.has(id);
-    }
-    set(id, value) {
-      if (typeof id !== "string" || !id) return false;
-      this.refresh(false);
-      if (value) this.read.add(id);
-      else this.read.delete(id);
-      let persisted = false;
-      try {
-        this.storage.setItem(this.key, JSON.stringify({ version: 1, read: [...this.read] }));
-        this.memoryOnly = false;
-        persisted = true;
-      } catch {
-        this.memoryOnly = true;
-      }
-      this.notify();
-      return persisted;
-    }
-    count(ids) {
-      return [...new Set(ids)].filter((id) => this.isRead(id)).length;
-    }
-    subscribe(listener) {
-      this.listeners.add(listener);
-      return () => this.listeners.delete(listener);
-    }
-    notify() {
-      for (const listener of this.listeners) listener();
-    }
-  };
-  function createReadStore(storage, key) {
-    return new ReadStore(storage, key);
-  }
-  function getReadStore(document2, window2) {
-    const key = document2.body?.dataset?.readStorage;
-    const stores = window2[registryKey] ??= /* @__PURE__ */ new Map();
-    if (!stores.has(key)) {
-      let storage;
-      try {
-        storage = window2.localStorage;
-      } catch {
-      }
-      stores.set(key, createReadStore(storage, key));
-    }
-    return stores.get(key);
-  }
-  function tagsWithReadState(tags, id, store, eligible = true) {
-    return eligible && store.isRead(id) ? [...tags, READ_TAG] : tags;
-  }
-  function matchesReadState(id, store, selected, excluded, eligible = true) {
-    const read = eligible && store.isRead(id);
-    return (!selected.has(READ_TAG) || read) && (!excluded.has(READ_TAG) || !read);
   }
 
   // src/engagement-highlights.js
