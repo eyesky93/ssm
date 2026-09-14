@@ -1,3 +1,4 @@
+import {parseEngagementSnapshot, createVoteChoiceCache} from "./engagement-snapshot.js";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -38,7 +39,9 @@ export function voteResponse(value, postId) {
   if (value.views !== undefined && (!Number.isSafeInteger(value.views) || value.views < 0)) throw new Error("Invalid post-view response.");
   if (value.comments !== undefined && value.comments !== null && (!Number.isSafeInteger(value.comments) || value.comments < 0)) throw new Error("Invalid post-comment response.");
   if (value.commentsUpdated !== undefined && (!Number.isSafeInteger(value.commentsUpdated) || value.commentsUpdated < 0)) throw new Error("Invalid comment-count revision.");
-  return { ...(value.comments === undefined ? {} : { comments: value.comments, commentsUpdated: value.commentsUpdated || 0 }), postId, count: value.count, upvoted: value.upvoted, changed: value.changed === true, views: value.views ?? null };
+  if (value.voteRevision !== undefined && (!Number.isSafeInteger(value.voteRevision) || value.voteRevision < 0)) throw new Error("Invalid vote revision.");
+  if (value.updatedAt !== undefined && (!Number.isSafeInteger(value.updatedAt) || value.updatedAt < 0)) throw new Error("Invalid vote revision.");
+  return { ...(value.voteRevision === undefined ? {} : {voteRevision:value.voteRevision}), ...(value.updatedAt === undefined ? {} : {updatedAt:value.updatedAt}), ...(value.comments === undefined ? {} : { comments: value.comments, commentsUpdated: value.commentsUpdated || 0 }), postId, count: value.count, upvoted: value.upvoted, changed: value.changed === true, views: value.views ?? null };
 }
 
 function localizedNumber(value, lang) {
@@ -99,6 +102,9 @@ export function initializePostVotes(document, window, { randomId } = {}) {
   try { storage = window.localStorage; } catch { /* Use a page-local voter ID after the first click. */ }
   const uuid = randomId || (() => window.crypto.randomUUID());
   const store = createVoterStore(storage, storageKey, uuid);
+  const choices = createVoteChoiceCache(storage, storageKey, store);
+  const snapshotUrl = document.body?.dataset.engagementSnapshot || "";
+  let snapshotRequest;
   const groups = new Map();
 
   for (const button of document.querySelectorAll("[data-post-vote][data-post-id]")) {
@@ -110,7 +116,7 @@ export function initializePostVotes(document, window, { randomId } = {}) {
     }
     if (!groups.has(postId)) groups.set(postId, {
       postId, buttons: [], count: null, views: null, comments: null, commentsUpdated: 0, upvoted: false, available: false,
-      loading: null, mutating: false, requested: false, initialLoadComplete: !endpoint,
+      loading: null, mutating: false, requested: false, initialLoadComplete: !endpoint, authoritative: false,
     });
     groups.get(postId).buttons.push(button);
   }
@@ -189,6 +195,8 @@ export function initializePostVotes(document, window, { randomId } = {}) {
   function apply(group, value) {
     const state = voteResponse(value, group.postId);
     group.count = state.count;
+    group.authoritative = true;
+    choices.save(group.postId, state);
     if (state.comments != null && state.commentsUpdated >= group.commentsUpdated) {
       group.comments = state.comments; group.commentsUpdated = state.commentsUpdated;
     }
@@ -221,7 +229,33 @@ export function initializePostVotes(document, window, { randomId } = {}) {
     if (browserId) url.searchParams.set("browser", browserId);
     group.loading = (async () => {
       render(group);
-      try { return apply(group, await request(url.href)); }
+      try {
+        if (snapshotUrl && !force) {
+          // One same-origin static request is shared by every post and duplicate
+          // strip. A failed/missing row falls back to the existing live endpoint.
+          try {
+            snapshotRequest ||= request(snapshotUrl).then(parseEngagementSnapshot);
+            const row = (await snapshotRequest).get(group.postId);
+            if (row) {
+              const choice = choices.read(group.postId);
+              // A removal can bring the aggregate back to its old number. Compare
+              // the monotonic vote revision, not only count values or wall clocks.
+              const newerChoice = choice && (choice.voteRevision !== undefined
+                ? choice.voteRevision > row.voteRevision
+                : choice.updatedAt > row.updatedAt && Date.now() - choice.updatedAt < 3600000);
+              group.count = newerChoice ? choice.count : row.count;
+              group.upvoted = choice?.upvoted || false;
+              group.views = Math.max(group.views ?? 0, row.views);
+              if (row.comments !== null && row.commentsUpdated >= group.commentsUpdated) {
+                group.comments = row.comments; group.commentsUpdated = row.commentsUpdated;
+              }
+              group.available = true;
+              return {postId:group.postId, count:group.count, upvoted:group.upvoted};
+            }
+          } catch { /* Preserve the existing live read as a safe fallback. */ }
+        }
+        return apply(group, await request(url.href));
+      }
       catch { unavailable(group); return null; }
       finally { group.loading = null; group.initialLoadComplete = true; render(group); }
     })();
@@ -231,9 +265,17 @@ export function initializePostVotes(document, window, { randomId } = {}) {
     if (!group.available || group.loading || group.mutating) return null;
     group.mutating = true;
     render(group);
-    const desired = !group.upvoted;
     let failed = false;
     try {
+      // Cached display state may be from an older tab/device. Read it only on
+      // the first actual interaction, not for every reader opening this page.
+      if (!group.authoritative && store.saved()) {
+        const url = new URL(`${endpoint}/post-votes`);
+        url.searchParams.set("post", group.postId);
+        url.searchParams.set("browser", store.saved());
+        apply(group, await request(url.href));
+      }
+      const desired = !group.upvoted;
       const browserId = store.create();
       const requestId = uuid();
       if (!validVoteUuid(requestId)) throw new Error("The browser could not create a request identifier.");
@@ -315,7 +357,13 @@ export function initializePostVotes(document, window, { randomId } = {}) {
     for (const group of groups.values()) if (group.requested && !group.available) void load(group, true);
   });
   window.addEventListener?.("pageshow", (event) => {
-    if (event.persisted) for (const group of groups.values()) if (group.requested) void load(group, true);
+    if (event.persisted) {
+      snapshotRequest = undefined;
+      for (const group of groups.values()) if (group.requested && !group.mutating) {
+        group.available = false; group.authoritative = false;
+        void load(group, !snapshotUrl);
+      }
+    }
   });
 
   return {
