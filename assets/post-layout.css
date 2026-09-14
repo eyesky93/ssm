@@ -667,6 +667,10 @@ html[lang="he"] .reader-controls .reader-number-error {
   box-shadow: inset 0 0 0 1px var(--line);
 }
 
+/* Keep the Preview label, but reserve no blank body beneath it. The editor
+   hides only the body for empty drafts; rendered content sets its own height. */
+:root [data-ssm-comments] .comment-preview { min-block-size: 0; }
+
 /* Signup explanations are removed at build time. Keep actual consent and
    actions legible in the normal foreground; the email example is untouched. */
 :root .subscribe-dialog :is(.consent-row, .subscription-actions, .subscribe-unavailable) {
