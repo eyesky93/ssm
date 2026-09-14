@@ -2181,11 +2181,15 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 }
 html[lang="he"] [data-directory] .map-stage > .map-filter-bar { font-family: var(--font-interface-hebrew), var(--font-content); }
 .map-read-filter { flex: 0 0 auto; }
-/* This tree toggle has no hide-X overlay; its counter must stay visible. */
-:root .map-read-filter.tag-option .tag-chip .tag-count { opacity: 1; visibility: visible; transition: none; }
+/* The personal tree control inherits the main menu's count-only hover delay,
+   X/restore icons, keyboard access and touch restore states without overrides. */
+/* Preserve native Tab transfer while focus moves between the two buttons. */
+:root .map-read-filter.tag-option.is-keyboard-active .tag-exclude { opacity: 1; visibility: visible; transition: none; }
+:root .map-read-filter.tag-option.is-keyboard-active .tag-count { opacity: 0; transition: none; }
 [data-directory] .map-filter-bar > .map-filters { flex: 1 1 10rem; min-width: 0; }
 /* Dimming is visual only: node links, count links, branches and connectors remain. */
-[data-hierarchy-map][data-dim-read="true"] .map-node[data-read-complete="true"] {
+[data-hierarchy-map][data-dim-read="true"] .map-node[data-read-complete="true"],
+[data-hierarchy-map][data-dim-unread="true"] .map-node[data-unread-complete="true"] {
   filter: grayscale(1);
   opacity: .6;
 }
