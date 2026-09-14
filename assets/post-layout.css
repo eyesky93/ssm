@@ -612,17 +612,18 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 /* The existing loader disables Refresh until its request settles, including
    errors. Animate only the arrows; the shared button and capsule stay still.
-   Removing the loading state returns the icon to its original orientation. */
+   The arrowheads point counterclockwise: every full turn follows that same
+   direction without reversing. Clearing loading restores the resting icon. */
 @media (prefers-reduced-motion: no-preference) {
   :root [data-ssm-comments] [data-comment-refresh]:disabled > svg {
     transform-box: view-box;
     transform-origin: 50% 50%;
-    animation: comment-refresh-turn 1.6s ease-in-out infinite;
+    animation: comment-refresh-turn 1.6s linear infinite;
   }
 }
 @keyframes comment-refresh-turn {
-  0%, 100% { transform: rotate(0turn); }
-  50% { transform: rotate(1turn); }
+  from { transform: rotate(0turn); }
+  to { transform: rotate(-1turn); }
 }
 :root [data-ssm-comments] .comment-sort-controls [data-comment-sort="oldest"] > svg {
   width: 1.6rem;

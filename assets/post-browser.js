@@ -691,6 +691,31 @@
       input.focus({ preventScroll: true });
       inputEngaged = false;
     });
+    const homeLink = document2.querySelector('a.wordmark[aria-current="page"]');
+    homeLink?.addEventListener("click", (event) => {
+      if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      if (homeLink.hasAttribute("download") || homeLink.target && homeLink.target.toLowerCase() !== "_self") return;
+      try {
+        const currentUrl = new URL(window2.location.href);
+        const homeUrl = new URL(homeLink.href, currentUrl);
+        const pagePath = (pathname) => pathname.replace(/\/index\.html$/, "/").replace(/\/+$/, "");
+        if (homeUrl.origin !== currentUrl.origin || pagePath(homeUrl.pathname) !== pagePath(currentUrl.pathname)) return;
+      } catch {
+        return;
+      }
+      const state = appliedState();
+      if (!(query || selectedTags.size || caseSensitive || state.query || state.selectedTags.size || state.caseSensitive) && control.dataset.open !== "true") return;
+      event.preventDefault();
+      if (dialog.open) closeMobileSearch(true, { focus: false });
+      input.value = "";
+      selectedTags.clear();
+      caseSensitive = false;
+      composing = false;
+      change();
+      setOpen(false, { focus: false });
+      if (control.contains(document2.activeElement)) document2.activeElement.blur?.();
+      window2.scrollTo?.({ top: 0, behavior: "instant" });
+    });
     control.addEventListener("submit", (event) => {
       event.preventDefault();
       submitSearch();
