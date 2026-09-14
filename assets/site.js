@@ -1,6 +1,22 @@
 const root = document.documentElement;
 const themePreference = window.matchMedia?.("(prefers-color-scheme: dark)");
 
+// SSM is already active on Home. Following its rewritten filter URL would
+// reload the document (notably /en/ -> /en/?tag= on the first click), repainting
+// posts and reloading engagement. Keep the current page and its state intact.
+function preventRedundantHomeNavigation(event) {
+  if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+  const homeLink = event.target?.closest?.('a.wordmark[aria-current="page"]');
+  if (!homeLink || homeLink.hasAttribute("download") || (homeLink.target && homeLink.target.toLowerCase() !== "_self")) return;
+  try {
+    const currentUrl = new URL(window.location.href);
+    const homeUrl = new URL(homeLink.href, currentUrl);
+    const pagePath = pathname => pathname.replace(/\/index\.html$/, "/").replace(/\/+$/, "");
+    if (homeUrl.origin === currentUrl.origin && pagePath(homeUrl.pathname) === pagePath(currentUrl.pathname)) event.preventDefault();
+  } catch { /* Leave an invalid or nonstandard destination to the browser. */ }
+}
+document.addEventListener("click", preventRedundantHomeNavigation);
+
 // Primary pointer clicks on tag filters should not focus the chip before its
 // click handler runs. This prevents the focus-visible hide-X state from
 // flashing briefly; keyboard focus and modified/new-tab gestures are untouched.
