@@ -946,7 +946,7 @@
       <h3>עדכונים בדוא״ל</h3>
         <form class="subscribe-form" data-subscribe-form action="https://ssm-newsletter.eyesky93.workers.dev/api/subscriptions/v2" method="post"
         data-working="מתבצעת הרשמה…"
-        data-success="בדקו את תיבת הדוא״ל ואשרו את ההרשמה. בהמשך אפשר לשנות שפות, נושאים, תדירות ומראה דרך כפתור שינוי ההגדרות בהודעות."
+        data-success="נשלחה הודעת אימות לדוא״ל. בדקו את תיבת הדואר כדי לאשר את ההרשמה."
         data-error="לא הצלחנו להתחיל את ההרשמה. אפשר לנסות שוב."
         data-topic-required="יש לבחור לפחות נושא מסוים אחד, או לבחור בכל הנושאים."
         data-language-required="יש לבחור שפה אחת לפחות."
@@ -1013,7 +1013,7 @@
     <span>תורת שדות קונפורמית</span>
   </label></div></div>
         </fieldset>
-        <label class="consent-row"><input type="checkbox" name="consent" value="yes" required><span>אני מסכים או מסכימה לקבל עדכונים בדוא״ל על פוסטים חדשים ב־SSM. ידוע לי שצריך לאשר את ההרשמה בדוא״ל.</span></label>
+        <input type="hidden" name="consent" value="yes">
         
         <p class="form-status" data-subscribe-status role="status" aria-live="polite"></p>
       </form>

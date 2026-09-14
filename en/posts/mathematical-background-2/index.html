@@ -1025,7 +1025,7 @@ f&#39;(x)=\lim_{h\to0}\frac{f(x+h)-f(x)}{h},
       <h3>Email notifications</h3>
         <form class="subscribe-form" data-subscribe-form action="https://ssm-newsletter.eyesky93.workers.dev/api/subscriptions/v2" method="post"
         data-working="Subscribing…"
-        data-success="Check your inbox to confirm your subscription. Later, use Manage settings in a newsletter to change languages, subjects, frequency or appearance."
+        data-success="A confirmation email has been sent. Check your inbox to confirm your subscription."
         data-error="We couldn&#039;t start your subscription. Please try again."
         data-topic-required="Choose at least one specific subject, or select All subjects."
         data-language-required="Choose at least one language."
@@ -1092,7 +1092,7 @@ f&#39;(x)=\lim_{h\to0}\frac{f(x+h)-f(x)}{h},
     <span>Conformal Field Theory</span>
   </label></div></div>
         </fieldset>
-        <label class="consent-row"><input type="checkbox" name="consent" value="yes" required><span>I agree to receive email notifications about new SSM posts. I understand that I must confirm by email.</span></label>
+        <input type="hidden" name="consent" value="yes">
         
         <p class="form-status" data-subscribe-status role="status" aria-live="polite"></p>
       </form>
