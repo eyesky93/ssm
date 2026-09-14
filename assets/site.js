@@ -307,37 +307,52 @@ if (themePreference?.addEventListener) {
 }
 
 
-// Choose the opening side once. The full-size column stays attached to its
-// share button and scrolls with the document; it never follows the viewport.
+// Choose the opening side from the whole document, once before revealing it.
+// The full-size vertical column stays attached to its button during page scrolling.
 function positionShareMenu(menu) {
   if (!menu.open) return;
+  menu.dataset.shareReady = "false";
   const summary = menu.querySelector("summary");
   if (!summary.getClientRects().length) { menu.open = false; return; }
   const options = menu.querySelector(".share-options");
   options.style.maxBlockSize = "";
   options.style.translate = "";
 
-  const viewport = window.visualViewport;
-  const viewportTop = viewport?.offsetTop || 0;
-  const viewportLeft = viewport?.offsetLeft || 0;
-  const viewportHeight = viewport?.height || window.innerHeight;
-  const viewportWidth = viewport?.width || document.documentElement.clientWidth;
-  const viewportPadding = 12;
-  const menuGap = parseFloat(window.getComputedStyle(options).rowGap) || 0;
-  const bounds = summary.getBoundingClientRect();
-  const naturalHeight = options.getBoundingClientRect().height;
-  const below = Math.max(0, viewportTop + viewportHeight - bounds.bottom - menuGap - viewportPadding);
-  const documentAbove = bounds.top + Math.max(0, window.scrollY || 0) - menuGap - viewportPadding;
-  // Prefer below; flip upward only when the column will not cross the document
-  // top. On a very short screen normal PAGE scrolling reveals the remaining
-  // icons. Never wrap, resize, clip, or create an internal scroll container.
-  menu.dataset.shareSide = naturalHeight > below && naturalHeight <= documentAbove ? "above" : "below";
+  // Open popovers must not increase the page height used to decide their own
+  // direction. Temporarily remove only their boxes, restoring every inline
+  // display value in this same synchronous task, before anything can paint.
+  const panels = [...document.querySelectorAll("[data-share-menu][open] > .share-options, [data-share-menu][open] > .share-feedback")];
+  const displays = panels.map(panel => panel.style.display);
+  let documentHeight, anchorTop, anchorBottom;
+  try {
+    panels.forEach(panel => { panel.style.display = "none"; });
+    documentHeight = Math.max(document.documentElement.scrollHeight, document.body?.scrollHeight || 0);
+    const bounds = summary.getBoundingClientRect();
+    const documentScrollOffset = window.scrollY || 0;
+    anchorTop = bounds.top + documentScrollOffset;
+    anchorBottom = bounds.bottom + documentScrollOffset;
+  } finally {
+    panels.forEach((panel, index) => { panel.style.display = displays[index]; });
+  }
 
-  // Preserve logical RTL alignment. Only a horizontal collision is corrected,
-  // once on opening; no vertical clamping or scroll-time repositioning.
+  const edgePadding = 12;
+  const menuGap = parseFloat(window.getComputedStyle(options).rowGap) || 0;
+  const naturalHeight = options.getBoundingClientRect().height;
+  const documentBelow = Math.max(0, documentHeight - anchorBottom - menuGap - edgePadding);
+  const documentAbove = Math.max(0, anchorTop - menuGap - edgePadding);
+  // The screen bottom is NOT the page bottom. Prefer down even when it extends
+  // off screen. Flip only at the actual document end when the full column fits
+  // above. If neither fits, extend the page downward, never reshape or clip it.
+  menu.dataset.shareSide = naturalHeight > documentBelow && naturalHeight <= documentAbove ? "above" : "below";
+
+  // Preserve logical RTL alignment; correct only a horizontal collision once.
+  const viewport = window.visualViewport;
+  const viewportLeft = viewport?.offsetLeft || 0;
+  const viewportWidth = viewport?.width || document.documentElement.clientWidth;
   const panel = options.getBoundingClientRect();
-  const left = Math.max(viewportLeft + viewportPadding, Math.min(panel.left, viewportLeft + viewportWidth - viewportPadding - panel.width));
+  const left = Math.max(viewportLeft + edgePadding, Math.min(panel.left, viewportLeft + viewportWidth - edgePadding - panel.width));
   options.style.translate = `${left - panel.left}px 0px`;
+  menu.dataset.shareReady = "true";
 }
 
 document.querySelectorAll("[data-share-menu]").forEach((menu) => {
@@ -358,9 +373,27 @@ document.querySelectorAll("[data-share-menu]").forEach((menu) => {
     field.hidden = true;
     showStatus("");
   };
-  menu.addEventListener("toggle", () => {
+  // Native summary activation (mouse, touch, Enter or Space) emits a click.
+  // Finish opening and placement in that task instead of painting the default
+  // downward menu first and moving it in a later details-toggle event.
+  menu.dataset.shareReady = "false";
+  menu.querySelector("summary").addEventListener("click", event => {
+    if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    menu.dataset.shareReady = "false";
+    menu.open = !menu.open;
     if (menu.open) positionShareMenu(menu);
     else resetFeedback();
+  });
+  // Keep programmatic/native fallback opening safe too: an unpositioned menu
+  // is hidden by CSS, and a queued toggle never repositions an already-open one.
+  menu.addEventListener("toggle", () => {
+    if (menu.open) {
+      if (menu.dataset.shareReady !== "true") positionShareMenu(menu);
+    } else {
+      menu.dataset.shareReady = "false";
+      resetFeedback();
+    }
   });
   menu.querySelector("[data-copy-link]").addEventListener("click", async () => {
     resetFeedback();
@@ -391,6 +424,9 @@ document.querySelectorAll("[data-share-menu]").forEach((menu) => {
       await navigator.share({ title: menu.dataset.title, url: menu.dataset.url });
     } catch (error) { if (error?.name !== "AbortError") fallback(); }
   });
+  // A reader may have opened native details before this deferred script ran.
+  // Enhance that already-open menu immediately; do not wait for a past event.
+  if (menu.open) positionShareMenu(menu);
 });
 
 // Placement is intentionally NOT recalculated on scroll, resize, or font load.
