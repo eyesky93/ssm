@@ -321,8 +321,9 @@ html { scrollbar-gutter: stable; }
   width: var(--reader-control-size);
 }
 .reader-controls .post-navigation[hidden],
-.reader-controls .reader-jump[hidden] { display: none; }
-.reader-controls :is(.back-to-top, .post-navigation > a, .post-position, .reader-jump-submit) {
+.reader-controls [data-reader-jump][hidden],
+.reader-controls [data-reader-jump-input][hidden] { display: none; }
+.reader-controls :is(.back-to-top, .post-navigation > a, .post-position) {
   box-sizing: border-box;
   position: static;
   inset: auto;
@@ -359,7 +360,7 @@ html { scrollbar-gutter: stable; }
   gap: .1rem;
   font-size: .6875rem;
 }
-.reader-controls :is(.back-to-top, .post-navigation > a, .post-position, .reader-jump-submit):not([aria-disabled="true"], :disabled):is(:hover, :focus-visible) {
+.reader-controls :is(.back-to-top, .post-navigation > a, .post-position):not([aria-disabled="true"], :disabled):is(:hover, :focus-visible) {
   background: var(--accent-strong);
   border-color: var(--accent-strong);
   color: var(--paper);
@@ -381,44 +382,15 @@ html { scrollbar-gutter: stable; }
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-/* The editor opens beside the bottom circle, without moving the fixed stack. */
-.reader-controls .reader-jump {
-  box-sizing: border-box;
-  position: absolute;
-  inset-inline-end: calc(100% + .5rem);
-  inset-block-end: 0;
-  width: max-content;
-  max-width: calc(100vw - var(--reader-control-size) - 2.5rem);
-  margin: 0;
-  padding: .65rem;
-  border: 1px solid var(--line-dark);
-  border-radius: .75rem;
-  background: var(--surface);
-  color: var(--ink);
-  box-shadow: var(--shadow);
-  font: .875rem/1.4 var(--font-interface);
-  pointer-events: auto;
-}
-.reader-controls .reader-jump-fields { display: flex; align-items: center; gap: .4rem; margin-block-start: .35rem; }
-.reader-controls .reader-jump input {
-  box-sizing: border-box;
-  width: 5.5ch;
-  min-width: 0;
-  flex: 1 1 auto;
-  padding: .4rem .25rem;
-  border: 1px solid var(--line-dark);
-  border-radius: .4rem;
-  background: var(--paper);
-  color: var(--ink);
-  font: 1rem/1.4 var(--font-interface);
+/* Editing replaces the bottom number, using exactly the same circular box.
+   Labels remain in native hover tooltips and accessible names, not a panel. */
+.reader-controls input.reader-position-input {
+  padding: .25rem;
+  font-size: 1rem;
   text-align: center;
-  appearance: textfield;
-  -moz-appearance: textfield;
+  cursor: text;
+  appearance: none;
 }
-.reader-controls .reader-jump input::-webkit-inner-spin-button,
-.reader-controls .reader-jump input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-.reader-controls [data-reader-jump-total] { flex: 0 0 auto; font-variant-numeric: tabular-nums; }
-[dir="rtl"] .reader-controls .reader-jump-submit svg { transform: scaleX(-1); }
 /* No-JS readers retain native links at the footer. Scripted navigation waits
    only for the local sequence; only Back to top depends on the home visibility. */
 @media (scripting: none) {

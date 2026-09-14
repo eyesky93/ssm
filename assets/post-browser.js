@@ -941,18 +941,16 @@
     const home = document2.querySelector(".site-header .wordmark");
     const navigation = dock.querySelector("[data-post-navigation]");
     const button = navigation?.querySelector("[data-reader-jump]");
-    const form = navigation?.querySelector("[data-reader-jump-form]");
-    const input = form?.querySelector("[data-reader-jump-input]");
-    const totalLabel = form?.querySelector("[data-reader-jump-total]");
+    const input = navigation?.querySelector("[data-reader-jump-input]");
     let sequence = null;
     let pending = false;
     function closeJump(restoreFocus = false) {
-      if (!form || form.hidden) return;
-      form.hidden = true;
-      button.setAttribute("aria-expanded", "false");
-      input.setCustomValidity("");
+      if (!input || input.hidden) return;
+      input.hidden = true;
+      button.hidden = false;
+      input.removeAttribute("aria-invalid");
       if (restoreFocus && !dock.inert && !navigation.hidden) button.focus({ preventScroll: true });
-      else if (form.contains(document2.activeElement)) document2.activeElement.blur?.();
+      else if (document2.activeElement === input) input.blur();
     }
     function updateVisibility() {
       pending = false;
@@ -979,59 +977,49 @@
     if (navigation) controlStates.set(navigation, {
       sync(value) {
         sequence = value;
-        if (button && form && input) {
+        if (button && input) {
           button.disabled = navigation.hidden;
-          input.max = String(value.total);
-          if (totalLabel) totalLabel.textContent = `/${value.total}`;
-          input.setCustomValidity("");
+          input.removeAttribute("aria-invalid");
           if (navigation.hidden) closeJump();
         }
         updateVisibility();
       }
     });
-    if (button && form && input) {
+    if (button && input) {
       button.addEventListener("click", () => {
-        if (dock.inert || navigation.hidden || !sequence || sequence.total <= 1) return;
-        if (!form.hidden) {
-          closeJump(true);
-          return;
-        }
+        if (dock.inert || navigation.hidden || !sequence || sequence.total <= 1 || !input.hidden) return;
         input.value = sequence.current === null ? "" : String(sequence.current);
-        input.setCustomValidity("");
-        form.hidden = false;
-        button.setAttribute("aria-expanded", "true");
+        input.removeAttribute("aria-invalid");
+        button.hidden = true;
+        input.hidden = false;
         input.focus({ preventScroll: true });
         input.select();
       });
-      input.addEventListener("input", () => input.setCustomValidity(""));
-      form.addEventListener("submit", (event) => {
+      input.addEventListener("input", () => input.removeAttribute("aria-invalid"));
+      input.addEventListener("keydown", (event) => {
+        if (event.isComposing || event.keyCode === 229 || input.hidden) return;
+        if (event.key === "Escape") {
+          event.preventDefault();
+          event.stopPropagation();
+          closeJump(true);
+          return;
+        }
+        if (event.key !== "Enter" || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
         event.preventDefault();
-        if (form.hidden || dock.inert || navigation.hidden || !sequence || sequence.total <= 1) return;
+        if (dock.inert || navigation.hidden || !sequence || sequence.total <= 1) return;
         const stream = document2.querySelector("[data-post-stream]");
         const target = readerJumpTarget(stream?.children || [], input.value, sequence.total);
         if (!target) {
-          input.setCustomValidity((form.dataset.invalidMessage || "1\u2013{total}").replace("{total}", String(sequence.total)));
-          input.reportValidity();
+          input.setAttribute("aria-invalid", "true");
+          input.select();
           return;
         }
         closeJump();
         window2.location.assign(target);
       });
-      dock.addEventListener("keydown", (event) => {
-        if (event.key !== "Escape" || form.hidden) return;
-        event.preventDefault();
-        event.stopPropagation();
-        closeJump(true);
-      });
+      input.addEventListener("blur", () => closeJump());
       document2.addEventListener("pointerdown", (event) => {
-        if (!form.hidden && !form.contains(event.target) && !button.contains(event.target)) closeJump();
-      });
-      dock.addEventListener("focusout", () => {
-        const check = () => {
-          if (!form.hidden && !form.contains(document2.activeElement) && document2.activeElement !== button) closeJump();
-        };
-        if (typeof window2.queueMicrotask === "function") window2.queueMicrotask(check);
-        else Promise.resolve().then(check);
+        if (!input.hidden && event.target !== input && !button.contains(event.target)) closeJump();
       });
     }
     updateVisibility();
