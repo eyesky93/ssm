@@ -1144,6 +1144,15 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         // Opening the slider must not select text or summon a mobile keyboard.
         zoomSlider.focus({ preventScroll: true });
       });
+      // Enter the percentage directly by replacing its complete value. Opening
+      // the slider alone still leaves the number unselected.
+      const selectZoomNumber = () => {
+        if (zoomPanel.hidden || zoomButton.disabled) return;
+        zoomNumber.setSelectionRange(0, zoomNumber.value.length);
+        zoomNumber.scrollLeft = 0;
+      };
+      zoomNumber.addEventListener("focus", selectZoomNumber);
+      zoomNumber.addEventListener("click", selectZoomNumber);
       zoomNumber.addEventListener("input", () => {
         zoomNumber.removeAttribute("aria-invalid");
         zoomNumber.scrollLeft = 0;
