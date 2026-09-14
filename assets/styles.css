@@ -2162,3 +2162,28 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 [data-directory] .map-filter-bar .tag-list.tag-subgroup { display: flex; flex-basis: 100%; }
 [data-directory] .map-filter-bar .tag-option { flex: 0 0 auto; }
 [data-directory] .map-filter-bar .tag-descendant-list:empty { display: none; }
+
+/* Personal Read reuses the normal pill, count, selected and exclude states. */
+[data-personal-read-filter] .tag-count { font-variant-numeric: tabular-nums; width: auto; padding-inline: .3em; }
+[data-personal-read-filter] > .tag-chip:disabled { cursor: default; }
+/* The tree Read switch remains visible when the Library's subject menu hides. */
+[data-directory] .map-stage > .map-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+  gap: var(--control-capsule-gap);
+  font-family: var(--font-interface);
+  font-size: 1rem;
+  line-height: normal;
+}
+html[lang="he"] [data-directory] .map-stage > .map-filter-bar { font-family: var(--font-interface-hebrew), var(--font-content); }
+.map-read-filter { flex: 0 0 auto; }
+/* This tree toggle has no hide-X overlay; its counter must stay visible. */
+:root .map-read-filter.tag-option .tag-chip .tag-count { opacity: 1; visibility: visible; transition: none; }
+[data-directory] .map-filter-bar > .map-filters { flex: 1 1 10rem; min-width: 0; }
+/* Dimming is visual only: node links, count links, branches and connectors remain. */
+[data-hierarchy-map][data-dim-read="true"] .map-node[data-read-complete="true"] {
+  filter: grayscale(1);
+  opacity: .6;
+}

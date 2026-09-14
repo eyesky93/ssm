@@ -921,7 +921,13 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       const view = views.find((candidate) => candidate.id === id) || views[0];
       views.forEach((candidate) => { candidate.hidden = candidate !== view; });
       const filters = root.querySelector(".map-filter-bar");
-      if (filters) filters.hidden = view.dataset.mapKind === "tags";
+      if (filters) {
+        // Read stays available in both trees; only ordinary subject filters hide.
+        const hasReadToggle = Boolean(filters.querySelector?.("[data-tree-read-toggle]"));
+        filters.hidden = view.dataset.mapKind === "tags" && !hasReadToggle;
+        const subjects = filters.querySelector?.("[data-map-filters]");
+        if (subjects) subjects.hidden = view.dataset.mapKind === "tags";
+      }
       root.querySelectorAll("[data-map-switch]").forEach(button => button.setAttribute("aria-current", String(button.dataset.mapSwitch === view.dataset.mapKind)));
       if (zoomPanel) { zoomPanel.hidden = true; zoomButton.setAttribute("aria-expanded", "false"); }
       updateHistoryButtons();

@@ -255,7 +255,7 @@
   }
 
   // src/search.js
-  function initializeSearch(document2, window2, { browser, stream, cards, onChange, isReading = () => false, isHidden = () => false, resultsUrl = (href) => new URL(href, window2.location.href) }) {
+  function initializeSearch(document2, window2, { browser, stream, cards, onChange, isReading = () => false, isHidden = () => false, isEligible = () => true, resultsUrl = (href) => new URL(href, window2.location.href) }) {
     const control = document2.querySelector("[data-search]");
     if (!control || !browser.dataset.searchIndex) return null;
     const input = control.querySelector("[data-search-input]");
@@ -616,7 +616,7 @@
       const parsed = parseQuery(query2);
       parsed.tags.push(...selectedTags2);
       const byId = new Map(cards.map((card) => [card.dataset.postId, card]));
-      const results = rankPosts(index.posts.filter((post) => byId.has(post.id)), parsed, { language, caseSensitive: caseSensitive2, tags: index.tags });
+      const results = rankPosts(index.posts.filter((post) => byId.has(post.id) && isEligible(byId.get(post.id))), parsed, { language, caseSensitive: caseSensitive2, tags: index.tags });
       results.sort((left, right) => Number(isHidden(byId.get(left.post.id))) - Number(isHidden(byId.get(right.post.id))));
       for (const card of cards) card.hidden = true;
       const ordered = [];
@@ -811,6 +811,83 @@
     }, get pending() {
       return !index && !failed;
     } };
+  }
+
+  // src/read-state.js
+  var READ_TAG = "@read";
+  var registryKey = Symbol.for("ssm.read-stores");
+  var ReadStore = class {
+    constructor(storage, key) {
+      this.storage = storage;
+      this.key = key;
+      this.read = /* @__PURE__ */ new Set();
+      this.memoryOnly = false;
+      this.listeners = /* @__PURE__ */ new Set();
+      this.refresh(false);
+    }
+    refresh(notify = true) {
+      if (this.memoryOnly) return;
+      try {
+        const saved = JSON.parse(this.storage.getItem(this.key));
+        const next = new Set(saved?.version === 1 && Array.isArray(saved.read) ? saved.read.filter((id) => typeof id === "string" && id.length > 0) : []);
+        const changed = next.size !== this.read.size || [...next].some((id) => !this.read.has(id));
+        this.read = next;
+        if (changed && notify) this.notify();
+      } catch {
+      }
+    }
+    isRead(id) {
+      return this.read.has(id);
+    }
+    set(id, value) {
+      if (typeof id !== "string" || !id) return false;
+      this.refresh(false);
+      if (value) this.read.add(id);
+      else this.read.delete(id);
+      let persisted = false;
+      try {
+        this.storage.setItem(this.key, JSON.stringify({ version: 1, read: [...this.read] }));
+        this.memoryOnly = false;
+        persisted = true;
+      } catch {
+        this.memoryOnly = true;
+      }
+      this.notify();
+      return persisted;
+    }
+    count(ids) {
+      return [...new Set(ids)].filter((id) => this.isRead(id)).length;
+    }
+    subscribe(listener) {
+      this.listeners.add(listener);
+      return () => this.listeners.delete(listener);
+    }
+    notify() {
+      for (const listener of this.listeners) listener();
+    }
+  };
+  function createReadStore(storage, key) {
+    return new ReadStore(storage, key);
+  }
+  function getReadStore(document2, window2) {
+    const key = document2.body?.dataset?.readStorage;
+    const stores = window2[registryKey] ??= /* @__PURE__ */ new Map();
+    if (!stores.has(key)) {
+      let storage;
+      try {
+        storage = window2.localStorage;
+      } catch {
+      }
+      stores.set(key, createReadStore(storage, key));
+    }
+    return stores.get(key);
+  }
+  function tagsWithReadState(tags, id, store, eligible = true) {
+    return eligible && store.isRead(id) ? [...tags, READ_TAG] : tags;
+  }
+  function matchesReadState(id, store, selected, excluded, eligible = true) {
+    const read = eligible && store.isRead(id);
+    return (!selected.has(READ_TAG) || read) && (!excluded.has(READ_TAG) || !read);
   }
 
   // src/engagement-highlights.js
@@ -1221,7 +1298,16 @@
     if (!browser) return;
     const stream = browser.querySelector("[data-post-stream]");
     const cards = [...stream.querySelectorAll("[data-post-tags]")];
-    const tagsByCard = new Map(cards.map((card) => [card, JSON.parse(card.dataset.postTags)]));
+    const authoredTagsByCard = new Map(cards.map((card) => [card, JSON.parse(card.dataset.postTags)]));
+    const readStore = getReadStore(document2, window2);
+    const tagsByCard = /* @__PURE__ */ new Map();
+    const readCounters = [...browser.querySelectorAll("[data-read-count]")];
+    const readPostIds = cards.filter((card) => card.dataset.directory === void 0).map((card) => card.dataset.postId);
+    function refreshReadMembership() {
+      for (const card of cards) tagsByCard.set(card, tagsWithReadState(authoredTagsByCard.get(card), card.dataset.postId, readStore, card.dataset.directory === void 0));
+      for (const counter of readCounters) counter.textContent = String(readStore.count(readPostIds));
+    }
+    refreshReadMembership();
     const chips = [...document2.querySelectorAll("[data-tag-filter]")];
     const selectorChips = chips.filter((chip) => chip.closest("[data-tag-parent]"));
     const articleTagChips = chips.filter((chip) => chip.classList.contains("article-tag"));
@@ -1291,6 +1377,7 @@
       cards,
       isReading: () => inline && !browsing,
       isHidden: (card) => !matchesTag(tagsByCard.get(card), [], excluded),
+      isEligible: (card) => matchesReadState(card.dataset.postId, readStore, selected, excluded, card.dataset.directory === void 0),
       resultsUrl(href) {
         const url = selectionUrl(filterContextUrl(href, window2.location.href), selected, true, excluded);
         url.searchParams.delete("reader");
@@ -1347,7 +1434,7 @@
       for (const [link, href] of languageLinks) link.href = languageUrl(href);
       for (const [option, href] of languageOptions) option.value = languageUrl(href);
       if (!navigation) return;
-      const sequencePosts = [...stream.children].filter((card) => navigationPosts.has(card) && (!search?.active || !card.hidden)).map((card) => navigationPosts.get(card));
+      const sequencePosts = [...stream.children].filter((card) => navigationPosts.has(card) && (!search?.active || !card.hidden)).map((card) => ({ ...navigationPosts.get(card), tags: tagsByCard.get(card) }));
       const sequence = readingSequence(sequencePosts, article.dataset.postId, search?.active ? [] : selected, search?.active ? [] : excluded);
       const position = navigation.querySelector("[data-post-position]");
       position.textContent = `${sequence.current ?? "\u2014"}/${sequence.total}`;
@@ -1369,6 +1456,7 @@
       updateReaderControls(navigation, sequence, browsing);
     }
     function render(announce = false) {
+      refreshReadMembership();
       let count = 0;
       for (const card of cards) {
         card.hidden = !matchesTag(tagsByCard.get(card), search?.active ? [] : selected, search?.active ? [] : excluded);
@@ -1385,6 +1473,7 @@
         chip.setAttribute("aria-pressed", String(selected.has(chip.dataset.tagFilter)));
       }
       for (const button of excludeButtons) {
+        if (button.dataset.excludeTag === READ_TAG) button.disabled = false;
         const active = excluded.has(button.dataset.excludeTag);
         button.setAttribute("aria-pressed", String(active));
         button.setAttribute("aria-label", active ? button.dataset.labelRestore : button.dataset.labelExclude);
@@ -1470,6 +1559,7 @@
       update(clear);
     });
     function restoreHistory(event) {
+      readStore.refresh();
       const wasBrowsing = browsing;
       search?.restore();
       browsing = isBrowsing();
@@ -1481,6 +1571,10 @@
     window2.addEventListener("popstate", restoreHistory);
     window2.addEventListener("pageshow", restoreHistory);
     window2.addEventListener("ssm:post-order-changed", renderNavigation);
+    readStore.subscribe(() => render(true));
+    window2.addEventListener("storage", (event) => {
+      if (event.key === document2.body?.dataset?.readStorage || event.key === null) readStore.refresh();
+    });
     if (browsing) {
       setUrl(true);
       save();
