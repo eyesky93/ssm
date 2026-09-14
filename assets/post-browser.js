@@ -850,6 +850,28 @@
     navigation.dataset.readerNavigationReady = "true";
   }
   function initializeReaderTop(document2, window2) {
+    const controls = document2.querySelector("[data-reader-controls]");
+    if (controls && controls.dataset.readerScrollReady !== "true") {
+      controls.dataset.readerScrollReady = "true";
+      let updatePending = false;
+      const updateVisibility = () => {
+        updatePending = false;
+        const viewport = Number(window2.innerHeight) || 0;
+        const visible = Number(window2.scrollY) > Math.max(400, viewport * 0.75);
+        controls.dataset.readerControlsVisible = String(visible);
+        controls.inert = !visible;
+      };
+      const scheduleUpdate = () => {
+        if (updatePending) return;
+        updatePending = true;
+        if (typeof window2.requestAnimationFrame === "function") window2.requestAnimationFrame(updateVisibility);
+        else updateVisibility();
+      };
+      updateVisibility();
+      window2.addEventListener("scroll", scheduleUpdate, { passive: true });
+      window2.addEventListener("resize", scheduleUpdate);
+      window2.addEventListener("pageshow", scheduleUpdate);
+    }
     const top = document2.querySelector("[data-reader-top]");
     if (!top || top.dataset.readerTopReady === "true") return;
     top.dataset.readerTopReady = "true";
