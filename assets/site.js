@@ -229,9 +229,14 @@ window.addEventListener("pageshow", () => {
   });
 });
 
+// One preference for the entire site, never keyed by route, language or post.
+const SITE_THEME_STORAGE_KEY = "ssm-theme";
+let unsavedThemeSelection = null;
+
 function storedTheme() {
+  if (unsavedThemeSelection) return unsavedThemeSelection;
   try {
-    const value = localStorage.getItem("ssm-theme");
+    const value = localStorage.getItem(SITE_THEME_STORAGE_KEY);
     return value === "light" || value === "dark" ? value : null;
   } catch {
     return null;
@@ -260,13 +265,22 @@ function applyTheme(theme, persist = false) {
   updateColorInputs();
 
   if (persist) {
+    // A blocked/quota-full store must not let focus or pageshow undo a choice.
+    unsavedThemeSelection = theme;
     try {
-      localStorage.setItem("ssm-theme", theme);
+      localStorage.setItem(SITE_THEME_STORAGE_KEY, theme);
+      unsavedThemeSelection = null;
     } catch {
-      // The selected theme remains active for this page.
+      // Keep the current document usable when persistence is unavailable.
     }
   }
 }
+
+// Shared selection API for the site's controls and the private local viewer.
+// Rendering alone remains non-persistent for isolated appearance previews.
+window.SSMAppearance.selectTheme = (theme) => {
+  if (theme === "light" || theme === "dark") applyTheme(theme, true);
+};
 
 function updateColorInputs() {
   const colors = window.SSMAppearance.colors(root.dataset.theme);
@@ -275,7 +289,9 @@ function updateColorInputs() {
   });
 }
 
-applyTheme(root.dataset.theme || storedTheme() || preferredTheme());
+// The head initializer already reads the same key before first paint. Re-read
+// it here instead of preferring a stale theme left on this particular document.
+applyTheme(storedTheme() || preferredTheme());
 
 document.querySelectorAll("[data-color]").forEach((input) => {
   input.addEventListener("input", () => {
@@ -292,7 +308,7 @@ document.querySelectorAll("[data-reset-colors]").forEach((button) => {
 
 document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
   button.addEventListener("click", () => {
-    applyTheme(root.dataset.theme === "dark" ? "light" : "dark", true);
+    window.SSMAppearance.selectTheme(root.dataset.theme === "dark" ? "light" : "dark");
   });
 });
 
@@ -305,6 +321,31 @@ if (themePreference?.addEventListener) {
 } else {
   themePreference?.addListener?.(followSystemTheme);
 }
+
+// Back/Forward may restore an entire old document without running its scripts
+// again. Other tabs may also have changed the site-wide choice while it slept.
+// Reconcile appearance only; never reload posts or rewrite the saved preference.
+function synchronizeSiteTheme() {
+  const theme = storedTheme() || preferredTheme();
+  if (root.dataset.theme !== theme) applyTheme(theme);
+  else updateThemeControls(theme);
+}
+
+window.addEventListener("pageshow", synchronizeSiteTheme);
+window.addEventListener("focus", synchronizeSiteTheme);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") synchronizeSiteTheme();
+});
+window.addEventListener("storage", (event) => {
+  if (event.key !== SITE_THEME_STORAGE_KEY && event.key !== null) return;
+  try {
+    // Ignore sessionStorage events and read the latest value, not a queued
+    // event's potentially superseded newValue. This also handles clear/remove.
+    if (event.storageArea && event.storageArea !== localStorage) return;
+  } catch { return; }
+  unsavedThemeSelection = null;
+  synchronizeSiteTheme();
+});
 
 
 // Choose the opening side from the whole document, once before revealing it.
