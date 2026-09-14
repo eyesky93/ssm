@@ -225,15 +225,17 @@
   transform-origin: center;
 }
 
-/* Mirror only the Directory's zoom/history stack: right in LTR, left in RTL.
-   The mode capsule and its adjacent tag filters retain their top-row position. */
+/* Keep the mode capsule and zoom/history stack on one shared edge:
+   right in LTR, left in RTL. Preserve the Back to top button's separate lane. */
+:root [data-directory] .map-stage {
+  --directory-control-inset: max(.75rem, calc(var(--control-size) + 2rem - (100vw - 100%) / 2));
+}
+:root [data-directory] .map-stage > .map-switch,
 :root [data-directory] .map-toolbar {
   inset-inline-start: auto;
-  /* Leave a separate lane for the fixed Back to top button when the page's
-     outside gutter is narrower than a control. Wide screens keep .75rem. */
-  inset-inline-end: max(.75rem, calc(var(--control-size) + 2rem - (100vw - 100%) / 2));
-  gap: .5rem;
+  inset-inline-end: var(--directory-control-inset);
 }
+:root [data-directory] .map-toolbar { gap: .5rem; }
 :root [data-directory] .map-history-controls { gap: .5rem; }
 
 /* Directory and reader navigation share the same neutral buttons and shadow.
@@ -297,8 +299,18 @@
   caret-color: var(--inverse-ink);
 }
 :root [data-reader-article][data-directory] .map-stage > .map-filter-bar {
-  inset-inline-start: calc(2 * var(--control-size) + var(--control-capsule-gap) + 1.25rem);
+  inset-inline-start: .75rem;
+  inset-inline-end: calc(var(--directory-control-inset) + 2 * var(--control-size) + var(--control-capsule-gap) + .75rem);
   padding-block: 0;
+}
+/* Keep filters beside the capsule, extending inward in either direction. */
+:root [data-directory] .map-filter-bar .tag-list { justify-content: flex-end; }
+/* Narrow screens need the full filter row below the capsule, not clipped pills. */
+@media (max-width: 700px) {
+  :root [data-reader-article][data-directory] .map-stage > .map-filter-bar {
+    inset-block-start: calc(var(--control-size) + 1.25rem);
+    inset-inline-end: .75rem;
+  }
 }
 @keyframes map-zoom-open {
   from { clip-path: inset(80% 0 0 round calc(var(--control-size) / 2)); }
