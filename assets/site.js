@@ -955,13 +955,19 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       const clear = filterMenu.querySelector("[data-map-clear-filter]");
       const groups = [...filterMenu.querySelectorAll("[data-map-filter-parent]")];
       const options = new Map(groups.map((group) => [group, [...group.querySelectorAll("[data-map-filter-option]")]]));
-      const view = views.find(candidate => candidate.id === "map-posts-overview") || views[0];
-      const filterOverview = view.id;
-      const levels = view.querySelector(".map-levels");
-      const nodes = [...view.querySelectorAll("[data-map-member-tags]")];
-      const members = new Map(nodes.map((node) => [node, JSON.parse(node.dataset.mapMemberTags)]));
-      const edges = [...view.querySelectorAll("[data-map-edge]")];
-      const empty = view.querySelector("[data-map-filter-empty]");
+      // Keep each view's original nodes so clearing filters can restore the
+      // same branch, including lectures detached by an earlier selection.
+      const filterViews = views.filter(view => view.dataset.mapKind === "posts").map(view => {
+        const nodes = [...view.querySelectorAll("[data-map-member-tags]")];
+        return {
+          id: view.id,
+          levels: view.querySelector(".map-levels"),
+          nodes,
+          members: new Map(nodes.map(node => [node, JSON.parse(node.dataset.mapMemberTags)])),
+          edges: [...view.querySelectorAll("[data-map-edge]")],
+          empty: view.querySelector("[data-map-filter-empty]"),
+        };
+      }).filter(view => view.levels);
       let selected = new Set(), excluded = new Set();
       const includes = (tags, key) => tags.some((tag) => tag === key || tag.startsWith(`${key}:`));
 
@@ -1003,30 +1009,31 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
           if (ordered.some((option, index) => current[index] !== option)) group.append(...ordered);
         }
         clear.disabled = !selected.size && !excluded.size;
-        if (!levels) return;
         const leaves = [...selected].filter((tag) => ![...selected].some((other) => other.startsWith(`${tag}:`)));
-        const visible = nodes.filter((node) => clear.disabled || members.get(node).some((tags) => leaves.every((tag) => includes(tags, tag)) && ![...excluded].some((tag) => includes(tags, tag))));
-        const ids = new Set(visible.map((node) => node.dataset.mapNode));
-        for (const edge of edges) edge.toggleAttribute("hidden", !ids.has(edge.dataset.from) || !ids.has(edge.dataset.to));
-        // Recompute levels after filtering so hidden prerequisites leave no
-        // dangling arrows, blank rows or empty grid columns.
-        const pending = new Set(ids);
-        const rows = [];
-        while (pending.size) {
-          const blocked = new Set(edges.filter((edge) => !edge.hasAttribute("hidden") && pending.has(edge.dataset.from)).map((edge) => edge.dataset.to));
-          let row = visible.filter((node) => pending.has(node.dataset.mapNode) && !blocked.has(node.dataset.mapNode));
-          if (!row.length) row = [visible.find((node) => pending.has(node.dataset.mapNode))];
-          const element = document.createElement("div");
-          element.className = "map-level";
-          element.style.setProperty("--map-columns", Math.min(3, row.length));
-          element.append(...row);
-          rows.push(element);
-          row.forEach((node) => pending.delete(node.dataset.mapNode));
+        for (const { id, levels, nodes, members, edges, empty } of filterViews) {
+          const visible = nodes.filter((node) => clear.disabled || members.get(node).some((tags) => leaves.every((tag) => includes(tags, tag)) && ![...excluded].some((tag) => includes(tags, tag))));
+          const ids = new Set(visible.map((node) => node.dataset.mapNode));
+          for (const edge of edges) edge.toggleAttribute("hidden", !ids.has(edge.dataset.from) || !ids.has(edge.dataset.to));
+          // Recompute levels after filtering so hidden prerequisites leave no
+          // dangling arrows, blank rows or empty grid columns.
+          const pending = new Set(ids);
+          const rows = [];
+          while (pending.size) {
+            const blocked = new Set(edges.filter((edge) => !edge.hasAttribute("hidden") && pending.has(edge.dataset.from)).map((edge) => edge.dataset.to));
+            let row = visible.filter((node) => pending.has(node.dataset.mapNode) && !blocked.has(node.dataset.mapNode));
+            if (!row.length) row = [visible.find((node) => pending.has(node.dataset.mapNode))];
+            const element = document.createElement("div");
+            element.className = "map-level";
+            element.style.setProperty("--map-columns", Math.min(3, row.length));
+            element.append(...row);
+            rows.push(element);
+            row.forEach((node) => pending.delete(node.dataset.mapNode));
+          }
+          levels.replaceChildren(...rows);
+          if (empty) empty.hidden = visible.length > 0;
+          const state = states.get(id);
+          state.viewport.hidden = !visible.length;
         }
-        levels.replaceChildren(...rows);
-        if (empty) empty.hidden = visible.length > 0;
-        const state = states.get(filterOverview);
-        state.viewport.hidden = !visible.length;
       }
 
       restoreFilters = () => {
@@ -1037,10 +1044,9 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       };
       function updateFilters(source, keyboard) {
         normalize(); applyFilters();
-        states.get(filterOverview).initialized = false;
-        // Finish in the overview. A monograph can then be opened with its full
-        // published lecture order, even when only one lecture matches a tag.
-        visit(filterOverview, false);
+        // Filtering is not navigation: keep the open branch, its history and
+        // its initialized viewport instead of returning to the Library root.
+        show(trail[position], false);
         try {
           const url = new URL(window.location.href);
           url.searchParams.delete("map-tag"); url.searchParams.delete("map-exclude");
