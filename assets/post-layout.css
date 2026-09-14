@@ -283,7 +283,7 @@ html { scrollbar-gutter: stable; }
 
 /* One body-level viewport dock: top, previous, next, then position. It stays
    above scrolling page/graph content without inheriting article transforms.
-   Native modal dialogs retain their own top layer and focus isolation. */
+   All buttons retain the original Back to top size, inverse fill and shadow. */
 .reader-controls {
   --reader-control-size: 2.9rem;
   position: fixed;
@@ -295,13 +295,13 @@ html { scrollbar-gutter: stable; }
   align-items: center;
   gap: .5rem;
   width: var(--reader-control-size);
+  pointer-events: none;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(0.5rem);
-  pointer-events: none;
-  transition: opacity 0.16s, visibility 0s 0.16s, transform 0.16s;
+  transform: translateY(.5rem);
+  transition: opacity .16s, visibility 0s .16s, transform .16s;
 }
-.reader-controls[data-reader-controls-visible="true"] {
+.reader-controls[data-reader-visible="true"] {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -320,8 +320,9 @@ html { scrollbar-gutter: stable; }
   border: 0;
   width: var(--reader-control-size);
 }
-.reader-controls .post-navigation[hidden] { display: none; }
-.reader-controls :is(.back-to-top, .post-navigation a, .post-position) {
+.reader-controls .post-navigation[hidden],
+.reader-controls .reader-jump[hidden] { display: none; }
+.reader-controls :is(.back-to-top, .post-navigation > a, .post-position, .reader-jump-submit) {
   box-sizing: border-box;
   position: static;
   inset: auto;
@@ -344,28 +345,32 @@ html { scrollbar-gutter: stable; }
   line-height: 1;
   text-decoration: none;
   font-variant-numeric: tabular-nums;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+  box-shadow: 0 8px 24px rgb(0 0 0 / .18);
   opacity: 1;
   visibility: inherit;
   transform: none;
   pointer-events: auto;
   transition: none;
+  cursor: pointer;
 }
-.reader-controls .post-position { padding: .25rem; cursor: default; }
+.reader-controls .post-position { padding: .25rem; }
 .reader-controls .post-position[data-reader-position-stacked="true"] {
   flex-direction: column;
   gap: .1rem;
   font-size: .6875rem;
 }
-.reader-controls :is(.back-to-top, .post-navigation a):not([aria-disabled="true"]):is(:hover, :focus-visible) {
+.reader-controls :is(.back-to-top, .post-navigation > a, .post-position, .reader-jump-submit):not([aria-disabled="true"], :disabled):is(:hover, :focus-visible) {
   background: var(--accent-strong);
   border-color: var(--accent-strong);
   color: var(--paper);
 }
-.reader-controls .post-navigation a[aria-disabled="true"] {
-  opacity: .55;
+.reader-controls .post-navigation > a[aria-disabled="true"],
+.reader-controls .post-position:disabled {
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  border-color: var(--line-dark);
+  opacity: .45;
   cursor: default;
-  pointer-events: auto;
 }
 .reader-controls svg {
   width: 100%;
@@ -376,25 +381,58 @@ html { scrollbar-gutter: stable; }
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-/* The same filled, shadowed Back to top style applies to the whole stack.
-   Scroll visibility belongs to the wrapper, including its hit/focus targets.
-   The first filter/pin sequence must also settle before any control is shown. */
-@media (scripting: enabled) {
-  .reader-controls:has([data-reader-navigation-ready="false"]) { visibility: hidden; }
-  .reader-controls:has([data-reader-navigation-ready="false"]) :is(a, .post-position) { visibility: hidden; }
+/* The editor opens beside the bottom circle, without moving the fixed stack. */
+.reader-controls .reader-jump {
+  box-sizing: border-box;
+  position: absolute;
+  inset-inline-end: calc(100% + .5rem);
+  inset-block-end: 0;
+  width: max-content;
+  max-width: calc(100vw - var(--reader-control-size) - 2.5rem);
+  margin: 0;
+  padding: .65rem;
+  border: 1px solid var(--line-dark);
+  border-radius: .75rem;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  font: .875rem/1.4 var(--font-interface);
+  pointer-events: auto;
 }
-/* With scripting disabled, keep the native links at the end of the document,
-   not in an always-visible floating overlay. */
+.reader-controls .reader-jump-fields { display: flex; align-items: center; gap: .4rem; margin-block-start: .35rem; }
+.reader-controls .reader-jump input {
+  box-sizing: border-box;
+  width: 5.5ch;
+  min-width: 0;
+  flex: 1 1 auto;
+  padding: .4rem .25rem;
+  border: 1px solid var(--line-dark);
+  border-radius: .4rem;
+  background: var(--paper);
+  color: var(--ink);
+  font: 1rem/1.4 var(--font-interface);
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.reader-controls .reader-jump input::-webkit-inner-spin-button,
+.reader-controls .reader-jump input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.reader-controls [data-reader-jump-total] { flex: 0 0 auto; font-variant-numeric: tabular-nums; }
+[dir="rtl"] .reader-controls .reader-jump-submit svg { transform: scaleX(-1); }
+/* No-JS readers get native links at the document footer, not an always-visible
+   overlay. Scripted pages wait for both scrolling and the initial sequence. */
 @media (scripting: none) {
   .reader-controls {
     position: static;
+    margin: 1rem;
+    margin-inline-start: auto;
     opacity: 1;
     visibility: visible;
     transform: none;
-    margin-block: 1rem;
-    margin-inline-start: auto;
-    margin-inline-end: 1rem;
   }
+}
+@media (scripting: enabled) {
+  .reader-controls:has([data-reader-navigation-ready="false"]) { visibility: hidden; }
 }
 @media (prefers-reduced-motion: reduce) {
   .reader-controls { transition: none; }

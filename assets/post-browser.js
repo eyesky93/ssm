@@ -814,12 +814,24 @@
   }
 
   // src/reader-controls.js
+  var controlStates = /* @__PURE__ */ new WeakMap();
   function readerPositionMarkup(current, total) {
     if (!Number.isSafeInteger(total) || total < 0 || current !== null && (!Number.isSafeInteger(current) || current < 1 || current > total)) {
       throw new Error("Invalid reader position.");
     }
     const text = `${current ?? "\u2014"}/${total}`;
     return text.length <= 5 ? text : `<span>${current ?? "\u2014"}</span><span>/${total}</span>`;
+  }
+  function readerControlsVisible(scrollY, viewportHeight) {
+    return (Number(scrollY) || 0) > Math.max(400, (Number(viewportHeight) || 0) * 0.75);
+  }
+  function readerJumpTarget(cards, value, total) {
+    if (typeof value !== "string" || !/^\d+$/.test(value.trim())) return null;
+    const index = Number(value.trim());
+    if (!Number.isSafeInteger(index) || index < 1) return null;
+    const visible = [...cards].filter((card) => card.dataset?.postId && card.dataset.directory === void 0 && !card.hidden);
+    if (total !== void 0 && visible.length !== total) return null;
+    return visible[index - 1]?.querySelector("[data-reader-link]")?.href || null;
   }
   function updateReaderControls(navigation, sequence, browsing = false) {
     if (!navigation || navigation.dataset.readerNavigationReady === void 0) return;
@@ -848,30 +860,9 @@
     }
     navigation.hidden = browsing || sequence.total <= 1;
     navigation.dataset.readerNavigationReady = "true";
+    controlStates.get(navigation)?.sync(sequence);
   }
   function initializeReaderTop(document2, window2) {
-    const controls = document2.querySelector("[data-reader-controls]");
-    if (controls && controls.dataset.readerScrollReady !== "true") {
-      controls.dataset.readerScrollReady = "true";
-      let updatePending = false;
-      const updateVisibility = () => {
-        updatePending = false;
-        const viewport = Number(window2.innerHeight) || 0;
-        const visible = Number(window2.scrollY) > Math.max(400, viewport * 0.75);
-        controls.dataset.readerControlsVisible = String(visible);
-        controls.inert = !visible;
-      };
-      const scheduleUpdate = () => {
-        if (updatePending) return;
-        updatePending = true;
-        if (typeof window2.requestAnimationFrame === "function") window2.requestAnimationFrame(updateVisibility);
-        else updateVisibility();
-      };
-      updateVisibility();
-      window2.addEventListener("scroll", scheduleUpdate, { passive: true });
-      window2.addEventListener("resize", scheduleUpdate);
-      window2.addEventListener("pageshow", scheduleUpdate);
-    }
     const top = document2.querySelector("[data-reader-top]");
     if (!top || top.dataset.readerTopReady === "true") return;
     top.dataset.readerTopReady = "true";
@@ -881,6 +872,101 @@
       const reduced = window2.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
       window2.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
     });
+    const dock = document2.querySelector("[data-reader-controls]");
+    if (!dock) return;
+    const navigation = dock.querySelector("[data-post-navigation]");
+    const button = navigation?.querySelector("[data-reader-jump]");
+    const form = navigation?.querySelector("[data-reader-jump-form]");
+    const input = form?.querySelector("[data-reader-jump-input]");
+    const totalLabel = form?.querySelector("[data-reader-jump-total]");
+    let sequence = null;
+    let pending = false;
+    function closeJump(restoreFocus = false) {
+      if (!form || form.hidden) return;
+      form.hidden = true;
+      button.setAttribute("aria-expanded", "false");
+      input.setCustomValidity("");
+      if (restoreFocus && !dock.inert && !navigation.hidden) button.focus({ preventScroll: true });
+      else if (form.contains(document2.activeElement)) document2.activeElement.blur?.();
+    }
+    function updateVisibility() {
+      pending = false;
+      const visible = readerControlsVisible(window2.scrollY, window2.innerHeight) && (!navigation || navigation.dataset.readerNavigationReady !== "false");
+      dock.dataset.readerVisible = String(visible);
+      dock.inert = !visible;
+      if (!visible) {
+        closeJump();
+        if (dock.contains(document2.activeElement)) document2.activeElement.blur?.();
+      }
+    }
+    function scheduleVisibility() {
+      if (pending) return;
+      pending = true;
+      if (typeof window2.requestAnimationFrame === "function") window2.requestAnimationFrame(updateVisibility);
+      else updateVisibility();
+    }
+    if (navigation) controlStates.set(navigation, {
+      sync(value) {
+        sequence = value;
+        if (button && form && input) {
+          button.disabled = navigation.hidden;
+          input.max = String(value.total);
+          if (totalLabel) totalLabel.textContent = `/${value.total}`;
+          input.setCustomValidity("");
+          if (navigation.hidden) closeJump();
+        }
+        updateVisibility();
+      }
+    });
+    if (button && form && input) {
+      button.addEventListener("click", () => {
+        if (dock.inert || navigation.hidden || !sequence || sequence.total <= 1) return;
+        if (!form.hidden) {
+          closeJump(true);
+          return;
+        }
+        input.value = sequence.current === null ? "" : String(sequence.current);
+        input.setCustomValidity("");
+        form.hidden = false;
+        button.setAttribute("aria-expanded", "true");
+        input.focus({ preventScroll: true });
+        input.select();
+      });
+      input.addEventListener("input", () => input.setCustomValidity(""));
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (form.hidden || dock.inert || navigation.hidden || !sequence || sequence.total <= 1) return;
+        const stream = document2.querySelector("[data-post-stream]");
+        const target = readerJumpTarget(stream?.children || [], input.value, sequence.total);
+        if (!target) {
+          input.setCustomValidity((form.dataset.invalidMessage || "1\u2013{total}").replace("{total}", String(sequence.total)));
+          input.reportValidity();
+          return;
+        }
+        closeJump();
+        window2.location.assign(target);
+      });
+      dock.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || form.hidden) return;
+        event.preventDefault();
+        event.stopPropagation();
+        closeJump(true);
+      });
+      document2.addEventListener("pointerdown", (event) => {
+        if (!form.hidden && !form.contains(event.target) && !button.contains(event.target)) closeJump();
+      });
+      dock.addEventListener("focusout", () => {
+        const check = () => {
+          if (!form.hidden && !form.contains(document2.activeElement) && document2.activeElement !== button) closeJump();
+        };
+        if (typeof window2.queueMicrotask === "function") window2.queueMicrotask(check);
+        else Promise.resolve().then(check);
+      });
+    }
+    updateVisibility();
+    window2.addEventListener("scroll", scheduleVisibility, { passive: true });
+    window2.addEventListener("resize", scheduleVisibility, { passive: true });
+    window2.addEventListener("pageshow", updateVisibility);
   }
 
   // src/post-browser.js
