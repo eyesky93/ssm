@@ -2065,15 +2065,12 @@ html[dir="rtl"] .map-level { direction: rtl; }
 .article-body .map-node:is(:hover, :focus-visible), .map-node .tag-count { color: var(--accent); }
 .article-body .map-node:hover { border-color: var(--accent); }
 .map-node-copy { display: flex; flex-direction: column; gap: .2rem; }
-.map-node-subtitle { color: var(--muted); font-size: .8rem; font-weight: 400; line-height: 1.35; }
 html[lang="he"] .map-node { font-family: var(--font-interface-hebrew), var(--font-content); }
 @media (min-width: 701px) { .map-node { padding-block: .4rem; } }
 .article-body .map-external-node { border-style: dashed; }
 .map-edges { position: absolute; inset: 0; overflow: visible; pointer-events: none; color: var(--muted); }
 .map-edges marker path { fill: currentColor; }
-.map-edge { fill: none; stroke: currentColor; stroke-width: 1.6; }
-.map-edge-prerequisite { stroke-dasharray: 7 5; }
-.map-edge-sequence { stroke-dasharray: 2 5; }
+.map-edge { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-dasharray: none; }
 .hierarchy-map :is(a, button, [tabindex]):focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 3px; }
 html[lang="he"] .hierarchy-map { font-family: var(--font-interface-hebrew), var(--font-content); }
 
