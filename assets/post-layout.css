@@ -351,17 +351,28 @@ html { scrollbar-gutter: stable; }
   pointer-events: auto;
   transition: none;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
-.reader-controls .post-position { padding: .25rem; }
+/* The number advertises direct editing through its text cursor, not a ring.
+   The caret/selection stays within the unchanged circle when editing. */
+.reader-controls .post-position,
+.reader-controls .post-position:is(:hover, :focus, :focus-visible, :active) {
+  padding: .25rem;
+  cursor: text;
+  outline: none;
+  outline-offset: 0;
+}
 .reader-controls .post-position[data-reader-position-stacked="true"] {
   flex-direction: column;
   gap: .1rem;
   font-size: .6875rem;
 }
-.reader-controls :is(.back-to-top, .post-navigation > a, .post-position):not([aria-disabled="true"], :disabled):is(:hover, :focus-visible) {
-  background: var(--accent-strong);
-  border-color: var(--accent-strong);
-  color: var(--paper);
+/* Side controls keep their neutral fill, lettering and border in every state.
+   This does not alter accent feedback on tags, engagement or the top menu. */
+.reader-controls :is(.back-to-top, .post-navigation > a, .post-position):is(:hover, :focus, :focus-visible, :active) {
+  background: var(--inverse-bg);
+  border-color: var(--line-dark);
+  color: var(--inverse-ink);
 }
 .reader-controls .post-navigation > a[aria-disabled="true"],
 .reader-controls .post-position:disabled {
@@ -387,7 +398,12 @@ html { scrollbar-gutter: stable; }
   font-size: 1rem;
   text-align: center;
   cursor: text;
+  caret-color: var(--inverse-ink);
   appearance: none;
+}
+.reader-controls input.reader-position-input::selection {
+  background: color-mix(in srgb, var(--inverse-bg) 70%, var(--inverse-ink));
+  color: var(--inverse-ink);
 }
 /* No-JS readers retain native links at the footer. Scripted navigation waits
    only for the local sequence; only Back to top depends on the home visibility. */

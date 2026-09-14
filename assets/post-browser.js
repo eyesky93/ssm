@@ -898,6 +898,7 @@
   }
   function updateReaderControls(navigation, sequence, browsing = false) {
     if (!navigation || navigation.dataset.readerNavigationReady === void 0) return;
+    const home = navigation.ownerDocument?.querySelector?.("[data-reader-back]");
     const position = navigation.querySelector("[data-post-position]");
     const markup = readerPositionMarkup(sequence.current, sequence.total);
     if (position) {
@@ -911,6 +912,14 @@
       if (target) {
         link.removeAttribute("aria-disabled");
         link.removeAttribute("tabindex");
+      } else if (direction === "prev" && home?.getAttribute?.("href")) {
+        link.href = home.href;
+        link.removeAttribute("rel");
+        link.removeAttribute("aria-disabled");
+        link.removeAttribute("tabindex");
+        const label = home.getAttribute("aria-label") || home.title || home.textContent?.trim() || "SSM";
+        link.setAttribute("aria-label", label);
+        link.title = label;
       } else {
         link.removeAttribute("href");
         link.removeAttribute("rel");
