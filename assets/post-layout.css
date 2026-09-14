@@ -539,9 +539,9 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 
 /* Standalone comment buttons share the pin's neutral states and highlight.
-   Sorting keeps the existing page-layout capsule. Formatting tools are
-   segments of one toolbar capsule, not standalone circular buttons. */
-:root [data-ssm-comments] button:not([data-comment-sort]) {
+   Sorting keeps the existing page-layout capsule. Ordinary formatting tools
+   keep their original base styles; only Help is a standalone round button. */
+:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]) {
   box-sizing: border-box;
   min-block-size: var(--control-size);
   border: 1px solid var(--line-dark);
@@ -551,14 +551,14 @@ html[lang="he"] .reader-controls .reader-number-error {
   box-shadow: none;
   transform: none;
 }
-:root [data-ssm-comments] button:not([data-comment-sort]):not(:disabled):is(:hover, :focus-visible) {
+:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not(:disabled):is(:hover, :focus-visible) {
   background: var(--surface);
   color: var(--ink);
   border-color: var(--line-dark);
   box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
 }
-:root [data-ssm-comments] button:not([data-comment-sort]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
-:root [data-ssm-comments] button:not([data-comment-sort]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
+:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
+:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
   background: var(--inverse-bg);
   color: var(--inverse-ink);
   border-color: var(--inverse-bg);
@@ -607,7 +607,8 @@ html[lang="he"] .reader-controls .reader-number-error {
   width: 1.6rem;
   height: 1.6rem;
 }
-/* Preserve the help glyph typography inside its formatting segment. */
+/* Help remains separate at the logical end of the original toolbar.
+   The base toolbar owns wrapping, spacing and the full-width bottom divider. */
 :root [data-ssm-comments] .comment-toolbar [data-format="help"] {
   font-family: var(--font-interface);
   font-size: 1.15rem;
@@ -615,77 +616,16 @@ html[lang="he"] .reader-controls .reader-number-error {
   line-height: 1;
 }
 
-/* One continuous formatting capsule. Preserve the current icon targets and
-   tool order; narrow screens scroll the same single row instead of wrapping
-   it into separate buttons. The composer and other comment controls stay put. */
-:root [data-ssm-comments] .comment-toolbar {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: stretch;
-  gap: 0;
-  inline-size: max-content;
-  max-inline-size: calc(100% - 1rem);
-  margin: .5rem;
-  padding: 0;
-  border: 1px solid var(--line-dark);
-  border-radius: 999px;
-  background: var(--surface);
-  overflow-x: auto;
-  overflow-y: hidden;
-  overscroll-behavior-inline: contain;
-  scrollbar-width: none;
-}
-:root [data-ssm-comments] .comment-toolbar::-webkit-scrollbar { display: none; }
-:root [data-ssm-comments] .comment-toolbar > button[data-format] {
-  box-sizing: border-box;
-  display: grid;
-  place-items: center;
-  position: relative;
-  flex: 0 0 var(--control-size);
-  inline-size: var(--control-size);
-  min-inline-size: var(--control-size);
-  max-inline-size: var(--control-size);
-  block-size: var(--control-size);
-  min-block-size: var(--control-size);
-  max-block-size: var(--control-size);
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
+/* Signup explanations are removed at build time. Keep actual consent and
+   actions legible in the normal foreground; the email example is untouched. */
+:root .subscribe-dialog :is(.consent-row, .subscription-actions, .subscribe-unavailable) {
   color: var(--ink);
-  box-shadow: none;
-  transform: none;
-  opacity: 1;
 }
-/* Inset dividers are independent of enabled/selected state and mirror in RTL.
-   They never add width or turn into a border around each individual tool. */
-:root [data-ssm-comments] .comment-toolbar > button[data-format] + button[data-format]::before {
-  content: "";
-  position: absolute;
-  inset-inline-start: 0;
-  inset-block: calc(var(--control-size) * .2);
-  inline-size: 1px;
-  background: var(--line-dark);
-  pointer-events: none;
+:root .subscribe-dialog .subscription-actions {
+  margin: .75rem 0 0;
+  font-size: .8125rem;
+  line-height: 1.5;
 }
-:root [data-ssm-comments] .comment-toolbar > button[data-format]:not(:disabled):is(:hover, :focus-visible) {
-  background: var(--soft-accent);
+:root .subscribe-dialog .form-status:not([data-state="success"]) {
   color: var(--ink);
-  box-shadow: none;
-}
-:root [data-ssm-comments] .comment-toolbar > button[data-format]:is([aria-pressed="true"], [aria-expanded="true"]),
-:root [data-ssm-comments] .comment-toolbar > button[data-format]:is([aria-pressed="true"], [aria-expanded="true"]):not(:disabled):is(:hover, :focus-visible) {
-  background: var(--inverse-bg);
-  color: var(--inverse-ink);
-}
-:root [data-ssm-comments] .comment-toolbar > button[data-format]:focus-visible {
-  outline: 2px solid var(--accent-strong);
-  outline-offset: -4px;
-}
-:root [data-ssm-comments] .comment-toolbar > button[data-format]:disabled {
-  color: var(--muted);
-  background: transparent;
-  box-shadow: none;
-  cursor: default;
 }
