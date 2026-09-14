@@ -218,6 +218,13 @@
   stroke-linejoin: round;
 }
 
+/* Mirror the list glyph in RTL, not its button, capsule or other view icons. */
+:root[dir="rtl"] .view-switch button[data-view="list"] > svg,
+:root[dir="rtl"] .view-control svg[data-view-icon="list"] {
+  transform: scaleX(-1);
+  transform-origin: center;
+}
+
 /* Mirror only the Directory's zoom/history stack: right in LTR, left in RTL.
    The mode capsule and its adjacent tag filters retain their top-row position. */
 :root [data-directory] .map-toolbar {
