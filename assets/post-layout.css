@@ -671,6 +671,30 @@ html[lang="he"] .reader-controls .reader-number-error {
    hides only the body for empty drafts; rendered content sets its own height. */
 :root [data-ssm-comments] .comment-preview { min-block-size: 0; }
 
+/* The per-line view uses the existing composer, toolbar and theme tokens. */
+.comment-composer > textarea[hidden] { display: none; }
+.comment-line-editor {
+  display: block; position: relative; box-sizing: border-box; width: 100%;
+  min-block-size: max(10rem, calc(var(--comment-editor-rows, 6) * 1.65em + 2rem));
+  padding: 1rem; border: 0; font: inherit; font-size: 1rem; line-height: 1.65;
+  white-space: pre-wrap; overflow-wrap: anywhere; text-align: start;
+  color: var(--ink); background: var(--paper);
+}
+.comment-line-editor:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: -3px; }
+.comment-line-editor[data-empty="true"]::before {
+  content: attr(data-placeholder); position: absolute; inset-inline-start: 1rem;
+  color: var(--muted); pointer-events: none;
+}
+.comment-line-editor .comment-edit-line { min-block-size: 1.65em; unicode-bidi: isolate; }
+.comment-layout-root .comment-layout-line { display: block; unicode-bidi: isolate; }
+:is(.comment-line-editor, .comment-body) .comment-align-start { text-align: start; }
+:is(.comment-line-editor, .comment-body) .comment-align-left { text-align: left; }
+:is(.comment-line-editor, .comment-body) .comment-align-center { text-align: center; }
+:is(.comment-line-editor, .comment-body) .comment-align-right { text-align: right; }
+.comment-body .comment-layout-block .katex-display { text-align: inherit; }
+.comment-body .katex, .comment-body pre, .comment-body code { direction: ltr; unicode-bidi: isolate; }
+:root [data-ssm-comments] .comment-toolbar > button[data-format][aria-pressed="true"]:not([data-format="help"]) { color: var(--accent-strong); background: var(--soft-accent); }
+
 /* Signup explanations are removed at build time. Keep actual consent and
    actions legible in the normal foreground; the email example is untouched. */
 :root .subscribe-dialog :is(.consent-row, .subscription-actions, .subscribe-unavailable) {
