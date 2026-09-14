@@ -813,6 +813,69 @@
     } };
   }
 
+  // src/engagement-highlights.js
+  var initialized = /* @__PURE__ */ new WeakSet();
+  function initializeEngagementHighlights(document2, window2) {
+    if (initialized.has(document2)) return;
+    const buttons = [...document2.querySelectorAll?.("[data-post-vote][data-post-id]") || []];
+    if (!buttons.length) return;
+    initialized.add(document2);
+    const groups = /* @__PURE__ */ new Map();
+    for (const button of buttons) {
+      const id = button.dataset.postId;
+      if (!groups.has(id)) groups.set(id, []);
+      groups.get(id).push(button);
+    }
+    let pointer = null;
+    let keyboard = null;
+    const known = new Set(buttons);
+    const target = (node) => {
+      const button = node?.closest?.("[data-post-vote][data-post-id]");
+      return known.has(button) ? button : null;
+    };
+    function render() {
+      const ids = new Set([pointer, keyboard].filter((button) => button && !button.disabled).map((button) => button.dataset.postId));
+      for (const [id, copies] of groups) for (const button of copies) {
+        if (ids.has(id) && !button.disabled) button.setAttribute("data-engagement-highlight", "true");
+        else button.removeAttribute("data-engagement-highlight");
+      }
+    }
+    document2.addEventListener("pointerover", (event) => {
+      if (event.pointerType === "touch") return;
+      const next = target(event.target);
+      if (next === pointer) return;
+      pointer = next;
+      render();
+    });
+    document2.addEventListener("pointerout", (event) => {
+      if (event.pointerType === "touch") return;
+      const next = target(event.relatedTarget);
+      if (next === pointer) return;
+      pointer = next;
+      render();
+    });
+    document2.addEventListener("focusin", (event) => {
+      const next = target(event.target);
+      keyboard = next?.matches?.(":focus-visible") ? next : null;
+      render();
+    });
+    document2.addEventListener("focusout", () => {
+      keyboard = null;
+      render();
+    });
+    function reset() {
+      pointer = null;
+      keyboard = null;
+      render();
+    }
+    window2.addEventListener?.("blur", reset);
+    window2.addEventListener?.("pageshow", reset);
+    if (typeof window2.MutationObserver === "function") {
+      const observer = new window2.MutationObserver(render);
+      for (const button of buttons) observer.observe(button, { attributes: true, attributeFilter: ["disabled"] });
+    }
+  }
+
   // src/reader-controls.js
   var controlStates = /* @__PURE__ */ new WeakMap();
   function readerPositionMarkup(current, total) {
@@ -822,8 +885,8 @@
     const text = `${current ?? "\u2014"}/${total}`;
     return text.length <= 5 ? text : `<span>${current ?? "\u2014"}</span><span>/${total}</span>`;
   }
-  function readerControlsVisible(scrollY, viewportHeight) {
-    return (Number(scrollY) || 0) > Math.max(400, (Number(viewportHeight) || 0) * 0.75);
+  function readerTopVisible(homeBottom, scrollY) {
+    return Number(scrollY) > 0 && Number.isFinite(homeBottom) && homeBottom <= 0;
   }
   function readerJumpTarget(cards, value, total) {
     if (typeof value !== "string" || !/^\d+$/.test(value.trim())) return null;
@@ -863,6 +926,7 @@
     controlStates.get(navigation)?.sync(sequence);
   }
   function initializeReaderTop(document2, window2) {
+    initializeEngagementHighlights(document2, window2);
     const top = document2.querySelector("[data-reader-top]");
     if (!top || top.dataset.readerTopReady === "true") return;
     top.dataset.readerTopReady = "true";
@@ -874,6 +938,7 @@
     });
     const dock = document2.querySelector("[data-reader-controls]");
     if (!dock) return;
+    const home = document2.querySelector(".site-header .wordmark");
     const navigation = dock.querySelector("[data-post-navigation]");
     const button = navigation?.querySelector("[data-reader-jump]");
     const form = navigation?.querySelector("[data-reader-jump-form]");
@@ -891,7 +956,13 @@
     }
     function updateVisibility() {
       pending = false;
-      const visible = readerControlsVisible(window2.scrollY, window2.innerHeight) && (!navigation || navigation.dataset.readerNavigationReady !== "false");
+      const visible = !navigation || navigation.dataset.readerNavigationReady !== "false";
+      const homeBottom = home?.getBoundingClientRect?.().bottom;
+      const showTop = home ? readerTopVisible(homeBottom, window2.scrollY) : Number(window2.scrollY) > 0;
+      top.hidden = !showTop;
+      top.inert = !showTop;
+      top.dataset.readerTopVisible = String(showTop);
+      if (!showTop && document2.activeElement === top) top.blur?.();
       dock.dataset.readerVisible = String(visible);
       dock.inert = !visible;
       if (!visible) {
@@ -967,6 +1038,10 @@
     window2.addEventListener("scroll", scheduleVisibility, { passive: true });
     window2.addEventListener("resize", scheduleVisibility, { passive: true });
     window2.addEventListener("pageshow", updateVisibility);
+    if (home && typeof window2.IntersectionObserver === "function") {
+      const observer = new window2.IntersectionObserver(scheduleVisibility, { threshold: 0 });
+      observer.observe(home);
+    }
   }
 
   // src/post-browser.js

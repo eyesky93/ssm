@@ -419,8 +419,8 @@ html { scrollbar-gutter: stable; }
 .reader-controls .reader-jump input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 .reader-controls [data-reader-jump-total] { flex: 0 0 auto; font-variant-numeric: tabular-nums; }
 [dir="rtl"] .reader-controls .reader-jump-submit svg { transform: scaleX(-1); }
-/* No-JS readers get native links at the document footer, not an always-visible
-   overlay. Scripted pages wait for both scrolling and the initial sequence. */
+/* No-JS readers retain native links at the footer. Scripted navigation waits
+   only for the local sequence; only Back to top depends on the home visibility. */
 @media (scripting: none) {
   .reader-controls {
     position: static;
@@ -431,9 +431,65 @@ html { scrollbar-gutter: stable; }
     transform: none;
   }
 }
+/* Hiding Back to top removes its slot above the arrows, never changes their
+   bottom-anchored positions, and cannot hide the typed-number editor. */
+.reader-controls [data-reader-top][hidden] { display: none; }
 @media (scripting: enabled) {
   .reader-controls:has([data-reader-navigation-ready="false"]) { visibility: hidden; }
+  .reader-controls [data-reader-top]:not([data-reader-top-visible="true"]) { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .reader-controls { transition: none; }
+}
+
+/* The same engagement strip appears below the header AND the article body.
+   Each sits immediately outside its own real border. Reserve the lower tabs'
+   height before comments, and remove only the now-duplicate comments border. */
+[data-reader-article]:not([data-directory]) > .article-body:has(> .article-end-engagement-dock) {
+  position: relative;
+  border-block-end: 1px solid var(--line);
+  margin-block-end: 2rem;
+}
+.article-body > .article-end-engagement-dock {
+  position: absolute;
+  inset-block-start: calc(100% + 1px);
+  inset-inline-end: 0;
+  margin: 0;
+  padding: 0;
+  z-index: 2;
+  font-family: var(--font-interface);
+  font-size: 1rem;
+  line-height: normal;
+}
+[data-reader-article] > .article-body:has(> .article-end-engagement-dock) + .comments-shell {
+  border-block-start: 0;
+}
+/* Mirror the current base AND appearance-module hover rules: strengthen the
+   upvote frame, icon, number and its inset divider, leaving the selected fill
+   intact. Root/RTL specificity also matches the late-loaded appearance rules.
+   No hover treatment is introduced for passive comment or view counters. */
+:root .post-engagement .post-vote[data-engagement-highlight="true"]:not(:disabled) {
+  z-index: 7;
+  border-block-start-color: var(--accent-strong);
+  border-block-end-color: var(--accent-strong);
+  border-inline-start-color: var(--accent-strong);
+  border-inline-end-color: var(--accent-strong);
+  box-shadow: none;
+}
+:root .post-engagement .post-vote[data-engagement-highlight="true"]:not(:disabled) svg,
+:root .post-engagement .post-vote[data-engagement-highlight="true"]:not(:disabled) .post-vote-count {
+  color: var(--accent-strong);
+}
+:root .post-engagement .post-vote[data-engagement-highlight="true"]:not(:disabled) .post-vote-count {
+  border-inline-start-color: var(--accent-strong);
+}
+:root .post-engagement .post-vote[data-engagement-highlight="true"][aria-pressed="true"]:not(:disabled) {
+  color: var(--accent-strong);
+}
+:root[dir="rtl"] .post-engagement .post-vote[data-engagement-highlight="true"]:not(:disabled) {
+  border-left-color: var(--accent-strong);
+  border-right-color: var(--accent-strong);
+}
+:root[dir="rtl"] .post-engagement .post-vote[data-engagement-highlight="true"]:not(:disabled) .post-vote-count {
+  border-right-color: var(--accent-strong);
 }
