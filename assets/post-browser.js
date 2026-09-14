@@ -894,12 +894,14 @@
   var initialized = /* @__PURE__ */ new WeakSet();
   function initializeEngagementHighlights(document2, window2) {
     if (initialized.has(document2)) return;
-    const buttons = [...document2.querySelectorAll?.("[data-post-vote][data-post-id]") || []];
+    const selector = "[data-post-vote][data-post-id], a[data-post-comments][data-post-id]";
+    const buttons = [...document2.querySelectorAll?.(selector) || []];
+    const groupKey = (button) => `${button.dataset.postId}:${button.dataset.postComments === void 0 ? "vote" : "comments"}`;
     if (!buttons.length) return;
     initialized.add(document2);
     const groups = /* @__PURE__ */ new Map();
     for (const button of buttons) {
-      const id = button.dataset.postId;
+      const id = groupKey(button);
       if (!groups.has(id)) groups.set(id, []);
       groups.get(id).push(button);
     }
@@ -907,11 +909,11 @@
     let keyboard = null;
     const known = new Set(buttons);
     const target = (node) => {
-      const button = node?.closest?.("[data-post-vote][data-post-id]");
+      const button = node?.closest?.(selector);
       return known.has(button) ? button : null;
     };
     function render() {
-      const ids = new Set([pointer, keyboard].filter((button) => button && !button.disabled).map((button) => button.dataset.postId));
+      const ids = new Set([pointer, keyboard].filter((button) => button && !button.disabled).map(groupKey));
       for (const [id, copies] of groups) for (const button of copies) {
         if (ids.has(id) && !button.disabled) button.setAttribute("data-engagement-highlight", "true");
         else button.removeAttribute("data-engagement-highlight");
@@ -1422,7 +1424,9 @@
       renderFilterContextLinks(document2, window2);
       for (const card of cards) {
         for (const link of card.querySelectorAll("[data-reader-link]")) {
-          link.href = searchUrl(readerUrl(filterContextUrl(card.dataset.postUrl, window2.location.href), selected, excluded)).href;
+          const url = searchUrl(readerUrl(filterContextUrl(card.dataset.postUrl, window2.location.href), selected, excluded));
+          if (link.dataset.readerFragment === "comments") url.hash = "comments";
+          link.href = url.href;
         }
       }
       const back = document2.querySelector("[data-reader-back]");

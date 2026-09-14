@@ -541,7 +541,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* Standalone comment buttons share the pin's neutral states and highlight.
    Sorting keeps the existing page-layout capsule. Ordinary formatting tools
    keep their original base styles; only Help is a standalone round button. */
-:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]) {
+:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]) {
   box-sizing: border-box;
   min-block-size: var(--control-size);
   border: 1px solid var(--line-dark);
@@ -551,14 +551,14 @@ html[lang="he"] .reader-controls .reader-number-error {
   box-shadow: none;
   transform: none;
 }
-:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not(:disabled):is(:hover, :focus-visible) {
+:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(:disabled):is(:hover, :focus-visible) {
   background: var(--surface);
   color: var(--ink);
   border-color: var(--line-dark);
   box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
 }
-:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
-:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
+:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
+:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
   background: var(--inverse-bg);
   color: var(--inverse-ink);
   border-color: var(--inverse-bg);
@@ -578,12 +578,19 @@ html[lang="he"] .reader-controls .reader-number-error {
   padding: 0;
   border-radius: 50%;
 }
-/* Keep the original round provider target and inset brand artwork. Explicit
-   SVG bounds prevent a logo's intrinsic size from filling or escaping it. */
+/* Match navigation's inverse palette: light circles and dark artwork in dark
+   mode, with the corresponding inverse in light mode. Preserve the shared
+   size, icon inset, disabled state and existing hover/focus highlight. */
 :root [data-ssm-comments] button.comment-provider-button {
   padding: max(0px, calc((var(--control-size) - 1.35rem - 2px) / 2));
   border-radius: 50%;
   overflow: hidden;
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+}
+:root [data-ssm-comments] button.comment-provider-button:not(:disabled):is(:hover, :focus-visible, :active) {
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
 }
 :root [data-ssm-comments] .comment-provider-button > svg {
   display: block;
@@ -602,6 +609,20 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root [data-ssm-comments] .comment-refresh-control svg {
   width: 1.35rem;
   height: 1.35rem;
+}
+/* The existing loader disables Refresh until its request settles, including
+   errors. Animate only the arrows; the shared button and capsule stay still.
+   Removing the loading state returns the icon to its original orientation. */
+@media (prefers-reduced-motion: no-preference) {
+  :root [data-ssm-comments] [data-comment-refresh]:disabled > svg {
+    transform-box: view-box;
+    transform-origin: 50% 50%;
+    animation: comment-refresh-turn 1.6s ease-in-out infinite;
+  }
+}
+@keyframes comment-refresh-turn {
+  0%, 100% { transform: rotate(0turn); }
+  50% { transform: rotate(1turn); }
 }
 :root [data-ssm-comments] .comment-sort-controls [data-comment-sort="oldest"] > svg {
   width: 1.6rem;
@@ -658,3 +679,65 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root .subscribe-dialog .form-status:not([data-state="success"]) {
   color: var(--ink);
 }
+
+/* Posts and comments use the same engagement segments, not the independent
+   round-button family. Keep one interaction contract for every active tab. */
+:root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments) {
+  font: inherit;
+  min-block-size: 0;
+  max-block-size: var(--stat-segment-height);
+  border-block-start: 1px solid var(--line);
+  background: var(--surface);
+  background-clip: padding-box;
+  text-decoration: none;
+  box-shadow: none;
+  transform: none;
+  cursor: pointer;
+}
+:root .post-engagement > :is(a, button).post-comments { color: var(--muted); }
+:root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments)[aria-pressed="true"] {
+  z-index: 7;
+  background: var(--soft-accent);
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: none;
+}
+:root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments)[aria-pressed="true"] :is(svg, .post-vote-count, .post-comment-count) {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+:root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments):is(:hover, :focus-visible, [data-engagement-highlight="true"]):not(:disabled) {
+  z-index: 7;
+  color: var(--accent-strong);
+  border-color: var(--accent-strong);
+  box-shadow: none;
+  outline: none;
+}
+:root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments):is(:hover, :focus-visible, [data-engagement-highlight="true"]):not(:disabled) :is(svg, .post-vote-count, .post-comment-count) {
+  color: var(--accent-strong);
+  border-color: var(--accent-strong);
+}
+:root .post-engagement > :is(.post-vote, button.post-comments):disabled {
+  opacity: 1;
+  cursor: default;
+}
+:root .post-engagement > .post-vote[aria-busy="true"] { cursor: progress; }
+
+/* Each individual comment's bottom separator owns its attached strip; replies
+   remain below their parent's controls. Normal flow prevents overlaps at zoom. */
+.comment-engagement-dock {
+  display: flex;
+  justify-content: flex-end;
+  border-block-start: 1px solid var(--line);
+  margin-block: .75rem 1rem;
+  min-inline-size: 0;
+}
+.comment-item:has(> .comment-engagement-dock) { border-block-end: 0; }
+.comment-engagement { min-inline-size: calc(2 * var(--stat-segment-width)); }
+:root .comment-engagement > .post-comments:last-child { border-bottom-right-radius: .5rem; }
+:root[dir="rtl"] .comment-engagement > .post-comments:last-child {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: .5rem;
+}
+/* Hash destinations stay native: no simulated navigation or click interception. */
+.comments-shell { scroll-margin-block-start: 1rem; }
