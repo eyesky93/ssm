@@ -17,14 +17,32 @@ function preventRedundantHomeNavigation(event) {
 }
 document.addEventListener("click", preventRedundantHomeNavigation);
 
-// Primary pointer clicks on tag filters should not focus the chip before its
-// click handler runs. This prevents the focus-visible hide-X state from
-// flashing briefly; keyboard focus and modified/new-tab gestures are untouched.
-document.addEventListener("mousedown", (event) => {
-  const chip = event.target?.closest?.("[data-tag-filter], [data-post-tag-topic]");
-  if (!chip || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-  event.preventDefault();
-});
+// Shared tag-control interaction model. Match the base component class, never
+// feature-specific data attributes: menu, tree, Read, Library and post chips
+// (including later-mounted controls) must all inherit the same focus behavior.
+class TagControlInteractions {
+  static instances = new WeakMap();
+
+  static initialize(document) {
+    if (!this.instances.has(document)) this.instances.set(document, new this(document));
+    return this.instances.get(document);
+  }
+
+  constructor(document) {
+    // Cancel only the native mouse/compatibility-mouse focus step, before any
+    // component handler runs. Click still selects exactly once; keyboard focus,
+    // modified links, hover timing, touch scrolling and exclude actions remain native.
+    document.addEventListener("mousedown", event => this.onMouseDown(event), true);
+  }
+
+  onMouseDown(event) {
+    if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    const chip = event.target?.closest?.(".tag-chip");
+    if (!chip || chip.disabled || chip.getAttribute?.("aria-disabled") === "true") return;
+    event.preventDefault();
+  }
+}
+TagControlInteractions.initialize(document);
 
 // Post/card tags are rendered by the build as one leaf chip. Expand each leaf
 // into its visible hierarchy without changing the original functional anchor:
