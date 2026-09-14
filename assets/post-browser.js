@@ -813,6 +813,54 @@
     } };
   }
 
+  // src/reader-controls.js
+  function readerPositionMarkup(current, total) {
+    if (!Number.isSafeInteger(total) || total < 0 || current !== null && (!Number.isSafeInteger(current) || current < 1 || current > total)) {
+      throw new Error("Invalid reader position.");
+    }
+    const text = `${current ?? "\u2014"}/${total}`;
+    return text.length <= 5 ? text : `<span>${current ?? "\u2014"}</span><span>/${total}</span>`;
+  }
+  function updateReaderControls(navigation, sequence, browsing = false) {
+    if (!navigation || navigation.dataset.readerNavigationReady === void 0) return;
+    const position = navigation.querySelector("[data-post-position]");
+    const markup = readerPositionMarkup(sequence.current, sequence.total);
+    if (position) {
+      position.innerHTML = markup;
+      position.dataset.readerPositionStacked = String(markup.startsWith("<span>"));
+    }
+    for (const [direction, target] of [["prev", sequence.previous], ["next", sequence.next]]) {
+      const link = navigation.querySelector(`[data-post-${direction}]`);
+      if (!link) continue;
+      link.hidden = false;
+      if (target) {
+        link.removeAttribute("aria-disabled");
+        link.removeAttribute("tabindex");
+      } else {
+        link.removeAttribute("href");
+        link.removeAttribute("rel");
+        link.setAttribute("aria-disabled", "true");
+        link.setAttribute("tabindex", "-1");
+        const label = navigation.dataset[direction === "prev" ? "labelPrev" : "labelNext"] || "";
+        link.setAttribute("aria-label", label);
+        link.title = label;
+      }
+    }
+    navigation.hidden = browsing || sequence.total <= 1;
+    navigation.dataset.readerNavigationReady = "true";
+  }
+  function initializeReaderTop(document2, window2) {
+    const top = document2.querySelector("[data-reader-top]");
+    if (!top || top.dataset.readerTopReady === "true") return;
+    top.dataset.readerTopReady = "true";
+    top.addEventListener("click", (event) => {
+      if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      const reduced = window2.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+      window2.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
+    });
+  }
+
   // src/post-browser.js
   function tagKeys(value) {
     return typeof value === "string" ? value ? [value] : [] : [...value];
@@ -1014,7 +1062,7 @@
       return !inline || (explicitFilters() || params.get("q")?.trim() || params.has("search-tag")) && params.get("reader") !== "1";
     };
     let browsing = isBrowsing();
-    const navigation = article?.querySelector("[data-post-navigation]");
+    const navigation = article ? document2.querySelector("[data-post-navigation]") : null;
     const navigationPosts = new Map(cards.filter((card) => card.dataset.directory === void 0).map((card) => [card, {
       id: card.dataset.postId,
       tags: tagsByCard.get(card),
@@ -1105,6 +1153,7 @@
         link.setAttribute("aria-label", label);
         link.title = label;
       }
+      updateReaderControls(navigation, sequence, browsing);
     }
     function render(announce = false) {
       let count = 0;
@@ -1115,7 +1164,7 @@
       if (search) count = search.apply();
       for (const chip of selectorChips) {
         const tag = chip.dataset.tagFilter;
-        chip.setAttribute("aria-pressed", String(selected.has(tag)));
+        chip.setAttribute("aria-pressed", String(selected.has(chip.dataset.tagFilter)));
         chip.disabled = false;
         chip.classList.toggle("is-ancestor", [...selected].some((other) => other.startsWith(`${tag}:`)));
       }
@@ -1226,6 +1275,7 @@
     render();
   }
   if (typeof document !== "undefined") {
+    initializeReaderTop(document, window);
     initializeRandomPosts(document, window);
     initializePostViews(document, window);
     initializePostBrowser(document, window);
