@@ -247,6 +247,35 @@ html { scrollbar-gutter: stable; }
 [data-reader-article]:not([data-directory]) > .article-header > .article-heading {
   margin-block-start: 0;
 }
+/* Share the subtitle's last baseline with the date on wider screens. The
+   title/tools keep their full row; long subtitles wrap within their own column
+   without moving the date away from the logical end or covering the tabs.
+   Phones retain the stacked flow above, so neither text nor date is clipped. */
+@media (min-width: 701px) {
+  [data-reader-article]:not([data-directory]) > .article-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 1.5rem;
+  }
+  [data-reader-article]:not([data-directory]) > .article-header > .article-heading {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+  [data-reader-article]:not([data-directory]) > .article-header > .article-summary {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+    align-self: last baseline;
+  }
+  [data-reader-article]:not([data-directory]) > .article-header > .article-topline {
+    grid-column: 2;
+    grid-row: 2;
+    min-width: 0;
+    max-width: 100%;
+    align-self: last baseline;
+    margin-block-start: .85rem;
+  }
+}
 /* Tighten only the visible reader, not the home/inline catalogue or Directory. */
 .site-main:has(> [data-reader-article]:not([hidden], [data-directory])) {
   padding-block-start: 1rem;
