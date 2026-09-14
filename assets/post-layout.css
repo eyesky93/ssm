@@ -113,9 +113,11 @@ html { scrollbar-gutter: stable; }
 [data-reader-article][data-directory] > .article-body { padding-block-end: 0; }
 .site-main:has(> [data-reader-article][data-directory]:not([hidden])) { padding-block-end: 1rem; }
 
-/* Tree numbers use the main tag menu's shared .tag-count badge, without
-   an extra ring or hover halo. Keep the independent link and keyboard focus. */
-[data-directory] .map-node > a[data-map-count] {
+/* Keep the shared count badge without a permanent outline. Restore the
+   count link's previous colour change and halo on hover and keyboard focus. */
+[data-directory] .map-node > a[data-map-count]:is(:hover, :focus-visible) {
+  box-shadow: inset 0 0 0 2px var(--accent), 0 0 0 3px var(--soft-accent);
+  background: var(--soft-accent);
   color: var(--accent-strong);
 }
 
