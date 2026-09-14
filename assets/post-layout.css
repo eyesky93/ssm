@@ -254,8 +254,9 @@ html { scrollbar-gutter: stable; }
 }
 /* Share the subtitle's last baseline with the date on wider screens. The
    title/tools keep their full row; long subtitles wrap within their own column
-   without moving the date away from the edge or covering the tabs.
-   Phones retain the stacked flow above, so neither text nor date is clipped. */
+   without moving the date away from the logical end or covering the tabs.
+   Phones retain the stacked flow above, so neither text nor date is clipped.
+*/
 @media (min-width: 701px) {
   [data-reader-article]:not([data-directory]) > .article-header {
     display: grid;
@@ -509,4 +510,17 @@ html { scrollbar-gutter: stable; }
 }
 html[lang="he"] .reader-controls .reader-number-error {
   font-family: var(--font-interface-hebrew), var(--font-interface);
+}
+
+/* Directory has no engagement strip. Reclaim only its unused row clearance;
+   regular post rows keep the existing space for their attached statistics. */
+.post-stream[data-layout] {
+  --post-row-gap: 2.45rem;
+  --directory-row-gap: 1rem;
+  row-gap: var(--post-row-gap);
+}
+.post-stream[data-layout="compact"] { --directory-row-gap: .75rem; }
+.post-stream[data-layout] > .directory-card:has([data-pin-toggle][aria-pressed="true"]),
+.post-stream[data-layout="list"] > .directory-card {
+  margin-block-end: calc(var(--directory-row-gap) - var(--post-row-gap));
 }
