@@ -537,3 +537,87 @@ html[lang="he"] .reader-controls .reader-number-error {
 .post-stream[data-layout="list"] > .directory-card {
   margin-block-end: calc(var(--directory-row-gap) - var(--post-row-gap));
 }
+
+/* Comment buttons use the pin's neutral resting/selected colors and hover
+   ring, not the old rectangular form-button treatment. All dimensions derive
+   from the same universal control size; text actions remain readable capsules. */
+:root [data-ssm-comments] { --comment-button-ring: var(--soft-accent); }
+:root[data-theme="dark"] [data-ssm-comments] {
+  --comment-button-ring: color-mix(in srgb, var(--paper), var(--accent) 40%);
+}
+:root [data-ssm-comments] button {
+  box-sizing: border-box;
+  min-block-size: var(--control-size);
+  border: 1px solid var(--line-dark);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: none;
+  transform: none;
+}
+/* More specific than both the legacy discussion buttons and layout capsule. */
+:root [data-ssm-comments] button:not(:disabled):is(:hover, :focus-visible) {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line-dark);
+  box-shadow: 0 0 0 3px var(--comment-button-ring);
+}
+:root [data-ssm-comments] button:is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
+:root [data-ssm-comments] button:is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  border-color: var(--inverse-bg);
+}
+/* Glyph-only controls are circles. Longer actions retain horizontal padding,
+   and provider SVGs keep their existing filled brand artwork. */
+:root [data-ssm-comments] :is(.comment-thread-header button, .comment-toolbar > button, .comment-provider-button, .comment-actions > button[aria-pressed]) {
+  inline-size: var(--control-size);
+  min-inline-size: var(--control-size);
+  max-inline-size: var(--control-size);
+  block-size: var(--control-size);
+  min-block-size: var(--control-size);
+  max-block-size: var(--control-size);
+  flex: 0 0 var(--control-size);
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+}
+:root [data-ssm-comments] .comment-provider-button {
+  padding: max(0px, calc((var(--control-size) - 1.35rem - 2px) / 2));
+}
+/* Do not clip the pin-style ring at the sort capsule's edge. Its shared
+   outside frame, selected circle and positions are otherwise unchanged. */
+:root [data-ssm-comments] .comment-thread-header .view-switch { overflow: visible; }
+:root [data-ssm-comments] .comment-thread-header .view-switch > button {
+  position: relative;
+  z-index: 3;
+  border-color: transparent;
+}
+:root [data-ssm-comments] .comment-thread-header .view-switch > button:not([aria-pressed="true"], :disabled):is(:hover, :focus-visible) {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line-dark);
+}
+:root [data-ssm-comments] .comment-thread-header .view-switch > button[aria-pressed="true"] {
+  border-color: var(--inverse-bg);
+}
+:root [data-ssm-comments] .comment-refresh-control .view-switch > button {
+  border-color: var(--line-dark);
+}
+:root [data-ssm-comments] .comment-thread-header svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+:root [data-ssm-comments] .comment-sort-controls [data-comment-sort="oldest"] > svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+/* The help glyph gets the same circle and active fill as the pin. Its label,
+   open/close action and the editor's existing keyboard handling are unchanged. */
+:root [data-ssm-comments] .comment-toolbar [data-format="help"] {
+  font-family: var(--font-interface);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1;
+}
