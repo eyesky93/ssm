@@ -236,7 +236,14 @@
   inset-inline-start: auto;
   inset-inline-end: var(--directory-control-inset);
 }
-:root [data-directory] .map-toolbar { gap: .5rem; }
+/* Move the whole stack, not individual buttons. Percentage margins use the
+   frame WIDTH, just like the side inset; a percentage bottom inset would use
+   its height and give unequal gaps on non-square frames. */
+:root [data-directory] .map-toolbar {
+  inset-block-end: 0;
+  margin-block-end: var(--directory-control-inset);
+  gap: .5rem;
+}
 :root [data-directory] .map-history-controls { gap: .5rem; }
 
 /* Directory and reader navigation share the same neutral buttons and shadow.
