@@ -225,23 +225,23 @@
   transform-origin: center;
 }
 
-/* Keep the mode capsule and zoom/history stack on one shared edge:
-   right in LTR, left in RTL. Preserve the Back to top button's separate lane. */
+/* All Directory corner controls use the small gap above the mode capsule.
+   Keep top, bottom and side distances equal, independent of viewport gutters. */
 :root [data-directory] .map-stage {
-  /* Tighten the inset; a half-gap still separates this stack from Back to top. */
-  --directory-control-inset: max(var(--control-capsule-gap), calc(var(--control-size) + 1rem + var(--control-capsule-gap) / 2 - (100vw - 100%) / 2));
+  --directory-control-inset: var(--control-capsule-gap);
 }
 :root [data-directory] .map-stage > .map-switch,
 :root [data-directory] .map-toolbar {
   inset-inline-start: auto;
   inset-inline-end: var(--directory-control-inset);
 }
-/* Move the whole stack, not individual buttons. Percentage margins use the
-   frame WIDTH, just like the side inset; a percentage bottom inset would use
-   its height and give unequal gaps on non-square frames. */
+/* Anchor the complete controls, never individual buttons or their hit areas. */
+:root [data-directory] .map-stage > .map-switch {
+  inset-block-start: var(--directory-control-inset);
+}
 :root [data-directory] .map-toolbar {
-  inset-block-end: 0;
-  margin-block-end: var(--directory-control-inset);
+  inset-block-end: var(--directory-control-inset);
+  margin-block-end: 0;
   gap: .5rem;
 }
 :root [data-directory] .map-history-controls { gap: .5rem; }
@@ -327,8 +327,9 @@
   caret-color: var(--inverse-ink);
 }
 :root [data-reader-article][data-directory] .map-stage > .map-filter-bar {
-  inset-inline-start: .75rem;
-  inset-inline-end: calc(var(--directory-control-inset) + 2 * var(--control-size) + var(--control-capsule-gap) + .75rem);
+  inset-block-start: var(--directory-control-inset);
+  inset-inline-start: var(--directory-control-inset);
+  inset-inline-end: calc(var(--directory-control-inset) + 2 * var(--control-size) + 2 * var(--control-capsule-gap));
   padding-block: 0;
 }
 /* Keep filters beside the capsule, extending inward in either direction. */
@@ -336,8 +337,8 @@
 /* Narrow screens need the full filter row below the capsule, not clipped pills. */
 @media (max-width: 700px) {
   :root [data-reader-article][data-directory] .map-stage > .map-filter-bar {
-    inset-block-start: calc(var(--control-size) + 1.25rem);
-    inset-inline-end: .75rem;
+    inset-block-start: calc(var(--directory-control-inset) + var(--control-size) + var(--control-capsule-gap));
+    inset-inline-end: var(--directory-control-inset);
   }
 }
 @keyframes map-zoom-open {
