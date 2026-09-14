@@ -878,6 +878,7 @@
 
   // src/reader-controls.js
   var controlStates = /* @__PURE__ */ new WeakMap();
+  var NUMBER_ERROR_DURATION_MS = 3e3;
   function readerPositionMarkup(current, total) {
     if (!Number.isSafeInteger(total) || total < 0 || current !== null && (!Number.isSafeInteger(current) || current < 1 || current > total)) {
       throw new Error("Invalid reader position.");
@@ -904,6 +905,8 @@
     if (position) {
       position.innerHTML = markup;
       position.dataset.readerPositionStacked = String(markup.startsWith("<span>"));
+      const input = navigation.querySelector("[data-reader-jump-input]");
+      if (input) input.dataset.readerPositionStacked = position.dataset.readerPositionStacked;
     }
     for (const [direction, target] of [["prev", sequence.previous], ["next", sequence.next]]) {
       const link = navigation.querySelector(`[data-post-${direction}]`);
@@ -954,14 +957,21 @@
     const error = navigation?.querySelector("[data-reader-number-error]");
     let sequence = null;
     let pending = false;
+    let numberErrorTimer = null;
     function clearNumberError() {
+      if (numberErrorTimer !== null) window2.clearTimeout?.(numberErrorTimer);
+      numberErrorTimer = null;
       if (error) error.textContent = "";
       button?.removeAttribute("aria-describedby");
     }
-    function showNumberError() {
+    function showNumberError(restartTimer = true) {
       if (!error || !sequence) return;
       error.textContent = (error.dataset.message || "Enter an integer between 1 and {total}").replace("{total}", String(sequence.total));
       button.setAttribute("aria-describedby", error.id);
+      if (restartTimer) {
+        if (numberErrorTimer !== null) window2.clearTimeout?.(numberErrorTimer);
+        numberErrorTimer = window2.setTimeout?.(clearNumberError, NUMBER_ERROR_DURATION_MS) ?? null;
+      }
     }
     function closeJump(restoreFocus = false) {
       if (!input || input.hidden) return;
@@ -1003,7 +1013,7 @@
           if (navigation.hidden) {
             closeJump();
             clearNumberError();
-          } else if (error?.textContent) showNumberError();
+          } else if (error?.textContent) showNumberError(false);
         }
         updateVisibility();
       }
@@ -1054,7 +1064,10 @@
     updateVisibility();
     window2.addEventListener("scroll", scheduleVisibility, { passive: true });
     window2.addEventListener("resize", scheduleVisibility, { passive: true });
-    window2.addEventListener("pageshow", updateVisibility);
+    window2.addEventListener("pageshow", () => {
+      clearNumberError();
+      updateVisibility();
+    });
     if (home && typeof window2.IntersectionObserver === "function") {
       const observer = new window2.IntersectionObserver(scheduleVisibility, { threshold: 0 });
       observer.observe(home);

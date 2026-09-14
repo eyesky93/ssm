@@ -366,6 +366,9 @@ html { scrollbar-gutter: stable; }
 .reader-controls .post-position,
 .reader-controls .post-position:is(:hover, :focus, :focus-visible, :active) {
   padding: .25rem;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: normal;
   cursor: text;
   outline: none;
   outline-offset: 0;
@@ -403,7 +406,6 @@ html { scrollbar-gutter: stable; }
    Labels remain in native hover tooltips and accessible names, not a panel. */
 .reader-controls input.reader-position-input {
   padding: .25rem;
-  font-size: 1rem;
   text-align: center;
   cursor: text;
   caret-color: var(--inverse-ink);
@@ -488,6 +490,17 @@ html { scrollbar-gutter: stable; }
   border-right-color: var(--accent-strong);
 }
 
+/* Small feedback and custom hover hints share the existing tag-tooltip palette.
+   Native browser title tooltips remain native; no new tooltip UI is introduced. */
+:root { --message-bg: #f0f0f0; --message-ink: #222; }
+:root[data-theme="dark"] { --message-bg: #2b2b2b; --message-ink: #f0f0f0; }
+:root .settings-tooltip,
+:root .tag-exclude::after,
+:root[data-theme="dark"] .tag-exclude::after {
+  background: var(--message-bg);
+  color: var(--message-ink);
+}
+
 /* Invalid Enter restores the number circle; only this small, unframed line
    appears beside it. Absolute positioning keeps every control in place.
    The initially empty live region has no box, padding or visible label. */
@@ -500,8 +513,8 @@ html { scrollbar-gutter: stable; }
   margin: 0;
   padding: 0;
   border: 0;
-  background: var(--paper);
-  color: var(--muted);
+  background: var(--message-bg);
+  color: var(--message-ink);
   box-shadow: none;
   font: .75rem/1.4 var(--font-interface);
   text-align: end;
