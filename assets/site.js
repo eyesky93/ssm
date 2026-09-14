@@ -307,18 +307,65 @@ if (themePreference?.addEventListener) {
 }
 
 
-// Keep icon menus within the viewport, including shares on lower list cards.
+// Measure the complete menu, never a previous scrollable height limit. Every
+// share control prefers below and flips above when the complete column fits there.
 function positionShareMenu(menu) {
   if (!menu.open) return;
   const summary = menu.querySelector("summary");
   if (!summary.getClientRects().length) { menu.open = false; return; }
   const options = menu.querySelector(".share-options");
+  delete menu.dataset.shareWrapped;
+  options.style.maxBlockSize = "";
+  options.style.gridTemplateRows = "";
+  options.style.translate = "";
+
+  const viewport = window.visualViewport;
+  const viewportTop = viewport?.offsetTop || 0;
+  const viewportLeft = viewport?.offsetLeft || 0;
+  const viewportHeight = viewport?.height || window.innerHeight;
+  const viewportWidth = viewport?.width || document.documentElement.clientWidth;
+  const viewportPadding = 12;
+  const optionStyle = window.getComputedStyle(options);
+  const rowGap = parseFloat(optionStyle.rowGap) || 0;
+  // The panel's anchor gap and row gap both use the stylesheet's 0.5rem spacing.
+  const menuGap = rowGap;
   const bounds = summary.getBoundingClientRect();
-  const below = Math.max(0, window.innerHeight - bounds.bottom - 20);
-  const above = Math.max(0, bounds.top - 20);
-  const opensAbove = below < options.scrollHeight && above > below;
+  const below = Math.max(0, viewportTop + viewportHeight - bounds.bottom - menuGap - viewportPadding);
+  const above = Math.max(0, bounds.top - viewportTop - menuGap - viewportPadding);
+  const naturalHeight = options.getBoundingClientRect().height;
+  const opensAbove = naturalHeight > below && (naturalHeight <= above || above > below);
   menu.dataset.shareSide = opensAbove ? "above" : "below";
-  options.style.maxBlockSize = `${Math.floor(opensAbove ? above : below)}px`;
+  const availableHeight = opensAbove ? above : below;
+
+  // A short window can fit neither complete column. Keep the same size icons
+  // and order, wrapping into columns only then, rather than clipping or scrolling.
+  if (naturalHeight > availableHeight) {
+    const items = [...options.children].filter(item => item.getClientRects().length);
+    if (items.length) {
+      const itemHeight = Math.max(...items.map(item => item.getBoundingClientRect().height));
+      const itemWidth = Math.max(...items.map(item => item.getBoundingClientRect().width));
+      const verticalFrame = [optionStyle.paddingTop, optionStyle.paddingBottom, optionStyle.borderTopWidth, optionStyle.borderBottomWidth]
+        .reduce((total, value) => total + (parseFloat(value) || 0), 0);
+      const horizontalFrame = [optionStyle.paddingLeft, optionStyle.paddingRight, optionStyle.borderLeftWidth, optionStyle.borderRightWidth]
+        .reduce((total, value) => total + (parseFloat(value) || 0), 0);
+      const columnGap = parseFloat(optionStyle.columnGap) || 0;
+      const fittingColumns = Math.max(1, Math.floor((viewportWidth - 2 * viewportPadding - horizontalFrame + columnGap) / (itemWidth + columnGap)));
+      const fittingRows = Math.max(1, Math.floor((availableHeight - verticalFrame + rowGap) / (itemHeight + rowGap)));
+      const columns = Math.min(fittingColumns, Math.ceil(items.length / fittingRows));
+      const rows = Math.ceil(items.length / columns);
+      menu.dataset.shareWrapped = "true";
+      options.style.gridTemplateRows = `repeat(${rows}, max-content)`;
+    }
+  }
+
+  // Logical CSS alignment mirrors in RTL; only correct a real viewport collision.
+  const panel = options.getBoundingClientRect();
+  const left = Math.max(viewportLeft + viewportPadding, Math.min(panel.left, viewportLeft + viewportWidth - viewportPadding - panel.width));
+  const top = Math.max(viewportTop + viewportPadding, Math.min(panel.top, viewportTop + viewportHeight - viewportPadding - panel.height));
+  options.style.translate = `${left - panel.left}px ${top - panel.top}px`;
+  // The copy-status popover stays outside a widened fallback panel as well.
+  const feedback = menu.querySelector("[data-share-feedback]");
+  if (feedback) feedback.style.insetInlineEnd = menu.dataset.shareWrapped ? `${panel.width + 2 * menuGap}px` : "";
 }
 
 document.querySelectorAll("[data-share-menu]").forEach((menu) => {
@@ -377,6 +424,9 @@ document.querySelectorAll("[data-share-menu]").forEach((menu) => {
 const repositionShareMenus = () => document.querySelectorAll("[data-share-menu][open]").forEach(positionShareMenu);
 window.addEventListener("resize", repositionShareMenus);
 window.addEventListener("scroll", repositionShareMenus, { passive: true });
+window.visualViewport?.addEventListener("resize", repositionShareMenus);
+window.visualViewport?.addEventListener("scroll", repositionShareMenus, { passive: true });
+document.fonts?.ready.then(repositionShareMenus);
 
 const settings = document.querySelector("[data-header-settings]");
 const settingsToggle = settings?.querySelector("[data-settings-toggle]");
