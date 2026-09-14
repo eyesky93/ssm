@@ -1075,6 +1075,13 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         } else if (!keyboard) source.blur?.();
       }
       chips.forEach((chip) => {
+        // Click-end blur is too late: pointer focus can briefly reveal the
+        // hide action before filtering. Cancel only the native focus step,
+        // including touch-generated mousedown; keep click, hover and Tab intact.
+        chip.addEventListener("mousedown", (event) => {
+          if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+        });
         chip.addEventListener("click", (event) => {
           if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
           event.preventDefault();
