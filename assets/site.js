@@ -831,7 +831,7 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         const percent = Math.round(state.scale * 100);
         output.textContent = `${percent}%`;
         if (zoomButton) zoomButton.setAttribute("aria-label", `${zoomButton.dataset.mapZoomLabel}: ${percent}%`);
-        if (zoomNumber && document.activeElement !== zoomNumber) zoomNumber.value = percent;
+        if (zoomNumber && (zoomPanel?.hidden || document.activeElement !== zoomNumber)) zoomNumber.value = percent;
         if (zoomSlider) { zoomSlider.value = percent; zoomSlider.setAttribute("aria-valuetext", `${percent}%`); }
       }
     }
@@ -1112,34 +1112,78 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
         return;
       }
     });
-    if (zoomButton && zoomPanel && zoomSlider) {
-      const closeZoom = () => { zoomPanel.hidden = true; zoomButton.setAttribute("aria-expanded", "false"); };
-      zoomButton.addEventListener("click", () => {
-        zoomPanel.hidden = !zoomPanel.hidden;
-        zoomButton.setAttribute("aria-expanded", String(!zoomPanel.hidden));
-        if (!zoomPanel.hidden) { zoomNumber.value = Math.round(active.scale * 100); zoomNumber.focus({ preventScroll: true }); zoomNumber.select(); }
-      });
-      const commitNumber = () => {
-        const value = zoomNumber.valueAsNumber;
-        if (Number.isFinite(value)) zoom(active, value / 100);
-        zoomNumber.value = Math.round(active.scale * 100);
+    if (zoomButton && zoomPanel && zoomSlider && zoomNumber) {
+      // A text field avoids the number input's native wheel stepping and
+      // selection scrolling. The existing slider still owns the 15–200% range.
+      zoomNumber.type = "text";
+      zoomNumber.inputMode = "numeric";
+      zoomNumber.maxLength = 3;
+      zoomNumber.setAttribute("enterkeyhint", "done");
+      zoomNumber.setAttribute("autocomplete", "off");
+      zoomNumber.setAttribute("spellcheck", "false");
+      const syncNumber = (clearSelection = false) => {
+        const value = String(Math.round((active?.scale ?? preferredZoom) * 100));
+        if (zoomNumber.value !== value) zoomNumber.value = value;
+        zoomNumber.removeAttribute("aria-invalid");
+        if (clearSelection) {
+          zoomNumber.setSelectionRange(value.length, value.length);
+          zoomNumber.scrollLeft = 0;
+        }
       };
-      zoomNumber.addEventListener("change", commitNumber);
-      zoomNumber.addEventListener("keydown", event => {
-        if (event.key === "Enter") { event.preventDefault(); commitNumber(); closeZoom(); zoomButton.focus({ preventScroll: true }); }
+      const closeZoom = () => {
+        zoomPanel.hidden = true;
+        zoomButton.setAttribute("aria-expanded", "false");
+        syncNumber(true); // Dismissal cancels a draft; it never applies it.
+      };
+      zoomButton.addEventListener("click", () => {
+        if (zoomButton.disabled || !active?.viewport) return;
+        if (!zoomPanel.hidden) { closeZoom(); return; }
+        syncNumber(true);
+        zoomPanel.hidden = false;
+        zoomButton.setAttribute("aria-expanded", "true");
+        // Opening the slider must not select text or summon a mobile keyboard.
+        zoomSlider.focus({ preventScroll: true });
       });
-      zoomSlider.addEventListener("input", () => { zoom(active, Number(zoomSlider.value) / 100); zoomNumber.value = Math.round(active.scale * 100); });
+      zoomNumber.addEventListener("input", () => {
+        zoomNumber.removeAttribute("aria-invalid");
+        zoomNumber.scrollLeft = 0;
+      });
+      zoomNumber.addEventListener("blur", () => syncNumber(true));
+      zoomNumber.addEventListener("keydown", event => {
+        if (event.key !== "Enter" || event.isComposing || event.keyCode === 229
+          || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey
+          || zoomPanel.hidden || zoomButton.disabled) return;
+        event.preventDefault();
+        const draft = zoomNumber.value.trim();
+        if (!/^\d{1,3}$/.test(draft)) {
+          zoomNumber.setAttribute("aria-invalid", "true");
+          return;
+        }
+        zoom(active, Number(draft) / 100);
+        closeZoom();
+        zoomButton.focus({ preventScroll: true });
+      });
+      zoomSlider.addEventListener("input", () => {
+        zoom(active, Number(zoomSlider.value) / 100);
+        syncNumber(true);
+      });
       root.addEventListener("wheel", (event) => {
         const selected = !zoomPanel.hidden || document.activeElement === zoomButton || document.activeElement === zoomSlider;
-        if (!selected || zoomButton.disabled || event.ctrlKey || !event.deltaY || !event.target.closest(".map-stage")) return;
+        if (!selected || zoomButton.disabled || event.ctrlKey || event.metaKey || !event.deltaY || !event.target.closest(".map-stage")) return;
         event.preventDefault();
         zoom(active, active.scale + (event.deltaY < 0 ? .05 : -.05));
+        // Wheel zoom is an explicit live change: update even a focused field,
+        // discard its uncommitted draft and collapse selection without blur.
+        syncNumber(true);
       }, { passive: false });
       document.addEventListener("pointerdown", (event) => {
-        if (!event.target.closest("[data-map-zoom-control]")) closeZoom();
+        const control = event.target.closest("[data-map-zoom-control]");
+        if (!control || !root.contains(control)) closeZoom();
       });
       root.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && !zoomPanel.hidden) { event.preventDefault(); closeZoom(); zoomButton.focus({ preventScroll: true }); }
+        if (event.key === "Escape" && !event.isComposing && !zoomPanel.hidden) {
+          event.preventDefault(); closeZoom(); zoomButton.focus({ preventScroll: true });
+        }
       });
     }
     window.addEventListener("popstate", restoreHistory);
