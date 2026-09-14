@@ -540,11 +540,8 @@ html[lang="he"] .reader-controls .reader-number-error {
 
 /* Comment buttons use the pin's neutral resting/selected colors and hover
    ring, not the old rectangular form-button treatment. All dimensions derive
-   from the same universal control size; text actions remain readable capsules. */
-:root [data-ssm-comments] { --comment-button-ring: var(--soft-accent); }
-:root[data-theme="dark"] [data-ssm-comments] {
-  --comment-button-ring: color-mix(in srgb, var(--paper), var(--accent) 40%);
-}
+   from the same universal control size; text actions remain readable capsules.
+   Highlight color and thickness are shared with pin/share, not redefined here. */
 :root [data-ssm-comments] button {
   box-sizing: border-box;
   min-block-size: var(--control-size);
@@ -560,7 +557,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   background: var(--surface);
   color: var(--ink);
   border-color: var(--line-dark);
-  box-shadow: 0 0 0 3px var(--comment-button-ring);
+  box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
 }
 :root [data-ssm-comments] button:is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
 :root [data-ssm-comments] button:is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {

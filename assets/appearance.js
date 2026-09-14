@@ -109,13 +109,6 @@
   if (typeof document.createElement === "function" && document.head?.append) {
     const tagHoverStyle = document.createElement("style");
     tagHoverStyle.textContent = `
-      /* The pin ring needs more accent strength against dark surfaces.
-         Keep light mode, the pin artwork, and shared soft fills unchanged. */
-      :root[data-theme="dark"] .pin-toggle[aria-pressed="false"]:not(:disabled):is(:hover, :focus-visible),
-      :root[data-theme="dark"] .pin-toggle[aria-pressed="true"]:hover {
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--paper), var(--accent) 40%);
-      }
-
       /* Very compact cards use the same complete localized date as the other views. */
       :root .post-stream[data-layout="compact"] .post-date-full {
         display: inline;
@@ -252,6 +245,25 @@
       }
       :root[data-theme="dark"] {
         --line-strong: color-mix(in srgb, var(--line-dark) 72%, var(--ink));
+      }
+
+      /* One interaction-ring contract for existing and new controls. The
+         reusable class opts a control into this highlight without changing
+         its geometry, resting/selected colors, icon, or native behavior.
+         Only the shared color token changes in dark mode; never specialize
+         the highlight for individual controls or pin/open states. */
+      :root {
+        --control-highlight-width: 3px;
+        --control-highlight-color: var(--soft-accent);
+      }
+      :root[data-theme="dark"] {
+        --control-highlight-color: color-mix(in srgb, var(--paper), var(--accent) 40%);
+      }
+      :root :is(.control-highlight, .pin-toggle, .share-menu > summary):not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible) {
+        box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
+      }
+      :root :is(.control-highlight, .pin-toggle, .share-menu > summary):is(:disabled, [aria-disabled="true"]) {
+        box-shadow: none;
       }
       :root .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
         --post-frame-color: var(--line-strong);
