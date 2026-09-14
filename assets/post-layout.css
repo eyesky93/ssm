@@ -177,3 +177,24 @@ html { scrollbar-gutter: stable; }
 }
 /* Font loading must not change the date row's height and move all controls. */
 .article-topline .article-meta { line-height: 1.4; }
+
+/* A monograph chip shows this post's explicit position, not a total. Keep the
+   existing tag colors and use a separate class so hide-tag hover never replaces
+   the position with an X. The badge grows for additional digits in either direction. */
+.tag-chip:is(.card-tag, .article-tag)[data-monograph-order] { gap: .4em; }
+.post-monograph-order {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  min-inline-size: 1.5em;
+  block-size: 1.5em;
+  padding-inline: .3em;
+  border-radius: 999px;
+  background: var(--soft-accent);
+  color: var(--accent-strong);
+  font-family: var(--font-interface);
+  font-variant-numeric: tabular-nums;
+  font-size: .85em;
+  line-height: 1;
+  white-space: nowrap;
+}
