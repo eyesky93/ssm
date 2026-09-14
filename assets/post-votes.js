@@ -56,6 +56,20 @@ function renderCount(element, text) {
   if (element.textContent !== text) element.textContent = text;
 }
 
+// Absolutely positioned strips do not size their grid tracks. Reserve their
+// actual rendered width before revealing the counts. Keep the widest capacity
+// for this stream so refreshes, filtering and view changes cannot shrink it.
+export function reserveEngagementWidth(strip) {
+  const stream = strip?.closest?.(".post-stream");
+  if (!stream?.style?.setProperty || !strip?.getBoundingClientRect) return false;
+  const width = Math.ceil(strip.getBoundingClientRect().width);
+  if (!Number.isFinite(width) || width <= 0) return false;
+  const previous = Number.parseFloat(stream.style.getPropertyValue("--engagement-strip-min-width")) || 0;
+  if (width <= previous) return false;
+  stream.style.setProperty("--engagement-strip-min-width", `${width}px`);
+  return true;
+}
+
 function timeoutSignal(window, milliseconds) {
   const implementation = window.AbortSignal || globalThis.AbortSignal;
   return implementation?.timeout ? implementation.timeout(milliseconds) : undefined;
@@ -162,7 +176,9 @@ export function initializePostVotes(document, window, { randomId } = {}) {
       }
       // Reveal the entire strip only after the initial read settles. Counts and
       // widths are committed together above; later refreshes never hide it again.
-      button.closest?.("[data-post-engagement]")?.setAttribute?.("data-engagement-ready", String(group.initialLoadComplete));
+      const strip = button.closest?.("[data-post-engagement]");
+      reserveEngagementWidth(strip);
+      strip?.setAttribute?.("data-engagement-ready", String(group.initialLoadComplete));
     }
   }
   function unavailable(group, notify = true) {
@@ -282,6 +298,19 @@ export function initializePostVotes(document, window, { randomId } = {}) {
   }
   if (!observer) for (const group of groups.values()) reveal(group);
 
+  // Hidden inline-browser cards measure as zero until they become visible.
+  // Re-measure those transitions and font/zoom changes without polling or any
+  // additional API requests. Updating only a growing minimum avoids RO loops.
+  let resizeObserver = null;
+  if (typeof window.ResizeObserver === "function") {
+    resizeObserver = new window.ResizeObserver((entries) => {
+      for (const entry of entries) reserveEngagementWidth(entry.target);
+    });
+    const strips = new Set([...groups.values()].flatMap((group) =>
+      group.buttons.map((button) => button.closest?.("[data-post-engagement]"))));
+    for (const strip of strips) if (strip) resizeObserver.observe(strip);
+  }
+
   window.addEventListener?.("online", () => {
     for (const group of groups.values()) if (group.requested && !group.available) void load(group, true);
   });
@@ -292,6 +321,7 @@ export function initializePostVotes(document, window, { randomId } = {}) {
   return {
     groups,
     observer,
+    resizeObserver,
     ready: Promise.allSettled(initial),
     load: (postId, force = true) => groups.has(postId) ? load(groups.get(postId), force) : Promise.resolve(null),
   };

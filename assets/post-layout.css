@@ -198,3 +198,35 @@ html { scrollbar-gutter: stable; }
   line-height: 1;
   white-space: nowrap;
 }
+
+/* The containing block excludes the card's 1px border. Put the tabs immediately
+   BELOW that border, just like the reader dock, never one pixel inside it. */
+.post-card > .post-engagement { inset-block-start: calc(100% + 1px); }
+
+/* Cards and reader pages share the same real top border and fixed tab height.
+   Hover/selection changes its color, not its thickness or position. */
+:is(.post-card, .article-engagement-dock) > .post-engagement > :is(.post-vote, .post-comments, .post-views) {
+  border-block-start: 1px solid var(--line);
+  background-clip: padding-box;
+}
+:is(.post-card, .article-engagement-dock) > .post-engagement > .post-vote:is([aria-pressed="true"], :hover, :focus-visible) {
+  box-shadow: none;
+}
+:is(.post-card, .article-engagement-dock) > .post-engagement > .post-vote[aria-pressed="true"] {
+  border-block-start-color: var(--accent);
+}
+:is(.post-card, .article-engagement-dock) > .post-engagement > .post-vote:hover:not(:disabled),
+:is(.post-card, .article-engagement-dock) > .post-engagement > .post-vote:focus-visible {
+  border-block-start-color: var(--accent-strong);
+}
+
+/* Absolute-positioned tabs cannot contribute to a grid track's intrinsic size.
+   Preserve the normal tile density until a measured count strip actually needs
+   more room; then widen the track rather than spill into a neighboring post.
+   Both sides' padding and borders are included, with the same rule in RTL. */
+.post-stream[data-layout="grid"] {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(18rem, calc(var(--engagement-strip-min-width, 0px) + 2rem + 2px))), 1fr));
+}
+.post-stream[data-layout="compact"] {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(15rem, calc(var(--engagement-strip-min-width, 0px) + 1.5rem + 2px))), 1fr));
+}
