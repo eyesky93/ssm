@@ -686,9 +686,12 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 
 /* Posts and comments use the same engagement segments, not the independent
-   round-button family. Keep one interaction contract for every active tab. */
+   round-button family. Keep one interaction contract for every active tab.
+   Both actions use the normal foreground at rest; muted ink is reserved for
+   passive counters such as views, never the clickable comments segment. */
 :root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments) {
   font: inherit;
+  color: var(--ink);
   min-block-size: 0;
   max-block-size: var(--stat-segment-height);
   border-block-start: 1px solid var(--line);
@@ -698,8 +701,8 @@ html[lang="he"] .reader-controls .reader-number-error {
   box-shadow: none;
   transform: none;
   cursor: pointer;
+  pointer-events: auto;
 }
-:root .post-engagement > :is(a, button).post-comments { color: var(--muted); }
 :root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments)[aria-pressed="true"] {
   z-index: 7;
   background: var(--soft-accent);
