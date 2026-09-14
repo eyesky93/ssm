@@ -8,11 +8,11 @@ html { scrollbar-gutter: stable; }
    Other links and keyboard-focus outlines keep their existing styling. */
 .post-card h2 a:hover { text-decoration: none; }
 
-/* SSM is the home link. Away from the main page its background uses the
-   selected accent only on hover; the normal background and lettering stay unchanged. */
-.wordmark:not([aria-current="page"]):hover { background: var(--accent); }
+/* SSM keeps its monochrome background and lettering on every page and in
+   every interaction state. Only switching the site theme inverts its colors. */
 .wordmark,
-.wordmark:is(:hover, :focus-visible, :active, :visited) {
+.wordmark:is(:hover, :focus, :focus-visible, :active, :visited) {
+  background: var(--inverse-bg);
   color: var(--inverse-ink);
   text-decoration: none;
 }
