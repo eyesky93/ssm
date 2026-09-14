@@ -4,6 +4,7 @@
    in this size family; their existing appearance and behavior stay untouched. */
 :root {
   --control-size: 2.9rem;
+  --control-capsule-gap: .5rem;
   --control-inner-size: calc(var(--control-size) - 2px);
   --header-control-size: var(--control-size);
   --reader-control-size: var(--control-size);
@@ -12,7 +13,11 @@
 /* Retain the component names as aliases, never independent size settings.
    Search, the settings outline, layout track and vertical color capsule all
    derive their existing grid calculations from the header alias. */
-.header-controls { --header-control-size: var(--control-size); }
+.header-controls {
+  --header-control-size: var(--control-size);
+  --header-control-gap: var(--control-capsule-gap);
+  --header-control-half-gap: calc(var(--control-capsule-gap) / 2);
+}
 .reader-controls { --reader-control-size: var(--control-size); }
 
 /* Single-height capsules. Text may wrap rather than clip at extreme zoom. */
@@ -118,8 +123,9 @@
 }
 .accent-panel,
 .view-switch { width: var(--control-size); }
-.toolbar-view { width: auto; height: var(--control-size); }
-.toolbar-view > .view-switch { width: auto; height: var(--control-size); }
+/* The inline layout selector owns three cells, not one button's flex basis.
+   Size its host from the complete track so the capsule cannot clip its choices. */
+:root .toolbar-view { flex: 0 0 auto; width: max-content; height: var(--control-size); }
 
 /* Search's enclosing 1px frame owns the outside diameter. Its buttons and
    input fill the inside, without growing the capsule or clipping its curves. */
@@ -137,18 +143,27 @@
   .post-stream[data-layout="list"] .post-card > p { padding-inline-end: calc(var(--control-size) + .8rem); }
 }
 
-/* Directory mode capsule: use the same overlay border as the layout capsule,
-   so its outside height equals a button instead of adding padding and borders. */
+/* Layout and Tags/Library are the same capsule: one outside frame, circular
+   choices, a neutral selected fill and accent feedback only on other choices. */
+:root .toolbar-view > .view-switch,
 :root .map-switch {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: max-content;
   height: var(--control-size);
   padding: 0;
   border: 0;
-  gap: .5rem;
+  border-radius: 999px;
+  gap: var(--control-capsule-gap);
+  background: var(--surface);
+  box-shadow: none;
   overflow: hidden;
   isolation: isolate;
 }
 .map-switch { position: relative; }
-.map-switch::after {
+:root .toolbar-view > .view-switch::after,
+:root .map-switch::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -157,6 +172,98 @@
   border-radius: inherit;
   pointer-events: none;
 }
+:root .toolbar-view .view-switch > button,
+:root [data-directory] .map-switch > a {
+  display: grid;
+  place-items: center;
+  position: relative;
+  z-index: 1;
+  padding: .65rem;
+  border: 1px solid transparent;
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: none;
+  transform: none;
+}
+:root .toolbar-view .view-switch > button:is(:hover, :focus-visible),
+:root [data-directory] .map-switch > a:is(:hover, :focus-visible) {
+  z-index: 3;
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
+}
+:root .toolbar-view .view-switch > button[aria-pressed="true"],
+:root .toolbar-view .view-switch > button[aria-pressed="true"]:is(:hover, :focus-visible),
+:root [data-directory] .map-switch > a[aria-current="true"],
+:root [data-directory] .map-switch > a[aria-current="true"]:is(:hover, :focus-visible) {
+  z-index: 3;
+  background: var(--inverse-bg);
+  border-color: var(--inverse-bg);
+  color: var(--inverse-ink);
+}
+/* Keep keyboard focus inside the clipped capsule rather than losing its ring. */
+:root .toolbar-view .view-switch > button:focus-visible,
+:root [data-directory] .map-switch > a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -4px;
+}
+:root .toolbar-view .view-switch svg,
+:root .map-switch svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Mirror only the Directory's zoom/history stack: right in LTR, left in RTL.
+   The mode capsule and its adjacent tag filters retain their top-row position. */
+:root [data-directory] .map-toolbar {
+  inset-inline-start: auto;
+  /* Leave a separate lane for the fixed Back to top button when the page's
+     outside gutter is narrower than a control. Wide screens keep .75rem. */
+  inset-inline-end: max(.75rem, calc(var(--control-size) + 2rem - (100vw - 100%) / 2));
+  gap: .5rem;
+}
+:root [data-directory] .map-history-controls { gap: .5rem; }
+
+/* Directory and reader navigation share the same neutral buttons and shadow.
+   Keep hover neutral too; this must not change the independent count-link halo. */
+:root .reader-controls :is(.back-to-top, .post-navigation > a, .post-position),
+:root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]) {
+  border: 1px solid var(--line-dark);
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  box-shadow: 0 8px 24px rgb(0 0 0 / .18);
+  transition: none;
+  -webkit-tap-highlight-color: transparent;
+}
+/* Reader number/input typography has its own responsive overrides. */
+:root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]) {
+  font-family: var(--font-interface);
+  font-size: .75rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+:root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]):is(:hover, :focus, :focus-visible, :active) {
+  border-color: var(--line-dark);
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+}
+:root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]):focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+}
+:root [data-directory] .map-toolbar .map-history-button { padding: .72rem; }
+:root [data-directory] .map-toolbar [data-map-zoom-toggle] { padding: .25rem; }
+:root [data-directory] .map-history-button svg {
+  width: 100%;
+  height: 100%;
+  stroke-width: 1.8;
+}
+:root [data-directory] .map-toolbar button:disabled { opacity: .45; cursor: default; }
 :root .map-toolbar,
 :root .map-zoom-control { width: var(--control-size); }
 :root .map-zoom-control { height: var(--control-size); }
@@ -167,14 +274,23 @@
   height: calc(5 * var(--control-size));
   padding-block-end: calc(var(--control-size) + .5rem);
   border-radius: calc(var(--control-size) / 2);
+  border-color: var(--line-dark);
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  box-shadow: 0 8px 24px rgb(0 0 0 / .18);
 }
 :root .map-zoom-entry {
   width: var(--control-inner-size);
   height: var(--control-inner-size);
+  color: var(--inverse-ink);
 }
-:root .map-zoom-entry input { width: calc(var(--control-inner-size) - 1rem); }
+:root .map-zoom-entry input {
+  width: calc(var(--control-inner-size) - 1rem);
+  color: var(--inverse-ink);
+  caret-color: var(--inverse-ink);
+}
 :root [data-reader-article][data-directory] .map-stage > .map-filter-bar {
-  inset-inline-start: calc(2 * var(--control-size) + 1.75rem);
+  inset-inline-start: calc(2 * var(--control-size) + var(--control-capsule-gap) + 1.25rem);
   padding-block: 0;
 }
 @keyframes map-zoom-open {

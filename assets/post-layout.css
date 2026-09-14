@@ -178,21 +178,28 @@ html { scrollbar-gutter: stable; }
 
 /* A monograph chip shows this post's explicit position, not a total. Keep the
    existing tag colors and use a separate class so hide-tag hover never replaces
-   the position with an X. The badge grows for additional digits in either direction. */
-.tag-chip:is(.card-tag, .article-tag)[data-monograph-order] { gap: .4em; }
+   the position with an X. Its circle, numeral and inset scale with the shared
+   control size, not the smaller compact-card font. Extra digits can widen it. */
+.tag-chip:is(.card-tag, .article-tag)[data-monograph-order] {
+  --monograph-order-size: calc(var(--control-size) * .625);
+  --monograph-order-inset: calc((var(--control-size) - var(--monograph-order-size)) / 2 - 1px);
+  gap: .5em;
+  padding-block: var(--monograph-order-inset);
+  padding-inline-end: var(--monograph-order-inset);
+}
 .post-monograph-order {
   display: inline-grid;
   place-items: center;
   flex: 0 0 auto;
-  min-inline-size: 1.5em;
-  block-size: 1.5em;
+  min-inline-size: var(--monograph-order-size);
+  block-size: var(--monograph-order-size);
   padding-inline: .3em;
   border-radius: 999px;
   background: var(--soft-accent);
   color: var(--accent-strong);
   font-family: var(--font-interface);
   font-variant-numeric: tabular-nums;
-  font-size: .85em;
+  font-size: calc(var(--monograph-order-size) / 2);
   line-height: 1;
   white-space: nowrap;
 }
@@ -247,7 +254,7 @@ html { scrollbar-gutter: stable; }
 }
 /* Share the subtitle's last baseline with the date on wider screens. The
    title/tools keep their full row; long subtitles wrap within their own column
-   without moving the date away from the logical end or covering the tabs.
+   without moving the date away from the edge or covering the tabs.
    Phones retain the stacked flow above, so neither text nor date is clipped. */
 @media (min-width: 701px) {
   [data-reader-article]:not([data-directory]) > .article-header {
@@ -478,4 +485,28 @@ html { scrollbar-gutter: stable; }
 }
 :root[dir="rtl"] .post-engagement .post-vote[data-engagement-highlight="true"]:not(:disabled) .post-vote-count {
   border-right-color: var(--accent-strong);
+}
+
+/* Invalid Enter restores the number circle; only this small, unframed line
+   appears beside it. Absolute positioning keeps every control in place.
+   The initially empty live region has no box, padding or visible label. */
+.reader-controls .reader-number-error {
+  position: absolute;
+  inset-inline-end: calc(100% + .5rem);
+  inset-block-end: .5rem;
+  inline-size: max-content;
+  max-inline-size: max(0px, calc(100vw - var(--reader-control-size) - 2.5rem - env(safe-area-inset-left) - env(safe-area-inset-right)));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--paper);
+  color: var(--muted);
+  box-shadow: none;
+  font: .75rem/1.4 var(--font-interface);
+  text-align: end;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+html[lang="he"] .reader-controls .reader-number-error {
+  font-family: var(--font-interface-hebrew), var(--font-interface);
 }

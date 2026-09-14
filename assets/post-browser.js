@@ -951,8 +951,18 @@
     const navigation = dock.querySelector("[data-post-navigation]");
     const button = navigation?.querySelector("[data-reader-jump]");
     const input = navigation?.querySelector("[data-reader-jump-input]");
+    const error = navigation?.querySelector("[data-reader-number-error]");
     let sequence = null;
     let pending = false;
+    function clearNumberError() {
+      if (error) error.textContent = "";
+      button?.removeAttribute("aria-describedby");
+    }
+    function showNumberError() {
+      if (!error || !sequence) return;
+      error.textContent = (error.dataset.message || "Enter an integer between 1 and {total}").replace("{total}", String(sequence.total));
+      button.setAttribute("aria-describedby", error.id);
+    }
     function closeJump(restoreFocus = false) {
       if (!input || input.hidden) return;
       input.hidden = true;
@@ -974,6 +984,7 @@
       dock.inert = !visible;
       if (!visible) {
         closeJump();
+        clearNumberError();
         if (dock.contains(document2.activeElement)) document2.activeElement.blur?.();
       }
     }
@@ -989,7 +1000,10 @@
         if (button && input) {
           button.disabled = navigation.hidden;
           input.removeAttribute("aria-invalid");
-          if (navigation.hidden) closeJump();
+          if (navigation.hidden) {
+            closeJump();
+            clearNumberError();
+          } else if (error?.textContent) showNumberError();
         }
         updateVisibility();
       }
@@ -997,6 +1011,7 @@
     if (button && input) {
       button.addEventListener("click", () => {
         if (dock.inert || navigation.hidden || !sequence || sequence.total <= 1 || !input.hidden) return;
+        clearNumberError();
         input.value = sequence.current === null ? "" : String(sequence.current);
         input.removeAttribute("aria-invalid");
         button.hidden = true;
@@ -1019,16 +1034,21 @@
         const stream = document2.querySelector("[data-post-stream]");
         const target = readerJumpTarget(stream?.children || [], input.value, sequence.total);
         if (!target) {
-          input.setAttribute("aria-invalid", "true");
-          input.select();
+          closeJump(true);
+          showNumberError();
           return;
         }
         closeJump();
+        clearNumberError();
         window2.location.assign(target);
       });
       input.addEventListener("blur", () => closeJump());
+      button.addEventListener("blur", clearNumberError);
       document2.addEventListener("pointerdown", (event) => {
-        if (!input.hidden && event.target !== input && !button.contains(event.target)) closeJump();
+        if (event.target !== input && !button.contains(event.target)) {
+          closeJump();
+          clearNumberError();
+        }
       });
     }
     updateVisibility();
