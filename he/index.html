@@ -18,7 +18,8 @@
   html[data-home-starting] body, html[data-home-starting] body * { visibility: hidden !important; }
   html[data-home-starting] body * { transition: none !important; }
 </style>
-<script data-home-first-paint data-home-state-scripts="[&quot;site&quot;,&quot;pins&quot;,&quot;post-browser&quot;,&quot;read-status&quot;,&quot;post-votes&quot;,&quot;post-tag-scroll&quot;]">// Only localized home/catalogue pages install this before their first paint.
+<script data-home-first-paint data-home-state-scripts="[&quot;site&quot;,&quot;pins&quot;,&quot;post-browser&quot;,&quot;read-status&quot;,&quot;post-votes&quot;,&quot;post-tag-scroll&quot;]">// Installed before the first paint of home, grid, reader, About and Directory
+// pages. The historical data-home-* attributes remain a single shared gate.
 // Offline owner editions retain their own startup and make no new requests.
 (() => {
   if (window.location.protocol === "file:") return;
@@ -47,7 +48,8 @@
     document.body.getBoundingClientRect();
     Promise.resolve(document.fonts?.ready).catch(() => {}).then(() => {
       if (released) return;
-      // Let existing ResizeObservers/tag-row measurements settle before reveal.
+      // Let existing ResizeObservers/tag-row and Directory measurements settle
+      // at the saved scale and final font metrics before revealing any controls.
       window.requestAnimationFrame(() => window.requestAnimationFrame(reveal));
     });
   }
