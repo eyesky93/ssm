@@ -1,0 +1,218 @@
+/* Shared control geometry. Change only --control-size to resize the site's
+   round controls and matching capsules. Loaded last in <head>, before paint.
+   Count badges, checkboxes, text typography and engagement tabs are not buttons
+   in this size family; their existing appearance and behavior stay untouched. */
+:root {
+  --control-size: 2.9rem;
+  --control-inner-size: calc(var(--control-size) - 2px);
+  --header-control-size: var(--control-size);
+  --reader-control-size: var(--control-size);
+}
+
+/* Retain the component names as aliases, never independent size settings.
+   Search, the settings outline, layout track and vertical color capsule all
+   derive their existing grid calculations from the header alias. */
+.header-controls { --header-control-size: var(--control-size); }
+.reader-controls { --reader-control-size: var(--control-size); }
+
+/* Single-height capsules. Text may wrap rather than clip at extreme zoom. */
+:root .control-capsule,
+:root .wordmark,
+:root .tag-chip,
+:root .search-tag,
+:root .search-submit,
+:root .primary-button,
+:root .language-nav a,
+:root .language-nav select,
+:root .post-stream[data-layout] .tag-chip,
+:root .subscribe-dialog .topic-option span,
+:root .subscribe-dialog .language-select-all,
+:root .newsletter-settings .topic-option,
+:root .newsletter-settings button {
+  box-sizing: border-box;
+  min-height: var(--control-size);
+}
+:root .wordmark { height: var(--control-size); padding-block: 0; }
+
+/* A split tag has its own outside border: do not count those two pixels twice. */
+:root .tag-option,
+:root .post-stream[data-layout] .tag-option {
+  box-sizing: border-box;
+  min-height: var(--control-size);
+}
+:root .tag-option > .tag-chip,
+:root .tag-option > .tag-chip:is(:hover, :focus-visible),
+:root .post-stream[data-layout] .tag-option > .tag-chip,
+:root .post-stream[data-layout] .tag-option > .tag-chip:is(:hover, :focus-visible) {
+  min-height: var(--control-inner-size);
+}
+
+/* All standalone circular controls, including compact cards, dialogs, comment
+   sign-in providers, Directory controls and newsletter appearance controls. */
+:root .round-control,
+:root .settings-toggle,
+:root .settings-action,
+:root .accent-control,
+:root .view-control,
+:root .accent-picker,
+:root .accent-reset,
+:root .random-post,
+:root .theme-toggle,
+:root .header-controls > .language-nav,
+:root .header-controls > .language-nav > a,
+:root .header-controls > .language-nav > select,
+:root .view-switch button,
+:root .clear-filter,
+:root .filter-reset-slot,
+:root .pin-toggle,
+:root .post-stream[data-layout] .pin-toggle,
+:root .share-menu summary,
+:root .share-options a,
+:root .share-options button,
+:root .search-dialog-close,
+:root .subscription-close,
+:root .back-to-top,
+:root .post-navigation > a,
+:root .reader-controls .post-position,
+:root [data-ssm-comments] .comment-provider-button,
+:root [data-ssm-comments] .comment-toolbar [data-format="help"],
+:root [data-directory] .map-switch > a,
+:root .map-toolbar .map-history-button,
+:root .map-zoom-control > button,
+:root .settings-theme-track .settings-theme-choice:not(.settings-theme-auto),
+:root .newsletter-settings button.settings-color-reset {
+  box-sizing: border-box;
+  width: var(--control-size);
+  min-width: var(--control-size);
+  max-width: var(--control-size);
+  height: var(--control-size);
+  min-height: var(--control-size);
+  max-height: var(--control-size);
+  inline-size: var(--control-size);
+  min-inline-size: var(--control-size);
+  max-inline-size: var(--control-size);
+  block-size: var(--control-size);
+  min-block-size: var(--control-size);
+  max-block-size: var(--control-size);
+  flex: 0 0 var(--control-size);
+  border-radius: 50%;
+}
+
+/* Keep full-size SVGs comfortably inset, including previously smaller pins. */
+:root .pin-toggle,
+:root .post-stream[data-layout] .pin-toggle,
+:root .share-menu summary,
+:root .share-options a,
+:root .share-options button,
+:root .subscription-close {
+  padding: max(0px, calc((var(--control-size) - 1.35rem - 2px) / 2));
+}
+
+/* These are hosts, not round buttons. More-specific existing rules keep the
+   horizontal layout track and the two-cell vertical color capsule intact. */
+.color-settings,
+.view-settings {
+  flex-basis: var(--control-size);
+  width: var(--control-size);
+  height: var(--control-size);
+}
+.accent-panel,
+.view-switch { width: var(--control-size); }
+.toolbar-view { width: auto; height: var(--control-size); }
+.toolbar-view > .view-switch { width: auto; height: var(--control-size); }
+
+/* Search's enclosing 1px frame owns the outside diameter. Its buttons and
+   input fill the inside, without growing the capsule or clipping its curves. */
+:root .search-toggle,
+:root .search-clear {
+  box-sizing: border-box;
+  flex: 0 0 var(--control-inner-size);
+  width: var(--control-inner-size);
+  height: var(--control-inner-size);
+}
+:root .search-clear { margin-inline-end: 0; }
+:root .subscription-intro { padding-inline-end: calc(var(--control-size) + .5rem); }
+.post-navigation { grid-template-columns: var(--control-size) minmax(0, 1fr) var(--control-size); }
+@media (min-width: 701px) {
+  .post-stream[data-layout="list"] .post-card > p { padding-inline-end: calc(var(--control-size) + .8rem); }
+}
+
+/* Directory mode capsule: use the same overlay border as the layout capsule,
+   so its outside height equals a button instead of adding padding and borders. */
+:root .map-switch {
+  height: var(--control-size);
+  padding: 0;
+  border: 0;
+  gap: .5rem;
+  overflow: hidden;
+  isolation: isolate;
+}
+.map-switch { position: relative; }
+.map-switch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border: 1px solid var(--line-dark);
+  border-radius: inherit;
+  pointer-events: none;
+}
+:root .map-toolbar,
+:root .map-zoom-control { width: var(--control-size); }
+:root .map-zoom-control { height: var(--control-size); }
+:root .map-zoom-panel {
+  box-sizing: border-box;
+  width: var(--control-size);
+  min-height: var(--control-size);
+  height: calc(5 * var(--control-size));
+  padding-block-end: calc(var(--control-size) + .5rem);
+  border-radius: calc(var(--control-size) / 2);
+}
+:root .map-zoom-entry {
+  width: var(--control-inner-size);
+  height: var(--control-inner-size);
+}
+:root .map-zoom-entry input { width: calc(var(--control-inner-size) - 1rem); }
+:root [data-reader-article][data-directory] .map-stage > .map-filter-bar {
+  inset-inline-start: calc(2 * var(--control-size) + 1.75rem);
+  padding-block: 0;
+}
+@keyframes map-zoom-open {
+  from { clip-path: inset(80% 0 0 round calc(var(--control-size) / 2)); }
+  to { clip-path: inset(0 round calc(var(--control-size) / 2)); }
+}
+
+/* Newsletter appearance capsules: replace every fixed track width and thumb
+   offset, not just the circle height. Logical positioning mirrors in RTL. */
+:root .settings-theme-track {
+  gap: .5rem;
+  grid-template-columns: calc(var(--control-size) + 2.5rem) repeat(2, var(--control-size));
+  width: calc(3 * var(--control-size) + 3.5rem);
+  height: var(--control-size);
+}
+:root .settings-theme-track .settings-theme-auto,
+:root .settings-theme-thumb {
+  width: calc(var(--control-size) + 2.5rem);
+  height: var(--control-size);
+}
+:root .settings-theme-track:has([value="light"]:checked) .settings-theme-thumb {
+  width: var(--control-size);
+  inset-inline-start: calc(var(--control-size) + 3rem);
+  transform: none;
+}
+:root .settings-theme-track:has([value="dark"]:checked) .settings-theme-thumb {
+  width: var(--control-size);
+  inset-inline-start: calc(2 * var(--control-size) + 3.5rem);
+  transform: none;
+}
+:root .settings-color-group {
+  gap: .5rem;
+  width: calc(2 * var(--control-size) + .5rem);
+  height: var(--control-size);
+  flex-basis: calc(2 * var(--control-size) + .5rem);
+}
+
+:root .settings-theme-thumb { transition: inset-inline-start .18s ease, width .18s ease; }
+@media (prefers-reduced-motion: reduce) {
+  :root .settings-theme-thumb { transition: none; }
+}
