@@ -380,3 +380,73 @@
 @media (prefers-reduced-motion: reduce) {
   :root .settings-theme-thumb { transition: none; }
 }
+
+/* Mobile reader dock: previous, editable position, next share one bottom row.
+   Back to top stays above its physical right edge, including in RTL. The
+   existing visibility model owns hiding; never reserve an empty upper row. */
+@media (max-width: 700px) {
+  :root .reader-controls {
+    width: calc(3 * var(--control-size) + 2 * var(--control-capsule-gap));
+    gap: var(--control-capsule-gap);
+  }
+  :root .reader-controls > [data-reader-top] {
+    margin-left: auto;
+    margin-right: 0;
+  }
+  :root .reader-controls .post-navigation:not([hidden]) {
+    display: grid;
+    grid-template-columns: repeat(3, var(--control-size));
+    grid-template-rows: var(--control-size);
+    gap: var(--control-capsule-gap);
+    width: 100%;
+  }
+  :root .reader-controls [data-post-prev] { grid-area: 1 / 1; }
+  :root .reader-controls :is([data-reader-jump], [data-reader-jump-input]) { grid-area: 1 / 2; }
+  :root .reader-controls [data-post-next] { grid-area: 1 / 3; }
+  /* Invalid-number feedback must remain on-screen above the whole dock,
+     not collide with Back to top or create a fourth navigation cell. */
+  :root .reader-controls .reader-number-error {
+    inset-inline-end: 0;
+    inset-block-end: calc(100% + var(--control-capsule-gap));
+    max-inline-size: min(20rem, calc(100vw - 2rem - env(safe-area-inset-left) - env(safe-area-inset-right)));
+  }
+
+  /* The toolbar keeps its ordinary wrapped flow and one shared control height.
+     Help is a flexible capsule at the end of the last line, not a fixed circle
+     whose diameter strands it on a separate row. No cloned or moved buttons. */
+  :root [data-ssm-comments] .comment-toolbar {
+    --comment-tool-size: calc(var(--control-size) - .4rem);
+    --comment-tool-gap: calc(var(--control-capsule-gap) * .4);
+    --comment-tool-inline-size: var(--comment-tool-size);
+    gap: var(--comment-tool-gap);
+  }
+  :root [data-ssm-comments] .comment-toolbar > button[data-format]:not([data-format="help"]) {
+    flex: 0 0 var(--comment-tool-inline-size);
+    width: var(--comment-tool-inline-size);
+    min-width: 0;
+    inline-size: var(--comment-tool-inline-size);
+    min-inline-size: 0;
+    block-size: var(--control-size);
+    min-block-size: var(--control-size);
+    padding-inline: .2rem;
+  }
+  :root [data-ssm-comments] .comment-toolbar > button[data-format="help"] {
+    flex: 1 1 var(--comment-tool-size);
+    width: auto;
+    min-width: var(--comment-tool-size);
+    max-width: none;
+    inline-size: auto;
+    min-inline-size: var(--comment-tool-size);
+    max-inline-size: none;
+    margin-inline: 0;
+    border-radius: 999px;
+  }
+}
+/* Wider phones fit nine ordinary tools per line instead of eight plus an
+   orphan Help row. Narrow phones retain the larger wrapped targets above.
+   Padding and gaps are included in the flex basis, including fractional px. */
+@media (min-width: 381px) and (max-width: 700px) {
+  :root [data-ssm-comments] .comment-toolbar {
+    --comment-tool-inline-size: min(var(--comment-tool-size), calc((100% - 8 * var(--comment-tool-gap)) / 9));
+  }
+}
