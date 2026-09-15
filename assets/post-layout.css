@@ -76,6 +76,9 @@ instead of letting the card layout lift all tools above the title. */
 .card-tags > :not([hidden]),
 .article-tags > :not([hidden]) {
   flex: 0 0 auto;
+  /* The row owns overflow. Capping a nowrap pill to the row width squeezes
+     its label underneath the count; keep the complete pill scrollable. */
+  max-width: none;
   white-space: nowrap;
   overflow-wrap: normal;
 }
