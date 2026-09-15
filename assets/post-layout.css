@@ -571,20 +571,22 @@ html[lang="he"] .reader-controls .reader-number-error {
 
 /* Standalone comment buttons share the pin's neutral states and highlight.
    Sorting keeps the existing page-layout capsule. Ordinary formatting tools
-   keep their original base styles; only Help is a standalone round button. */
+   keep their original base styles; only Help is a standalone round button.
+   Component palette tokens are consumed here and on hover/focus, so a
+   variant never loses its colors to these higher-specificity base rules. */
 :root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]) {
   box-sizing: border-box;
   min-block-size: var(--control-size);
   border: 1px solid var(--line-dark);
   border-radius: 999px;
-  background: var(--surface);
-  color: var(--ink);
+  background: var(--comment-control-bg, var(--surface));
+  color: var(--comment-control-ink, var(--ink));
   box-shadow: none;
   transform: none;
 }
 :root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(:disabled):is(:hover, :focus-visible) {
-  background: var(--surface);
-  color: var(--ink);
+  background: var(--comment-control-bg, var(--surface));
+  color: var(--comment-control-ink, var(--ink));
   border-color: var(--line-dark);
   box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
 }
@@ -611,17 +613,15 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 /* Match navigation's inverse palette: light circles and dark artwork in dark
    mode, with the corresponding inverse in light mode. Preserve the shared
-   size, icon inset, disabled state and existing hover/focus highlight. */
+   size, icon inset, disabled state and existing hover/focus highlight.
+   Set the shared component palette instead of competing with the base
+   selector: all providers keep these colors at rest, hover and focus. */
 :root :is([data-ssm-comments], .comment-section-heading) button.comment-provider-button {
+  --comment-control-bg: var(--inverse-bg);
+  --comment-control-ink: var(--inverse-ink);
   padding: max(0px, calc((var(--control-size) - 1.35rem - 2px) / 2));
   border-radius: 50%;
   overflow: hidden;
-  background: var(--inverse-bg);
-  color: var(--inverse-ink);
-}
-:root :is([data-ssm-comments], .comment-section-heading) button.comment-provider-button:not(:disabled):is(:hover, :focus-visible, :active) {
-  background: var(--inverse-bg);
-  color: var(--inverse-ink);
 }
 :root :is([data-ssm-comments], .comment-section-heading) .comment-provider-button > svg {
   display: block;
