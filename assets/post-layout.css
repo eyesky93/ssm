@@ -19,6 +19,37 @@ html { scrollbar-gutter: stable; }
 /* Removing the separate Home link must not move the date away from the edge. */
 .article-topline .article-meta { margin-inline-start: auto; }
 
+/* A reader title and its pin/share actions are one centered row. Keep
+the desktop tag placement; on phones give tags their own scrollable row
+instead of letting the card layout lift all tools above the title. */
+.article-heading { align-items: center; }
+.article-heading > .post-tools { align-items: center; }
+@media (max-width: 700px) {
+  .article-heading.post-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .8rem;
+  }
+  .article-heading > h1 {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+  .article-heading > .post-tools { display: contents; }
+  .article-heading > .post-tools > :is(.article-actions, .pin-toggle) {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    align-self: center;
+  }
+  .article-heading > .post-tools > .article-tags {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    min-width: 0;
+  }
+}
+
 /* Post tags scroll as one row; the main topic/filter menu is unchanged. */
 .card-tags,
 .article-tags,
