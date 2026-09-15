@@ -247,13 +247,14 @@
 :root [data-directory] .map-history-controls { gap: .5rem; }
 
 /* Directory and reader navigation share the same neutral buttons and shadow.
-   Keep hover neutral too; this must not change the independent count-link halo. */
+   Keep fill and ink neutral; the shared interaction ring below supplies feedback. */
 :root .reader-controls :is(.back-to-top, .post-navigation > a, .post-position),
 :root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]) {
   border: 1px solid var(--line-dark);
   background: var(--inverse-bg);
   color: var(--inverse-ink);
-  box-shadow: 0 8px 24px rgb(0 0 0 / .18);
+  --control-rest-shadow: 0 8px 24px rgb(0 0 0 / .18);
+  box-shadow: var(--control-rest-shadow);
   transition: none;
   -webkit-tap-highlight-color: transparent;
 }
@@ -272,6 +273,24 @@
 :root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]):focus-visible {
   outline: 3px solid var(--ink);
   outline-offset: 4px;
+}
+/* Navigation shares Pin/Share's global highlight width and theme/accent color.
+   Paint outside the unchanged circle and retain its floating shadow. Hover is
+   local to the actual control, never its dock; a mouse click does not latch it.
+   The input replacing the page number uses the same .post-position contract. */
+:root .reader-controls :is(.back-to-top, .post-navigation > a, .post-position):not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible),
+:root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]):not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible) {
+  border-color: var(--accent-strong);
+  box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color), var(--control-rest-shadow);
+  outline: none;
+}
+/* Forced-colors mode suppresses shadows; retain a real keyboard-focus outline. */
+@media (forced-colors: active) {
+  :root .reader-controls :is(.back-to-top, .post-navigation > a, .post-position):not(:disabled):not([aria-disabled="true"]):focus-visible,
+  :root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]):not(:disabled):not([aria-disabled="true"]):focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
 }
 :root [data-directory] .map-toolbar .map-history-button { padding: .72rem; }
 :root [data-directory] .map-toolbar [data-map-zoom-toggle] { padding: .25rem; }
