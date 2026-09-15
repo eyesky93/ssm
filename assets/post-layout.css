@@ -850,6 +850,8 @@ html[lang="he"] .reader-controls .reader-number-error {
    round-button family. Keep one interaction contract for every active tab.
    Both actions use the normal foreground at rest; muted ink is reserved for
    passive counters such as views, never the clickable comments segment. */
+:root { --engagement-tab-height: 2rem; }
+:root .post-engagement { --stat-segment-height: var(--engagement-tab-height); }
 :root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments) {
   font: inherit;
   color: var(--ink);
@@ -892,16 +894,60 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 :root .post-engagement > .post-vote[aria-busy="true"] { cursor: progress; }
 
-/* Each individual comment's bottom separator owns its attached strip; replies
-   remain below their parent's controls. Normal flow prevents overlaps at zoom. */
+/* A comment box is the same attachment anchor as a list-view post card.
+   Reserve the shared tab height OUTSIDE its border, including before replies
+   and after the last comment. The authored body never sets UI direction. */
+.comment-thread { isolation: isolate; }
+/* Contain the reserved bottom margin, so it cannot collapse through nested
+   articles and swallow the normal gap before the following comment. */
+.comment-thread .comment-item { display: flow-root; }
+.comment-box {
+  --post-card-padding-inline: clamp(.75rem, 2vw, 1rem);
+  --post-frame-color: var(--line);
+  position: relative;
+  overflow: visible;
+  border-color: var(--post-frame-color);
+}
+.comment-box:has(> .comment-engagement-dock) {
+  margin-block-end: var(--engagement-tab-height);
+}
 .comment-engagement-dock {
   display: flex;
-  justify-content: flex-end;
-  border-block-start: 1px solid var(--line);
-  margin-block: .75rem 1rem;
+  inline-size: max-content;
   min-inline-size: 0;
+  border: 0;
 }
-.comment-item:has(> .comment-engagement-dock) { border-block-end: 0; }
+/* One placement rule owns both kinds of attached controls. Keep the existing
+   physical end anchor because post-engagement itself deliberately uses LTR. */
+:root :is(.post-card > .post-engagement, .comment-box > .comment-engagement-dock) {
+  position: absolute;
+  right: var(--post-card-padding-inline);
+  left: auto;
+  inset-block-start: calc(100% + 1px);
+  inset-block-end: auto;
+  margin: 0;
+  padding: 0;
+  transform: none;
+}
+:root[dir="rtl"] :is(.post-card > .post-engagement, .comment-box > .comment-engagement-dock) {
+  left: var(--post-card-padding-inline);
+  right: auto;
+}
+/* The neutral card frame responds to its body, not to its detached tabs.
+   Pinned/unread posts retain their existing specialized frame/ribbon states. */
+:root :is(.post-card:not(.unread-card):not(:has([data-pin-toggle][aria-pressed="true"])), .comment-box):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+  --post-frame-color: var(--line-dark);
+  border-color: var(--line-dark);
+}
+:root :is(.post-card, .comment-box):has(.post-engagement:is(:hover, :focus-within)) {
+  --post-frame-color: var(--line);
+  border-color: var(--line);
+}
+/* Lower only this card's strip while its body owns the frame. Hover/focus on
+   a tab restores its own layer; nested replies never highlight an ancestor. */
+:root :is(.post-card, .comment-box):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > :is(.post-engagement, .comment-engagement-dock) {
+  z-index: -1;
+}
 .comment-engagement { min-inline-size: calc(2 * var(--stat-segment-width)); }
 :root .comment-engagement > .post-comments:last-child { border-bottom-right-radius: .5rem; }
 :root[dir="rtl"] .comment-engagement > .post-comments:last-child {
