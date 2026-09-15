@@ -727,6 +727,57 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* Paint an empty Markdown quote immediately; no placeholder enters the text. */
 .comment-preview blockquote { min-block-size: 1.75em; }
 
+/* Authentication changes visibility, not the lifetime of the editor or draft. */
+:root [data-ssm-comments] .comment-composer[hidden] { display: none; }
+:root [data-ssm-comments] .comment-identity[data-signed-in="false"] {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+:root [data-ssm-comments] .comment-identity[data-signed-in="false"] > .comment-providers {
+  justify-content: center;
+}
+:root [data-ssm-comments] .comment-signin-label { margin: 0; }
+/* Session actions share the toolbar; Logout is after Help, nearest its corner. */
+:root [data-ssm-comments] .comment-toolbar-session {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: var(--comment-tool-gap, .2rem);
+  margin-inline-start: auto;
+}
+:root [data-ssm-comments] .comment-toolbar-session > button {
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+:root [data-ssm-comments] .comment-toolbar-session [data-format="help"] { margin-inline: 0; }
+:root [data-ssm-comments] [data-comment-logout] > svg { inline-size: 1.35rem; block-size: 1.35rem; }
+:root [data-ssm-comments] [data-comment-logout]:dir(rtl) > svg { transform: scaleX(-1); }
+@media (max-width: 700px) {
+  :root [data-ssm-comments] .comment-toolbar-session {
+    flex: 1 0 calc(2 * var(--control-size) + var(--comment-tool-gap, .2rem));
+  }
+  :root [data-ssm-comments] .comment-toolbar-session > button[data-format="help"] {
+    flex: 1 1 var(--control-size);
+    width: auto;
+    min-width: var(--control-size);
+    max-width: none;
+    inline-size: auto;
+    min-inline-size: var(--control-size);
+    max-inline-size: none;
+    border-radius: 999px;
+  }
+}
+/* With a second end action, ten compact tools fit the wider-phone first row;
+   the remaining six leave room for Help and the full-size Logout on row two. */
+@media (min-width: 381px) and (max-width: 700px) {
+  :root [data-ssm-comments] .comment-toolbar:has(.comment-toolbar-session) {
+    --comment-tool-inline-size: min(var(--comment-tool-size), calc((100% - 9 * var(--comment-tool-gap)) / 10));
+  }
+}
+
 /* Every comment, including a reply, owns one box. Replies remain outside the
    parent's box so nesting does not repeatedly consume the reading width.
    Reuse the site's neutral surfaces/borders; never derive UI direction from
