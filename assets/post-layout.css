@@ -541,7 +541,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* Standalone comment buttons share the pin's neutral states and highlight.
    Sorting keeps the existing page-layout capsule. Ordinary formatting tools
    keep their original base styles; only Help is a standalone round button. */
-:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]) {
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]) {
   box-sizing: border-box;
   min-block-size: var(--control-size);
   border: 1px solid var(--line-dark);
@@ -551,21 +551,21 @@ html[lang="he"] .reader-controls .reader-number-error {
   box-shadow: none;
   transform: none;
 }
-:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(:disabled):is(:hover, :focus-visible) {
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(:disabled):is(:hover, :focus-visible) {
   background: var(--surface);
   color: var(--ink);
   border-color: var(--line-dark);
   box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
 }
-:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
-:root [data-ssm-comments] button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
   background: var(--inverse-bg);
   color: var(--inverse-ink);
   border-color: var(--inverse-bg);
 }
 /* Low-specificity geometry cannot override the provider's own icon inset.
    Longer text actions remain capsules; the layout capsule sizes its own cells. */
-:root [data-ssm-comments] :where(.comment-refresh-control button, .comment-provider-button, .comment-actions > button[aria-pressed]) {
+:root :is([data-ssm-comments], .comment-section-heading) :where(.comment-refresh-control button, .comment-provider-button, .comment-actions > button[aria-pressed]) {
   inline-size: var(--control-size);
   min-inline-size: var(--control-size);
   max-inline-size: var(--control-size);
@@ -581,18 +581,18 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* Match navigation's inverse palette: light circles and dark artwork in dark
    mode, with the corresponding inverse in light mode. Preserve the shared
    size, icon inset, disabled state and existing hover/focus highlight. */
-:root [data-ssm-comments] button.comment-provider-button {
+:root :is([data-ssm-comments], .comment-section-heading) button.comment-provider-button {
   padding: max(0px, calc((var(--control-size) - 1.35rem - 2px) / 2));
   border-radius: 50%;
   overflow: hidden;
   background: var(--inverse-bg);
   color: var(--inverse-ink);
 }
-:root [data-ssm-comments] button.comment-provider-button:not(:disabled):is(:hover, :focus-visible, :active) {
+:root :is([data-ssm-comments], .comment-section-heading) button.comment-provider-button:not(:disabled):is(:hover, :focus-visible, :active) {
   background: var(--inverse-bg);
   color: var(--inverse-ink);
 }
-:root [data-ssm-comments] .comment-provider-button > svg {
+:root :is([data-ssm-comments], .comment-section-heading) .comment-provider-button > svg {
   display: block;
   width: 1.35rem;
   height: 1.35rem;
@@ -602,11 +602,11 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 /* Only the standalone refresh button needs room for the pin-style ring.
    Never raise every sort cell above the layout capsule's outside border. */
-:root [data-ssm-comments] .comment-refresh-control .view-switch { overflow: visible; }
-:root [data-ssm-comments] .comment-refresh-control .view-switch > button {
+:root :is([data-ssm-comments], .comment-section-heading) .comment-refresh-control .view-switch { overflow: visible; }
+:root :is([data-ssm-comments], .comment-section-heading) .comment-refresh-control .view-switch > button {
   border-color: var(--line-dark);
 }
-:root [data-ssm-comments] .comment-refresh-control svg {
+:root :is([data-ssm-comments], .comment-section-heading) .comment-refresh-control svg {
   width: 1.35rem;
   height: 1.35rem;
 }
@@ -615,7 +615,7 @@ html[lang="he"] .reader-controls .reader-number-error {
    The arrowheads point counterclockwise: every full turn follows that same
    direction without reversing. Clearing loading restores the resting icon. */
 @media (prefers-reduced-motion: no-preference) {
-  :root [data-ssm-comments] [data-comment-refresh]:disabled > svg {
+  :root :is([data-ssm-comments], .comment-section-heading) [data-comment-refresh]:disabled > svg {
     transform-box: view-box;
     transform-origin: 50% 50%;
     animation: comment-refresh-turn 1.6s linear infinite;
@@ -625,7 +625,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   from { transform: rotate(0turn); }
   to { transform: rotate(-1turn); }
 }
-:root [data-ssm-comments] .comment-sort-controls [data-comment-sort="oldest"] > svg {
+:root :is([data-ssm-comments], .comment-section-heading) .comment-sort-controls [data-comment-sort="oldest"] > svg {
   width: 1.6rem;
   height: 1.6rem;
 }
@@ -694,6 +694,58 @@ html[lang="he"] .reader-controls .reader-number-error {
 .comment-body .comment-layout-block .katex-display { text-align: inherit; }
 .comment-body .katex, .comment-body pre, .comment-body code { direction: ltr; unicode-bidi: isolate; }
 :root [data-ssm-comments] .comment-toolbar > button[data-format][aria-pressed="true"]:not([data-format="help"]) { color: var(--accent-strong); background: var(--soft-accent); }
+
+/* Reserve the same title-row height before the controls mount, rather than
+   moving a second toolbar up from below the discussion after it has painted.
+   Logical flex order mirrors the title and controls with the page direction. */
+.comments-shell > :is(h2, .comment-section-heading) {
+  display: flex;
+  align-items: center;
+  min-block-size: var(--control-size);
+  gap: var(--control-capsule-gap);
+  margin-block: 0 1rem;
+}
+.comments-shell > .comment-section-heading > h2 {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  margin: 0;
+}
+.comment-section-heading > .comment-thread-header {
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  gap: var(--control-capsule-gap);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+/* Preserve a single row on narrow phones without shrinking any control. */
+@media (max-width: 360px) {
+  .comments-shell > h2,
+  .comments-shell > .comment-section-heading > h2 { font-size: 1.5rem; }
+}
+
+/* Every comment, including a reply, owns one box. Replies remain outside the
+   parent's box so nesting does not repeatedly consume the reading width.
+   Reuse the site's neutral surfaces/borders; never derive UI direction from
+   authored text or override the body/editor's independent line alignment. */
+:root .comment-thread .comment-item {
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+.comment-item + .comment-item { margin-block-start: 1rem; }
+.comment-box {
+  display: flow-root;
+  box-sizing: border-box;
+  min-inline-size: 0;
+  padding: clamp(.75rem, 2vw, 1rem);
+  border: 1px solid var(--line-dark);
+  border-radius: .75rem;
+  background: var(--surface);
+}
+.comment-box > :last-child { margin-block-end: 0; }
+.comment-item > .comment-replies { padding-block-start: .75rem; }
+.comment-box .comment-byline { min-inline-size: 0; }
 
 /* Signup explanations are removed at build time. Keep actual consent and
    actions legible in the normal foreground; the email example is untouched. */
