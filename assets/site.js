@@ -33,6 +33,19 @@ class TagControlInteractions {
     // component handler runs. Click still selects exactly once; keyboard focus,
     // modified links, hover timing, touch scrolling and exclude actions remain native.
     document.addEventListener("mousedown", event => this.onMouseDown(event), true);
+    document.addEventListener("pointermove", event => this.onPointerMove(event), { passive: true });
+  }
+
+  onPointerMove(event) {
+    // Restoration suppresses sticky touch hover, not the next real hover.
+    // Use the actual pointer, not coarse/hover media queries: hybrid devices
+    // can report touch capabilities while the reader is using a mouse.
+    // Pointerover can be caused by filtering/reordering under a stationary
+    // cursor; only an unpressed mouse/pen move over the number rearms the X.
+    if ((event.pointerType !== "mouse" && event.pointerType !== "pen") || event.buttons !== 0) return;
+    const option = event.target?.closest?.(".tag-count")?.closest?.(".tag-option");
+    if (!option?.classList.contains("is-restored") || option.classList.contains("is-excluded")) return;
+    option.classList.remove("is-restored");
   }
 
   onMouseDown(event) {
