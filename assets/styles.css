@@ -2065,7 +2065,7 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 .map-toolbar button:not(:disabled):is(:hover, :focus-visible), .map-toolbar > a:hover { color: var(--accent-strong); border-color: var(--accent-strong); }
 .map-toolbar button:disabled { opacity: .45; cursor: default; }
 .map-toolbar output { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
-.map-viewport { max-width: 100%; min-height: 12rem; max-height: clamp(22rem, 60vh, 38rem); overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y; direction: ltr; background: var(--paper); cursor: grab; }
+.map-viewport { max-width: 100%; min-height: 12rem; max-height: clamp(22rem, 60vh, 38rem); overflow: auto; overscroll-behavior: auto; touch-action: pan-x pan-y; direction: ltr; background: var(--paper); cursor: grab; }
 .map-viewport.is-panning, .map-viewport.is-panning * { cursor: grabbing; user-select: none; }
 .map-sizer { position: relative; margin-inline: auto; }
 .map-canvas { position: relative; width: max-content; padding: 2rem; transform-origin: left top; }
@@ -2103,7 +2103,7 @@ html[lang="he"] .map-filters { font-family: var(--font-interface-hebrew), var(--
 .map-zoom-panel { position: absolute; z-index: 2; inset-inline-start: calc(100% + .5rem); bottom: 0; display: flex; align-items: center; width: min(12rem, calc(100vw - 10rem)); min-height: 2.75rem; padding: .6rem .8rem; border: 1px solid var(--line-dark); border-radius: 1.5rem; background: var(--surface); }
 .map-zoom-panel input { width: 100%; min-width: 0; margin: 0; accent-color: var(--accent); direction: ltr; cursor: pointer; }
 
-.map-enhanced { overflow: clip; touch-action: none; min-height: 8rem; }
+.map-enhanced { overflow: clip; touch-action: pan-x pan-y; min-height: 8rem; }
 .map-enhanced .map-sizer { position: absolute; inset: 0; margin: 0; pointer-events: none; }
 .map-enhanced .map-canvas { pointer-events: auto; }
 .map-viewport { position: relative; }
@@ -2123,8 +2123,9 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 
 .map-switch svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
-/* Controls overlay the fixed frame in a single vertical column. */
-.map-stage > .map-switch { position: absolute; z-index: 4; inset-inline-start: .5rem; top: .5rem; margin: 0; }
+/* Keep Read beside the mode switch as one stable, direction-aware row. */
+.map-stage > .map-mode-controls { position: absolute; z-index: 4; inset-inline-start: .5rem; top: .5rem; display: flex; align-items: center; gap: var(--control-capsule-gap, .5rem); max-width: calc(100% - 1rem); margin: 0; }
+.map-mode-controls > :is(.map-switch, .map-read-filter) { flex: 0 0 auto; margin: 0; }
 .map-toolbar { width: 44px; gap: 8px; }
 .map-history-controls { flex-direction: column; gap: 8px; align-items: center; }
 .map-toolbar .map-history-button { flex-basis: 32px; }
@@ -2168,18 +2169,20 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 /* Personal Read reuses the normal pill, count, selected and exclude states. */
 [data-personal-read-filter] .tag-count { font-variant-numeric: tabular-nums; width: auto; padding-inline: .3em; }
 [data-personal-read-filter] > .tag-chip:disabled { cursor: default; }
-/* The tree Read switch remains visible when the Library's subject menu hides. */
+/* Read and the mode switch share a row independent of Library subject filters. */
 [data-directory] .map-stage > .map-filter-bar {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row-reverse;
   align-items: flex-start;
   gap: var(--control-capsule-gap);
+}
+[data-directory] .map-stage > :is(.map-filter-bar, .map-mode-controls) {
   font-family: var(--font-interface);
   font-size: 1rem;
   line-height: normal;
 }
-html[lang="he"] [data-directory] .map-stage > .map-filter-bar { font-family: var(--font-interface-hebrew), var(--font-content); }
+html[lang="he"] [data-directory] .map-stage > :is(.map-filter-bar, .map-mode-controls) { font-family: var(--font-interface-hebrew), var(--font-content); }
 .map-read-filter { flex: 0 0 auto; }
 /* The personal tree control inherits the main menu's count-only hover delay,
    X/restore icons, keyboard access and touch restore states without overrides. */

@@ -230,13 +230,13 @@
 :root [data-directory] .map-stage {
   --directory-control-inset: var(--control-capsule-gap);
 }
-:root [data-directory] .map-stage > .map-switch,
+:root [data-directory] .map-stage > .map-mode-controls,
 :root [data-directory] .map-toolbar {
   inset-inline-start: auto;
   inset-inline-end: var(--directory-control-inset);
 }
 /* Anchor the complete controls, never individual buttons or their hit areas. */
-:root [data-directory] .map-stage > .map-switch {
+:root [data-directory] .map-stage > .map-mode-controls {
   inset-block-start: var(--directory-control-inset);
 }
 :root [data-directory] .map-toolbar {
@@ -327,20 +327,13 @@
   caret-color: var(--inverse-ink);
 }
 :root [data-reader-article][data-directory] .map-stage > .map-filter-bar {
-  inset-block-start: var(--directory-control-inset);
+  inset-block-start: calc(var(--directory-control-inset) + var(--control-size) + var(--control-capsule-gap));
   inset-inline-start: var(--directory-control-inset);
-  inset-inline-end: calc(var(--directory-control-inset) + 2 * var(--control-size) + 2 * var(--control-capsule-gap));
+  inset-inline-end: var(--directory-control-inset);
   padding-block: 0;
 }
-/* Keep filters beside the capsule, extending inward in either direction. */
+/* Library subjects get the full row below Read/mode, in either direction. */
 :root [data-directory] .map-filter-bar .tag-list { justify-content: flex-end; }
-/* Narrow screens need the full filter row below the capsule, not clipped pills. */
-@media (max-width: 700px) {
-  :root [data-reader-article][data-directory] .map-stage > .map-filter-bar {
-    inset-block-start: calc(var(--directory-control-inset) + var(--control-size) + var(--control-capsule-gap));
-    inset-inline-end: var(--directory-control-inset);
-  }
-}
 @keyframes map-zoom-open {
   from { clip-path: inset(80% 0 0 round calc(var(--control-size) / 2)); }
   to { clip-path: inset(0 round calc(var(--control-size) / 2)); }

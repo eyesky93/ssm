@@ -766,6 +766,110 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
 
 // Bundled into site.js so existing offline owner editions receive this runtime.
 (() => {
+  // Both Directory trees share one touch model. A single contact belongs to
+  // page scrolling/taps; only a two-contact gesture may change the map.
+  class MapTouchController {
+    constructor(viewport, state, update, stopDrag) {
+      this.viewport = viewport;
+      this.state = state;
+      this.update = update;
+      this.stopDrag = stopDrag;
+      this.claimed = false;
+      this.pageScroll = false;
+      this.gesture = null;
+      this.suppressClick = false;
+      for (const [type, method] of [["touchstart", "start"], ["touchmove", "move"], ["touchend", "end"], ["touchcancel", "end"]]) {
+        viewport.addEventListener(type, event => this[method](event), { passive: false });
+      }
+    }
+    contacts(event) {
+      const contacts = Array.from(event.touches);
+      // A second finger on a toolbar or outside this tree must not capture it.
+      return contacts.length === 2 && contacts.every(contact => this.viewport.contains(contact.target)) ? contacts : null;
+    }
+    midpoint(contacts) {
+      const frame = this.viewport.getBoundingClientRect();
+      return {
+        x: (contacts[0].clientX + contacts[1].clientX) / 2 - frame.left - this.viewport.clientLeft,
+        y: (contacts[0].clientY + contacts[1].clientY) / 2 - frame.top - this.viewport.clientTop,
+      };
+    }
+    rebase(contacts) {
+      const midpoint = this.midpoint(contacts);
+      this.gesture = {
+        ids: contacts.map(contact => contact.identifier),
+        distance: Math.max(1, Math.hypot(contacts[1].clientX - contacts[0].clientX, contacts[1].clientY - contacts[0].clientY)),
+        scale: this.state.scale,
+        anchorX: (midpoint.x - this.state.x) / this.state.scale,
+        anchorY: (midpoint.y - this.state.y) / this.state.scale,
+      };
+    }
+    start(event) {
+      if (event.touches.length === 1 && !this.claimed) {
+        this.suppressClick = false;
+        this.pageScroll = false;
+        this.singleContact = { x: event.touches[0].clientX, y: event.touches[0].clientY };
+      }
+      const contacts = this.contacts(event);
+      if (!contacts) {
+        if (this.claimed) {
+          if (event.cancelable) event.preventDefault();
+          this.gesture = null;
+        }
+        return;
+      }
+      // Do not steal an already-started native page scroll halfway through.
+      if (this.pageScroll || !event.cancelable) return;
+      event.preventDefault();
+      this.stopDrag();
+      this.claimed = true;
+      this.suppressClick = true;
+      this.viewport.classList.add("is-panning");
+      this.rebase(contacts);
+    }
+    move(event) {
+      if (!this.claimed) {
+        if (event.touches.length === 1) {
+          const contact = event.touches[0];
+          // Small contact jitter before placing the second finger is not a scroll.
+          if (!event.cancelable || !this.singleContact || Math.hypot(contact.clientX - this.singleContact.x, contact.clientY - this.singleContact.y) >= 8) this.pageScroll = true;
+        }
+        return;
+      }
+      if (!event.cancelable) {
+        this.gesture = null;
+        this.viewport.classList.remove("is-panning");
+        return;
+      }
+      event.preventDefault();
+      const contacts = this.contacts(event);
+      if (!contacts) { this.gesture = null; return; }
+      if (!this.gesture || contacts.some(contact => !this.gesture.ids.includes(contact.identifier))) {
+        this.rebase(contacts);
+        return;
+      }
+      const midpoint = this.midpoint(contacts);
+      const distance = Math.hypot(contacts[1].clientX - contacts[0].clientX, contacts[1].clientY - contacts[0].clientY);
+      const scale = Math.max(.15, Math.min(2, this.gesture.scale * distance / this.gesture.distance));
+      this.update(scale, midpoint.x - this.gesture.anchorX * scale, midpoint.y - this.gesture.anchorY * scale);
+    }
+    end(event) {
+      if (this.claimed && event.cancelable) event.preventDefault();
+      const contacts = this.contacts(event);
+      if (this.claimed && contacts && event.type !== "touchcancel") this.rebase(contacts);
+      else this.gesture = null;
+      // One remaining finger cannot pan or accidentally activate a node.
+      // Keep click suppression until the next fresh single contact.
+      if (!event.touches.length) this.reset();
+    }
+    reset() {
+      this.claimed = false;
+      this.pageScroll = false;
+      this.gesture = null;
+      this.viewport.classList.remove("is-panning");
+    }
+  }
+
   for (const root of document.querySelectorAll("[data-hierarchy-map]")) {
     const views = [...root.querySelectorAll("[data-map-view]")];
     const toolbar = root.querySelector("[data-map-toolbar]");
@@ -995,12 +1099,14 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
 
     function show(id, focus = false) {
       const view = views.find((candidate) => candidate.id === id) || views[0];
-      views.forEach((candidate) => { candidate.hidden = candidate !== view; });
+      views.forEach((candidate) => {
+        candidate.hidden = candidate !== view;
+        if (candidate.hidden) states.get(candidate.id)?.touch?.reset();
+      });
       const filters = root.querySelector(".map-filter-bar");
       if (filters) {
-        // Read stays available in both trees; only ordinary subject filters hide.
-        const hasReadToggle = Boolean(filters.querySelector?.("[data-tree-read-toggle]"));
-        filters.hidden = view.dataset.mapKind === "tags" && !hasReadToggle;
+        // The shared Read/mode row is independent of the Library subject filters.
+        filters.hidden = view.dataset.mapKind === "tags";
         const subjects = filters.querySelector?.("[data-map-filters]");
         if (subjects) subjects.hidden = view.dataset.mapKind === "tags";
       }
@@ -1034,7 +1140,9 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       let drag = null;
       let suppressClick = false;
       viewport.addEventListener("pointerdown", (event) => {
-        if (event.button !== 0 || event.isPrimary === false) return;
+        if (event.pointerType === "touch" || event.button !== 0 || event.isPrimary === false) return;
+        state.touch.reset();
+        state.touch.suppressClick = false;
         suppressClick = false;
         drag = { id: event.pointerId, x: event.clientX, y: event.clientY, left: state.x, top: state.y, moved: false };
       });
@@ -1063,8 +1171,14 @@ document.querySelectorAll("[data-subscribe-form]").forEach((form) => {
       viewport.addEventListener("lostpointercapture", finish);
       viewport.addEventListener("pointerleave", () => { if (drag && !drag.moved) drag = null; });
       viewport.addEventListener("dragstart", (event) => event.preventDefault());
+      state.touch = new MapTouchController(viewport, state, (scale, x, y) => {
+        state.x = x;
+        state.y = y;
+        // Reuse the same limits, bounds, readout and saved zoom as all controls.
+        zoom(state, scale, false);
+      }, finish);
       viewport.addEventListener("click", (event) => {
-        if (!suppressClick) return;
+        if (!suppressClick && !(event.detail > 0 && state.touch.suppressClick)) return;
         suppressClick = false;
         event.preventDefault();
         event.stopPropagation();
