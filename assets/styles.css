@@ -74,6 +74,18 @@
   outline-color: var(--accent);
 }
 
+/* Read reverses the control colors on interaction and when selected. This
+   fallback is more specific than the currently bundled reader-header rules. */
+:root body .header-controls .read-toggle.round-control:is(:hover, :focus-visible),
+:root body .header-controls .read-toggle.round-control[aria-checked="true"],
+:root body .header-controls .read-toggle.round-control[aria-checked="true"]:disabled,
+:root body .header-controls .read-toggle.round-control[aria-checked="true"]:is(:hover, :focus-visible) {
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  border-color: var(--inverse-bg);
+  opacity: 1;
+}
+
 /* shared-interface-gap-v1 */
 /* One global spacing token owns the visible chrome gaps: header-to-rule,
    rule-to-tags, inter-control/inter-tag spacing, and tag-row edge spacing. It intentionally matches the
