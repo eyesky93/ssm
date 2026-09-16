@@ -1367,3 +1367,31 @@ html[lang="he"] .reader-controls .reader-number-error {
   color: var(--accent);
   box-shadow: none;
 }
+
+/* mobile-card-tag-flow-v1 */
+/* Phones use one semantic flow regardless of the persisted desktop
+   layout choice: title, subtitle, tags, then footer/actions. */
+@media (max-width: 700px) {
+  :root .post-stream[data-layout] .post-card:not(.directory-card) > .post-heading {
+    display: contents;
+  }
+  :root .post-stream[data-layout] .post-heading > h2 {
+    order: 0;
+    margin-block: 0 var(--card-content-gap);
+  }
+  :root .post-stream[data-layout] .post-card:not(.directory-card) > p {
+    order: 1;
+    margin-block: 0;
+  }
+  :root .post-stream[data-layout] .post-tools {
+    order: 2;
+    justify-content: flex-start;
+    margin-block-start: var(--card-content-gap);
+  }
+  :root .post-stream[data-layout] .card-tags > :nth-child(1 of :not([hidden])) {
+    margin-inline-start: 0;
+  }
+  :root .post-stream[data-layout] .card-footer {
+    order: 3;
+  }
+}
