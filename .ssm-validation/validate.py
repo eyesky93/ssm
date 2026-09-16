@@ -52,8 +52,11 @@ with sync_playwright() as p:
        tag=card.locator('.card-tags'); h2=card.locator('h2'); subtitle=card.locator(':scope > p')
        preceding=subtitle if layout=='grid' else h2
        assert box(tag)['y']>=box(preceding)['y']+box(preceding)['height']-1,('tag ordering',box(tag),box(preceding))
-       if lang=='en': assert abs(box(tag)['x']-box(h2)['x'])<1,('tag alignment',box(tag),box(h2))
-       else: assert abs((box(tag)['x']+box(tag)['width'])-(box(h2)['x']+box(h2)['width']))<1,('tag alignment',box(tag),box(h2))
+       # The scroll viewport extends into a small negative margin to preserve
+       # tag focus outlines. Compare the visible capsule, not that gutter.
+       first_tag=tag.locator(':scope > :not([hidden])').first
+       if lang=='en': assert abs(box(first_tag)['x']-box(h2)['x'])<1,('tag alignment',box(first_tag),box(h2))
+       else: assert abs((box(first_tag)['x']+box(first_tag)['width'])-(box(h2)['x']+box(h2)['width']))<1,('tag alignment',box(first_tag),box(h2))
       ink=page.evaluate('getComputedStyle(document.documentElement).getPropertyValue("--ink").trim()')
       ink_rgb=page.evaluate('''v=>{const e=document.createElement('span');e.style.color=v;document.body.append(e);const c=getComputedStyle(e).color;e.remove();return c}''',ink)
       for el in [pin,share]:
