@@ -1,0 +1,121 @@
+name: Deploy compact list cards
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/deploy-compact-list-cards.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Publish compact list card geometry
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            git fetch origin master
+            git reset --hard origin/master
+            python - <<'PY'
+          from pathlib import Path
+          import hashlib, re
+
+          spacing = Path('assets/control-spacing.css')
+          css = spacing.read_text()
+          marker = '/* compact-list-card-content-grid-v1 */'
+          block = r'''
+          /* compact-list-card-content-grid-v1 */
+          /* List cards use one content grid instead of stacking the vertical
+             Pin/Share/Read group underneath the text. The action column spans
+             the content rows, so it no longer creates empty card height. */
+          :root body .post-stream[data-layout="list"] > .post-card:not(.directory-card) {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) var(--quiet-control-target-size);
+            grid-template-areas:
+              "heading actions"
+              "summary actions"
+              "date actions";
+            align-items: start;
+            column-gap: var(--control-item-gap);
+            row-gap: var(--control-item-gap);
+          }
+          :root body .post-stream[data-layout="list"] > .post-card:not(.directory-card) > .post-heading {
+            grid-area: heading;
+            margin-block-end: 0;
+          }
+          :root body .post-stream[data-layout="list"] > .post-card:not(.directory-card) > p {
+            grid-area: summary;
+            padding-inline-end: 0;
+          }
+          :root body .post-stream[data-layout="list"] > .post-card:not(.directory-card) > .card-footer:has(> [data-card-actions]) {
+            display: contents;
+          }
+          :root body .post-stream[data-layout="list"] > .post-card:not(.directory-card) > .card-footer:has(> [data-card-actions]) > time {
+            grid-area: date;
+            align-self: end;
+            padding-block-end: 0;
+          }
+          :root body .post-stream[data-layout="list"] > .post-card:not(.directory-card) > .card-footer > [data-card-actions] {
+            grid-area: actions;
+            align-self: end;
+            justify-self: center;
+            margin: 0;
+          }
+          '''
+          if marker not in css:
+              spacing.write_text(css.rstrip() + '\n\n' + block.strip() + '\n')
+
+          spacing_digest = hashlib.sha256(spacing.read_bytes()).hexdigest()[:12]
+          styles = Path('assets/styles.css')
+          styles_text = styles.read_text()
+          styles_text = re.sub(
+              r'@import url\("\./control-spacing\.css(?:\?v=[0-9a-f]+)?"\);',
+              f'@import url("./control-spacing.css?v={spacing_digest}");',
+              styles_text,
+              count=1,
+          )
+          styles.write_text(styles_text)
+          styles_digest = hashlib.sha256(styles.read_bytes()).hexdigest()[:12]
+
+          pattern = re.compile(r'(/ssm/assets/styles\.css)\?v=[0-9a-f]+')
+          changed = 0
+          for html in Path('.').rglob('*.html'):
+              text = html.read_text()
+              updated = pattern.sub(rf'\1?v={styles_digest}', text)
+              if updated != text:
+                  html.write_text(updated)
+                  changed += 1
+
+          final = spacing.read_text()
+          for required in (marker, 'grid-template-areas:', 'display: contents;'):
+              if required not in final:
+                  raise SystemExit(f'Missing compact list rule: {required}')
+          if '--post-stream-gap: 1rem;' not in final:
+              raise SystemExit('Normal post spacing token was lost')
+          sample = Path('en/index.html').read_text()
+          if f'/ssm/assets/styles.css?v={styles_digest}' not in sample:
+              raise SystemExit('Homepage did not receive refreshed styles hash')
+          print(f'Updated {changed} HTML files; control-spacing={spacing_digest}; styles={styles_digest}')
+          PY
+            git add assets/control-spacing.css assets/styles.css '*.html' 'en/**/*.html' 'he/**/*.html'
+            if git diff --cached --quiet; then
+              echo "Live site already current."
+              exit 0
+            fi
+            git commit -m "Compact list cards without changing post spacing"
+            if git push origin HEAD:master; then
+              exit 0
+            fi
+            echo "Concurrent Pages update detected; retrying ($attempt/3)."
+            sleep 2
+          done
+          exit 1
