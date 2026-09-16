@@ -76,8 +76,7 @@
 
 /* shared-interface-gap-v1 */
 /* One global spacing token owns the visible chrome gaps: header-to-rule,
-   rule-to-tags, inter-control/inter-tag spacing, tags-to-rule, rule-to-posts,
-   and the spacing between adjacent post cards. It intentionally matches the
+   rule-to-tags, inter-control/inter-tag spacing, and tag-row edge spacing. It intentionally matches the
    smallest existing tag gap; internal component padding remains independent. */
 :root {
   --interface-gap: var(--tag-capsule-gap, .25rem);
@@ -101,9 +100,6 @@
 :root .browser-toolbar {
   padding-block: var(--interface-gap);
   margin-block-end: var(--interface-gap);
-}
-:root .post-stream {
-  gap: var(--interface-gap) !important;
 }
 :root .wordmark {
   min-height: var(--compact-control-size) !important;
