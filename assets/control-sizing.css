@@ -108,7 +108,8 @@
   gap: var(--tag-capsule-gap);
 }
 
-/* All standalone circular controls, including compact cards, dialogs, comment
+/* Only the round variant belongs to this size family; quiet controls own
+   their neutral geometry. All standalone circular controls, dialogs, comment
    sign-in providers, Directory controls and newsletter appearance controls. */
 :root .round-control,
 :root .settings-toggle,
@@ -125,9 +126,9 @@
 :root .view-switch button,
 :root .clear-filter,
 :root .filter-reset-slot,
-:root .pin-toggle,
-:root .post-stream[data-layout] .pin-toggle,
-:root .share-menu summary,
+:root .pin-toggle:where(:not(.quiet-control)),
+:root .post-stream[data-layout] .pin-toggle:where(:not(.quiet-control)),
+:root .share-menu summary:where(:not(.quiet-control)),
 :root .share-options a,
 :root .share-options button,
 :root .search-dialog-close,
@@ -160,9 +161,9 @@
 }
 
 /* Keep full-size SVGs comfortably inset, including previously smaller pins. */
-:root .pin-toggle,
-:root .post-stream[data-layout] .pin-toggle,
-:root .share-menu summary,
+:root .pin-toggle:where(:not(.quiet-control)),
+:root .post-stream[data-layout] .pin-toggle:where(:not(.quiet-control)),
+:root .share-menu summary:where(:not(.quiet-control)),
 :root .share-options a,
 :root .share-options button,
 :root .subscription-close {

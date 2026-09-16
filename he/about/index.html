@@ -78,7 +78,7 @@
 <link rel="modulepreload" href="/ssm/assets/post-browser.js?v=4b1cdd10156a">
 <link rel="modulepreload" href="/ssm/assets/read-status.js?v=428474c51aef">
 <link rel="modulepreload" href="/ssm/assets/post-votes.js?v=55f427135a5e">
-<script data-home-appearance-src="/ssm/assets/appearance.js?v=25360c8c4306">(() => {
+<script data-home-appearance-src="/ssm/assets/appearance.js?v=848906382684">(() => {
   const root = document.documentElement;
   const defaults = {
     light: { background: "#ffffff", text: "#171717", accent: "#1c9ae9" },
@@ -289,11 +289,11 @@
         box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
       }
 
-      :root .read-toggle[aria-checked="true"]::before {
+      :root .read-toggle:not(.quiet-control)[aria-checked="true"]::before {
         color: var(--line);
         border-color: var(--line);
       }
-      :root .read-toggle[aria-checked="true"]:is(:hover, :focus-visible)::before {
+      :root .read-toggle:not(.quiet-control)[aria-checked="true"]:is(:hover, :focus-visible)::before {
         color: var(--line-dark);
         border-color: var(--line-dark);
       }
@@ -339,10 +339,10 @@
       :root[data-theme="dark"] {
         --control-highlight-color: color-mix(in srgb, var(--paper), var(--accent) 40%);
       }
-      :root :is(.control-highlight, .pin-toggle, .share-menu > summary):not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible) {
+      :root :is(.control-highlight, .pin-toggle, .share-menu > summary):not(.quiet-control):not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible) {
         box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
       }
-      :root :is(.control-highlight, .pin-toggle, .share-menu > summary):is(:disabled, [aria-disabled="true"]) {
+      :root :is(.control-highlight, .pin-toggle, .share-menu > summary):not(.quiet-control):is(:disabled, [aria-disabled="true"]) {
         box-shadow: none;
       }
       :root .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
@@ -450,8 +450,8 @@
 </script>
 <!-- ssm-home-first-paint:end -->
   <link rel="stylesheet" href="/ssm/assets/styles.css?v=7aefba1a04f9">
-  <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=1f8eaf979218" data-post-layout-styles>
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=1775a22007ab" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=725168bed1ac" data-post-layout-styles>
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=8fdc19aef33c" data-control-sizing-styles>
 </head>
 <body data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="https://ssm-pin-stats.eyesky93.workers.dev/pins" data-read-storage="ssm-read:/ssm">
   <header class="site-header">

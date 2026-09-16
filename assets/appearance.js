@@ -209,11 +209,11 @@
         box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
       }
 
-      :root .read-toggle[aria-checked="true"]::before {
+      :root .read-toggle:not(.quiet-control)[aria-checked="true"]::before {
         color: var(--line);
         border-color: var(--line);
       }
-      :root .read-toggle[aria-checked="true"]:is(:hover, :focus-visible)::before {
+      :root .read-toggle:not(.quiet-control)[aria-checked="true"]:is(:hover, :focus-visible)::before {
         color: var(--line-dark);
         border-color: var(--line-dark);
       }
@@ -259,10 +259,10 @@
       :root[data-theme="dark"] {
         --control-highlight-color: color-mix(in srgb, var(--paper), var(--accent) 40%);
       }
-      :root :is(.control-highlight, .pin-toggle, .share-menu > summary):not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible) {
+      :root :is(.control-highlight, .pin-toggle, .share-menu > summary):not(.quiet-control):not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible) {
         box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
       }
-      :root :is(.control-highlight, .pin-toggle, .share-menu > summary):is(:disabled, [aria-disabled="true"]) {
+      :root :is(.control-highlight, .pin-toggle, .share-menu > summary):not(.quiet-control):is(:disabled, [aria-disabled="true"]) {
         box-shadow: none;
       }
       :root .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
