@@ -830,3 +830,21 @@
     max-height: var(--header-control-size);
   }
 }
+
+/* mobile-wordmark-controls-v1 */
+/* Mobile wordmark geometry follows the same enlarged header family.
+   Desktop keeps its compact brand frame unchanged. */
+:root {
+  --mobile-wordmark-size: var(--mobile-header-control-size);
+  --mobile-wordmark-padding-inline: calc(2 * var(--mobile-header-control-gap));
+  --mobile-wordmark-radius: var(--control-radius);
+}
+@media (max-width: 700px) {
+  :root body .wordmark {
+    min-height: var(--mobile-wordmark-size) !important;
+    height: var(--mobile-wordmark-size) !important;
+    padding-block: 0 !important;
+    padding-inline: var(--mobile-wordmark-padding-inline) !important;
+    border-radius: var(--mobile-wordmark-radius) !important;
+  }
+}
