@@ -1231,3 +1231,55 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root .header-controls .read-toggle.round-control::before {
   color: inherit;
 }
+
+/* reader-header-hover-contract-v3 */
+:root .header-controls .pin-toggle[aria-pressed="true"],
+:root .header-controls .pin-toggle[aria-pressed="true"]:is(:hover, :focus-visible) {
+  background: var(--surface);
+  color: var(--ink);
+}
+:root .header-controls :is(
+  .pin-toggle,
+  .share-menu > summary,
+  .read-toggle.round-control,
+  .language-nav > a,
+  .language-nav > select,
+  .settings-toggle
+) {
+  border-color: var(--line-dark);
+  box-shadow: none;
+  transform: none;
+}
+:root .header-controls :is(
+  .pin-toggle,
+  .share-menu > summary,
+  .read-toggle.round-control,
+  .language-nav > a,
+  .language-nav > select,
+  .settings-toggle
+):is(:hover, :focus-visible) {
+  border-color: var(--accent-strong);
+  box-shadow: none;
+  transform: none;
+}
+:root .header-controls .site-search .search-toggle:is(:hover, :focus-visible, [aria-expanded="true"]) {
+  color: var(--ink);
+}
+:root .header-controls .site-search .search-bar:has(.search-toggle:is(:hover, :focus-visible)) {
+  border-color: var(--accent-strong);
+}
+:root .header-controls .read-toggle.round-control {
+  opacity: 1;
+  color: var(--line-dark);
+}
+:root .header-controls .read-toggle.round-control[aria-checked="true"],
+:root .header-controls .read-toggle.round-control[aria-checked="true"]:disabled,
+:root .header-controls .read-toggle.round-control[aria-checked="true"]:is(:hover, :focus-visible) {
+  color: var(--ink);
+  opacity: 1;
+}
+:root .header-controls .read-toggle.round-control::before {
+  color: inherit;
+  background: currentColor;
+  opacity: 1;
+}
