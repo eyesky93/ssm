@@ -1,0 +1,51 @@
+name: Fix card share neutral styling
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-card-share-neutral.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply global neutral share styling
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, hashlib, re
+
+          css_path = Path('assets/post-layout.css')
+          css = css_path.read_text(encoding='utf-8')
+          marker = '/* card-share-neutral-global-v2 */'
+          snippet = base64.b64decode('LyogY2FyZC1zaGFyZS1uZXV0cmFsLWdsb2JhbC12MiAqLwo6cm9vdCAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXRdIFtkYXRhLWNhcmQtYWN0aW9uc10gLmNhcmQtc2hhcmUtbWVudSA+IC5zaGFyZS1vcHRpb25zIHsKICBib3JkZXI6IDA7CiAgYmFja2dyb3VuZDogdmFyKC0tY29kZS1iZyk7CiAgYm94LXNoYWRvdzogbm9uZTsKfQo6cm9vdCAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXRdIFtkYXRhLWNhcmQtYWN0aW9uc10gLmNhcmQtc2hhcmUtbWVudSA+IC5zaGFyZS1vcHRpb25zID4gOmlzKGEsIGJ1dHRvbikgewogIGJvcmRlcjogMDsKICBvdXRsaW5lOiAwOwogIGJhY2tncm91bmQ6IHRyYW5zcGFyZW50OwogIGNvbG9yOiB2YXIoLS1pbmspOwogIGJveC1zaGFkb3c6IG5vbmU7Cn0KOnJvb3QgLnBvc3Qtc3RyZWFtW2RhdGEtbGF5b3V0XSBbZGF0YS1jYXJkLWFjdGlvbnNdIC5jYXJkLXNoYXJlLW1lbnUgPiAuc2hhcmUtb3B0aW9ucyA+IDppcyhhLCBidXR0b24pOmlzKDpob3ZlciwgOmZvY3VzLXZpc2libGUsIDphY3RpdmUpIHsKICBib3JkZXI6IDA7CiAgb3V0bGluZTogMDsKICBiYWNrZ3JvdW5kOiB0cmFuc3BhcmVudDsKICBjb2xvcjogdmFyKC0tYWNjZW50KTsKICBib3gtc2hhZG93OiBub25lOwp9Cg==').decode()
+
+          if marker not in css:
+              css = css.rstrip() + '\n\n' + snippet
+              css_path.write_text(css, encoding='utf-8')
+
+          version = hashlib.sha256(css.encode()).hexdigest()[:12]
+          pattern = re.compile(r'(assets/post-layout\.css)\?v=[0-9a-f]+')
+          for path in Path('.').rglob('*.html'):
+              text = path.read_text(encoding='utf-8')
+              updated = pattern.sub(rf'\1?v={version}', text)
+              if updated != text:
+                  path.write_text(updated, encoding='utf-8')
+
+          Path('.github/workflows/fix-card-share-neutral.yml').unlink()
+          print(version)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Use neutral grey share background and accent hover'
+          git push
