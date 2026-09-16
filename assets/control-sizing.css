@@ -8,7 +8,21 @@
   --control-inner-size: calc(var(--control-size) - 2px);
   --header-control-size: var(--control-size);
   --reader-control-size: var(--control-size);
-  /* Tags are the compact capsule variant; navigation retains its full size. */
+  /* Tags keep the earlier compact shared geometry by default. */
+  --tag-capsule-size: calc(var(--control-size) * .8);
+  --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
+  --tag-capsule-radius: .45rem;
+  --tag-capsule-padding-block: .15rem;
+  --tag-capsule-padding-inline: .55rem;
+  --tag-capsule-count-inset: .3rem;
+  --tag-capsule-content-gap: .35rem;
+  --tag-capsule-gap: .3rem;
+}
+
+/* The homepage/main tag menu alone uses the tighter geometry requested here.
+   Directory, post, search and all other tag families inherit the shared values
+   above, so this adjustment cannot leak into those components. */
+:root .home-main > .subject-nav {
   --tag-capsule-size: calc(var(--control-size) * .675);
   --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
   --tag-capsule-radius: .4rem;
