@@ -969,3 +969,91 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 /* Hash destinations stay native: no simulated navigation or click interception. */
 .comments-shell { scroll-margin-block-start: 1rem; }
+
+/* Homepage-card actions are the small, frameless variant of the shared control
+   family. All layouts use these same tokens; reader-page controls stay full size.
+   Defining the derived sizes at :root keeps the popover's own buttons full size. */
+:root {
+  --card-action-icon-size: calc(var(--control-size) / 3);
+  --card-action-target-size: calc(var(--control-size) * .55);
+  --card-action-gap: calc(var(--control-capsule-gap) / 2);
+  --card-action-muted-color: var(--line-dark);
+  --card-action-active-color: var(--ink);
+}
+
+:root .post-stream[data-layout] [data-card-actions] {
+  position: static;
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-flow: row nowrap;
+  align-items: center;
+  align-self: center;
+  justify-content: flex-end;
+  gap: var(--card-action-gap);
+  width: max-content;
+  max-width: 100%;
+  margin: 0;
+}
+:root .post-stream[data-layout] .card-footer:has(> [data-card-actions]) {
+  align-items: center;
+  column-gap: var(--control-capsule-gap);
+}
+:root .post-stream[data-layout] .card-footer:has(> [data-card-actions]) > time,
+:root .post-stream[data-layout] .card-footer > [data-card-actions] {
+  align-self: center;
+}
+:root .post-stream[data-layout] [data-card-actions] > .card-share-menu {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+  inset: auto;
+  margin: 0;
+}
+
+/* Override the shared size only on each trigger, not on the action row or
+   details host: share-option controls must retain their regular touch targets. */
+:root .post-stream[data-layout] [data-card-actions] :is(.read-toggle, .pin-toggle, .share-menu > summary) {
+  --control-size: var(--card-action-target-size);
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 var(--control-size);
+  width: var(--control-size);
+  min-width: var(--control-size);
+  max-width: var(--control-size);
+  height: var(--control-size);
+  min-height: var(--control-size);
+  max-height: var(--control-size);
+  inline-size: var(--control-size);
+  min-inline-size: var(--control-size);
+  max-inline-size: var(--control-size);
+  block-size: var(--control-size);
+  min-block-size: var(--control-size);
+  max-block-size: var(--control-size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--card-action-muted-color);
+  transform: none;
+}
+:root .post-stream[data-layout] [data-card-actions] :is(.pin-toggle, .share-menu > summary) > svg {
+  width: var(--card-action-icon-size);
+  height: var(--card-action-icon-size);
+}
+:root .post-stream[data-layout] [data-card-actions] .read-toggle::before {
+  inline-size: var(--card-action-icon-size);
+  block-size: var(--card-action-icon-size);
+  font-size: calc(var(--card-action-icon-size) * .82);
+}
+:root .post-stream[data-layout] [data-card-actions] > .pin-toggle[aria-pressed="true"],
+:root .post-stream[data-layout] [data-card-actions] :is(.pin-toggle, .share-menu > summary):not(:disabled):is(:hover, :focus-visible),
+:root .post-stream[data-layout] [data-card-actions] > .share-menu[open] > summary {
+  color: var(--card-action-active-color);
+}
+
+/* Pin/Share no longer own a heading-side lane. Tags keep the freed space and
+   summaries keep their full width; there are no list/grid/compact exceptions. */
+:root .post-stream[data-layout] .post-card:has([data-card-actions]) > p {
+  padding-inline-end: 0;
+}
