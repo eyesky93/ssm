@@ -307,12 +307,14 @@ for path in post_pages:
     html = path.read_text()
     if 'data-reader-article' not in html:
         continue
-    if 'data-article-actions' not in html:
-        raise SystemExit(f'Missing header actions in {path}')
     article_open = re.search(r'<article class="article-shell"[^>]*\bdata-reader-article\b[^>]*>', html)
-    if article_open and 'data-directory' not in article_open.group(0):
-        host_start = html.find('<div class="article-actions" data-article-actions')
-        host_end = html.find('<div class="view-settings toolbar-view"', host_start)
-        if host_start < 0 or host_end < 0 or 'data-read-toggle' not in html[host_start:host_end]:
-            raise SystemExit(f'Missing header read control in {path}')
+    if not article_open:
+        raise SystemExit(f'Missing reader article in {path}')
+    if '<header class="site-header">' not in html or '</header>' not in html:
+        raise SystemExit(f'Missing site header in {path}')
+    site_header = html.split('<header class="site-header">', 1)[1].split('</header>', 1)[0]
+    if 'data-article-actions' not in site_header:
+        raise SystemExit(f'Missing header actions in {path}')
+    if 'data-directory' not in article_open.group(0) and 'data-read-toggle' not in site_header:
+        raise SystemExit(f'Missing header read control in {path}')
 print(f'Patched assets and {changed_html} HTML files; hashes={asset_hash}')
