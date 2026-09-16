@@ -16,6 +16,13 @@ def route(r):
  r.fulfill(status=200,body=p.read_bytes(),content_type=mimetypes.guess_type(str(p))[0] or 'application/octet-stream')
 def box(el): return el.bounding_box()
 def center(r): return (r['x']+r['width']/2,r['y']+r['height']/2)
+def hover(el,page):
+ # Scrolling/read reflow can move a control away from the pointer after the
+ # native hover action. Require an actual stable :hover, not a stale snapshot.
+ for _ in range(5):
+  el.hover();page.wait_for_timeout(250)
+  if el.evaluate('(e)=>e.matches(":hover")'): return
+ raise AssertionError(('Pointer did not settle on control',box(el)))
 def style(el,pseudo=None):
  return el.evaluate('''(e,pseudo)=>{const s=getComputedStyle(e,pseudo);return {color:s.color,background:s.backgroundColor,shadow:s.boxShadow,outline:s.outlineStyle,radius:s.borderRadius,width:s.width,height:s.height,border:s.borderColor}}''',pseudo)
 def neutral(c):
@@ -37,6 +44,7 @@ with sync_playwright() as p:
      try:
       page.goto(url+lang+'/',wait_until='networkidle'); page.wait_for_function('!document.documentElement.hasAttribute("data-home-starting")')
       page.wait_for_function('document.querySelector("[data-read-toggle]")&&!document.querySelector("[data-read-toggle]").disabled')
+      page.evaluate('document.fonts.ready')
       assert page.locator('[data-post-stream]').get_attribute('data-layout')==layout
       assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1'), 'Page overflow'
       card=page.locator('.post-card[data-post-id="mathematical-background-2"]'); card.scroll_into_view_if_needed()
@@ -60,12 +68,12 @@ with sync_playwright() as p:
       ink=page.evaluate('getComputedStyle(document.documentElement).getPropertyValue("--ink").trim()')
       ink_rgb=page.evaluate('''v=>{const e=document.createElement('span');e.style.color=v;document.body.append(e);const c=getComputedStyle(e).color;e.remove();return c}''',ink)
       for el in [pin,share]:
-       el.hover(); page.wait_for_timeout(170); s=style(el)
+       hover(el,page); s=style(el)
        assert s['color']==ink_rgb,('not foreground',s,ink_rgb)
        assert s['shadow']=='none' and s['background']=='rgba(0, 0, 0, 0)',('hover frame',s)
        assert neutral(s['color']),('accent',s)
       for _ in range(2):
-       before=read.get_attribute('aria-checked'); read.hover(); page.wait_for_timeout(170); s=style(read,'::before')
+       before=read.get_attribute('aria-checked'); hover(read,page); s=style(read,'::before')
        assert neutral(s['background']) and neutral(s['color']) and neutral(s['border']),s
        assert s['background']!='rgba(0, 0, 0, 0)',('missing grey hover',s)
        assert style(read)['shadow']=='none'
