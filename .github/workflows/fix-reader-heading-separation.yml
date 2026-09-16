@@ -27,62 +27,63 @@ jobs:
           css_path = Path('assets/post-layout.css')
           css = css_path.read_text(encoding='utf-8')
           marker = '/* Reader title/tag hard separation: generated-site live invariant. */'
-          rule = r'''
-
-/* Reader title/tag hard separation: generated-site live invariant. */
-:root .article-heading.post-heading > .post-tools {
-  min-width: 0;
-  max-width: none;
-  overflow: hidden;
-}
-:root .article-heading .article-tags {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  flex: 1 1 auto;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  overflow-x: auto;
-  overflow-y: hidden;
-  overscroll-behavior-inline: contain;
-  scrollbar-width: none;
-  padding: 3px;
-  margin: 0;
-}
-:root .article-heading .article-tags::-webkit-scrollbar { display: none; }
-:root .article-heading .article-tags > :not([hidden]) {
-  min-width: max-content;
-  max-width: none;
-  flex: 0 0 auto;
-  white-space: nowrap;
-}
-:root .article-heading .article-tags > :nth-child(1 of :not([hidden])) {
-  margin-inline-start: auto;
-}
-@media (min-width: 701px) {
-  :root .article-heading.post-heading {
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-    align-items: start;
-    column-gap: 1.5rem;
-  }
-  :root .article-heading.post-heading > h1 {
-    grid-column: 1;
-    grid-row: 1;
-    min-width: 0;
-    max-width: 100%;
-    overflow-wrap: anywhere;
-  }
-  :root .article-heading.post-heading > .post-tools {
-    grid-column: 2;
-    grid-row: 1;
-    width: 100%;
-    min-width: 0;
-    align-items: flex-start;
-  }
-}
-'''
+          rule = "\n".join([
+              "",
+              marker,
+              ":root .article-heading.post-heading > .post-tools {",
+              "  min-width: 0;",
+              "  max-width: none;",
+              "  overflow: hidden;",
+              "}",
+              ":root .article-heading .article-tags {",
+              "  box-sizing: border-box;",
+              "  width: 100%;",
+              "  max-width: 100%;",
+              "  min-width: 0;",
+              "  flex: 1 1 auto;",
+              "  flex-wrap: nowrap;",
+              "  justify-content: flex-start;",
+              "  overflow-x: auto;",
+              "  overflow-y: hidden;",
+              "  overscroll-behavior-inline: contain;",
+              "  scrollbar-width: none;",
+              "  padding: 3px;",
+              "  margin: 0;",
+              "}",
+              ":root .article-heading .article-tags::-webkit-scrollbar { display: none; }",
+              ":root .article-heading .article-tags > :not([hidden]) {",
+              "  min-width: max-content;",
+              "  max-width: none;",
+              "  flex: 0 0 auto;",
+              "  white-space: nowrap;",
+              "}",
+              ":root .article-heading .article-tags > :nth-child(1 of :not([hidden])) {",
+              "  margin-inline-start: auto;",
+              "}",
+              "@media (min-width: 701px) {",
+              "  :root .article-heading.post-heading {",
+              "    display: grid;",
+              "    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);",
+              "    align-items: start;",
+              "    column-gap: 1.5rem;",
+              "  }",
+              "  :root .article-heading.post-heading > h1 {",
+              "    grid-column: 1;",
+              "    grid-row: 1;",
+              "    min-width: 0;",
+              "    max-width: 100%;",
+              "    overflow-wrap: anywhere;",
+              "  }",
+              "  :root .article-heading.post-heading > .post-tools {",
+              "    grid-column: 2;",
+              "    grid-row: 1;",
+              "    width: 100%;",
+              "    min-width: 0;",
+              "    align-items: flex-start;",
+              "  }",
+              "}",
+              "",
+          ])
           if marker not in css:
               css += rule
               css_path.write_text(css, encoding='utf-8')
