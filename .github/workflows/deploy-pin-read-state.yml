@@ -1,0 +1,89 @@
+name: Deploy Pin and Read states
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/deploy-pin-read-state.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch current Pages tree and publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            git fetch origin master
+            git reset --hard origin/master
+            python - <<'PY'
+          from pathlib import Path
+          import hashlib, re
+
+          css_path = Path('assets/post-layout.css')
+          css = css_path.read_text()
+          marker = '/* reader-pin-read-state-v2 */'
+          block = r'''
+          /* reader-pin-read-state-v2 */
+          :root .header-controls .pin-toggle[aria-pressed="true"],
+          :root .header-controls .pin-toggle[aria-pressed="true"]:is(:hover, :focus-visible) {
+            background: var(--surface);
+            color: var(--ink);
+            border-color: var(--line-dark);
+          }
+          :root .header-controls .read-toggle.round-control {
+            opacity: 1;
+            color: var(--line-dark);
+          }
+          :root .header-controls .read-toggle.round-control[aria-checked="true"],
+          :root .header-controls .read-toggle.round-control[aria-checked="true"]:is(:hover, :focus-visible) {
+            color: var(--ink);
+          }
+          :root .header-controls .read-toggle.round-control::before {
+            color: inherit;
+          }
+          '''
+          if marker not in css:
+              css = css.rstrip() + '\n\n' + block.strip() + '\n'
+              css_path.write_text(css)
+
+          digest = hashlib.sha256(css_path.read_bytes()).hexdigest()[:12]
+          changed = 0
+          pattern = re.compile(r'(/ssm/assets/post-layout\.css)\?v=[0-9a-f]+')
+          for path in Path('.').rglob('*.html'):
+              text = path.read_text()
+              updated = pattern.sub(rf'\1?v={digest}', text)
+              if updated != text:
+                  path.write_text(updated)
+                  changed += 1
+
+          sample = Path('en/posts/mathematical-background-1/index.html').read_text()
+          if f'/ssm/assets/post-layout.css?v={digest}' not in sample:
+              raise SystemExit('Sample reader did not receive refreshed post-layout hash')
+          if marker not in css_path.read_text():
+              raise SystemExit('Reader state marker missing')
+          print(f'Updated {changed} HTML files; post-layout={digest}')
+          PY
+            git add assets/post-layout.css '*.html' 'en/**/*.html' 'he/**/*.html'
+            if git diff --cached --quiet; then
+              echo "Live site already current."
+              exit 0
+            fi
+            git commit -m "Publish glyph-only Pin and Read selected states"
+            if git push origin HEAD:master; then
+              exit 0
+            fi
+            echo "Concurrent Pages update detected; retrying from latest master ($attempt/3)."
+            sleep 2
+          done
+          echo "Could not publish after three fast-forward retries."
+          exit 1
