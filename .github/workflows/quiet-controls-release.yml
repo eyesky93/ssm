@@ -27,7 +27,7 @@ jobs:
           for item in data['files']:
               name=item['path'];path=(root/name).resolve()
               assert root in path.parents and path.is_file() and not path.is_symlink()
-              assert name in ['assets/post-layout.css','assets/control-sizing.css','assets/appearance.js','index.html'] or (name.startswith(('en/','he/')) and name.endswith('/index.html'))
+              assert name in ['assets/post-layout.css','assets/control-sizing.css','assets/appearance.js','index.html','404.html'] or (name.startswith(('en/','he/')) and name.endswith('/index.html')),name
               original=path.read_bytes();previous=0
               for start,end,fragment in item['edits']:
                   assert 0<=previous<=start<=end<=len(original)
