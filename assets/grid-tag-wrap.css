@@ -1,0 +1,13 @@
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  overflow: visible;
+}
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tag {
+  max-width: 100%;
+  min-width: 0;
+  flex: 0 1 auto;
+}
