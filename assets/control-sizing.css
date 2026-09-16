@@ -802,3 +802,31 @@
 :root .header-actions .accent-panel > * { border-color: transparent; }
 :root .header-actions .accent-picker::-webkit-color-swatch { border-radius: var(--control-inner-radius); }
 :root .header-actions .accent-picker::-moz-color-swatch { border-radius: var(--control-inner-radius); }
+
+/* mobile-header-controls-v1 */
+/* Desktop deliberately keeps the compact header family. Phones restore
+   the full shared control size; search, language, settings and the
+   settings popup all consume the same header aliases. */
+:root {
+  --mobile-header-control-size: var(--control-size);
+  --mobile-header-control-gap: var(--control-capsule-gap);
+}
+@media (max-width: 700px) {
+  :root body .header-controls {
+    --header-control-size: var(--mobile-header-control-size);
+    --header-control-inner-size: calc(var(--mobile-header-control-size) - 2px);
+    --header-control-padding: max(0px, calc((var(--mobile-header-control-size) - var(--control-icon-size) - 2px) / 2));
+    --header-control-gap: var(--mobile-header-control-gap) !important;
+    --header-control-half-gap: calc(var(--mobile-header-control-gap) / 2) !important;
+    gap: var(--header-control-gap) !important;
+  }
+  :root body .header-controls .site-search,
+  :root body .header-controls .search-shell,
+  :root body .header-controls .search-bar,
+  :root body .header-controls .toolbar-view,
+  :root body .header-controls .toolbar-view > .view-switch {
+    height: var(--header-control-size);
+    min-height: var(--header-control-size);
+    max-height: var(--header-control-size);
+  }
+}
