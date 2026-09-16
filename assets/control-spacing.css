@@ -1,0 +1,62 @@
+/* Shared spacing contract for navigation and compact controls.
+   Keep geometry here token-driven: changing one value updates every peer surface. */
+:root {
+  --control-item-gap: .35rem;
+  --brand-item-gap: calc(2 * var(--control-item-gap));
+  --navigation-border-inset: .5rem;
+}
+
+:root body .header-controls {
+  --header-control-gap: var(--control-item-gap);
+  --header-control-half-gap: calc(var(--control-item-gap) / 2);
+  gap: var(--control-item-gap);
+}
+:root body .toolbar-view > .view-switch {
+  gap: var(--control-item-gap);
+}
+:root body .subject-nav,
+:root body .subject-nav .tag-list {
+  gap: var(--control-item-gap);
+}
+
+:root body .primary-nav {
+  gap: var(--brand-item-gap);
+}
+:root body .primary-nav > :is(.wordmark, .about-link) {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-size);
+  height: var(--control-size);
+}
+:root body .primary-nav > .about-link {
+  padding-block: 0;
+}
+
+:root body .site-header {
+  min-height: calc(var(--control-size) + 2 * var(--navigation-border-inset));
+}
+:root body .browser-toolbar {
+  padding-block: var(--navigation-border-inset);
+}
+
+:root body .header-controls > .language-nav {
+  display: grid;
+  place-items: center;
+}
+:root body .header-controls > .language-nav > a {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  line-height: 1;
+  text-align: center;
+}
+:root body .header-controls > .language-nav > a[lang="he"] {
+  font-family: var(--font-interface-hebrew), var(--font-interface);
+}
+:root body .header-controls > .language-nav > select {
+  padding-inline: 0;
+  line-height: 1;
+  text-align: center;
+  text-align-last: center;
+}
