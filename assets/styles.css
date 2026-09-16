@@ -9,6 +9,16 @@
   padding: 0;
 }
 
+/* One edge inset owns both axes of every ordinary post tile. Do not split the
+   block and inline spacing: resizing cards or changing layouts must preserve
+   exactly the same distance from the top and logical side borders to content. */
+:root .post-card:not(.directory-card) {
+  --post-card-content-inset: var(--surface-padding);
+  --post-card-padding-inline: var(--post-card-content-inset);
+  --post-card-padding-block: var(--post-card-content-inset);
+  padding: var(--post-card-content-inset);
+}
+
 /* List/reader tags keep their horizontal drag row. Tiled cards use all available
    width and move complete tag capsules onto additional rows. */
 .post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags {
