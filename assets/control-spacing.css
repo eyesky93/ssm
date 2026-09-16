@@ -4,8 +4,19 @@
   --control-item-gap: .35rem;
   --brand-item-gap: calc(2 * var(--control-item-gap));
   --navigation-border-inset: .5rem;
+  /* The marked vertical spaces use exactly the same edge token as the
+     tag-row-to-rule distance. Do not reuse this for unrelated button gaps. */
+  --interface-edge-gap: var(--navigation-border-inset);
+  /* Preserve ordinary post spacing while allowing Directory's following gap
+     to use the shared edge token without hard-coded offset arithmetic. */
+  --post-stream-gap: 1rem;
+  --post-stream-compact-gap: .75rem;
+  /* Neutral floating surfaces must never derive from the accent color. */
+  --neutral-control-surface: var(--code-bg);
 }
 
+/* Independent header controls and the cells inside the layout capsule use the
+   same gap. Do not derive this from card padding or icon size. */
 :root body .header-controls {
   --header-control-gap: var(--control-item-gap);
   --header-control-half-gap: calc(var(--control-item-gap) / 2);
@@ -14,11 +25,15 @@
 :root body .toolbar-view > .view-switch {
   gap: var(--control-item-gap);
 }
+
+/* Main tags, descendant rows and the reset control all use the same separation. */
 :root body .subject-nav,
 :root body .subject-nav .tag-list {
   gap: var(--control-item-gap);
 }
 
+/* Brand navigation has one deliberate larger step, still derived from the same
+   global control gap. SSM and About occupy the same control-height box. */
 :root body .primary-nav {
   gap: var(--brand-item-gap);
 }
@@ -33,13 +48,34 @@
   padding-block: 0;
 }
 
+/* Only the three marked vertical distances share --interface-edge-gap:
+   header controls -> rule, tag-row rule -> first card, and Directory -> next card.
+   The tag row's own bottom inset is the reference distance. */
 :root body .site-header {
-  min-height: calc(var(--control-size) + 2 * var(--navigation-border-inset));
+  min-height: 0;
+  padding-block: var(--interface-edge-gap);
 }
 :root body .browser-toolbar {
-  padding-block: var(--navigation-border-inset);
+  padding-block: var(--interface-edge-gap);
+  margin-block-end: var(--interface-edge-gap);
 }
 
+/* Keep normal card-to-card spacing unchanged. Directory has no engagement strip,
+   so only its following visual gap is reduced to the same interface edge token. */
+:root body .post-stream {
+  --active-post-stream-gap: var(--post-stream-gap);
+  gap: var(--active-post-stream-gap);
+}
+:root body .post-stream[data-layout="compact"] {
+  --active-post-stream-gap: var(--post-stream-compact-gap);
+}
+:root body .post-stream[data-layout="list"] > .directory-card:not([hidden]),
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .directory-card:not([hidden]):has([data-pin-toggle][aria-pressed="true"]) {
+  margin-block-end: calc(var(--interface-edge-gap) - var(--active-post-stream-gap));
+}
+
+/* The language glyph is a true centered cell. Hebrew uses the site's Hebrew UI
+   font even when it is the language-switch label on an English page. */
 :root body .header-controls > .language-nav {
   display: grid;
   place-items: center;
@@ -59,4 +95,28 @@
   line-height: 1;
   text-align: center;
   text-align-last: center;
+}
+
+/* Card sharing consumes the global neutral surface. This stylesheet is bundled
+   into the last-loaded control asset, so older post-layout paint cannot turn
+   the row into an accent-tinted surface. Only the interacted glyph becomes
+   accent; the row and individual icon targets remain unframed. */
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
+  border: 0;
+  background: var(--neutral-control-surface);
+  box-shadow: none;
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  box-shadow: none;
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--accent);
+  box-shadow: none;
 }
