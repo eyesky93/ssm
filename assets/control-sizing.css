@@ -144,3 +144,20 @@
     flex: 0 0 var(--control-icon-size);
   }
 }
+
+/* mobile-settings-column-alignment-v4 */
+/* The settings grid uses the exact mobile header step (cell + gap). Keeping the
+   last column anchored under Settings then aligns column 2 under Language and
+   column 1 under Compact view, with identical horizontal and vertical gaps. */
+@media (max-width: 700px) {
+  :root body .header-settings .header-actions {
+    --settings-cell: var(--mobile-header-control-size);
+    --settings-gap: var(--mobile-header-control-gap);
+    --settings-padding: calc(var(--mobile-header-control-gap) / 2);
+    inset-inline-end: calc(0px - var(--settings-padding));
+  }
+  :root body .header-settings .settings-lower,
+  :root body .header-settings .header-actions .accent-panel {
+    gap: var(--mobile-header-control-gap) !important;
+  }
+}
