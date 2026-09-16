@@ -22,7 +22,7 @@
 /* The homepage/main tag menu alone uses the tighter geometry requested here.
    Directory, post, search and all other tag families inherit the shared values
    above, so this adjustment cannot leak into those components. */
-:root .home-main > .subject-nav {
+:root .home-main .browser-toolbar .subject-nav {
   --tag-capsule-size: calc(var(--control-size) * .675);
   --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
   --tag-capsule-radius: .4rem;
