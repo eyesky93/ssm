@@ -8,6 +8,15 @@
   --control-inner-size: calc(var(--control-size) - 2px);
   --header-control-size: var(--control-size);
   --reader-control-size: var(--control-size);
+  /* Tags are the compact capsule variant; navigation retains its full size. */
+  --tag-capsule-size: calc(var(--control-size) * .8);
+  --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
+  --tag-capsule-radius: .45rem;
+  --tag-capsule-padding-block: .15rem;
+  --tag-capsule-padding-inline: .55rem;
+  --tag-capsule-count-inset: .3rem;
+  --tag-capsule-content-gap: .35rem;
+  --tag-capsule-gap: .3rem;
 }
 
 /* Retain the component names as aliases, never independent size settings.
@@ -20,16 +29,13 @@
 }
 .reader-controls { --reader-control-size: var(--control-size); }
 
-/* Single-height capsules. Text may wrap rather than clip at extreme zoom. */
+/* Full-size capsules. Text may wrap rather than clip at extreme zoom. */
 :root .control-capsule,
 :root .wordmark,
-:root .tag-chip,
-:root .search-tag,
 :root .search-submit,
 :root .primary-button,
 :root .language-nav a,
 :root .language-nav select,
-:root .post-stream[data-layout] .tag-chip,
 :root .subscribe-dialog .topic-option span,
 :root .subscribe-dialog .language-select-all,
 :root .newsletter-settings .topic-option,
@@ -39,17 +45,53 @@
 }
 :root .wordmark { height: var(--control-size); padding-block: 0; }
 
-/* A split tag has its own outside border: do not count those two pixels twice. */
+/* One compact tag model for filters, post layouts, search and Directory.
+   Keep typography, count sizes, colors, selection and scrolling untouched.
+   Logical padding also keeps the count and its overlaid X aligned in RTL. */
+:root .tag-chip,
+:root .search-tag,
+:root .tag-option > .tag-chip,
+:root .post-stream[data-layout] .tag-chip {
+  box-sizing: border-box;
+  min-height: var(--tag-capsule-size);
+  border-radius: var(--tag-capsule-radius);
+  padding-block: var(--tag-capsule-padding-block);
+  padding-inline: var(--tag-capsule-padding-inline);
+  gap: var(--tag-capsule-content-gap);
+}
+
+/* A split tag owns its outside border; its child fills only the inside. */
 :root .tag-option,
 :root .post-stream[data-layout] .tag-option {
   box-sizing: border-box;
-  min-height: var(--control-size);
+  min-height: var(--tag-capsule-size);
+  border-radius: var(--tag-capsule-radius);
 }
 :root .tag-option > .tag-chip,
 :root .tag-option > .tag-chip:is(:hover, :focus-visible),
 :root .post-stream[data-layout] .tag-option > .tag-chip,
 :root .post-stream[data-layout] .tag-option > .tag-chip:is(:hover, :focus-visible) {
-  min-height: var(--control-inner-size);
+  min-height: var(--tag-capsule-inner-size);
+}
+:root .tag-chip:has(.tag-count),
+:root .post-stream[data-layout] .tag-chip:has(.tag-count) {
+  padding-inline-end: var(--tag-capsule-count-inset);
+}
+:root .tag-option > .tag-exclude,
+:root .post-stream[data-layout] .tag-option > .tag-exclude {
+  inset-inline-end: var(--tag-capsule-count-inset);
+}
+
+/* Tighten the spaces between tags, including subtag rows, without altering
+   wrapping, scroll behavior, title placement or unrelated control spacing. */
+:root .subject-nav,
+:root .tag-list,
+:root .search-suggestions,
+:root .card-tags,
+:root .article-tags,
+:root .post-stream[data-layout] .card-tags,
+:root .post-stream[data-layout] .article-tags {
+  gap: var(--tag-capsule-gap);
 }
 
 /* All standalone circular controls, including compact cards, dialogs, comment
