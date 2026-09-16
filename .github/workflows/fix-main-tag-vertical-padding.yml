@@ -30,13 +30,12 @@ jobs:
           start = css.index(anchor)
           end = css.index('\n}', start) + 2
           marker = '/* Main menu block padding must override the desktop browser-toolbar rule. */'
-          rule = '''\n\n/* Main menu block padding must override the desktop browser-toolbar rule. */
-:root .home-main .browser-toolbar .subject-nav .tag-option > .tag-chip,
-:root .home-main .browser-toolbar .subject-nav .tag-option > .tag-chip:is(:hover, :focus-visible) {
-  padding-block: var(--tag-capsule-padding-block) !important;
-  min-height: var(--tag-capsule-inner-size);
-}
-'''
+          rule = ('\n\n/* Main menu block padding must override the desktop browser-toolbar rule. */\n'
+                  ':root .home-main .browser-toolbar .subject-nav .tag-option > .tag-chip,\n'
+                  ':root .home-main .browser-toolbar .subject-nav .tag-option > .tag-chip:is(:hover, :focus-visible) {\n'
+                  '  padding-block: var(--tag-capsule-padding-block) !important;\n'
+                  '  min-height: var(--tag-capsule-inner-size);\n'
+                  '}\n')
           if marker not in css:
               css = css[:end] + rule + css[end:]
           css_path.write_text(css, encoding='utf-8')
