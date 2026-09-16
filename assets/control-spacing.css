@@ -122,3 +122,41 @@
   color: var(--accent);
   box-shadow: none;
 }
+
+/* compact-list-card-content-grid-v1 */
+/* List cards use one content grid instead of stacking the vertical
+   Pin/Share/Read group underneath the text. The action column spans
+   the content rows, so it no longer creates empty card height. */
+:root body .post-stream[data-layout="list"] > .post-card:not(.directory-card) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--quiet-control-target-size);
+  grid-template-areas:
+    "heading actions"
+    "summary actions"
+    "date actions";
+  align-items: start;
+  column-gap: var(--control-item-gap);
+  row-gap: var(--control-item-gap);
+}
+:root body .post-stream[data-layout="list"] > .post-card:not(.directory-card) > .post-heading {
+  grid-area: heading;
+  margin-block-end: 0;
+}
+:root body .post-stream[data-layout="list"] > .post-card:not(.directory-card) > p {
+  grid-area: summary;
+  padding-inline-end: 0;
+}
+:root body .post-stream[data-layout="list"] > .post-card:not(.directory-card) > .card-footer:has(> [data-card-actions]) {
+  display: contents;
+}
+:root body .post-stream[data-layout="list"] > .post-card:not(.directory-card) > .card-footer:has(> [data-card-actions]) > time {
+  grid-area: date;
+  align-self: end;
+  padding-block-end: 0;
+}
+:root body .post-stream[data-layout="list"] > .post-card:not(.directory-card) > .card-footer > [data-card-actions] {
+  grid-area: actions;
+  align-self: end;
+  justify-self: center;
+  margin: 0;
+}
