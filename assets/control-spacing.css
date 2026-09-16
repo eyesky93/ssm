@@ -5,8 +5,10 @@
   --brand-item-gap: calc(2 * var(--control-item-gap));
   --navigation-border-inset: .5rem;
   /* The marked vertical spaces use the same global gap as the red reference
-     between compact interface items. Do not reuse this for unrelated card gaps. */
-  --interface-edge-gap: var(--control-item-gap);
+     between compact interface items. Do not reuse this for unrelated card gaps.
+     The !important is only a public compatibility guard against the stale
+     bundled copy loaded later; the canonical source has the same value cleanly. */
+  --interface-edge-gap: var(--control-item-gap) !important;
   /* Preserve ordinary post spacing while allowing Directory's following gap
      to use the shared edge token without hard-coded offset arithmetic. */
   --post-stream-gap: 1rem;
