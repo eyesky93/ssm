@@ -17,6 +17,25 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Correct the nested-action structural verifier
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('.github/scripts/apply_source_delta_1d149eed.py')
+          text = path.read_text()
+          old = '''        host = re.search(r'<div class="article-actions" data-article-actions[\\s\\S]*?</div>', html)
+                  if not host or 'data-read-toggle' not in host.group(0):
+                      raise SystemExit(f'Missing header read control in {path}')'''
+          new = '''        host_start = html.find('<div class="article-actions" data-article-actions')
+                  host_end = html.find('<div class="view-settings toolbar-view"', host_start)
+                  if host_start < 0 or host_end < 0 or 'data-read-toggle' not in html[host_start:host_end]:
+                      raise SystemExit(f'Missing header read control in {path}')'''
+          if old not in text:
+              raise SystemExit('Verifier patch anchor missing')
+          path.write_text(text.replace(old, new, 1))
+          PY
+
       - name: Apply validated source changes to generated Pages tree
         run: python .github/scripts/apply_source_delta_1d149eed.py
 
