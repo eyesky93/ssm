@@ -1,0 +1,103 @@
+name: Deploy mobile-only header controls
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/deploy-mobile-header-controls.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ssm-mobile-header-controls
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch current Pages tree and publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            git fetch origin master
+            git reset --hard origin/master
+            python - <<'PY'
+          from pathlib import Path
+          import hashlib, re
+
+          path = Path('assets/control-sizing.css')
+          css = path.read_text()
+          marker = '/* mobile-header-controls-v1 */'
+          block = r'''
+          /* mobile-header-controls-v1 */
+          /* Desktop deliberately keeps the compact header family. Phones restore
+             the full shared control size; search, language, settings and the
+             settings popup all consume the same header aliases. */
+          :root {
+            --mobile-header-control-size: var(--control-size);
+            --mobile-header-control-gap: var(--control-capsule-gap);
+          }
+          @media (max-width: 700px) {
+            :root body .header-controls {
+              --header-control-size: var(--mobile-header-control-size);
+              --header-control-inner-size: calc(var(--mobile-header-control-size) - 2px);
+              --header-control-padding: max(0px, calc((var(--mobile-header-control-size) - var(--control-icon-size) - 2px) / 2));
+              --header-control-gap: var(--mobile-header-control-gap) !important;
+              --header-control-half-gap: calc(var(--mobile-header-control-gap) / 2) !important;
+              gap: var(--header-control-gap) !important;
+            }
+            :root body .header-controls .site-search,
+            :root body .header-controls .search-shell,
+            :root body .header-controls .search-bar,
+            :root body .header-controls .toolbar-view,
+            :root body .header-controls .toolbar-view > .view-switch {
+              height: var(--header-control-size);
+              min-height: var(--header-control-size);
+              max-height: var(--header-control-size);
+            }
+          }
+          '''
+          if marker not in css:
+              css = css.rstrip() + '\n\n' + block.strip() + '\n'
+              path.write_text(css)
+
+          digest = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
+          pattern = re.compile(r'(/ssm/assets/control-sizing\.css)\?v=[0-9a-f]+')
+          changed = 0
+          for html in Path('.').rglob('*.html'):
+              text = html.read_text()
+              updated = pattern.sub(rf'\1?v={digest}', text)
+              if updated != text:
+                  html.write_text(updated)
+                  changed += 1
+
+          sample = Path('en/index.html').read_text()
+          if f'/ssm/assets/control-sizing.css?v={digest}' not in sample:
+              raise SystemExit('Homepage did not receive refreshed control stylesheet hash')
+          final = path.read_text()
+          for required in (marker, '--mobile-header-control-size:', '@media (max-width: 700px)', '--header-control-size: var(--mobile-header-control-size)'):
+              if required not in final:
+                  raise SystemExit(f'Missing mobile control rule: {required}')
+          print(f'Updated {changed} HTML files; control-sizing={digest}')
+          PY
+            git add assets/control-sizing.css '*.html' 'en/**/*.html' 'he/**/*.html'
+            if git diff --cached --quiet; then
+              echo "Live site already current."
+              exit 0
+            fi
+            git commit -m "Publish mobile-only enlarged header controls"
+            if git push origin HEAD:master; then
+              exit 0
+            fi
+            echo "Concurrent Pages update detected; retrying ($attempt/3)."
+            sleep 2
+          done
+          exit 1
