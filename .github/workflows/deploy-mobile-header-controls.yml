@@ -95,21 +95,10 @@ jobs:
           layout_marker = '/* mobile-header-layout-v2 */'
           layout_block = r'''
           /* mobile-header-layout-v2 */
-          /* One mobile geometry contract aligns the brand/navigation row and
-             reserves the settings panel so it never covers the tag menu. */
+          /* One mobile geometry contract aligns the brand/navigation row. */
           :root {
             --mobile-header-group-gap: var(--mobile-header-control-gap);
             --mobile-settings-panel-gap: var(--mobile-header-control-gap);
-            --mobile-settings-panel-height: calc(
-              var(--mobile-header-control-size) +
-              var(--mobile-header-control-size) +
-              var(--mobile-header-control-gap) +
-              var(--mobile-header-control-gap)
-            );
-            --mobile-settings-open-reserve: calc(
-              var(--mobile-settings-panel-gap) +
-              var(--mobile-settings-panel-height)
-            );
           }
           @media (max-width: 700px) {
             :root body .site-header {
@@ -123,9 +112,7 @@ jobs:
               gap: var(--mobile-header-group-gap);
               align-items: center;
             }
-            :root body .primary-nav .about-link {
-              white-space: nowrap;
-            }
+            :root body .primary-nav .about-link { white-space: nowrap; }
             :root body .header-controls {
               flex: 0 0 auto;
               flex-wrap: nowrap;
@@ -138,23 +125,67 @@ jobs:
               inline-size: var(--header-control-size);
               block-size: var(--header-control-size);
             }
-            :root body .wordmark {
-              flex: 0 0 auto;
-            }
-            :root body .header-settings .header-actions {
-              inset-inline-end: 0;
-              inset-block-start: calc(100% + var(--mobile-settings-panel-gap));
-            }
-            :root body .site-header:has(.header-settings[data-open="true"]) {
-              padding-block-end: calc(
-                var(--interface-gap, 0px) +
-                var(--mobile-settings-open-reserve)
-              );
-            }
+            :root body .wordmark { flex: 0 0 auto; }
           }
           '''
           if layout_marker not in css:
               css = css.rstrip() + '\n\n' + layout_block.strip() + '\n'
+
+          overlay_marker = '/* mobile-header-overlay-v3 */'
+          overlay_block = r'''
+          /* mobile-header-overlay-v3 */
+          /* Settings is a true popover: it overlays page content without changing
+             header or tag-menu geometry. Every icon consumes one centering model. */
+          :root {
+            --mobile-settings-panel-z: 60;
+          }
+          @media (max-width: 700px) {
+            :root body .site-header {
+              position: relative;
+              overflow: visible;
+            }
+            :root body .site-header:has(.header-settings[data-open="true"]) {
+              padding-block-end: var(--interface-gap, 0px) !important;
+            }
+            :root body .header-settings .header-actions {
+              z-index: var(--mobile-settings-panel-z);
+              inset-inline-end: calc(0px - var(--settings-padding));
+              inset-block-start: calc(100% + var(--mobile-settings-panel-gap) - var(--settings-padding));
+            }
+            :root body .header-controls :is(
+              .search-toggle,
+              .language-nav,
+              .language-nav > a,
+              .language-nav > select,
+              .settings-toggle
+            ) {
+              align-items: center;
+              justify-content: center;
+              align-content: center;
+              line-height: 1;
+            }
+            :root body .header-controls :is(.search-toggle, .settings-toggle),
+            :root body .header-actions :is(.settings-action, .random-post, .theme-toggle, .accent-reset) {
+              display: grid;
+              place-items: center;
+              align-content: center;
+              justify-content: center;
+              line-height: 1;
+            }
+            :root body .header-controls :is(.search-toggle, .settings-toggle) > svg,
+            :root body .header-actions :is(.settings-action, .random-post, .theme-toggle, .accent-reset) > svg {
+              display: block;
+              inline-size: var(--control-icon-size);
+              block-size: var(--control-icon-size);
+              width: var(--control-icon-size);
+              height: var(--control-icon-size);
+              margin: 0;
+              flex: 0 0 var(--control-icon-size);
+            }
+          }
+          '''
+          if overlay_marker not in css:
+              css = css.rstrip() + '\n\n' + overlay_block.strip() + '\n'
 
           path.write_text(css)
           digest = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
@@ -177,8 +208,9 @@ jobs:
               brand_marker,
               '--mobile-wordmark-size:',
               layout_marker,
-              '--mobile-settings-open-reserve:',
-              '.site-header:has(.header-settings[data-open="true"])',
+              overlay_marker,
+              '--mobile-settings-panel-z:',
+              'padding-block-end: var(--interface-gap, 0px) !important',
           ):
               if required not in final:
                   raise SystemExit(f'Missing mobile control rule: {required}')
@@ -189,7 +221,7 @@ jobs:
               echo "Live site already current."
               exit 0
             fi
-            git commit -m "Publish aligned mobile header and settings panel"
+            git commit -m "Publish mobile settings overlay and icon alignment"
             if git push origin HEAD:master; then
               exit 0
             fi
