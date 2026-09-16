@@ -45,3 +45,25 @@
   align-self: center;
   justify-content: center;
 }
+
+/* Keep the share destinations legible over card/date content: one solid neutral
+   popover, full foreground icons at rest, and the site accent on interaction. */
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
+  padding: var(--quiet-control-gap);
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) {
+  background: var(--surface);
+  color: var(--ink);
+  opacity: 1;
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) {
+  background: var(--surface);
+  color: var(--accent);
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):focus-visible {
+  outline-color: var(--accent);
+}
