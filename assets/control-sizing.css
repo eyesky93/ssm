@@ -180,3 +180,32 @@
     display: block;
   }
 }
+
+/* mobile-settings-exact-columns-v5 */
+/* The settings cells use the identical mobile header step. Anchoring
+   the rightmost cell under Settings therefore places the middle cell
+   directly under Language and the left cell directly under Compact. */
+@media (max-width: 700px) {
+  :root body .header-settings .header-actions {
+    --settings-cell: var(--mobile-header-control-size);
+    --settings-gap: var(--mobile-header-control-gap);
+    --settings-padding: calc(var(--settings-gap) / 2);
+    inset-inline-end: calc(0px - var(--settings-padding));
+  }
+  :root body .header-settings .settings-lower {
+    grid-template-columns: repeat(3, var(--settings-cell)) !important;
+    grid-template-rows: repeat(2, var(--settings-cell)) !important;
+    column-gap: var(--settings-gap) !important;
+    row-gap: var(--settings-gap) !important;
+    inline-size: calc(3 * var(--settings-cell) + 2 * var(--settings-gap)) !important;
+    block-size: calc(2 * var(--settings-cell) + var(--settings-gap)) !important;
+  }
+  :root body .header-settings .settings-lower > .color-settings {
+    inline-size: var(--settings-cell) !important;
+    width: var(--settings-cell) !important;
+  }
+  :root body .header-settings .header-actions .accent-panel {
+    grid-template-rows: repeat(2, var(--settings-cell)) !important;
+    gap: var(--settings-gap) !important;
+  }
+}
