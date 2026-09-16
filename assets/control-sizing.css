@@ -33,6 +33,14 @@
   --tag-capsule-gap: .25rem;
 }
 
+/* Main menu block padding must override the desktop browser-toolbar rule. */
+:root .home-main .browser-toolbar .subject-nav .tag-option > .tag-chip,
+:root .home-main .browser-toolbar .subject-nav .tag-option > .tag-chip:is(:hover, :focus-visible) {
+  padding-block: var(--tag-capsule-padding-block) !important;
+  min-height: var(--tag-capsule-inner-size);
+}
+
+
 /* Retain the component names as aliases, never independent size settings.
    Search, the settings outline, layout track and vertical color capsule all
    derive their existing grid calculations from the header alias. */
