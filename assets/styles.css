@@ -1,5 +1,14 @@
 @import url("./styles-base.css");
 
+/* The reset slot is only a layout host. The button owns the shared compact
+   control inset, so adding the wrapper must never offset it from adjacent tags. */
+:root .subject-nav .tag-list > .filter-reset-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
 /* List/reader tags keep their horizontal drag row. Tiled cards use all available
    width and move complete tag capsules onto additional rows. */
 .post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags {
