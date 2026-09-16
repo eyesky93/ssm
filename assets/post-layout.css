@@ -1346,3 +1346,24 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) { border: 0; background: transparent; color: var(--quiet-control-active-color); box-shadow: none; }
 :root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):focus-visible { outline: 1px solid var(--quiet-control-color); outline-offset: 0; }
 :root .post-stream[data-layout] [data-card-actions] .card-share-menu[data-share-side="above"] > .share-options { inset-block-start: auto; inset-block-end: calc(100% + var(--quiet-control-gap)); }
+
+/* card-share-neutral-global-v2 */
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
+  border: 0;
+  background: var(--code-bg);
+  box-shadow: none;
+}
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  box-shadow: none;
+}
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--accent);
+  box-shadow: none;
+}
