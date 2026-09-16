@@ -1,0 +1,50 @@
+name: Force rollback cache refresh
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/rollback-cache-bust.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Cache-bust reverted stylesheet and remove temporary workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib, re
+
+          css_path = Path('assets/styles.css')
+          css = css_path.read_text()
+          marker = '/* rollback-cache-refresh-20260916 */'
+          if marker not in css:
+              css = css.rstrip() + '\n\n' + marker + '\n'
+              css_path.write_text(css)
+
+          digest = hashlib.sha256(css_path.read_bytes()).hexdigest()[:12]
+          pattern = re.compile(r'(/ssm/assets/styles\.css)\?v=[^"\']+')
+          changed = 0
+          for html in Path('.').rglob('*.html'):
+              text = html.read_text()
+              updated = pattern.sub(rf'\1?v={digest}', text)
+              if updated != text:
+                  html.write_text(updated)
+                  changed += 1
+          print(f'Cache-busted styles.css to {digest} in {changed} HTML files')
+          PY
+          git rm .github/workflows/rollback-cache-bust.yml
+          git add assets/styles.css '*.html' 'en/**/*.html' 'he/**/*.html'
+          git commit -m "Force reverted CSS cache refresh"
+          git push origin HEAD:master
