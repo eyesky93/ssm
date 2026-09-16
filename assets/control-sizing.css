@@ -241,3 +241,35 @@
   align-self: end;
   padding-block-end: calc((var(--quiet-control-target-size) - 1lh) / 2);
 }
+
+/* compact-list-cards-v1 */
+:root {
+  --list-post-card-padding-block: var(--control-capsule-gap);
+  --list-post-card-content-gap: var(--control-item-gap);
+  --list-post-card-action-lane: calc(var(--quiet-control-target-size) + var(--control-capsule-gap));
+}
+:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) {
+  position: relative;
+  padding-block: var(--list-post-card-padding-block);
+}
+:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) .post-heading {
+  margin-block-end: var(--list-post-card-content-gap);
+}
+:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > p {
+  padding-inline-end: var(--list-post-card-action-lane);
+}
+:root body .post-stream[data-layout="list"] .card-footer:has(> [data-card-actions]) {
+  display: block;
+  margin-block-start: var(--list-post-card-content-gap);
+  padding-block-start: 0;
+}
+:root body .post-stream[data-layout="list"] .card-footer:has(> [data-card-actions]) > time {
+  display: block;
+  padding-block-end: 0;
+}
+:root body .post-stream[data-layout="list"] .card-footer > [data-card-actions] {
+  position: absolute;
+  inset-inline-end: var(--card-action-inset);
+  inset-block-end: var(--card-action-inset);
+  margin: 0;
+}
