@@ -187,6 +187,30 @@ jobs:
           if overlay_marker not in css:
               css = css.rstrip() + '\n\n' + overlay_block.strip() + '\n'
 
+          theme_marker = '/* mobile-theme-icon-state-v4 */'
+          theme_block = r'''
+          /* mobile-theme-icon-state-v4 */
+          /* Mobile alignment may size theme icons but must not make both states
+             visible. Show only the action that switches away from the current theme. */
+          @media (max-width: 700px) {
+            :root body .header-actions .theme-toggle > [data-theme-icon] {
+              display: none;
+              inline-size: var(--control-icon-size);
+              block-size: var(--control-icon-size);
+              width: var(--control-icon-size);
+              height: var(--control-icon-size);
+              margin: 0;
+              flex: 0 0 var(--control-icon-size);
+            }
+            :root[data-theme="light"] body .header-actions .theme-toggle > [data-theme-icon="dark"],
+            :root[data-theme="dark"] body .header-actions .theme-toggle > [data-theme-icon="light"] {
+              display: block;
+            }
+          }
+          '''
+          if theme_marker not in css:
+              css = css.rstrip() + '\n\n' + theme_block.strip() + '\n'
+
           path.write_text(css)
           digest = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
           pattern = re.compile(r'(/ssm/assets/control-sizing\.css)\?v=[0-9a-f]+')
@@ -211,6 +235,9 @@ jobs:
               overlay_marker,
               '--mobile-settings-panel-z:',
               'padding-block-end: var(--interface-gap, 0px) !important',
+              theme_marker,
+              '[data-theme-icon="dark"]',
+              '[data-theme-icon="light"]',
           ):
               if required not in final:
                   raise SystemExit(f'Missing mobile control rule: {required}')
@@ -221,7 +248,7 @@ jobs:
               echo "Live site already current."
               exit 0
             fi
-            git commit -m "Publish mobile settings overlay and icon alignment"
+            git commit -m "Publish single-state mobile theme icon"
             if git push origin HEAD:master; then
               exit 0
             fi
