@@ -1,0 +1,78 @@
+name: Fix share surface frame
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-share-surface-frame.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply shared global share surface and frame
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import re
+
+          css_path = Path('assets/control-sizing.css')
+          css = css_path.read_text(encoding='utf-8')
+          marker = '/* global-share-surface-frame-v2 */'
+          rules = '''
+
+/* global-share-surface-frame-v2 */
+:root {
+  --control-frame-width: 1px;
+  --neutral-control-surface: var(--surface);
+  --neutral-control-frame: var(--line-dark);
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
+  border: var(--control-frame-width) solid var(--neutral-control-frame);
+  background: var(--neutral-control-surface);
+  box-shadow: none;
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  box-shadow: none;
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--accent);
+  box-shadow: none;
+}
+'''
+          if marker not in css:
+              css += rules
+              css_path.write_text(css, encoding='utf-8')
+
+          version = hashlib.sha256(css.encode()).hexdigest()[:12]
+          pattern = re.compile(r'(assets/control-sizing\.css)\?v=[0-9a-f]+')
+          for path in Path('.').rglob('*.html'):
+              text = path.read_text(encoding='utf-8')
+              updated = pattern.sub(rf'\1?v={version}', text)
+              if updated != text:
+                  path.write_text(updated, encoding='utf-8')
+
+          Path('.github/workflows/fix-share-surface-frame.yml').unlink()
+          print(version)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Match share surface to card and add global frame'
+          git push
