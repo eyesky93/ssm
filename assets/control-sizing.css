@@ -331,3 +331,54 @@
 :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .directory-card:not([hidden]):has([data-pin-toggle][aria-pressed="true"]) {
   margin-block-end: 0 !important;
 }
+
+/* list-card-separated-rail-v2 */
+:root {
+  --grid-post-title-size: 1.5rem;
+  --grid-post-title-line-height: 1.2;
+  --grid-post-summary-size: 1rem;
+  --grid-post-summary-line-height: 1.5;
+  --list-post-card-padding-block: var(--control-capsule-gap);
+  --list-post-card-content-gap: var(--control-item-gap);
+  --list-post-action-inset: var(--card-action-inset);
+  --list-post-action-lane: calc(var(--quiet-control-target-size) + var(--control-capsule-gap));
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="list"]) .post-card:not(.directory-card) h2 {
+  font-size: var(--grid-post-title-size);
+  line-height: var(--grid-post-title-line-height);
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="list"]) .post-card:not(.directory-card) > p {
+  font-size: var(--grid-post-summary-size);
+  line-height: var(--grid-post-summary-line-height);
+}
+:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) {
+  position: relative;
+  padding-block: var(--list-post-card-padding-block);
+}
+:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) .post-heading {
+  margin-block-end: var(--list-post-card-content-gap);
+}
+:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) .post-tools {
+  box-sizing: border-box;
+  padding-inline-end: var(--list-post-action-lane);
+}
+:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > p {
+  padding-inline-end: var(--list-post-action-lane);
+}
+:root body .post-stream[data-layout="list"] .card-footer:has(> [data-card-actions]) {
+  display: block;
+  margin-block-start: var(--list-post-card-content-gap);
+  padding-block-start: 0;
+}
+:root body .post-stream[data-layout="list"] .card-footer:has(> [data-card-actions]) > time {
+  display: block;
+  padding-block-end: 0;
+}
+:root body .post-stream[data-layout="list"] .card-footer > [data-card-actions] {
+  position: absolute;
+  inset-inline-end: var(--list-post-action-inset);
+  inset-block-start: var(--list-post-action-inset);
+  inset-block-end: var(--list-post-action-inset);
+  justify-content: space-between;
+  margin: 0;
+}
