@@ -600,3 +600,87 @@
   inline-size: var(--control-icon-size); block-size: var(--control-icon-size);
   font-size: var(--control-icon-size); border-radius: var(--control-inner-radius);
 }
+
+/* shared-compact-toolbar-control-size-v1 */
+/* Header toolbar controls and the tag-row reset are one compact control
+   family. Change the shared token once; every member follows it. */
+:root {
+  --compact-control-size: var(--tag-capsule-size);
+}
+:root .header-controls {
+  --header-control-size: var(--compact-control-size);
+  --header-control-inner-size: calc(var(--header-control-size) - 2px);
+  --header-control-padding: max(0px, calc((var(--header-control-size) - var(--control-icon-size) - 2px) / 2));
+}
+
+:root .subject-nav :is(.clear-filter, .filter-reset-slot) {
+  width: var(--compact-control-size);
+  min-width: var(--compact-control-size);
+  max-width: var(--compact-control-size);
+  height: var(--compact-control-size);
+  min-height: var(--compact-control-size);
+  max-height: var(--compact-control-size);
+  inline-size: var(--compact-control-size);
+  min-inline-size: var(--compact-control-size);
+  max-inline-size: var(--compact-control-size);
+  block-size: var(--compact-control-size);
+  min-block-size: var(--compact-control-size);
+  max-block-size: var(--compact-control-size);
+  flex-basis: var(--compact-control-size);
+}
+
+:root .header-controls :is(
+  .settings-toggle,
+  .round-control,
+  .pin-toggle:where(:not(.quiet-control)),
+  .share-menu summary:where(:not(.quiet-control)),
+  .language-nav,
+  .language-nav > a,
+  .language-nav > select,
+  .toolbar-view .view-switch > button
+) {
+  box-sizing: border-box;
+  width: var(--header-control-size);
+  min-width: var(--header-control-size);
+  max-width: var(--header-control-size);
+  height: var(--header-control-size);
+  min-height: var(--header-control-size);
+  max-height: var(--header-control-size);
+  inline-size: var(--header-control-size);
+  min-inline-size: var(--header-control-size);
+  max-inline-size: var(--header-control-size);
+  block-size: var(--header-control-size);
+  min-block-size: var(--header-control-size);
+  max-block-size: var(--header-control-size);
+  flex: 0 0 var(--header-control-size);
+}
+
+:root .header-controls :is(
+  .settings-toggle,
+  .round-control,
+  .pin-toggle:where(:not(.quiet-control)),
+  .share-menu summary:where(:not(.quiet-control)),
+  .toolbar-view .view-switch > button
+) {
+  padding: var(--header-control-padding);
+}
+
+:root .header-controls .toolbar-view,
+:root .header-controls .toolbar-view > .view-switch {
+  height: var(--header-control-size);
+  min-height: var(--header-control-size);
+  max-height: var(--header-control-size);
+}
+
+:root .header-controls :is(.search-toggle, .search-clear) {
+  box-sizing: border-box;
+  flex: 0 0 var(--header-control-inner-size);
+  width: var(--header-control-inner-size);
+  min-width: var(--header-control-inner-size);
+  max-width: var(--header-control-inner-size);
+  height: var(--header-control-inner-size);
+  min-height: var(--header-control-inner-size);
+  max-height: var(--header-control-inner-size);
+  inline-size: var(--header-control-inner-size);
+  block-size: var(--header-control-inner-size);
+}
