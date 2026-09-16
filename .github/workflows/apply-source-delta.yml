@@ -1,0 +1,34 @@
+name: Apply validated source delta
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/apply-source-delta.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply validated source changes to generated Pages tree
+        run: python .github/scripts/apply_source_delta_1d149eed.py
+
+      - name: Commit generated public update
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          if git diff --cached --quiet; then
+            echo "Generated Pages tree is already current."
+            exit 0
+          fi
+          git commit -m "Publish compact shared tags and reader header actions"
+          git push origin HEAD:master
