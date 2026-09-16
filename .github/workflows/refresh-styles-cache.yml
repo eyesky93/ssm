@@ -18,6 +18,7 @@ jobs:
       - name: Update generated HTML stylesheet version
         shell: bash
         run: |
+          # Keep generated HTML cache keys synchronized with the deployed stylesheet.
           python - <<'PY'
           from pathlib import Path
           import hashlib, re
