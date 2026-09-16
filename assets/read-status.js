@@ -180,35 +180,42 @@
     const key = document2.body.dataset.readStorage;
     const store = getReadStore(document2, window2);
     const status = document2.querySelector("[data-read-status]");
+    const articleButton = document2.querySelector("[data-article-actions]")?.querySelector("[data-read-toggle]");
+    let articleVisitStarted = false;
+    function renderButton(button, read) {
+      if (!button) return;
+      const label = read ? button.dataset.labelUnread : button.dataset.labelRead;
+      button.disabled = false;
+      button.textContent = label;
+      button.setAttribute("role", "checkbox");
+      button.setAttribute("aria-checked", String(read));
+      button.setAttribute("aria-label", label);
+      button.title = label;
+    }
+    function toggle(id) {
+      const read = !store.isRead(id);
+      const persisted = store.set(id, read);
+      if (status) status.textContent = `${read ? status.dataset.read : status.dataset.unread}${persisted ? "" : ` ${status.dataset.temporary}`}`;
+    }
     function render() {
       for (const card of cards) {
         if (card.dataset.directory !== void 0) continue;
         const read = store.isRead(card.dataset.postId);
         card.classList.toggle("unread-card", !read);
-        const button = card.querySelector("[data-read-toggle]");
-        if (!button) continue;
-        const label = read ? button.dataset.labelUnread : button.dataset.labelRead;
-        button.disabled = false;
-        button.textContent = label;
-        button.setAttribute("role", "checkbox");
-        button.setAttribute("aria-checked", String(read));
-        button.setAttribute("aria-label", label);
-        button.title = label;
+        renderButton(card.querySelector("[data-read-toggle]"), read);
       }
+      if (article) renderButton(articleButton, store.isRead(article.dataset.postId));
     }
     function markVisibleArticle() {
-      if (article && article.dataset.directory === void 0 && !article.hidden && document2.visibilityState !== "hidden" && !store.isRead(article.dataset.postId)) {
-        store.set(article.dataset.postId, true);
-        render();
-      }
+      if (!article || article.dataset.directory !== void 0) return;
+      if (article.hidden) { articleVisitStarted = false; return; }
+      if (document2.visibilityState === "hidden" || articleVisitStarted) return;
+      articleVisitStarted = true;
+      if (!store.isRead(article.dataset.postId)) store.set(article.dataset.postId, true);
     }
+    articleButton?.addEventListener("click", () => toggle(article.dataset.postId));
     for (const card of cards) {
-      card.querySelector("[data-read-toggle]")?.addEventListener("click", () => {
-        const read = !store.isRead(card.dataset.postId);
-        const persisted = store.set(card.dataset.postId, read);
-        render();
-        if (status) status.textContent = `${read ? status.dataset.read : status.dataset.unread}${persisted ? "" : ` ${status.dataset.temporary}`}`;
-      });
+      card.querySelector("[data-read-toggle]")?.addEventListener("click", () => toggle(card.dataset.postId));
       card.addEventListener("click", (event) => {
         if (event.defaultPrevented || typeof event.button === "number" && event.button !== 0) return;
         const target = event.target;
@@ -220,22 +227,14 @@
       });
     }
     window2.addEventListener("storage", (event) => {
-      if (event.key === key || event.key === null) {
-        store.refresh();
-        render();
-      }
+      if (event.key === key || event.key === null) { store.refresh(); render(); }
     });
-    window2.addEventListener("pageshow", () => {
-      store.refresh();
-      render();
-      markVisibleArticle();
+    window2.addEventListener("pageshow", (event) => {
+      if (event.persisted) articleVisitStarted = false;
+      store.refresh(); render(); markVisibleArticle();
     });
     document2.addEventListener("visibilitychange", () => {
-      if (document2.visibilityState === "visible") {
-        store.refresh();
-        render();
-        markVisibleArticle();
-      }
+      if (document2.visibilityState === "visible") { store.refresh(); render(); markVisibleArticle(); }
     });
     if (article && window2.MutationObserver) {
       new window2.MutationObserver(markVisibleArticle).observe(article, { attributes: true, attributeFilter: ["hidden"] });

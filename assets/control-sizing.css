@@ -11,29 +11,20 @@
   --control-inner-size: calc(var(--control-size) - 2px);
   --header-control-size: var(--control-size);
   --reader-control-size: var(--control-size);
-  /* Tags keep the earlier compact shared geometry by default. */
-  --tag-capsule-size: calc(var(--control-size) * .8);
-  --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
-  --tag-capsule-radius: .45rem;
-  --tag-capsule-padding-block: .15rem;
-  --tag-capsule-padding-inline: .55rem;
-  --tag-capsule-count-inset: .3rem;
-  --tag-capsule-content-gap: .35rem;
-  --tag-capsule-gap: .3rem;
-}
-
-/* The homepage/main tag menu alone uses the tighter geometry requested here.
-   Directory, post, search and all other tag families inherit the shared values
-   above, so this adjustment cannot leak into those components. */
-:root .home-main > .subject-nav {
+  --surface-padding: calc(var(--control-capsule-gap) * 2);
+  --control-icon-size: 1.35rem;
+  --control-padding: max(0px, calc((var(--control-size) - var(--control-icon-size) - 2px) / 2));
+  /* Every tag surface uses the same compact frame with no vertical padding. */
   --tag-capsule-size: calc(var(--control-size) * .675);
   --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
-  --tag-capsule-radius: .4rem;
-  --tag-capsule-padding-block: .05rem;
-  --tag-capsule-padding-inline: .4rem;
-  --tag-capsule-count-inset: .2rem;
-  --tag-capsule-content-gap: .25rem;
-  --tag-capsule-gap: .25rem;
+  --tag-capsule-radius: var(--control-radius);
+  --tag-capsule-padding-block: 0;
+  --tag-capsule-padding-inline: var(--control-capsule-gap);
+  --tag-capsule-count-inset: calc(var(--control-capsule-gap) / 2);
+  --tag-capsule-content-gap: calc(var(--control-capsule-gap) / 2);
+  --tag-capsule-gap: calc(var(--control-capsule-gap) / 2);
+  --tag-count-size: calc(var(--tag-capsule-inner-size) - 2 * var(--tag-capsule-count-inset));
+  --tag-count-font-size: calc(var(--tag-count-size) * .65);
 }
 
 /* Retain the component names as aliases, never independent size settings.
@@ -565,4 +556,47 @@
 :root .home-main .browser-toolbar .subject-nav .tag-option > .tag-chip:is(:hover, :focus-visible) {
   padding-block: var(--tag-capsule-padding-block) !important;
   min-height: var(--tag-capsule-inner-size);
+}
+
+
+/* source-delta-1d149eed */
+:root .tag-option > .tag-chip,
+:root .tag-option > .tag-chip:is(:hover, :focus-visible),
+:root .post-stream[data-layout] .tag-option > .tag-chip,
+:root .post-stream[data-layout] .tag-option > .tag-chip:is(:hover, :focus-visible) {
+  padding-block: var(--tag-capsule-padding-block);
+}
+:root .tag-chip:has(.post-monograph-order),
+:root .tag-chip:has(.tag-count),
+:root .post-stream[data-layout] .tag-chip:has(.tag-count) {
+  padding-inline-end: var(--tag-capsule-count-inset);
+}
+:root .tag-exclude { padding: var(--tag-capsule-count-inset); }
+:root .round-control,
+:root .settings-toggle,
+:root .settings-action,
+:root .view-control,
+:root .accent-reset,
+:root .random-post,
+:root .theme-toggle,
+:root .search-submit,
+:root .search-dialog-close,
+:root .view-switch button,
+:root .pin-toggle:where(:not(.quiet-control)),
+:root .post-stream[data-layout] .pin-toggle:where(:not(.quiet-control)),
+:root .share-menu summary:where(:not(.quiet-control)),
+:root .share-options a,
+:root .share-options button,
+:root .subscription-close { padding: var(--control-padding); }
+:root .subject-nav :is(.clear-filter, .filter-reset-slot) {
+  width: var(--tag-capsule-size); min-width: var(--tag-capsule-size); max-width: var(--tag-capsule-size);
+  height: var(--tag-capsule-size); min-height: var(--tag-capsule-size); max-height: var(--tag-capsule-size);
+  inline-size: var(--tag-capsule-size); min-inline-size: var(--tag-capsule-size); max-inline-size: var(--tag-capsule-size);
+  block-size: var(--tag-capsule-size); min-block-size: var(--tag-capsule-size); max-block-size: var(--tag-capsule-size);
+  flex-basis: var(--tag-capsule-size); padding: var(--tag-capsule-count-inset);
+}
+:root .read-toggle.round-control { padding: var(--control-padding); transform: none; }
+:root .read-toggle.round-control::before {
+  inline-size: var(--control-icon-size); block-size: var(--control-icon-size);
+  font-size: var(--control-icon-size); border-radius: var(--control-inner-radius);
 }

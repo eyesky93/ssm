@@ -1121,3 +1121,28 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-footer {
   order: 3;
 }
+
+
+/* source-delta-1d149eed */
+@media (max-width: 700px) {
+  .article-heading.post-heading { grid-template-columns: minmax(0, 1fr); gap: var(--control-capsule-gap); }
+  .article-heading > .post-tools > :is(.article-actions, .pin-toggle) { display: none; }
+}
+.tag-chip:is(.card-tag, .article-tag)[data-monograph-order] {
+  --monograph-order-size: var(--tag-count-size);
+  gap: var(--tag-capsule-content-gap);
+  padding-block: var(--tag-capsule-padding-block);
+  padding-inline-end: var(--tag-capsule-count-inset);
+}
+.post-monograph-order { font-size: var(--tag-count-font-size); }
+.post-stream[data-layout="grid"] {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(18rem, calc(var(--engagement-strip-min-width, 0px) + 2 * var(--surface-padding) + 2px))), 1fr));
+}
+.post-stream[data-layout="compact"] {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(15rem, calc(var(--engagement-strip-min-width, 0px) + 2 * var(--surface-padding) + 2px))), 1fr));
+}
+:root { --card-action-inset: calc(var(--control-capsule-gap) / 2); }
+:root .post-stream[data-layout] .card-footer > [data-card-actions] {
+  margin-inline-end: calc(var(--card-action-inset) - var(--post-card-padding-inline));
+  margin-block-end: calc(var(--card-action-inset) - var(--post-card-padding-block));
+}
