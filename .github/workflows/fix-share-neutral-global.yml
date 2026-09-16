@@ -20,55 +20,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-          import hashlib
-          import re
-
-          css_path = Path('assets/control-sizing.css')
-          css = css_path.read_text(encoding='utf-8')
-          marker = '/* global-neutral-share-surface-v1 */'
-          rules = r'''
-
-/* global-neutral-share-surface-v1 */
-:root {
-  --neutral-control-surface: var(--code-bg);
-}
-:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
-  border: 0;
-  background: var(--neutral-control-surface);
-  box-shadow: none;
-}
-:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) {
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--ink);
-  box-shadow: none;
-}
-:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) {
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--accent);
-  box-shadow: none;
-}
-'''
-          if marker not in css:
-              css += rules
-              css_path.write_text(css, encoding='utf-8')
-
-          version = hashlib.sha256(css.encode()).hexdigest()[:12]
-          pattern = re.compile(r'(assets/control-sizing\.css)\?v=[0-9a-f]+')
-          for path in Path('.').rglob('*.html'):
-              text = path.read_text(encoding='utf-8')
-              updated = pattern.sub(rf'\1?v={version}', text)
-              if updated != text:
-                  path.write_text(updated, encoding='utf-8')
-
-          Path('.github/workflows/fix-share-neutral-global.yml').unlink()
-          print(version)
-          PY
+          echo 'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmltcG9ydCBoYXNobGliCmltcG9ydCByZQoKY3NzX3BhdGggPSBQYXRoKCJhc3NldHMvY29udHJvbC1zaXppbmcuY3NzIikKY3NzID0gY3NzX3BhdGgucmVhZF90ZXh0KGVuY29kaW5nPSJ1dGYtOCIpCm1hcmtlciA9ICIvKiBnbG9iYWwtbmV1dHJhbC1zaGFyZS1zdXJmYWNlLXYxICovIgpydWxlcyA9IHInJycKLyogZ2xvYmFsLW5ldXRyYWwtc2hhcmUtc3VyZmFjZS12MSAqLwo6cm9vdCB7CiAgLS1uZXV0cmFsLWNvbnRyb2wtc3VyZmFjZTogdmFyKC0tY29kZS1iZyk7Cn0KOnJvb3QgYm9keSAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXRdIFtkYXRhLWNhcmQtYWN0aW9uc10gLmNhcmQtc2hhcmUtbWVudSA+IC5zaGFyZS1vcHRpb25zIHsKICBib3JkZXI6IDA7CiAgYmFja2dyb3VuZDogdmFyKC0tbmV1dHJhbC1jb250cm9sLXN1cmZhY2UpOwogIGJveC1zaGFkb3c6IG5vbmU7Cn0KOnJvb3QgYm9keSAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXRdIFtkYXRhLWNhcmQtYWN0aW9uc10gLmNhcmQtc2hhcmUtbWVudSA+IC5zaGFyZS1vcHRpb25zID4gOmlzKGEsIGJ1dHRvbikgewogIGJvcmRlcjogMDsKICBvdXRsaW5lOiAwOwogIGJhY2tncm91bmQ6IHRyYW5zcGFyZW50OwogIGNvbG9yOiB2YXIoLS1pbmspOwogIGJveC1zaGFkb3c6IG5vbmU7Cn0KOnJvb3QgYm9keSAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXRdIFtkYXRhLWNhcmQtYWN0aW9uc10gLmNhcmQtc2hhcmUtbWVudSA+IC5zaGFyZS1vcHRpb25zID4gOmlzKGEsIGJ1dHRvbik6aXMoOmhvdmVyLCA6Zm9jdXMtdmlzaWJsZSwgOmFjdGl2ZSkgewogIGJvcmRlcjogMDsKICBvdXRsaW5lOiAwOwogIGJhY2tncm91bmQ6IHRyYW5zcGFyZW50OwogIGNvbG9yOiB2YXIoLS1hY2NlbnQpOwogIGJveC1zaGFkb3c6IG5vbmU7Cn0KJycnCgppZiBtYXJrZXIgbm90IGluIGNzczoKICAgIGNzcyArPSAiXG4iICsgcnVsZXMKICAgIGNzc19wYXRoLndyaXRlX3RleHQoY3NzLCBlbmNvZGluZz0idXRmLTgiKQoKdmVyc2lvbiA9IGhhc2hsaWIuc2hhMjU2KGNzcy5lbmNvZGUoKSkuaGV4ZGlnZXN0KClbOjEyXQpwYXR0ZXJuID0gcmUuY29tcGlsZShyIihhc3NldHMvY29udHJvbC1zaXppbmdcLmNzcylcP3Y9WzAtOWEtZl0rIikKZm9yIHBhdGggaW4gUGF0aCgiLiIpLnJnbG9iKCIqLmh0bWwiKToKICAgIHRleHQgPSBwYXRoLnJlYWRfdGV4dChlbmNvZGluZz0idXRmLTgiKQogICAgdXBkYXRlZCA9IHBhdHRlcm4uc3ViKHJmIlwxP3Y9e3ZlcnNpb259IiwgdGV4dCkKICAgIGlmIHVwZGF0ZWQgIT0gdGV4dDoKICAgICAgICBwYXRoLndyaXRlX3RleHQodXBkYXRlZCwgZW5jb2Rpbmc9InV0Zi04IikKCndvcmtmbG93ID0gUGF0aCgiLmdpdGh1Yi93b3JrZmxvd3MvZml4LXNoYXJlLW5ldXRyYWwtZ2xvYmFsLnltbCIpCmlmIHdvcmtmbG93LmV4aXN0cygpOgogICAgd29ya2Zsb3cudW5saW5rKCkKcHJpbnQodmVyc2lvbikK' | base64 -d > /tmp/fix_share.py
+          python3 /tmp/fix_share.py
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
