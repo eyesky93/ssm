@@ -67,8 +67,31 @@ jobs:
           '''
           if marker not in css:
               css = css.rstrip() + '\n\n' + block.strip() + '\n'
-              path.write_text(css)
 
+          brand_marker = '/* mobile-wordmark-controls-v1 */'
+          brand_block = r'''
+          /* mobile-wordmark-controls-v1 */
+          /* Mobile wordmark geometry follows the same enlarged header family.
+             Desktop keeps its compact brand frame unchanged. */
+          :root {
+            --mobile-wordmark-size: var(--mobile-header-control-size);
+            --mobile-wordmark-padding-inline: calc(2 * var(--mobile-header-control-gap));
+            --mobile-wordmark-radius: var(--control-radius);
+          }
+          @media (max-width: 700px) {
+            :root body .wordmark {
+              min-height: var(--mobile-wordmark-size) !important;
+              height: var(--mobile-wordmark-size) !important;
+              padding-block: 0 !important;
+              padding-inline: var(--mobile-wordmark-padding-inline) !important;
+              border-radius: var(--mobile-wordmark-radius) !important;
+            }
+          }
+          '''
+          if brand_marker not in css:
+              css = css.rstrip() + '\n\n' + brand_block.strip() + '\n'
+
+          path.write_text(css)
           digest = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
           pattern = re.compile(r'(/ssm/assets/control-sizing\.css)\?v=[0-9a-f]+')
           changed = 0
@@ -83,7 +106,13 @@ jobs:
           if f'/ssm/assets/control-sizing.css?v={digest}' not in sample:
               raise SystemExit('Homepage did not receive refreshed control stylesheet hash')
           final = path.read_text()
-          for required in (marker, '--mobile-header-control-size:', '@media (max-width: 700px)', '--header-control-size: var(--mobile-header-control-size)'):
+          for required in (
+              marker,
+              '--mobile-header-control-size:',
+              brand_marker,
+              '--mobile-wordmark-size:',
+              'padding-inline: var(--mobile-wordmark-padding-inline)',
+          ):
               if required not in final:
                   raise SystemExit(f'Missing mobile control rule: {required}')
           print(f'Updated {changed} HTML files; control-sizing={digest}')
@@ -93,7 +122,7 @@ jobs:
               echo "Live site already current."
               exit 0
             fi
-            git commit -m "Publish mobile-only enlarged header controls"
+            git commit -m "Publish mobile SSM frame geometry"
             if git push origin HEAD:master; then
               exit 0
             fi
