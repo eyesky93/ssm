@@ -4,9 +4,9 @@
   --control-item-gap: .35rem;
   --brand-item-gap: calc(2 * var(--control-item-gap));
   --navigation-border-inset: .5rem;
-  /* The marked vertical spaces use exactly the same edge token as the
-     tag-row-to-rule distance. Do not reuse this for unrelated button gaps. */
-  --interface-edge-gap: var(--navigation-border-inset);
+  /* The marked vertical spaces use the same global gap as the red reference
+     between compact interface items. Do not reuse this for unrelated card gaps. */
+  --interface-edge-gap: var(--control-item-gap);
   /* Preserve ordinary post spacing while allowing Directory's following gap
      to use the shared edge token without hard-coded offset arithmetic. */
   --post-stream-gap: 1rem;
@@ -50,7 +50,7 @@
 
 /* Only the three marked vertical distances share --interface-edge-gap:
    header controls -> rule, tag-row rule -> first card, and Directory -> next card.
-   The tag row's own bottom inset is the reference distance. */
+   All three now equal the red reference through --control-item-gap. */
 :root body .site-header {
   min-height: 0;
   padding-block: var(--interface-edge-gap);
