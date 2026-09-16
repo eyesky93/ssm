@@ -900,3 +900,62 @@
   color: var(--accent);
   box-shadow: none;
 }
+
+/* mobile-header-layout-v2 */
+/* One mobile geometry contract aligns the brand/navigation row and
+   reserves the settings panel so it never covers the tag menu. */
+:root {
+  --mobile-header-group-gap: var(--mobile-header-control-gap);
+  --mobile-settings-panel-gap: var(--mobile-header-control-gap);
+  --mobile-settings-panel-height: calc(
+    var(--mobile-header-control-size) +
+    var(--mobile-header-control-size) +
+    var(--mobile-header-control-gap) +
+    var(--mobile-header-control-gap)
+  );
+  --mobile-settings-open-reserve: calc(
+    var(--mobile-settings-panel-gap) +
+    var(--mobile-settings-panel-height)
+  );
+}
+@media (max-width: 700px) {
+  :root body .site-header {
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: var(--mobile-header-group-gap);
+  }
+  :root body .primary-nav {
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: var(--mobile-header-group-gap);
+    align-items: center;
+  }
+  :root body .primary-nav .about-link {
+    white-space: nowrap;
+  }
+  :root body .header-controls {
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    min-width: 0;
+    align-items: center;
+    margin-inline-start: 0;
+  }
+  :root body .header-settings {
+    flex: 0 0 var(--header-control-size);
+    inline-size: var(--header-control-size);
+    block-size: var(--header-control-size);
+  }
+  :root body .wordmark {
+    flex: 0 0 auto;
+  }
+  :root body .header-settings .header-actions {
+    inset-inline-end: 0;
+    inset-block-start: calc(100% + var(--mobile-settings-panel-gap));
+  }
+  :root body .site-header:has(.header-settings[data-open="true"]) {
+    padding-block-end: calc(
+      var(--interface-gap, 0px) +
+      var(--mobile-settings-open-reserve)
+    );
+  }
+}
