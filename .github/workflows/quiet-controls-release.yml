@@ -15,10 +15,10 @@ jobs:
         run: |
           set -euo pipefail
           cp -R .ssm-validation "$RUNNER_TEMP/ssm-validation"
-          git fetch --depth=1 origin 0c898b90955589edc4cab5c86162d18942061c85
+          git fetch --depth=2 origin a57cd7f8c285e82d5e438171c5ced72dca47bbda
           git checkout --detach 0c898b90955589edc4cab5c86162d18942061c85
           python3 - <<'PY'
-          import base64,json,lzma,os,subprocess
+          import base64,json,lzma,os,subprocess,hashlib,re
           from pathlib import Path
           root=Path.cwd().resolve()
           data=json.loads(lzma.decompress(base64.b64decode((Path(os.environ['RUNNER_TEMP'])/'ssm-validation/generated.delta.xz.b64').read_text())))
@@ -40,7 +40,33 @@ jobs:
           subprocess.run(['git','add','--all'],check=True)
           tree=subprocess.check_output(['git','write-tree'],text=True).strip()
           assert tree==data['tree']=='a1469249248051748f9f47170babf880560eee22',tree
-          print('Exact generated tree verified:',tree)
+          # Preserve the only concurrent public change, using the merged source
+          # blob as the authority. This is release reconciliation, not UI code.
+          latest='a57cd7f8c285e82d5e438171c5ced72dca47bbda'
+          assert subprocess.check_output(['git','diff','--name-only',data['base'],latest],text=True).splitlines()==['assets/control-sizing.css']
+          css=root/'assets/control-sizing.css';text=css.read_text()
+          changes={
+              '--tag-capsule-size: calc(var(--control-size) * .8);':'--tag-capsule-size: calc(var(--control-size) * .675);',
+              '--tag-capsule-radius: .45rem;':'--tag-capsule-radius: .4rem;',
+              '--tag-capsule-padding-block: .15rem;':'--tag-capsule-padding-block: .05rem;',
+              '--tag-capsule-padding-inline: .55rem;':'--tag-capsule-padding-inline: .4rem;',
+              '--tag-capsule-count-inset: .3rem;':'--tag-capsule-count-inset: .2rem;',
+              '--tag-capsule-content-gap: .35rem;':'--tag-capsule-content-gap: .25rem;',
+              '--tag-capsule-gap: .3rem;':'--tag-capsule-gap: .25rem;'}
+          for old,new in changes.items():
+              assert text.count(old)==1
+              text=text.replace(old,new)
+          css.write_text(text)
+          assert subprocess.check_output(['git','hash-object',str(css)],text=True).strip()=='e441d423e3944f822219a888524f957acfffa25a'
+          version=hashlib.sha256(css.read_bytes()).hexdigest()[:12]
+          for path in root.rglob('*.html'):
+              old=path.read_text();new=re.sub(r'(assets/control-sizing\.css\?v=)[a-f0-9]{12}',lambda m:m[1]+version,old)
+              if old!=new:path.write_text(new)
+          subprocess.run(['git','reset','--soft',latest],check=True)
+          subprocess.run(['git','add','--all'],check=True)
+          tree=subprocess.check_output(['git','write-tree'],text=True).strip()
+          assert tree=='fea30720a057fc9c9d6ddcfc92dccaf4c7bb113e',tree
+          print('Exact merged-source generated tree verified:',tree)
           PY
       - name: Install isolated browser checks
         run: |
@@ -55,13 +81,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$(git ls-remote origin refs/heads/master | cut -f1)" = 0c898b90955589edc4cab5c86162d18942061c85
-          test "$(git write-tree)" = a1469249248051748f9f47170babf880560eee22
+          test "$(git ls-remote origin refs/heads/master | cut -f1)" = a57cd7f8c285e82d5e438171c5ced72dca47bbda
+          test "$(git write-tree)" = fea30720a057fc9c9d6ddcfc92dccaf4c7bb113e
           test -z "$(git ls-files --others --exclude-standard)"
           git diff --exit-code
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Publish neutral vertical homepage controls and tiled tag flow (source PR 183)'
+          git commit -m 'Publish neutral vertical homepage controls and tiled tag flow (source dfb183c)'
           git push origin HEAD:refs/heads/codex/quiet-controls-generated-release
           echo "Verified release: $(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
           cat "$RUNNER_TEMP/ssm-ui-results/results.json" >> "$GITHUB_STEP_SUMMARY"
