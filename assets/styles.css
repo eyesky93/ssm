@@ -112,3 +112,5 @@
   padding-inline: calc(3 * var(--interface-gap)) !important;
   border-radius: var(--control-radius) !important;
 }
+
+/* rollback-cache-refresh-20260916 */
