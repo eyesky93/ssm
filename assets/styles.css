@@ -73,3 +73,42 @@
 :root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):focus-visible {
   outline-color: var(--accent);
 }
+
+/* shared-interface-gap-v1 */
+/* One global spacing token owns the visible chrome gaps: header-to-rule,
+   rule-to-tags, inter-control/inter-tag spacing, tags-to-rule, rule-to-posts,
+   and the spacing between adjacent post cards. It intentionally matches the
+   smallest existing tag gap; internal component padding remains independent. */
+:root {
+  --interface-gap: var(--tag-capsule-gap, .25rem);
+}
+:root .site-header {
+  min-height: 0;
+  padding-block: var(--interface-gap);
+  gap: var(--interface-gap);
+}
+:root .header-controls {
+  --header-control-gap: var(--interface-gap) !important;
+  --header-control-half-gap: calc(var(--interface-gap) / 2) !important;
+  gap: var(--interface-gap);
+}
+:root .toolbar-view > .view-switch {
+  gap: var(--interface-gap) !important;
+}
+:root :is(.subject-nav, .tag-list) {
+  gap: var(--interface-gap) !important;
+}
+:root .browser-toolbar {
+  padding-block: var(--interface-gap);
+  margin-block-end: var(--interface-gap);
+}
+:root .post-stream {
+  gap: var(--interface-gap) !important;
+}
+:root .wordmark {
+  min-height: var(--compact-control-size) !important;
+  height: var(--compact-control-size) !important;
+  padding-block: 0 !important;
+  padding-inline: calc(3 * var(--interface-gap)) !important;
+  border-radius: var(--control-radius) !important;
+}
