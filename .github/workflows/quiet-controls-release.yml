@@ -1,0 +1,75 @@
+name: Validate quiet controls release
+on:
+  push:
+    branches: [codex/quiet-controls-release-check]
+permissions:
+  contents: write
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v7
+      - name: Reconstruct only the verified source-generated public delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp -R .ssm-validation "$RUNNER_TEMP/ssm-validation"
+          git fetch --depth=1 origin 0c898b90955589edc4cab5c86162d18942061c85
+          git checkout --detach 0c898b90955589edc4cab5c86162d18942061c85
+          python3 - <<'PY'
+          import base64,json,lzma,os,subprocess
+          from pathlib import Path
+          root=Path.cwd().resolve()
+          data=json.loads(lzma.decompress(base64.b64decode((Path(os.environ['RUNNER_TEMP'])/'ssm-validation/generated.delta.xz.b64').read_text())))
+          assert subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()==data['base']=='0c898b90955589edc4cab5c86162d18942061c85'
+          assert len(data['files'])==len({f['path'] for f in data['files']})==55
+          for item in data['files']:
+              name=item['path'];path=(root/name).resolve()
+              assert root in path.parents and path.is_file() and not path.is_symlink()
+              assert name in ['assets/post-layout.css','assets/control-sizing.css','assets/appearance.js','index.html'] or (name.startswith(('en/','he/')) and name.endswith('/index.html'))
+              original=path.read_bytes();previous=0
+              for start,end,fragment in item['edits']:
+                  assert 0<=previous<=start<=end<=len(original)
+                  assert 0<=fragment<len(data['fragments'])
+                  previous=end
+              result=original
+              for start,end,fragment in reversed(item['edits']):
+                  result=result[:start]+data['fragments'][fragment].encode()+result[end:]
+              path.write_bytes(result)
+          subprocess.run(['git','add','--all'],check=True)
+          tree=subprocess.check_output(['git','write-tree'],text=True).strip()
+          assert tree==data['tree']=='a1469249248051748f9f47170babf880560eee22',tree
+          print('Exact generated tree verified:',tree)
+          PY
+      - name: Install isolated browser checks
+        run: |
+          python3 -m venv "$RUNNER_TEMP/ssm-venv"
+          "$RUNNER_TEMP/ssm-venv/bin/pip" install playwright
+          "$RUNNER_TEMP/ssm-venv/bin/python" -m playwright install --with-deps chromium
+      - name: Validate both languages, themes, layouts, hover states and keyboard access
+        env:
+          SSM_RESULTS: ${{ runner.temp }}/ssm-ui-results
+        run: '"$RUNNER_TEMP/ssm-venv/bin/python" "$RUNNER_TEMP/ssm-validation/validate.py"'
+      - name: Save the checked generated release without changing the live branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/master | cut -f1)" = 0c898b90955589edc4cab5c86162d18942061c85
+          test "$(git write-tree)" = a1469249248051748f9f47170babf880560eee22
+          test -z "$(git ls-files --others --exclude-standard)"
+          git diff --exit-code
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Publish neutral vertical homepage controls and tiled tag flow (source PR 183)'
+          git push origin HEAD:refs/heads/codex/quiet-controls-generated-release
+          echo "Verified release: $(git rev-parse HEAD)" >> "$GITHUB_STEP_SUMMARY"
+          cat "$RUNNER_TEMP/ssm-ui-results/results.json" >> "$GITHUB_STEP_SUMMARY"
+      - name: Save validation evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: quiet-controls-validation
+          path: ${{ runner.temp }}/ssm-ui-results/
+          if-no-files-found: ignore
+          retention-days: 1
