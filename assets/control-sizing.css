@@ -873,3 +873,30 @@
   color: var(--accent);
   box-shadow: none;
 }
+
+
+/* global-share-surface-frame-v2 */
+:root {
+  --control-frame-width: 1px;
+  --neutral-control-surface: var(--surface);
+  --neutral-control-frame: var(--line-dark);
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
+  border: var(--control-frame-width) solid var(--neutral-control-frame);
+  background: var(--neutral-control-surface);
+  box-shadow: none;
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  box-shadow: none;
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--accent);
+  box-shadow: none;
+}
