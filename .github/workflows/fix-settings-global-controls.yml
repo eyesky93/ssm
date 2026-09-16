@@ -22,142 +22,22 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
+          import base64
           import hashlib
           import re
 
           css_path = Path('assets/control-sizing.css')
           css = css_path.read_text(encoding='utf-8')
           marker = '/* settings-global-header-contract-v1 */'
-          rules = r'''
-
-/* settings-global-header-contract-v1 */
-/* Settings consume the same geometry contract as the header controls. */
-:root .header-actions {
-  --settings-cell: var(--header-control-size);
-  --settings-gap: var(--header-control-gap);
-  --settings-padding: var(--header-control-half-gap);
-  --settings-color-width: var(--header-control-size);
-  --settings-color-height: auto;
-  --settings-layout-width: max-content;
-  --settings-layout-height: auto;
-  inset-inline-end: calc(0px - var(--header-control-half-gap) - var(--settings-padding));
-  inset-block-start: calc(100% + var(--header-control-half-gap) - var(--settings-padding));
-  inline-size: max-content;
-  min-inline-size: 0;
-  padding: var(--settings-padding);
-  gap: 0;
-  border: 0;
-  border-radius: var(--control-radius);
-  background: transparent;
-  box-shadow: none;
-  isolation: isolate;
-}
-:root .header-actions > .settings-outline { display: none; }
-:root .header-actions::before {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  border: 1px solid var(--line-dark);
-  border-radius: var(--control-radius);
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  pointer-events: none;
-}
-:root .header-actions > * { position: relative; z-index: 1; }
-:root .settings-lower {
-  display: grid;
-  grid-template-columns: repeat(3, var(--header-control-size));
-  grid-template-rows: repeat(2, var(--header-control-size));
-  gap: var(--header-control-gap);
-  inline-size: max-content;
-  block-size: auto;
-  align-items: stretch;
-  justify-items: stretch;
-  direction: ltr;
-}
-:root .settings-lower > .updates-controls { display: contents; }
-:root .settings-lower > .updates-controls > :first-child { grid-column: 1; grid-row: 1; }
-:root .settings-lower > .updates-controls > :nth-child(2) { grid-column: 2; grid-row: 1; }
-:root .settings-lower > .random-post { grid-column: 1; grid-row: 2; }
-:root .settings-lower > .theme-toggle { grid-column: 2; grid-row: 2; }
-:root .settings-lower > .color-settings {
-  grid-column: 3;
-  grid-row: 1 / 3;
-  align-self: stretch;
-  inline-size: var(--header-control-size);
-  block-size: auto;
-  width: var(--header-control-size);
-  height: auto;
-  min-height: 0;
-  max-height: none;
-}
-:root .header-actions :is(.settings-action, .random-post, .theme-toggle, .accent-picker, .accent-reset) {
-  box-sizing: border-box;
-  inline-size: var(--header-control-size);
-  min-inline-size: var(--header-control-size);
-  max-inline-size: var(--header-control-size);
-  block-size: var(--header-control-size);
-  min-block-size: var(--header-control-size);
-  max-block-size: var(--header-control-size);
-  width: var(--header-control-size);
-  min-width: var(--header-control-size);
-  max-width: var(--header-control-size);
-  height: var(--header-control-size);
-  min-height: var(--header-control-size);
-  max-height: var(--header-control-size);
-  flex: 0 0 var(--header-control-size);
-  padding: var(--header-control-padding);
-  border-radius: var(--control-radius);
-}
-:root :is(.settings-toggle, .header-actions .settings-action, .header-actions .random-post, .header-actions .theme-toggle, .header-actions .accent-reset) > svg {
-  inline-size: var(--control-icon-size);
-  block-size: var(--control-icon-size);
-  width: var(--control-icon-size);
-  height: var(--control-icon-size);
-}
-:root .header-actions .accent-control { display: none; }
-:root .header-actions .accent-panel {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  box-sizing: border-box;
-  display: none;
-  grid-template-rows: repeat(2, var(--header-control-size));
-  gap: var(--header-control-gap);
-  width: auto;
-  height: auto;
-  padding: 0;
-  border: 0;
-  border-radius: var(--control-radius);
-  background: var(--surface);
-  box-shadow: none;
-  overflow: hidden;
-}
-:root .header-actions .color-settings[open] > .accent-panel { display: grid; }
-:root .header-actions .accent-panel::after {
-  content: "";
-  position: absolute;
-  z-index: 2;
-  inset: 0;
-  border: 1px solid var(--line-dark);
-  border-radius: inherit;
-  pointer-events: none;
-}
-:root .header-actions .accent-panel > * { border-color: transparent; }
-:root .header-actions .accent-picker::-webkit-color-swatch { border-radius: var(--control-inner-radius); }
-:root .header-actions .accent-picker::-moz-color-swatch { border-radius: var(--control-inner-radius); }
-'''
-
+          payload = 'Lyogc2V0dGluZ3MtZ2xvYmFsLWhlYWRlci1jb250cmFjdC12MSAqLwovKiBTZXR0aW5ncyBjb25zdW1lIHRoZSBzYW1lIGdlb21ldHJ5IGNvbnRyYWN0IGFzIHRoZSBoZWFkZXIgY29udHJvbHMuICovCjpyb290IC5oZWFkZXItYWN0aW9ucyB7CiAgLS1zZXR0aW5ncy1jZWxsOiB2YXIoLS1oZWFkZXItY29udHJvbC1zaXplKTsKICAtLXNldHRpbmdzLWdhcDogdmFyKC0taGVhZGVyLWNvbnRyb2wtZ2FwKTsKICAtLXNldHRpbmdzLXBhZGRpbmc6IHZhcigtLWhlYWRlci1jb250cm9sLWhhbGYtZ2FwKTsKICAtLXNldHRpbmdzLWNvbG9yLXdpZHRoOiB2YXIoLS1oZWFkZXItY29udHJvbC1zaXplKTsKICAtLXNldHRpbmdzLWNvbG9yLWhlaWdodDogYXV0bzsKICAtLXNldHRpbmdzLWxheW91dC13aWR0aDogbWF4LWNvbnRlbnQ7CiAgLS1zZXR0aW5ncy1sYXlvdXQtaGVpZ2h0OiBhdXRvOwogIGluc2V0LWlubGluZS1lbmQ6IGNhbGMoMHB4IC0gdmFyKC0taGVhZGVyLWNvbnRyb2wtaGFsZi1nYXApIC0gdmFyKC0tc2V0dGluZ3MtcGFkZGluZykpOwogIGluc2V0LWJsb2NrLXN0YXJ0OiBjYWxjKDEwMCUgKyB2YXIoLS1oZWFkZXItY29udHJvbC1oYWxmLWdhcCkgLSB2YXIoLS1zZXR0aW5ncy1wYWRkaW5nKSk7CiAgaW5saW5lLXNpemU6IG1heC1jb250ZW50OwogIG1pbi1pbmxpbmUtc2l6ZTogMDsKICBwYWRkaW5nOiB2YXIoLS1zZXR0aW5ncy1wYWRkaW5nKTsKICBnYXA6IDA7CiAgYm9yZGVyOiAwOwogIGJvcmRlci1yYWRpdXM6IHZhcigtLWNvbnRyb2wtcmFkaXVzKTsKICBiYWNrZ3JvdW5kOiB0cmFuc3BhcmVudDsKICBib3gtc2hhZG93OiBub25lOwogIGlzb2xhdGlvbjogaXNvbGF0ZTsKfQo6cm9vdCAuaGVhZGVyLWFjdGlvbnMgPiAuc2V0dGluZ3Mtb3V0bGluZSB7IGRpc3BsYXk6IG5vbmU7IH0KOnJvb3QgLmhlYWRlci1hY3Rpb25zOjpiZWZvcmUgewogIGNvbnRlbnQ6ICIiOwogIHBvc2l0aW9uOiBhYnNvbHV0ZTsKICB6LWluZGV4OiAwOwogIGluc2V0OiAwOwogIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpbmUtZGFyayk7CiAgYm9yZGVyLXJhZGl1czogdmFyKC0tY29udHJvbC1yYWRpdXMpOwogIGJhY2tncm91bmQ6IHZhcigtLXN1cmZhY2UpOwogIGJveC1zaGFkb3c6IHZhcigtLXNoYWRvdyk7CiAgcG9pbnRlci1ldmVudHM6IG5vbmU7Cn0KOnJvb3QgLmhlYWRlci1hY3Rpb25zID4gKiB7IHBvc2l0aW9uOiByZWxhdGl2ZTsgei1pbmRleDogMTsgfQo6cm9vdCAuc2V0dGluZ3MtbG93ZXIgewogIGRpc3BsYXk6IGdyaWQ7CiAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOiByZXBlYXQoMywgdmFyKC0taGVhZGVyLWNvbnRyb2wtc2l6ZSkpOwogIGdyaWQtdGVtcGxhdGUtcm93czogcmVwZWF0KDIsIHZhcigtLWhlYWRlci1jb250cm9sLXNpemUpKTsKICBnYXA6IHZhcigtLWhlYWRlci1jb250cm9sLWdhcCk7CiAgaW5saW5lLXNpemU6IG1heC1jb250ZW50OwogIGJsb2NrLXNpemU6IGF1dG87CiAgYWxpZ24taXRlbXM6IHN0cmV0Y2g7CiAganVzdGlmeS1pdGVtczogc3RyZXRjaDsKICBkaXJlY3Rpb246IGx0cjsKfQo6cm9vdCAuc2V0dGluZ3MtbG93ZXIgPiAudXBkYXRlcy1jb250cm9scyB7IGRpc3BsYXk6IGNvbnRlbnRzOyB9Cjpyb290IC5zZXR0aW5ncy1sb3dlciA+IC51cGRhdGVzLWNvbnRyb2xzID4gOmZpcnN0LWNoaWxkIHsgZ3JpZC1jb2x1bW46IDE7IGdyaWQtcm93OiAxOyB9Cjpyb290IC5zZXR0aW5ncy1sb3dlciA+IC51cGRhdGVzLWNvbnRyb2xzID4gOm50aC1jaGlsZCgyKSB7IGdyaWQtY29sdW1uOiAyOyBncmlkLXJvdzogMTsgfQo6cm9vdCAuc2V0dGluZ3MtbG93ZXIgPiAucmFuZG9tLXBvc3QgeyBncmlkLWNvbHVtbjogMTsgZ3JpZC1yb3c6IDI7IH0KOnJvb3QgLnNldHRpbmdzLWxvd2VyID4gLnRoZW1lLXRvZ2dsZSB7IGdyaWQtY29sdW1uOiAyOyBncmlkLXJvdzogMjsgfQo6cm9vdCAuc2V0dGluZ3MtbG93ZXIgPiAuY29sb3Itc2V0dGluZ3MgewogIGdyaWQtY29sdW1uOiAzOwogIGdyaWQtcm93OiAxIC8gMzsKICBhbGlnbi1zZWxmOiBzdHJldGNoOwogIGlubGluZS1zaXplOiB2YXIoLS1oZWFkZXItY29udHJvbC1zaXplKTsKICBibG9jay1zaXplOiBhdXRvOwogIHdpZHRoOiB2YXIoLS1oZWFkZXItY29udHJvbC1zaXplKTsKICBoZWlnaHQ6IGF1dG87CiAgbWluLWhlaWdodDogMDsKICBtYXgtaGVpZ2h0OiBub25lOwp9Cjpyb290IC5oZWFkZXItYWN0aW9ucyA6aXMoLnNldHRpbmdzLWFjdGlvbiwgLnJhbmRvbS1wb3N0LCAudGhlbWUtdG9nZ2xlLCAuYWNjZW50LXBpY2tlciwgLmFjY2VudC1yZXNldCkgewogIGJveC1zaXppbmc6IGJvcmRlci1ib3g7CiAgaW5saW5lLXNpemU6IHZhcigtLWhlYWRlci1jb250cm9sLXNpemUpOwogIG1pbi1pbmxpbmUtc2l6ZTogdmFyKC0taGVhZGVyLWNvbnRyb2wtc2l6ZSk7CiAgbWF4LWlubGluZS1zaXplOiB2YXIoLS1oZWFkZXItY29udHJvbC1zaXplKTsKICBibG9jay1zaXplOiB2YXIoLS1oZWFkZXItY29udHJvbC1zaXplKTsKICBtaW4tYmxvY2stc2l6ZTogdmFyKC0taGVhZGVyLWNvbnRyb2wtc2l6ZSk7CiAgbWF4LWJsb2NrLXNpemU6IHZhcigtLWhlYWRlci1jb250cm9sLXNpemUpOwogIHdpZHRoOiB2YXIoLS1oZWFkZXItY29udHJvbC1zaXplKTsKICBtaW4td2lkdGg6IHZhcigtLWhlYWRlci1jb250cm9sLXNpemUpOwogIG1heC13aWR0aDogdmFyKC0taGVhZGVyLWNvbnRyb2wtc2l6ZSk7CiAgaGVpZ2h0OiB2YXIoLS1oZWFkZXItY29udHJvbC1zaXplKTsKICBtaW4taGVpZ2h0OiB2YXIoLS1oZWFkZXItY29udHJvbC1zaXplKTsKICBtYXgtaGVpZ2h0OiB2YXIoLS1oZWFkZXItY29udHJvbC1zaXplKTsKICBmbGV4OiAwIDAgdmFyKC0taGVhZGVyLWNvbnRyb2wtc2l6ZSk7CiAgcGFkZGluZzogdmFyKC0taGVhZGVyLWNvbnRyb2wtcGFkZGluZyk7CiAgYm9yZGVyLXJhZGl1czogdmFyKC0tY29udHJvbC1yYWRpdXMpOwp9Cjpyb290IDppcyguc2V0dGluZ3MtdG9nZ2xlLCAuaGVhZGVyLWFjdGlvbnMgLnNldHRpbmdzLWFjdGlvbiwgLmhlYWRlci1hY3Rpb25zIC5yYW5kb20tcG9zdCwgLmhlYWRlci1hY3Rpb25zIC50aGVtZS10b2dnbGUsIC5oZWFkZXItYWN0aW9ucyAuYWNjZW50LXJlc2V0KSA+IHN2ZyB7CiAgaW5saW5lLXNpemU6IHZhcigtLWNvbnRyb2wtaWNvbi1zaXplKTsKICBibG9jay1zaXplOiB2YXIoLS1jb250cm9sLWljb24tc2l6ZSk7CiAgd2lkdGg6IHZhcigtLWNvbnRyb2wtaWNvbi1zaXplKTsKICBoZWlnaHQ6IHZhcigtLWNvbnRyb2wtaWNvbi1zaXplKTsKfQo6cm9vdCAuaGVhZGVyLWFjdGlvbnMgLmFjY2VudC1jb250cm9sIHsgZGlzcGxheTogbm9uZTsgfQo6cm9vdCAuaGVhZGVyLWFjdGlvbnMgLmFjY2VudC1wYW5lbCB7CiAgcG9zaXRpb246IGFic29sdXRlOwogIGluc2V0OiAwOwogIHotaW5kZXg6IDE7CiAgYm94LXNpemluZzogYm9yZGVyLWJveDsKICBkaXNwbGF5OiBub25lOwogIGdyaWQtdGVtcGxhdGUtcm93czogcmVwZWF0KDIsIHZhcigtLWhlYWRlci1jb250cm9sLXNpemUpKTsKICBnYXA6IHZhcigtLWhlYWRlci1jb250cm9sLWdhcCk7CiAgd2lkdGg6IGF1dG87CiAgaGVpZ2h0OiBhdXRvOwogIHBhZGRpbmc6IDA7CiAgYm9yZGVyOiAwOwogIGJvcmRlci1yYWRpdXM6IHZhcigtLWNvbnRyb2wtcmFkaXVzKTsKICBiYWNrZ3JvdW5kOiB2YXIoLS1zdXJmYWNlKTsKICBib3gtc2hhZG93OiBub25lOwogIG92ZXJmbG93OiBoaWRkZW47Cn0KOnJvb3QgLmhlYWRlci1hY3Rpb25zIC5jb2xvci1zZXR0aW5nc1tvcGVuXSA+IC5hY2NlbnQtcGFuZWwgeyBkaXNwbGF5OiBncmlkOyB9Cjpyb290IC5oZWFkZXItYWN0aW9ucyAuYWNjZW50LXBhbmVsOjphZnRlciB7CiAgY29udGVudDogIiI7CiAgcG9zaXRpb246IGFic29sdXRlOwogIHotaW5kZXg6IDI7CiAgaW5zZXQ6IDA7CiAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGluZS1kYXJrKTsKICBib3JkZXItcmFkaXVzOiBpbmhlcml0OwogIHBvaW50ZXItZXZlbnRzOiBub25lOwp9Cjpyb290IC5oZWFkZXItYWN0aW9ucyAuYWNjZW50LXBhbmVsID4gKiB7IGJvcmRlci1jb2xvcjogdHJhbnNwYXJlbnQ7IH0KOnJvb3QgLmhlYWRlci1hY3Rpb25zIC5hY2NlbnQtcGlja2VyOjotd2Via2l0LWNvbG9yLXN3YXRjaCB7IGJvcmRlci1yYWRpdXM6IHZhcigtLWNvbnRyb2wtaW5uZXItcmFkaXVzKTsgfQo6cm9vdCAuaGVhZGVyLWFjdGlvbnMgLmFjY2VudC1waWNrZXI6Oi1tb3otY29sb3Itc3dhdGNoIHsgYm9yZGVyLXJhZGl1czogdmFyKC0tY29udHJvbC1pbm5lci1yYWRpdXMpOyB9Cg=='
+          rules = base64.b64decode(payload).decode('utf-8')
           if marker not in css:
-              css += rules
+              css += '\n' + rules
               css_path.write_text(css, encoding='utf-8')
 
           version = hashlib.sha256(css.encode()).hexdigest()[:12]
           style_pattern = re.compile(r'(assets/control-sizing\.css)\?v=[0-9a-f]+')
-          outline_pattern = re.compile(
-              r'[ \t]*<svg\b(?=[^>]*\bclass="[^"]*\bsettings-outline\b)[^>]*>[\s\S]*?</svg>[ \t]*(?:\r?\n)?'
-          )
+          outline_pattern = re.compile(r'[ \t]*<svg\b(?=[^>]*\bclass="[^"]*\bsettings-outline\b)[^>]*>[\s\S]*?</svg>[ \t]*(?:\r?\n)?')
           for path in Path('.').rglob('*.html'):
               text = path.read_text(encoding='utf-8')
               updated = outline_pattern.sub('', text)
