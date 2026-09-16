@@ -1,9 +1,12 @@
-/* Shared control geometry. Change only --control-size to resize the site's
-   round controls and matching capsules. Loaded last in <head>, before paint.
+/* Shared control geometry. --control-size owns dimensions; --control-radius
+   owns rounded frames, tracks and selected cells throughout the site.
+   Loaded last in <head>, before paint.
    Count badges, checkboxes, text typography and engagement tabs are not buttons
    in this size family; their existing appearance and behavior stay untouched. */
 :root {
   --control-size: 2.9rem;
+  --control-radius: calc(var(--control-size) * .16);
+  --control-inner-radius: max(0px, calc(var(--control-radius) - 1px));
   --control-capsule-gap: .5rem;
   --control-inner-size: calc(var(--control-size) - 2px);
   --header-control-size: var(--control-size);
@@ -22,7 +25,7 @@
 /* The homepage/main tag menu alone uses the tighter geometry requested here.
    Directory, post, search and all other tag families inherit the shared values
    above, so this adjustment cannot leak into those components. */
-:root .home-main .browser-toolbar .subject-nav {
+:root .home-main > .subject-nav {
   --tag-capsule-size: calc(var(--control-size) * .675);
   --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
   --tag-capsule-radius: .4rem;
@@ -32,14 +35,6 @@
   --tag-capsule-content-gap: .25rem;
   --tag-capsule-gap: .25rem;
 }
-
-/* Main menu block padding must override the desktop browser-toolbar rule. */
-:root .home-main .browser-toolbar .subject-nav .tag-option > .tag-chip,
-:root .home-main .browser-toolbar .subject-nav .tag-option > .tag-chip:is(:hover, :focus-visible) {
-  padding-block: var(--tag-capsule-padding-block) !important;
-  min-height: var(--tag-capsule-inner-size);
-}
-
 
 /* Retain the component names as aliases, never independent size settings.
    Search, the settings outline, layout track and vertical color capsule all
@@ -64,6 +59,7 @@
 :root .newsletter-settings button {
   box-sizing: border-box;
   min-height: var(--control-size);
+  border-radius: var(--control-radius);
 }
 :root .wordmark { height: var(--control-size); padding-block: 0; }
 
@@ -116,8 +112,8 @@
   gap: var(--tag-capsule-gap);
 }
 
-/* Only the round variant belongs to this size family; quiet controls own
-   their neutral geometry. All standalone circular controls, dialogs, comment
+/* The framed variant belongs to this size family; quiet controls own
+   their neutral geometry. All standalone framed controls, dialogs, comment
    sign-in providers, Directory controls and newsletter appearance controls. */
 :root .round-control,
 :root .settings-toggle,
@@ -165,7 +161,7 @@
   min-block-size: var(--control-size);
   max-block-size: var(--control-size);
   flex: 0 0 var(--control-size);
-  border-radius: 50%;
+  border-radius: var(--control-radius);
 }
 
 /* Keep full-size SVGs comfortably inset, including previously smaller pins. */
@@ -178,8 +174,8 @@
   padding: max(0px, calc((var(--control-size) - 1.35rem - 2px) / 2));
 }
 
-/* These are hosts, not round buttons. More-specific existing rules keep the
-   horizontal layout track and the two-cell vertical color capsule intact. */
+/* Multi-button hosts retain the horizontal layout track and the two-cell
+   vertical color capsule geometry. */
 .color-settings,
 .view-settings {
   flex-basis: var(--control-size);
@@ -192,7 +188,26 @@
    Size its host from the complete track so the capsule cannot clip its choices. */
 :root .toolbar-view { flex: 0 0 auto; width: max-content; height: var(--control-size); }
 
-/* Search's enclosing 1px frame owns the outside diameter. Its buttons and
+/* The same corner setting shapes horizontal/vertical tracks and their cells.
+   Pseudo-element borders inherit it; native swatches fill the inset frame. */
+:root .search-bar,
+:root .accent-panel,
+:root .header-actions .accent-panel,
+:root .view-switch,
+:root .settings-theme-track,
+:root .settings-theme-thumb,
+:root .settings-theme-track .settings-theme-choice,
+:root .settings-color-group {
+  border-radius: var(--control-radius);
+}
+:root .accent-picker::-webkit-color-swatch { border-radius: var(--control-inner-radius); }
+:root .accent-picker::-moz-color-swatch { border-radius: var(--control-inner-radius); }
+:root .search-suggestions {
+  margin-inline: var(--control-radius);
+  border-radius: 0 0 var(--control-radius) var(--control-radius);
+}
+
+/* Search's enclosing 1px frame owns the outside size. Its buttons and
    input fill the inside, without growing the capsule or clipping its curves. */
 :root .search-toggle,
 :root .search-clear {
@@ -200,6 +215,7 @@
   flex: 0 0 var(--control-inner-size);
   width: var(--control-inner-size);
   height: var(--control-inner-size);
+  border-radius: var(--control-inner-radius);
 }
 :root .search-clear { margin-inline-end: 0; }
 :root .subscription-intro { padding-inline-end: calc(var(--control-size) + .5rem); }
@@ -208,7 +224,7 @@
   .post-stream[data-layout="list"] .post-card > p { padding-inline-end: calc(var(--control-size) + .8rem); }
 }
 
-/* Layout and Tags/Library are the same capsule: one outside frame, circular
+/* Layout and Tags/Library are the same capsule: one outside frame, rounded
    choices, a neutral selected fill and accent feedback only on other choices. */
 :root .toolbar-view > .view-switch,
 :root .map-switch {
@@ -219,7 +235,7 @@
   height: var(--control-size);
   padding: 0;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--control-radius);
   gap: var(--control-capsule-gap);
   background: var(--surface);
   box-shadow: none;
@@ -316,6 +332,7 @@
 :root .reader-controls :is(.back-to-top, .post-navigation > a, .post-position),
 :root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]) {
   border: 1px solid var(--line-dark);
+  border-radius: var(--control-radius);
   background: var(--inverse-bg);
   color: var(--inverse-ink);
   --control-rest-shadow: 0 8px 24px rgb(0 0 0 / .18);
@@ -340,7 +357,7 @@
   outline-offset: 4px;
 }
 /* Navigation shares Pin/Share's global highlight width and theme/accent color.
-   Paint outside the unchanged circle and retain its floating shadow. Hover is
+   Paint outside the shared frame and retain its floating shadow. Hover is
    local to the actual control, never its dock; a mouse click does not latch it.
    The input replacing the page number uses the same .post-position contract. */
 :root .reader-controls :is(.back-to-top, .post-navigation > a, .post-position):not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible),
@@ -374,7 +391,7 @@
   min-height: var(--control-size);
   height: calc(5 * var(--control-size));
   padding-block-end: calc(var(--control-size) + .5rem);
-  border-radius: calc(var(--control-size) / 2);
+  border-radius: var(--control-radius);
   border-color: var(--line-dark);
   background: var(--inverse-bg);
   color: var(--inverse-ink);
@@ -419,12 +436,12 @@
 /* Library subjects get the full row below Read/mode, in either direction. */
 :root [data-directory] .map-filter-bar .tag-list { justify-content: flex-end; }
 @keyframes map-zoom-open {
-  from { clip-path: inset(80% 0 0 round calc(var(--control-size) / 2)); }
-  to { clip-path: inset(0 round calc(var(--control-size) / 2)); }
+  from { clip-path: inset(80% 0 0 round var(--control-radius)); }
+  to { clip-path: inset(0 round var(--control-radius)); }
 }
 
 /* Newsletter appearance capsules: replace every fixed track width and thumb
-   offset, not just the circle height. Logical positioning mirrors in RTL. */
+   offset, not just the button height. Logical positioning mirrors in RTL. */
 :root .settings-theme-track {
   gap: .5rem;
   grid-template-columns: calc(var(--control-size) + 2.5rem) repeat(2, var(--control-size));
@@ -489,8 +506,8 @@
   }
 
   /* The toolbar keeps its ordinary wrapped flow and one shared control height.
-     Help is a flexible capsule at the end of the last line, not a fixed circle
-     whose diameter strands it on a separate row. No cloned or moved buttons. */
+     Help is a flexible capsule at the end of the last line, not a fixed square
+     whose width strands it on a separate row. No cloned or moved buttons. */
   :root [data-ssm-comments] .comment-toolbar {
     --comment-tool-size: calc(var(--control-size) - .4rem);
     --comment-tool-gap: calc(var(--control-capsule-gap) * .4);
@@ -516,7 +533,7 @@
     min-inline-size: var(--comment-tool-size);
     max-inline-size: none;
     margin-inline: 0;
-    border-radius: 999px;
+    border-radius: var(--control-radius);
   }
 }
 /* Wider phones fit nine ordinary tools per line instead of eight plus an
@@ -526,4 +543,26 @@
   :root [data-ssm-comments] .comment-toolbar {
     --comment-tool-inline-size: min(var(--comment-tool-size), calc((100% - 8 * var(--comment-tool-gap)) / 9));
   }
+}
+
+
+/* Homepage main tag filter only.
+   Keep the shared tag geometry unchanged everywhere else (Directory, post tags,
+   search suggestions, subscription controls, and other tag surfaces). */
+:root .home-main .browser-toolbar .subject-nav {
+  --tag-capsule-size: calc(var(--control-size) * .675);
+  --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
+  --tag-capsule-radius: .4rem;
+  --tag-capsule-padding-block: .05rem;
+  --tag-capsule-padding-inline: .4rem;
+  --tag-capsule-count-inset: .2rem;
+  --tag-capsule-content-gap: .25rem;
+  --tag-capsule-gap: .25rem;
+}
+
+/* Main menu block padding must override the desktop browser-toolbar rule. */
+:root .home-main .browser-toolbar .subject-nav .tag-option > .tag-chip,
+:root .home-main .browser-toolbar .subject-nav .tag-option > .tag-chip:is(:hover, :focus-visible) {
+  padding-block: var(--tag-capsule-padding-block) !important;
+  min-height: var(--tag-capsule-inner-size);
 }

@@ -574,14 +574,14 @@ html[lang="he"] .reader-controls .reader-number-error {
 
 /* Standalone comment buttons share the pin's neutral states and highlight.
    Sorting keeps the existing page-layout capsule. Ordinary formatting tools
-   keep their original base styles; only Help is a standalone round button.
+   keep their original base styles; only Help is a standalone framed button.
    Component palette tokens are consumed here and on hover/focus, so a
    variant never loses its colors to these higher-specificity base rules. */
 :root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]) {
   box-sizing: border-box;
   min-block-size: var(--control-size);
   border: 1px solid var(--line-dark);
-  border-radius: 999px;
+  border-radius: var(--control-radius);
   background: var(--comment-control-bg, var(--surface));
   color: var(--comment-control-ink, var(--ink));
   box-shadow: none;
@@ -612,9 +612,9 @@ html[lang="he"] .reader-controls .reader-number-error {
   display: inline-grid;
   place-items: center;
   padding: 0;
-  border-radius: 50%;
+  border-radius: var(--control-radius);
 }
-/* Match navigation's inverse palette: light circles and dark artwork in dark
+/* Match navigation's inverse palette: light frames and dark artwork in dark
    mode, with the corresponding inverse in light mode. Preserve the shared
    size, icon inset, disabled state and existing hover/focus highlight.
    Set the shared component palette instead of competing with the base
@@ -623,7 +623,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   --comment-control-bg: var(--inverse-bg);
   --comment-control-ink: var(--inverse-ink);
   padding: max(0px, calc((var(--control-size) - 1.35rem - 2px) / 2));
-  border-radius: 50%;
+  border-radius: var(--control-radius);
   overflow: hidden;
 }
 :root :is([data-ssm-comments], .comment-section-heading) .comment-provider-button > svg {
@@ -714,6 +714,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 [data-ssm-comments]:not(:has(> .comment-thread > .comment-item)) > .comment-thread-header .comment-sort-controls {
   display: none !important;
 }
+
 
 /* The per-line view uses the existing composer, toolbar and theme tokens. */
 .comment-composer > textarea[hidden] { display: none; }
@@ -811,7 +812,7 @@ html[lang="he"] .reader-controls .reader-number-error {
     inline-size: auto;
     min-inline-size: var(--control-size);
     max-inline-size: none;
-    border-radius: 999px;
+    border-radius: var(--control-radius);
   }
 }
 /* With a second end action, ten compact tools fit the wider-phone first row;
