@@ -273,3 +273,40 @@
   inset-block-end: var(--card-action-inset);
   margin: 0;
 }
+
+/* mobile-settings-measured-grid-v6 */
+/* The box and internal columns use the actual rendered header geometry,
+   measured immediately before the popup opens. */
+@media (max-width: 700px) {
+  :root body .header-settings .header-actions[data-settings-columns-aligned="true"] {
+    inline-size: calc(var(--settings-grid-inline-size) + var(--settings-padding) + var(--settings-padding)) !important;
+  }
+  :root body .header-settings .header-actions[data-settings-columns-aligned="true"] .settings-lower {
+    grid-template-columns:
+      var(--settings-cell)
+      var(--settings-gap-compact-language)
+      var(--settings-cell)
+      var(--settings-gap-language-settings)
+      var(--settings-cell) !important;
+    grid-template-rows: repeat(2, var(--settings-cell)) !important;
+    column-gap: 0 !important;
+    row-gap: var(--settings-row-gap) !important;
+    inline-size: var(--settings-grid-inline-size) !important;
+    block-size: auto !important;
+    direction: inherit;
+  }
+  :root body .header-settings .header-actions[data-settings-columns-aligned="true"] .settings-lower > .updates-controls > :first-child { grid-column: 1; }
+  :root body .header-settings .header-actions[data-settings-columns-aligned="true"] .settings-lower > .updates-controls > :nth-child(2) { grid-column: 3; }
+  :root body .header-settings .header-actions[data-settings-columns-aligned="true"] .settings-lower > .random-post { grid-column: 1; }
+  :root body .header-settings .header-actions[data-settings-columns-aligned="true"] .settings-lower > .theme-toggle { grid-column: 3; }
+  :root body .header-settings .header-actions[data-settings-columns-aligned="true"] .settings-lower > .color-settings {
+    grid-column: 5;
+    inline-size: var(--settings-cell) !important;
+    width: var(--settings-cell) !important;
+  }
+  :root body .header-settings .header-actions[data-settings-columns-aligned="true"] .accent-panel {
+    grid-template-rows: repeat(2, var(--settings-cell)) !important;
+    gap: var(--settings-row-gap) !important;
+  }
+}
+

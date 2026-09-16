@@ -508,6 +508,65 @@ const settings = document.querySelector("[data-header-settings]");
 const settingsToggle = settings?.querySelector("[data-settings-toggle]");
 const popupMenus = "[data-share-menu][open], [data-color-menu][open], [data-view-menu][open]";
 
+class HeaderSettingsGeometry {
+  constructor(settings, toggle) {
+    this.settings = settings;
+    this.toggle = toggle;
+    this.controls = settings?.querySelector(".header-actions");
+    this.mobile = window.matchMedia("(max-width: 700px)");
+  }
+
+  alignColumns() {
+    if (!this.controls || !this.toggle || !this.mobile.matches) {
+      this.clear();
+      return false;
+    }
+    const compact = document.querySelector('.header-controls .toolbar-view .view-switch > [data-view="compact"]');
+    const language = document.querySelector('.header-controls > .language-nav > :is(a, select)');
+    if (!compact || !language) {
+      this.clear();
+      return false;
+    }
+
+    const compactRect = compact.getBoundingClientRect();
+    const languageRect = language.getBoundingClientRect();
+    const settingsRect = this.toggle.getBoundingClientRect();
+    if (!compactRect.width || !languageRect.width || !settingsRect.width) {
+      this.clear();
+      return false;
+    }
+
+    const center = rect => rect.left + rect.width / 2;
+    const cell = settingsRect.width;
+    const compactLanguageGap = Math.max(0, Math.abs(center(languageRect) - center(compactRect)) - cell);
+    const languageSettingsGap = Math.max(0, Math.abs(center(settingsRect) - center(languageRect)) - cell);
+    const rowGap = (compactLanguageGap + languageSettingsGap) / 2;
+    const gridWidth = 3 * cell + compactLanguageGap + languageSettingsGap;
+
+    this.controls.style.setProperty("--settings-cell", `${cell}px`);
+    this.controls.style.setProperty("--settings-gap-compact-language", `${compactLanguageGap}px`);
+    this.controls.style.setProperty("--settings-gap-language-settings", `${languageSettingsGap}px`);
+    this.controls.style.setProperty("--settings-row-gap", `${rowGap}px`);
+    this.controls.style.setProperty("--settings-grid-inline-size", `${gridWidth}px`);
+    this.controls.dataset.settingsColumnsAligned = "true";
+    return true;
+  }
+
+  clear() {
+    if (!this.controls) return;
+    for (const name of [
+      "--settings-cell",
+      "--settings-gap-compact-language",
+      "--settings-gap-language-settings",
+      "--settings-row-gap",
+      "--settings-grid-inline-size",
+    ]) this.controls.style.removeProperty(name);
+    delete this.controls.dataset.settingsColumnsAligned;
+  }
+}
+
+const settingsGeometry = settings && settingsToggle ? new HeaderSettingsGeometry(settings, settingsToggle) : null;
+
 function closeSettings(returnFocus = false) {
   if (!settings) return;
   settings.dataset.open = "false";
@@ -522,6 +581,7 @@ function closeSettings(returnFocus = false) {
 settingsToggle?.addEventListener("click", () => {
   if (settings.dataset.open === "true") closeSettings();
   else {
+    settingsGeometry?.alignColumns();
     settings.querySelectorAll("[data-color-menu], [data-view-menu]").forEach((menu) => {
       menu.dataset.inlineOptions = "true";
       menu.open = true;
