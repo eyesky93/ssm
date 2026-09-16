@@ -9,14 +9,14 @@
   --header-control-size: var(--control-size);
   --reader-control-size: var(--control-size);
   /* Tags are the compact capsule variant; navigation retains its full size. */
-  --tag-capsule-size: calc(var(--control-size) * .8);
+  --tag-capsule-size: calc(var(--control-size) * .675);
   --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
-  --tag-capsule-radius: .45rem;
-  --tag-capsule-padding-block: .15rem;
-  --tag-capsule-padding-inline: .55rem;
-  --tag-capsule-count-inset: .3rem;
-  --tag-capsule-content-gap: .35rem;
-  --tag-capsule-gap: .3rem;
+  --tag-capsule-radius: .4rem;
+  --tag-capsule-padding-block: .05rem;
+  --tag-capsule-padding-inline: .4rem;
+  --tag-capsule-count-inset: .2rem;
+  --tag-capsule-content-gap: .25rem;
+  --tag-capsule-gap: .25rem;
 }
 
 /* Retain the component names as aliases, never independent size settings.
