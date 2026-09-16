@@ -1337,3 +1337,12 @@ html[lang="he"] .reader-controls .reader-number-error {
     align-items: flex-start;
   }
 }
+
+
+/* card-share-horizontal-quiet-v1 */
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options { inset-inline-end: 0; inset-block-start: calc(100% + var(--quiet-control-gap)); display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; width: max-content; max-width: none; gap: var(--quiet-control-gap); padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; overflow: visible; }
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) { box-sizing: border-box; display: inline-grid; place-items: center; flex: 0 0 var(--quiet-control-target-size); width: var(--quiet-control-target-size); min-width: var(--quiet-control-target-size); max-width: var(--quiet-control-target-size); height: var(--quiet-control-target-size); min-height: var(--quiet-control-target-size); max-height: var(--quiet-control-target-size); inline-size: var(--quiet-control-target-size); min-inline-size: var(--quiet-control-target-size); max-inline-size: var(--quiet-control-target-size); block-size: var(--quiet-control-target-size); min-block-size: var(--quiet-control-target-size); max-block-size: var(--quiet-control-target-size); margin: 0; padding: 0; border: 0; border-radius: var(--quiet-control-radius); background: transparent; color: var(--quiet-control-color); box-shadow: none; transform: none; }
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) > svg { width: var(--quiet-control-icon-size); height: var(--quiet-control-icon-size); }
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) { border: 0; background: transparent; color: var(--quiet-control-active-color); box-shadow: none; }
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):focus-visible { outline: 1px solid var(--quiet-control-color); outline-offset: 0; }
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu[data-share-side="above"] > .share-options { inset-block-start: auto; inset-block-end: calc(100% + var(--quiet-control-gap)); }
