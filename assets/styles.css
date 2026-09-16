@@ -1,4 +1,5 @@
 @import url("./styles-base.css");
+@import url("./control-spacing.css");
 
 /* The reset slot is only a layout host. The button owns the shared compact
    control inset, so adding the wrapper must never offset it from adjacent tags. */
