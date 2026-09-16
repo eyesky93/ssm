@@ -848,3 +848,28 @@
     border-radius: var(--mobile-wordmark-radius) !important;
   }
 }
+
+
+/* global-neutral-share-surface-v1 */
+:root {
+  --neutral-control-surface: var(--code-bg);
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
+  border: 0;
+  background: var(--neutral-control-surface);
+  box-shadow: none;
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  box-shadow: none;
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--accent);
+  box-shadow: none;
+}
