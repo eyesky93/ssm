@@ -1,0 +1,32 @@
+name: Restore vertical card actions
+
+on:
+  push:
+    paths:
+      - '.github/workflows/restore-vertical-card-actions.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore vertical action stack
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, hashlib, re
+          css_path = Path('assets/control-sizing.css')
+          css = css_path.read_text(encoding='utf-8')
+          marker = '/* restore-vertical-card-actions-v1 */'
+          rules = base64.b64decode('LyogcmVzdG9yZS12ZXJ0aWNhbC1jYXJkLWFjdGlvbnMtdjEgKi8KOnJvb3QgYm9keSAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXRdIFtkYXRhLWNhcmQtYWN0aW9uc10gewogIHBvc2l0aW9uOiBzdGF0aWM7CiAgZGlzcGxheTogaW5saW5lLWZsZXg7CiAgZmxleDogMCAwIGF1dG87CiAgZmxleC1mbG93OiBjb2x1bW4gbm93cmFwOwogIGFsaWduLWl0ZW1zOiBjZW50ZXI7CiAgYWxpZ24tc2VsZjogZW5kOwogIGp1c3RpZnktY29udGVudDogZmxleC1lbmQ7CiAgZ2FwOiB2YXIoLS1xdWlldC1jb250cm9sLWdhcCk7CiAgd2lkdGg6IHZhcigtLXF1aWV0LWNvbnRyb2wtdGFyZ2V0LXNpemUpOwogIG1heC13aWR0aDogMTAwJTsKICBtYXJnaW46IDA7Cn0KOnJvb3RbZGlyPSJydGwiXSBib2R5IC5wb3N0LXN0cmVhbVtkYXRhLWxheW91dF0gW2RhdGEtY2FyZC1hY3Rpb25zXSB7CiAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjsKfQoncJQ==').decode('utf-8')
+          # Decode the complete rule set from a second payload to keep YAML simple.
+          rules = base64.b64decode('LyogcmVzdG9yZS12ZXJ0aWNhbC1jYXJkLWFjdGlvbnMtdjEgKi8KOnJvb3QgYm9keSAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXRdIFtkYXRhLWNhcmQtYWN0aW9uc10gewogIHBvc2l0aW9uOiBzdGF0aWM7CiAgZGlzcGxheTogaW5saW5lLWZsZXg7CiAgZmxleDogMCAwIGF1dG87CiAgZmxleC1mbG93OiBjb2x1bW4gbm93cmFwOwogIGFsaWduLWl0ZW1zOiBjZW50ZXI7CiAgYWxpZ24tc2VsZjogZW5kOwogIGp1c3RpZnktY29udGVudDogZmxleC1lbmQ7CiAgZ2FwOiB2YXIoLS1xdWlldC1jb250cm9sLWdhcCk7CiAgd2lkdGg6IHZhcigtLXF1aWV0LWNvbnRyb2wtdGFyZ2V0LXNpemUpOwogIG1heC13aWR0aDogMTAwJTsKICBtYXJnaW46IDA7Cn0KOnJvb3RbZGlyPSJydGwiXSBib2R5IC5wb3N0LXN0cmVhbVtkYXRhLWxheW91dF0gW2RhdGEtY2FyZC1hY3Rpb25zXSB7CiAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjsKfQp6').decode('utf-8', errors='ignore')
+          PY
