@@ -9,10 +9,11 @@
      The !important is only a public compatibility guard against the stale
      bundled copy loaded later; the canonical source has the same value cleanly. */
   --interface-edge-gap: var(--control-item-gap) !important;
-  /* Preserve ordinary post spacing while allowing Directory's following gap
-     to use the shared edge token without hard-coded offset arithmetic. */
+  /* List rows keep their existing rhythm. Tiled layouts use one global gap on
+     both axes; !important keeps the live compatibility layer ahead of a stale
+     generated bundle until the canonical publish catches up. */
   --post-stream-gap: 1rem;
-  --post-stream-compact-gap: .75rem;
+  --tiled-post-gap: var(--interface-edge-gap) !important;
   /* Neutral floating surfaces must never derive from the accent color. */
   --neutral-control-surface: var(--code-bg);
 }
@@ -50,9 +51,8 @@
   padding-block: 0;
 }
 
-/* Only the three marked vertical distances share --interface-edge-gap:
-   header controls -> rule, tag-row rule -> first card, and Directory -> next card.
-   All three now equal the red reference through --control-item-gap. */
+/* The interface edge distances and tiled card gutters all share the same
+   reference token. Grid gap controls rows and columns together. */
 :root body .site-header {
   min-height: 0;
   padding-block: var(--interface-edge-gap);
@@ -62,14 +62,14 @@
   margin-block-end: var(--interface-edge-gap);
 }
 
-/* Keep normal card-to-card spacing unchanged. Directory has no engagement strip,
-   so only its following visual gap is reduced to the same interface edge token. */
+/* Keep list rows unchanged. Grid and compact tiles use the same global gutter
+   in both directions, so the Directory-to-row gap equals the column gap. */
 :root body .post-stream {
   --active-post-stream-gap: var(--post-stream-gap);
   gap: var(--active-post-stream-gap);
 }
-:root body .post-stream[data-layout="compact"] {
-  --active-post-stream-gap: var(--post-stream-compact-gap);
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) {
+  --active-post-stream-gap: var(--tiled-post-gap) !important;
 }
 :root body .post-stream[data-layout="list"] > .directory-card:not([hidden]),
 :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .directory-card:not([hidden]):has([data-pin-toggle][aria-pressed="true"]) {
