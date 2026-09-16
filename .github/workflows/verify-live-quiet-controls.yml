@@ -1,0 +1,59 @@
+name: Verify live quiet controls
+on:
+  push:
+    branches: [codex/quiet-controls-live-check-20260916]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: 9cc05cfedc05537be3f92295c134625e447ae1fa
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Compare the live CDN with the exact validated generated release
+        env:
+          EXPECTED_TREE: b5f8379f44685ff2c6771222c073029f35851212
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request,urlopen
+          from urllib.error import HTTPError
+          from concurrent.futures import ThreadPoolExecutor
+          import subprocess,hashlib,time,json,os
+          assert subprocess.check_output(['git','rev-parse','HEAD^{tree}'],text=True).strip()==os.environ['EXPECTED_TREE']
+          release=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          paths=subprocess.check_output(['git','diff-tree','--no-commit-id','--name-only','-r','HEAD'],text=True).splitlines()
+          assert len(paths)==55 and all(p.endswith(('.html','.css','.js')) for p in paths)
+          passed={};pending=paths
+          def verify(path):
+              expected=Path(path).read_bytes()
+              request=Request('https://eyesky93.github.io/ssm/'+path+'?ssm-release='+release,headers={'User-Agent':'SSM-static-release-verification','Cache-Control':'no-cache'})
+              try:
+                  try:
+                      with urlopen(request,timeout=20) as response: actual=response.read()
+                  except HTTPError as e:
+                      if path!='404.html' or e.code!=404: raise
+                      actual=e.read()
+                  if actual!=expected: return path,None,'CDN bytes differ'
+                  return path,hashlib.sha256(actual).hexdigest(),None
+              except Exception as e: return path,None,str(e)
+          errors={}
+          for attempt in range(10):
+              with ThreadPoolExecutor(max_workers=6) as executor: results=list(executor.map(verify,pending))
+              pending=[];errors={}
+              for path,digest,error in results:
+                  if error:pending.append(path);errors[path]=error
+                  else:passed[path]=digest
+              if not pending:break
+              print('Waiting for CDN propagation:',len(pending),'files',flush=True)
+              time.sleep(8)
+          assert not pending,errors
+          report={'release':release,'tree':os.environ['EXPECTED_TREE'],'live_files_verified':len(passed),'sha256':passed,'production_mutations':0}
+          print(json.dumps(report,indent=2))
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as summary:
+              summary.write('All 55 changed live files exactly match the validated release '+release+'. Static GET requests only; no browser scripts or production activity writes.\n')
+          PY
