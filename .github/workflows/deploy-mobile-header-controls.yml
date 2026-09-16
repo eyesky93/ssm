@@ -1,4 +1,4 @@
-name: Deploy mobile-only header controls
+name: Deploy mobile presentation fixes
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: ssm-mobile-header-controls
+  group: ssm-mobile-presentation
   cancel-in-progress: false
 
 jobs:
@@ -212,19 +212,61 @@ jobs:
               css = css.rstrip() + '\n\n' + theme_block.strip() + '\n'
 
           path.write_text(css)
-          digest = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
-          pattern = re.compile(r'(/ssm/assets/control-sizing\.css)\?v=[0-9a-f]+')
+          control_digest = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
+
+          post_path = Path('assets/post-layout.css')
+          post_css = post_path.read_text()
+          card_marker = '/* mobile-card-tag-flow-v1 */'
+          card_block = r'''
+          /* mobile-card-tag-flow-v1 */
+          /* Phones use one semantic flow regardless of the persisted desktop
+             layout choice: title, subtitle, tags, then footer/actions. */
+          @media (max-width: 700px) {
+            :root .post-stream[data-layout] .post-card:not(.directory-card) > .post-heading {
+              display: contents;
+            }
+            :root .post-stream[data-layout] .post-heading > h2 {
+              order: 0;
+              margin-block: 0 var(--card-content-gap);
+            }
+            :root .post-stream[data-layout] .post-card:not(.directory-card) > p {
+              order: 1;
+              margin-block: 0;
+            }
+            :root .post-stream[data-layout] .post-tools {
+              order: 2;
+              justify-content: flex-start;
+              margin-block-start: var(--card-content-gap);
+            }
+            :root .post-stream[data-layout] .card-tags > :nth-child(1 of :not([hidden])) {
+              margin-inline-start: 0;
+            }
+            :root .post-stream[data-layout] .card-footer {
+              order: 3;
+            }
+          }
+          '''
+          if card_marker not in post_css:
+              post_css = post_css.rstrip() + '\n\n' + card_block.strip() + '\n'
+          post_path.write_text(post_css)
+          post_digest = hashlib.sha256(post_path.read_bytes()).hexdigest()[:12]
+
+          control_pattern = re.compile(r'(/ssm/assets/control-sizing\.css)\?v=[0-9a-f]+')
+          post_pattern = re.compile(r'(/ssm/assets/post-layout\.css)\?v=[0-9a-f]+')
           changed = 0
           for html in Path('.').rglob('*.html'):
               text = html.read_text()
-              updated = pattern.sub(rf'\1?v={digest}', text)
+              updated = control_pattern.sub(rf'\1?v={control_digest}', text)
+              updated = post_pattern.sub(rf'\1?v={post_digest}', updated)
               if updated != text:
                   html.write_text(updated)
                   changed += 1
 
           sample = Path('en/index.html').read_text()
-          if f'/ssm/assets/control-sizing.css?v={digest}' not in sample:
+          if f'/ssm/assets/control-sizing.css?v={control_digest}' not in sample:
               raise SystemExit('Homepage did not receive refreshed control stylesheet hash')
+          if f'/ssm/assets/post-layout.css?v={post_digest}' not in sample:
+              raise SystemExit('Homepage did not receive refreshed post-layout stylesheet hash')
           final = path.read_text()
           for required in (
               marker,
@@ -241,14 +283,24 @@ jobs:
           ):
               if required not in final:
                   raise SystemExit(f'Missing mobile control rule: {required}')
-          print(f'Updated {changed} HTML files; control-sizing={digest}')
+          final_post = post_path.read_text()
+          for required in (
+              card_marker,
+              '.post-card:not(.directory-card) > .post-heading',
+              '.post-card:not(.directory-card) > p',
+              '.post-tools',
+              '.card-footer',
+          ):
+              if required not in final_post:
+                  raise SystemExit(f'Missing mobile card-flow rule: {required}')
+          print(f'Updated {changed} HTML files; control-sizing={control_digest}; post-layout={post_digest}')
           PY
-            git add assets/control-sizing.css '*.html' 'en/**/*.html' 'he/**/*.html'
+            git add assets/control-sizing.css assets/post-layout.css '*.html' 'en/**/*.html' 'he/**/*.html'
             if git diff --cached --quiet; then
               echo "Live site already current."
               exit 0
             fi
-            git commit -m "Publish single-state mobile theme icon"
+            git commit -m "Publish mobile tags below subtitles"
             if git push origin HEAD:master; then
               exit 0
             fi
