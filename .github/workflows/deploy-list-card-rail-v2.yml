@@ -1,0 +1,34 @@
+name: Deploy list card rail v2
+
+on:
+  push:
+    paths:
+      - '.github/workflows/deploy-list-card-rail-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply list card rail and rotate cache
+        shell: bash
+        run: |
+          set -euo pipefail
+          MARKER='/* list-card-separated-rail-v2 */'
+          if ! grep -Fq "$MARKER" assets/control-sizing.css; then
+            printf '%s' 'Ci8qIGxpc3QtY2FyZC1zZXBhcmF0ZWQtcmFpbC12MiAqLwo6cm9vdCB7CiAgLS1ncmlkLXBvc3QtdGl0bGUtc2l6ZTogMS41cmVtOwogIC0tZ3JpZC1wb3N0LXRpdGxlLWxpbmUtaGVpZ2h0OiAxLjI7CiAgLS1ncmlkLXBvc3Qtc3VtbWFyeS1zaXplOiAxcmVtOwogIC0tZ3JpZC1wb3N0LXN1bW1hcnktbGluZS1oZWlnaHQ6IDEuNTsKICAtLWxpc3QtcG9zdC1jYXJkLXBhZGRpbmctYmxvY2s6IHZhcigtLWNvbnRyb2wtY2Fwc3VsZS1nYXApOwogIC0tbGlzdC1wb3N0LWNhcmQtY29udGVudC1nYXA6IHZhcigtLWNvbnRyb2wtaXRlbS1nYXApOwogIC0tbGlzdC1wb3N0LWFjdGlvbi1pbnNldDogdmFyKC0tY2FyZC1hY3Rpb24taW5zZXQpOwogIC0tbGlzdC1wb3N0LWFjdGlvbi1sYW5lOiBjYWxjKHZhcigtLXF1aWV0LWNvbnRyb2wtdGFyZ2V0LXNpemUpICsgdmFyKC0tY29udHJvbC1jYXBzdWxlLWdhcCkpOwp9Cjpyb290IGJvZHkgLnBvc3Qtc3RyZWFtOmlzKFtkYXRhLWxheW91dD0iZ3JpZCJdLCBbZGF0YS1sYXlvdXQ9Imxpc3QiXSkgLnBvc3QtY2FyZDpub3QoLmRpcmVjdG9yeS1jYXJkKSBoMiB7CiAgZm9udC1zaXplOiB2YXIoLS1ncmlkLXBvc3QtdGl0bGUtc2l6ZSk7CiAgbGluZS1oZWlnaHQ6IHZhcigtLWdyaWQtcG9zdC10aXRsZS1saW5lLWhlaWdodCk7Cn0KOnJvb3QgYm9keSAucG9zdC1zdHJlYW06aXMoW2RhdGEtbGF5b3V0PSJncmlkIl0sIFtkYXRhLWxheW91dD0ibGlzdCJdKSAucG9zdC1jYXJkOm5vdCguZGlyZWN0b3J5LWNhcmQpID4gcCB7CiAgZm9udC1zaXplOiB2YXIoLS1ncmlkLXBvc3Qtc3VtbWFyeS1zaXplKTsKICBsaW5lLWhlaWdodDogdmFyKC0tZ3JpZC1wb3N0LXN1bW1hcnktbGluZS1oZWlnaHQpOwp9Cjpyb290IGJvZHkgLnBvc3Qtc3RyZWFtW2RhdGEtbGF5b3V0PSJsaXN0Il0gLnBvc3QtY2FyZDpub3QoLmRpcmVjdG9yeS1jYXJkKSB7CiAgcG9zaXRpb246IHJlbGF0aXZlOwogIHBhZGRpbmctYmxvY2s6IHZhcigtLWxpc3QtcG9zdC1jYXJkLXBhZGRpbmctYmxvY2spOwp9Cjpyb290IGJvZHkgLnBvc3Qtc3RyZWFtW2RhdGEtbGF5b3V0PSJsaXN0Il0gLnBvc3QtY2FyZDpub3QoLmRpcmVjdG9yeS1jYXJkKSAucG9zdC1oZWFkaW5nIHsKICBtYXJnaW4tYmxvY2stZW5kOiB2YXIoLS1saXN0LXBvc3QtY2FyZC1jb250ZW50LWdhcCk7Cn0KOnJvb3QgYm9keSAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXQ9Imxpc3QiXSAucG9zdC1jYXJkOm5vdCguZGlyZWN0b3J5LWNhcmQpIC5wb3N0LXRvb2xzIHsKICBib3gtc2l6aW5nOiBib3JkZXItYm94OwogIHBhZGRpbmctaW5saW5lLWVuZDogdmFyKC0tbGlzdC1wb3N0LWFjdGlvbi1sYW5lKTsKfQo6cm9vdCBib2R5IC5wb3N0LXN0cmVhbVtkYXRhLWxheW91dD0ibGlzdCJdIC5wb3N0LWNhcmQ6bm90KC5kaXJlY3RvcnktY2FyZCkgPiBwIHsKICBwYWRkaW5nLWlubGluZS1lbmQ6IHZhcigtLWxpc3QtcG9zdC1hY3Rpb24tbGFuZSk7Cn0KOnJvb3QgYm9keSAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXQ9Imxpc3QiXSAuY2FyZC1mb290ZXI6aGFzKD4gW2RhdGEtY2FyZC1hY3Rpb25zXSkgewogIGRpc3BsYXk6IGJsb2NrOwogIG1hcmdpbi1ibG9jay1zdGFydDogdmFyKC0tbGlzdC1wb3N0LWNhcmQtY29udGVudC1nYXApOwogIHBhZGRpbmctYmxvY2stc3RhcnQ6IDA7Cn0KOnJvb3QgYm9keSAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXQ9Imxpc3QiXSAuY2FyZC1mb290ZXI6aGFzKD4gW2RhdGEtY2FyZC1hY3Rpb25zXSkgPiB0aW1lIHsKICBkaXNwbGF5OiBibG9jazsKICBwYWRkaW5nLWJsb2NrLWVuZDogMDsKfQo6cm9vdCBib2R5IC5wb3N0LXN0cmVhbVtkYXRhLWxheW91dD0ibGlzdCJdIC5jYXJkLWZvb3RlciA+IFtkYXRhLWNhcmQtYWN0aW9uc10gewogIHBvc2l0aW9uOiBhYnNvbHV0ZTsKICBpbnNldC1pbmxpbmUtZW5kOiB2YXIoLS1saXN0LXBvc3QtYWN0aW9uLWluc2V0KTsKICBpbnNldC1ibG9jay1zdGFydDogdmFyKC0tbGlzdC1wb3N0LWFjdGlvbi1pbnNldCk7CiAgaW5zZXQtYmxvY2stZW5kOiB2YXIoLS1saXN0LXBvc3QtYWN0aW9uLWluc2V0KTsKICBqdXN0aWZ5LWNvbnRlbnQ6IHNwYWNlLWJldHdlZW47CiAgbWFyZ2luOiAwOwp9Cg==' | base64 -d >> assets/control-sizing.css
+          fi
+          HASH=$(sha256sum assets/control-sizing.css | cut -c1-12)
+          find . -type f -name '*.html' -print0 | xargs -0 sed -i -E "s#assets/control-sizing\.css\?v=[0-9a-f]+#assets/control-sizing.css?v=${HASH}#g"
+          rm .github/workflows/deploy-list-card-rail-v2.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Separate list action rail and match grid typography'
+          git push
