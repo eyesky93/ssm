@@ -27,3 +27,17 @@
 .post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags > :nth-child(1 of :not([hidden])) {
   margin-inline-start: 0;
 }
+
+/* Directory has no engagement strip below its frame. Use the shared strip
+   height so its visible trailing gap matches ordinary posts. */
+:root .post-stream[data-layout="list"] > .directory-card:not([hidden]),
+:root .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .directory-card:not([hidden]):has([data-pin-toggle][aria-pressed="true"]) {
+  margin-block-end: calc(-1 * var(--engagement-tab-height));
+}
+
+/* This generated-site fallback is intentionally more specific than the older
+   bundled action-stack rule; the source build contains the canonical rule. */
+:root body .post-stream[data-layout] .directory-heading > [data-card-actions] {
+  align-self: center;
+  justify-content: center;
+}
