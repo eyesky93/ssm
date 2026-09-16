@@ -26,7 +26,23 @@ jobs:
           css_path = Path('assets/control-sizing.css')
           css = css_path.read_text(encoding='utf-8')
           marker = '/* restore-vertical-card-actions-v1 */'
-          rules = base64.b64decode('LyogcmVzdG9yZS12ZXJ0aWNhbC1jYXJkLWFjdGlvbnMtdjEgKi8KOnJvb3QgYm9keSAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXRdIFtkYXRhLWNhcmQtYWN0aW9uc10gewogIHBvc2l0aW9uOiBzdGF0aWM7CiAgZGlzcGxheTogaW5saW5lLWZsZXg7CiAgZmxleDogMCAwIGF1dG87CiAgZmxleC1mbG93OiBjb2x1bW4gbm93cmFwOwogIGFsaWduLWl0ZW1zOiBjZW50ZXI7CiAgYWxpZ24tc2VsZjogZW5kOwogIGp1c3RpZnktY29udGVudDogZmxleC1lbmQ7CiAgZ2FwOiB2YXIoLS1xdWlldC1jb250cm9sLWdhcCk7CiAgd2lkdGg6IHZhcigtLXF1aWV0LWNvbnRyb2wtdGFyZ2V0LXNpemUpOwogIG1heC13aWR0aDogMTAwJTsKICBtYXJnaW46IDA7Cn0KOnJvb3RbZGlyPSJydGwiXSBib2R5IC5wb3N0LXN0cmVhbVtkYXRhLWxheW91dF0gW2RhdGEtY2FyZC1hY3Rpb25zXSB7CiAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjsKfQoncJQ==').decode('utf-8')
-          # Decode the complete rule set from a second payload to keep YAML simple.
-          rules = base64.b64decode('LyogcmVzdG9yZS12ZXJ0aWNhbC1jYXJkLWFjdGlvbnMtdjEgKi8KOnJvb3QgYm9keSAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXRdIFtkYXRhLWNhcmQtYWN0aW9uc10gewogIHBvc2l0aW9uOiBzdGF0aWM7CiAgZGlzcGxheTogaW5saW5lLWZsZXg7CiAgZmxleDogMCAwIGF1dG87CiAgZmxleC1mbG93OiBjb2x1bW4gbm93cmFwOwogIGFsaWduLWl0ZW1zOiBjZW50ZXI7CiAgYWxpZ24tc2VsZjogZW5kOwogIGp1c3RpZnktY29udGVudDogZmxleC1lbmQ7CiAgZ2FwOiB2YXIoLS1xdWlldC1jb250cm9sLWdhcCk7CiAgd2lkdGg6IHZhcigtLXF1aWV0LWNvbnRyb2wtdGFyZ2V0LXNpemUpOwogIG1heC13aWR0aDogMTAwJTsKICBtYXJnaW46IDA7Cn0KOnJvb3RbZGlyPSJydGwiXSBib2R5IC5wb3N0LXN0cmVhbVtkYXRhLWxheW91dF0gW2RhdGEtY2FyZC1hY3Rpb25zXSB7CiAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjsKfQp6').decode('utf-8', errors='ignore')
+          payload = 'LyogcmVzdG9yZS12ZXJ0aWNhbC1jYXJkLWFjdGlvbnMtdjEgKi8KOnJvb3QgYm9keSAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXRdIFtkYXRhLWNhcmQtYWN0aW9uc10gewogIHBvc2l0aW9uOiBzdGF0aWM7CiAgZGlzcGxheTogaW5saW5lLWZsZXg7CiAgZmxleDogMCAwIGF1dG87CiAgZmxleC1mbG93OiBjb2x1bW4gbm93cmFwOwogIGFsaWduLWl0ZW1zOiBjZW50ZXI7CiAgYWxpZ24tc2VsZjogZW5kOwogIGp1c3RpZnktY29udGVudDogZmxleC1lbmQ7CiAgZ2FwOiB2YXIoLS1xdWlldC1jb250cm9sLWdhcCk7CiAgd2lkdGg6IHZhcigtLXF1aWV0LWNvbnRyb2wtdGFyZ2V0LXNpemUpOwogIG1heC13aWR0aDogMTAwJTsKICBtYXJnaW46IDA7Cn0KOnJvb3RbZGlyPSJydGwiXSBib2R5IC5wb3N0LXN0cmVhbVtkYXRhLWxheW91dF0gW2RhdGEtY2FyZC1hY3Rpb25zXSB7CiAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjsKfQo6cm9vdCBib2R5IC5wb3N0LXN0cmVhbVtkYXRhLWxheW91dF0gW2RhdGEtY2FyZC1hY3Rpb25zXSA+IC5waW4tdG9nZ2xlIHsgb3JkZXI6IDE7IH0KOnJvb3QgYm9keSAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXRdIFtkYXRhLWNhcmQtYWN0aW9uc10gPiAuY2FyZC1zaGFyZS1tZW51IHsgb3JkZXI6IDI7IH0KOnJvb3QgYm9keSAucG9zdC1zdHJlYW1bZGF0YS1sYXlvdXRdIFtkYXRhLWNhcmQtYWN0aW9uc10gPiAucmVhZC10b2dnbGUgeyBvcmRlcjogMzsgfQo6cm9vdCBib2R5IC5wb3N0LXN0cmVhbVtkYXRhLWxheW91dF0gLmNhcmQtZm9vdGVyOmhhcyg+IFtkYXRhLWNhcmQtYWN0aW9uc10pIHsKICBkaXNwbGF5OiBncmlkOwogIGdyaWQtdGVtcGxhdGUtY29sdW1uczogbWlubWF4KDAsIDFmcikgdmFyKC0tcXVpZXQtY29udHJvbC10YXJnZXQtc2l6ZSk7CiAgYWxpZ24taXRlbXM6IGVuZDsKICBjb2x1bW4tZ2FwOiB2YXIoLS1jb250cm9sLWNhcHN1bGUtZ2FwKTsKfQo6cm9vdCBib2R5IC5wb3N0LXN0cmVhbVtkYXRhLWxheW91dF0gLmNhcmQtZm9vdGVyOmhhcyg+IFtkYXRhLWNhcmQtYWN0aW9uc10pID4gdGltZSB7CiAgZ3JpZC1hcmVhOiAxIC8gMTsKICBhbGlnbi1zZWxmOiBlbmQ7CiAgcGFkZGluZy1ibG9jay1lbmQ6IGNhbGMoKHZhcigtLXF1aWV0LWNvbnRyb2wtdGFyZ2V0LXNpemUpIC0gMWxoKSAvIDIpOwp9Cg=='
+          rules = base64.b64decode(payload).decode('utf-8')
+          if marker not in css:
+              css += '\n' + rules
+              css_path.write_text(css, encoding='utf-8')
+          version = hashlib.sha256(css.encode()).hexdigest()[:12]
+          pattern = re.compile(r'(assets/control-sizing\.css)\?v=[0-9a-f]+')
+          for path in Path('.').rglob('*.html'):
+              text = path.read_text(encoding='utf-8')
+              updated = pattern.sub(rf'\1?v={version}', text)
+              if updated != text:
+                  path.write_text(updated, encoding='utf-8')
+          Path('.github/workflows/restore-vertical-card-actions.yml').unlink()
+          print(version)
           PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Restore vertical card action stack'
+          git push
