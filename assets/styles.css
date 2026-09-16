@@ -46,22 +46,28 @@
   justify-content: center;
 }
 
-/* Keep the share destinations legible over card/date content: one solid neutral
-   popover, full foreground icons at rest, and the site accent on interaction. */
-:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
+/* Public fallback for the canonical card-share component. Keep the complete
+   destination row beside the Share trigger: grey popover, transparent targets,
+   foreground icons at rest, and accent icons on interaction. */
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options,
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu[data-share-side="above"] > .share-options {
+  inset-inline-end: calc(100% + var(--quiet-control-gap));
+  inset-block-start: 50%;
+  inset-block-end: auto;
+  transform: translateY(-50%);
   padding: var(--quiet-control-gap);
   border: 1px solid var(--line);
   border-radius: var(--control-radius);
-  background: var(--paper);
+  background: var(--soft-accent);
   box-shadow: var(--shadow);
 }
 :root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) {
-  background: var(--surface);
+  background: transparent;
   color: var(--ink);
   opacity: 1;
 }
 :root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) {
-  background: var(--surface);
+  background: transparent;
   color: var(--accent);
 }
 :root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):focus-visible {
