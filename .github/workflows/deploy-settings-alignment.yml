@@ -1,0 +1,113 @@
+name: Deploy exact mobile settings alignment
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/deploy-settings-alignment.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ssm-settings-alignment
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch live settings geometry and refresh asset URL
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            git fetch origin master
+            git reset --hard origin/master
+            python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import re
+
+          path = Path("assets/control-sizing.css")
+          css = path.read_text()
+          marker = "/* mobile-settings-exact-columns-v5 */"
+          block = r'''
+          /* mobile-settings-exact-columns-v5 */
+          /* The settings cells use the identical mobile header step. Anchoring
+             the rightmost cell under Settings therefore places the middle cell
+             directly under Language and the left cell directly under Compact. */
+          @media (max-width: 700px) {
+            :root body .header-settings .header-actions {
+              --settings-cell: var(--mobile-header-control-size);
+              --settings-gap: var(--mobile-header-control-gap);
+              --settings-padding: calc(var(--settings-gap) / 2);
+              inset-inline-end: calc(0px - var(--settings-padding));
+            }
+            :root body .header-settings .settings-lower {
+              grid-template-columns: repeat(3, var(--settings-cell)) !important;
+              grid-template-rows: repeat(2, var(--settings-cell)) !important;
+              column-gap: var(--settings-gap) !important;
+              row-gap: var(--settings-gap) !important;
+              inline-size: calc(3 * var(--settings-cell) + 2 * var(--settings-gap)) !important;
+              block-size: calc(2 * var(--settings-cell) + var(--settings-gap)) !important;
+            }
+            :root body .header-settings .settings-lower > .color-settings {
+              inline-size: var(--settings-cell) !important;
+              width: var(--settings-cell) !important;
+            }
+            :root body .header-settings .header-actions .accent-panel {
+              grid-template-rows: repeat(2, var(--settings-cell)) !important;
+              gap: var(--settings-gap) !important;
+            }
+          }
+          '''
+
+          if marker not in css:
+              css = css.rstrip() + "\n\n" + block.strip() + "\n"
+          path.write_text(css)
+
+          digest = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
+          pattern = re.compile(r'(/ssm/assets/control-sizing\.css)\?v=[0-9a-f]+')
+          changed = 0
+          for html in Path('.').rglob('*.html'):
+              text = html.read_text()
+              updated = pattern.sub(rf'\1?v={digest}', text)
+              if updated != text:
+                  html.write_text(updated)
+                  changed += 1
+
+          final = path.read_text()
+          for required in (
+              marker,
+              'grid-template-columns: repeat(3, var(--settings-cell)) !important',
+              'column-gap: var(--settings-gap) !important',
+              'row-gap: var(--settings-gap) !important',
+          ):
+              if required not in final:
+                  raise SystemExit(f"Missing exact settings alignment rule: {required}")
+
+          sample = Path('en/index.html').read_text()
+          expected = f'/ssm/assets/control-sizing.css?v={digest}'
+          if expected not in sample:
+              raise SystemExit('Homepage did not receive the refreshed control stylesheet hash')
+          print(f'Updated {changed} HTML files; control-sizing={digest}')
+          PY
+            git add --all
+            if git diff --cached --quiet; then
+              echo "Live site already current."
+              exit 0
+            fi
+            git commit -m "Publish exact mobile settings alignment"
+            if git push origin HEAD:master; then
+              exit 0
+            fi
+            echo "Concurrent Pages update detected; retrying ($attempt/3)."
+            sleep 2
+          done
+          exit 1
