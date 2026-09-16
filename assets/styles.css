@@ -1,6 +1,7 @@
 @import url("./styles-base.css");
 
-/* Grid and compact cards use the shared wrapping tag row instead of clipping a single line. */
+/* List/reader tags keep their horizontal drag row. Tiled cards use all available
+   width and move complete tag capsules onto additional rows. */
 .post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags {
   width: 100%;
   max-width: 100%;
@@ -13,4 +14,7 @@
   max-width: 100%;
   min-width: 0;
   flex: 0 1 auto;
+}
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags > :nth-child(1 of :not([hidden])) {
+  margin-inline-start: 0;
 }
