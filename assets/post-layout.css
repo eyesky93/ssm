@@ -1739,3 +1739,82 @@ html[lang="he"] .reader-controls .reader-number-error {
     padding-inline-end: var(--post-card-action-rail-reserve);
   }
 }
+
+/* reader-share-header-layer-v6:start */
+:root {
+  --reader-share-option-size: var(--control-size);
+  --reader-share-icon-size: var(--control-icon-size);
+  --reader-share-gap: var(--header-control-gap);
+  --reader-share-layer: 1000;
+}
+:root body .header-controls .article-actions:has(.share-menu[open]) {
+  position: relative !important;
+  z-index: var(--reader-share-layer) !important;
+  overflow: visible !important;
+}
+:root body .header-controls .share-menu {
+  position: relative !important;
+  box-sizing: border-box !important;
+  flex: 0 0 var(--reader-share-option-size) !important;
+  width: var(--reader-share-option-size) !important;
+  min-width: var(--reader-share-option-size) !important;
+  max-width: var(--reader-share-option-size) !important;
+  height: var(--reader-share-option-size) !important;
+  min-height: var(--reader-share-option-size) !important;
+  max-height: var(--reader-share-option-size) !important;
+  overflow: visible !important;
+}
+:root body .header-controls .share-menu > summary {
+  position: relative !important;
+  z-index: calc(var(--reader-share-layer) + 2) !important;
+}
+:root body .header-controls .share-menu[open] {
+  z-index: calc(var(--reader-share-layer) + 1) !important;
+}
+:root[dir="ltr"] body .header-controls .share-menu > .share-options,
+:root[dir="ltr"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
+  position: absolute !important;
+  left: auto !important;
+  right: calc(100% + var(--reader-share-gap)) !important;
+  top: 50% !important;
+  bottom: auto !important;
+}
+:root[dir="rtl"] body .header-controls .share-menu > .share-options,
+:root[dir="rtl"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
+  position: absolute !important;
+  right: auto !important;
+  left: calc(100% + var(--reader-share-gap)) !important;
+  top: 50% !important;
+  bottom: auto !important;
+}
+:root body .header-controls .share-menu > .share-options,
+:root body .header-controls .share-menu[data-share-side="above"] > .share-options {
+  z-index: var(--reader-share-layer) !important;
+  display: flex !important;
+  flex-flow: row nowrap !important;
+  align-items: center !important;
+  width: max-content !important;
+  max-width: none !important;
+  gap: var(--reader-share-gap) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transform: translateY(-50%) !important;
+  translate: none !important;
+  overflow: visible !important;
+}
+:root body .header-controls .share-menu > .share-options > :is(a, button) {
+  box-sizing: border-box !important;
+  flex: 0 0 var(--reader-share-option-size) !important;
+  width: var(--reader-share-option-size) !important;
+  min-width: var(--reader-share-option-size) !important;
+  max-width: var(--reader-share-option-size) !important;
+  height: var(--reader-share-option-size) !important;
+  min-height: var(--reader-share-option-size) !important;
+  max-height: var(--reader-share-option-size) !important;
+  padding: var(--control-padding) !important;
+}
+:root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
+  width: var(--reader-share-icon-size) !important;
+  height: var(--reader-share-icon-size) !important;
+}
+/* reader-share-header-layer-v6:end */

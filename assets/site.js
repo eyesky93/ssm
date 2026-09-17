@@ -390,6 +390,16 @@ function positionShareMenu(menu) {
   options.style.maxBlockSize = "";
   options.style.translate = "";
 
+  // reader-header-horizontal-share-v6
+  // Reader-header sharing is a horizontal strip with CSS-owned geometry.
+  // Do not run the legacy vertical-menu side selection or viewport translation.
+  if (menu.closest(".header-controls") && !menu.classList.contains("card-share-menu")) {
+    menu.removeAttribute("data-share-side");
+    options.style.removeProperty("translate");
+    menu.dataset.shareReady = "true";
+    return;
+  }
+
   // Open popovers must not increase the page height used to decide their own
   // direction. Temporarily remove only their boxes, restoring every inline
   // display value in this same synchronous task, before anything can paint.
