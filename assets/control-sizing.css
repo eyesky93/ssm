@@ -45,6 +45,13 @@
   margin-block-end: var(--interface-edge-gap) !important;
 }
 
+/* Restore the canonical tag hover surface: the whole tag uses the same
+   --soft-accent fill as its count badge. Selected/excluded states stay intact. */
+:root body .tag-option:not(.is-excluded):not(:has(> .tag-chip[aria-pressed="true"])):is(:hover, :has(:focus-visible)),
+:root body .tag-chip:not([aria-pressed="true"]):not(.tag-option > .tag-chip):is(:hover, :focus-visible) {
+  background: var(--soft-accent) !important;
+}
+
 /* Grid post cards keep the current dense tag variant by remapping the same
    universal tag tokens at card scope. */
 :root body .post-stream[data-layout="grid"] .post-card {
