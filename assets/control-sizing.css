@@ -1,8 +1,13 @@
 @import url("./control-sizing-live-base.css?v=d1c7c9e32100");
 
-/* Generated-site release sync for the canonical List/Grid typography contract.
-   Source master already applies this through post-card-typography.css; this
-   bridge is removed automatically by the next successful canonical publish. */
+/* Generated-site release bridge for canonical list-card geometry while the
+   source publishing runner is unavailable. The next successful canonical
+   publication replaces this wrapper. */
+:root body .post-stream[data-layout="list"] {
+  grid-auto-rows: auto !important;
+}
+
+/* Keep Directory on the same shared List/Grid title scale as ordinary cards. */
 :root body .post-stream[data-layout="list"] .directory-card h2 {
   font-size: var(--grid-post-title-size, 1.5rem);
   line-height: var(--grid-post-title-line-height, 1.2);
