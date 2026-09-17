@@ -200,20 +200,30 @@
 }
 
 /* Temporary Pages hotfix matching the canonical accent-reset component.
-   Resetting the accent must remain a neutral action instead of tinting the
-   reset glyph with the very accent it restores. */
-:root body .header-actions .accent-reset {
+   The revert action is one transparent cell inside the vertical color capsule;
+   it never paints over or rises above the capsule's single outside border. */
+:root body .header-actions .accent-reset,
+:root body .header-actions .accent-reset:is(:hover, :focus-visible) {
+  position: relative !important;
+  z-index: 1 !important;
   display: grid;
   place-items: center;
-  color: var(--ink);
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: var(--ink) !important;
 }
-:root body .header-actions .accent-reset:is(:hover, :focus-visible) {
-  color: var(--ink);
+:root body .header-actions .accent-reset:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -4px;
 }
 :root body .header-actions .accent-reset > svg {
   display: block;
   margin: 0;
   flex: none;
+}
+:root body .header-actions .accent-panel::after {
+  z-index: 4 !important;
 }
 
 /* Temporary Pages hotfix matching the canonical reader Read component while
