@@ -19,11 +19,13 @@
    cascade level until the next canonical publication replaces those files. */
 :root {
   --interface-edge-gap: 0.5rem !important;
-  --tag-label-font-size: 0.8rem;
+  --tag-label-font-size: 0.8rem !important;
   --tag-capsule-size: calc(var(--control-size) * .575) !important;
   --tag-capsule-padding-inline: .35rem !important;
   --tag-capsule-count-inset: .2rem !important;
   --tag-capsule-content-gap: .2rem !important;
+  --tag-count-size: calc(var(--tag-capsule-size) - .4rem) !important;
+  --tag-count-font-size: calc(var(--tag-label-font-size) - .05rem) !important;
 }
 
 :root body .subject-nav,
@@ -36,23 +38,29 @@
   margin-block-end: var(--interface-edge-gap) !important;
 }
 
-/* Keep tag label typography shared across filters, cards, search and Directory.
-   Count badges retain their existing independent size. */
+/* Keep tag label typography shared across filters, cards, search and Directory. */
 :root .tag-chip,
 :root .search-tag {
   font-size: var(--tag-label-font-size) !important;
 }
 
 /* The main subject menu is the same tag component as card/search/reader tags.
-   Bind its legacy structural selectors to the exact same shared density tokens. */
+   Lock its actual outer and inner block size to the shared capsule token so
+   legacy minimum-height/content rules cannot leave the menu visually larger. */
 :root body .subject-nav .tag-option,
 :root body .subject-nav .tag-chip,
 :root body .subject-nav .tag-option > .tag-chip {
-  height: auto !important;
+  box-sizing: border-box !important;
+  height: var(--tag-capsule-size) !important;
   min-height: var(--tag-capsule-size) !important;
+  max-height: var(--tag-capsule-size) !important;
+  block-size: var(--tag-capsule-size) !important;
+  min-block-size: var(--tag-capsule-size) !important;
+  max-block-size: var(--tag-capsule-size) !important;
 }
 :root body .subject-nav .tag-chip,
 :root body .subject-nav .tag-option > .tag-chip {
+  padding-block: 0 !important;
   padding-inline: var(--tag-capsule-padding-inline) !important;
   gap: var(--tag-capsule-content-gap) !important;
 }
