@@ -1558,24 +1558,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   height: var(--reader-share-icon-size);
 }
 
-/* natural-height-tiled-post-cards-v1 */
-/* Grid rows remain content-sized, but each tiled card now stops at its
-   own footer instead of stretching to the tallest sibling in the row. */
-:root {
-  --post-stream-row-size: auto;
-  --post-stream-card-align: start;
-}
-:root body .post-stream {
-  grid-auto-rows: var(--post-stream-row-size) !important;
-}
-:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) {
-  align-items: var(--post-stream-card-align) !important;
-}
-:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .post-card:not(.directory-card) {
-  align-self: var(--post-stream-card-align) !important;
-  height: auto !important;
-}
-
 /* reader-share-physical-left-v4 */
 /* Force the reader share strip to the physical left of Share in LTR
    and physical right in RTL. This beats logical-side ambiguity and
@@ -1717,3 +1699,43 @@ html[lang="he"] .reader-controls .reader-number-error {
   max-height: var(--reader-share-option-size) !important;
 }
 /* reader-share-fixed-host-v5:end */
+
+/* equal-height-compact-card-rail-v2 */
+/* Every tiled card stays equal to the largest visible card. Shrink that
+   common maximum by taking Pin/Share/Read out of normal vertical flow
+   and placing it in the otherwise unused logical-end rail. */
+:root {
+  --post-stream-row-size: 1fr;
+  --post-stream-card-align: stretch;
+  --post-card-action-rail-reserve: calc(var(--quiet-control-target-size) + var(--quiet-control-gap));
+  --post-card-footer-gap: var(--card-content-gap, var(--control-capsule-gap));
+}
+:root body .post-stream {
+  grid-auto-rows: var(--post-stream-row-size) !important;
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) {
+  align-items: var(--post-stream-card-align) !important;
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .post-card:not(.directory-card) {
+  align-self: var(--post-stream-card-align) !important;
+  height: auto !important;
+}
+@media (min-width: 701px) {
+  :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .card-footer {
+    grid-template-columns: minmax(0, 1fr) !important;
+    padding-block-start: var(--post-card-footer-gap) !important;
+    padding-inline-end: var(--post-card-action-rail-reserve);
+  }
+  :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .card-footer > [data-card-actions] {
+    position: absolute !important;
+    inset-inline-end: var(--card-action-inset);
+    inset-block-end: var(--card-action-inset);
+    grid-area: auto !important;
+    margin: 0 !important;
+    z-index: 1;
+  }
+  :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .post-tools {
+    box-sizing: border-box;
+    padding-inline-end: var(--post-card-action-rail-reserve);
+  }
+}
