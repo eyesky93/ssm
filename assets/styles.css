@@ -44,6 +44,7 @@
 :root body .post-stream[data-layout] .directory-heading > [data-card-actions] {
   align-self: center;
   justify-content: center;
+  margin-inline-end: calc(var(--card-action-inset) - var(--post-card-padding-inline));
 }
 
 /* Public fallback for the canonical card-share component. Keep the complete
