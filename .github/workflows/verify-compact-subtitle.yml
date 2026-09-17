@@ -1,0 +1,136 @@
+name: Verify Compact subtitle hotfix
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/verify-compact-subtitle.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  verify-and-cache-bust:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache-bust generated pages
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          old = 'control-sizing.css?v=c4567cf8c3d7'
+          new = 'control-sizing.css?v=4698da19e4e3'
+          changed = 0
+          for path in Path('.').rglob('*.html'):
+              text = path.read_text(encoding='utf-8')
+              if old not in text:
+                  continue
+              path.write_text(text.replace(old, new), encoding='utf-8')
+              changed += 1
+          print(f'updated {changed} html files')
+          if changed == 0:
+              raise SystemExit('expected at least one generated HTML fingerprint update')
+          PY
+
+      - name: Render Compact subtitle offline
+        run: |
+          set -euo pipefail
+          test -x "$(command -v google-chrome)"
+          rm -rf /tmp/ssm-compact-check
+          mkdir -p /tmp/ssm-compact-check/ssm
+          cp -a . /tmp/ssm-compact-check/ssm/
+          cat > /tmp/ssm-compact-check/ssm/compact-check.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <link rel="stylesheet" href="/ssm/assets/styles.css">
+            <link rel="stylesheet" href="/ssm/assets/post-layout.css">
+            <link rel="stylesheet" href="/ssm/assets/control-sizing.css">
+          </head>
+          <body>
+            <div class="post-stream" data-layout="grid">
+              <article class="post-card">
+                <div class="post-heading"><h2>Grid title</h2><div class="post-tools"><div class="card-tags"><a class="tag-chip card-tag">Physics</a></div></div></div>
+                <p>Grid subtitle stays in its existing presentation.</p>
+              </article>
+            </div>
+            <div class="post-stream" data-layout="compact">
+              <article class="post-card">
+                <div class="post-heading"><h2>Compact title</h2><div class="post-tools"><div class="card-tags"><a class="tag-chip card-tag">Physics</a></div></div></div>
+                <p>Compact subtitle is shown instead of the post tags and may occupy up to two lines.</p>
+              </article>
+            </div>
+            <output id="metrics"></output>
+            <script>
+              addEventListener('load', () => {
+                const gridTag = document.querySelector('.post-stream[data-layout="grid"] .card-tag');
+                const gridTags = document.querySelector('.post-stream[data-layout="grid"] .card-tags');
+                const compactCard = document.querySelector('.post-stream[data-layout="compact"] .post-card');
+                const compactTags = compactCard.querySelector('.card-tags');
+                const compactTools = compactCard.querySelector('.post-tools');
+                const compactSummary = compactCard.querySelector(':scope > p');
+                const out = document.querySelector('#metrics');
+                const gridTagStyle = getComputedStyle(gridTag);
+                const summaryStyle = getComputedStyle(compactSummary);
+                out.dataset.gridTagsDisplay = getComputedStyle(gridTags).display;
+                out.dataset.gridTagHeight = gridTag.getBoundingClientRect().height.toFixed(3);
+                out.dataset.gridTagFont = parseFloat(gridTagStyle.fontSize).toFixed(3);
+                out.dataset.compactTagsDisplay = getComputedStyle(compactTags).display;
+                out.dataset.compactToolsDisplay = getComputedStyle(compactTools).display;
+                out.dataset.compactSummaryDisplay = summaryStyle.display;
+                out.dataset.compactSummaryHeight = compactSummary.getBoundingClientRect().height.toFixed(3);
+                out.dataset.compactSummaryFont = parseFloat(summaryStyle.fontSize).toFixed(3);
+                out.dataset.compactSummaryClamp = summaryStyle.webkitLineClamp;
+                out.dataset.compactTagPresent = String(Boolean(compactTags.querySelector('.card-tag')));
+              });
+            </script>
+          </body>
+          </html>
+          HTML
+          cd /tmp/ssm-compact-check
+          python3 -m http.server 8765 >/tmp/ssm-compact-http.log 2>&1 &
+          server=$!
+          trap 'kill "$server" || true' EXIT
+          sleep 1
+          google-chrome --headless=new --no-sandbox --disable-gpu --disable-background-networking --dump-dom http://127.0.0.1:8765/ssm/compact-check.html > /tmp/ssm-compact-dom.html
+          python3 - <<'PY'
+          import html, re
+          from pathlib import Path
+          dom = Path('/tmp/ssm-compact-dom.html').read_text(encoding='utf-8')
+          match = re.search(r'<output id="metrics"([^>]*)>', dom)
+          if not match:
+              raise SystemExit('missing rendered metrics output')
+          attrs = dict(re.findall(r'data-([a-z-]+)="([^"]*)"', match.group(1)))
+          attrs = {key: html.unescape(value) for key, value in attrs.items()}
+          print('rendered compact metrics:', attrs)
+          required = ['grid-tags-display','grid-tag-height','grid-tag-font','compact-tags-display','compact-tools-display','compact-summary-display','compact-summary-height','compact-summary-font','compact-summary-clamp','compact-tag-present']
+          missing = [key for key in required if key not in attrs]
+          if missing:
+              raise SystemExit(f'missing rendered metrics: {missing}')
+          assert attrs['grid-tags-display'] != 'none', attrs
+          assert 17.0 <= float(attrs['grid-tag-height']) <= 19.0, attrs
+          assert 12.5 <= float(attrs['grid-tag-font']) <= 13.1, attrs
+          assert attrs['compact-tags-display'] == 'none', attrs
+          assert attrs['compact-tools-display'] == 'none', attrs
+          assert attrs['compact-summary-display'] != 'none', attrs
+          assert float(attrs['compact-summary-height']) > 0, attrs
+          assert 14.2 <= float(attrs['compact-summary-font']) <= 14.6, attrs
+          assert attrs['compact-summary-clamp'] == '2', attrs
+          assert attrs['compact-tag-present'] == 'true', attrs
+          PY
+
+      - name: Commit cache-bust
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -- '*.html'
+          if git diff --cached --quiet; then
+            echo 'No fingerprint changes to commit.'
+          else
+            git commit -m 'Cache-bust Compact subtitle hotfix'
+            git push
+          fi
