@@ -47,16 +47,18 @@
   margin-inline-end: calc(var(--card-action-inset) - var(--post-card-padding-inline));
 }
 
-/* Keep tag rows slightly closer to the Pin/Share/Read rail without hard-coding
-   a per-layout pixel offset. The source component owns the same shared token. */
+/* Desktop list tags and Pin/Share/Read are in different layout rows. Enlarging
+   the tag row did not move its painted position, so move the row itself toward
+   the logical action edge. The shared inset token keeps the change global and
+   mirrors automatically in RTL. */
 :root {
-  --card-tags-action-offset: var(--control-capsule-gap);
+  --card-tags-action-offset: var(--surface-padding);
 }
-:root body .post-stream[data-layout] .post-card:not(.directory-card):has([data-card-actions]) .post-tools {
-  width: calc(100% + var(--card-tags-action-offset));
-  max-width: calc(100% + var(--card-tags-action-offset));
-  inline-size: calc(100% + var(--card-tags-action-offset));
-  max-inline-size: calc(100% + var(--card-tags-action-offset));
+@media (min-width: 701px) {
+  :root body .post-stream[data-layout="list"] .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .post-tools {
+    position: relative;
+    inset-inline-end: calc(0px - var(--card-tags-action-offset));
+  }
 }
 
 /* Public fallback for the canonical card-share component. Keep the complete
