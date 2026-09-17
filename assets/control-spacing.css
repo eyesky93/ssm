@@ -185,3 +185,16 @@
   color: var(--accent);
   box-shadow: none;
 }
+
+/* Temporary Pages hotfix matching the canonical shared post-card typography.
+   List and Grid consume one token pair; Compact remains intentionally smaller. */
+:root {
+  --post-card-title-font-size: 1.5rem;
+  --post-card-summary-font-size: 1rem;
+}
+:root body .post-stream:is([data-layout="list"], [data-layout="grid"]) .post-card h2 {
+  font-size: var(--post-card-title-font-size) !important;
+}
+:root body .post-stream:is([data-layout="list"], [data-layout="grid"]) .post-card > p {
+  font-size: var(--post-card-summary-font-size) !important;
+}
