@@ -385,10 +385,19 @@
   margin: 0;
 }
 
+
+
+/* catalogue-toolbar-gap-v1 */
+/* The toolbar already has one --interface-edge-gap of bottom padding. Removing
+   its extra bottom margin makes tags -> Directory match Directory -> first row. */
+:root body .browser-toolbar {
+  margin-block-end: 0;
+}
+
 /* accent-revert-hover-v2:start */
 /* Revert is one transparent cell inside the vertical color capsule.
-   It uses the same accent interaction as the other controls, while the
-   capsule keeps sole ownership of the outside neutral border. */
+   Hover/focus accents only the arrow glyph; the cell never paints an
+   independent frame, fill or shadow over the capsule. */
 :root body .header-actions .accent-reset {
   position: relative !important;
   z-index: 1 !important;
@@ -397,6 +406,7 @@
   background: transparent !important;
   border-color: transparent !important;
   box-shadow: none !important;
+  outline: none !important;
   color: var(--ink) !important;
 }
 :root body .header-actions .accent-reset:is(:hover, :focus-visible) {
@@ -404,12 +414,9 @@
   z-index: 1 !important;
   background: transparent !important;
   border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
   color: var(--accent-strong) !important;
-  box-shadow: inset 0 0 0 1px var(--accent-strong) !important;
-}
-:root body .header-actions .accent-reset:focus-visible {
-  outline: 2px solid var(--accent-strong) !important;
-  outline-offset: -4px !important;
 }
 :root body .header-actions .accent-reset > svg {
   display: block !important;
@@ -422,10 +429,3 @@
   z-index: 4 !important;
 }
 /* accent-revert-hover-v2:end */
-
-/* catalogue-toolbar-gap-v1 */
-/* The toolbar already has one --interface-edge-gap of bottom padding. Removing
-   its extra bottom margin makes tags -> Directory match Directory -> first row. */
-:root body .browser-toolbar {
-  margin-block-end: 0;
-}
