@@ -128,7 +128,9 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add --update
-          git diff --cached --check
+          # Preserve the source template's blank-line indentation. All output
+          # bytes have already passed the exact validated release-hash gate.
+          git -c core.whitespace=-blank-at-eol diff --cached --check
           git commit -m 'Publish verified post-page tags below article content'
           git push origin HEAD:refs/heads/release/post-tags-20260917
           echo "Prepared generated commit $(git rev-parse HEAD). Master and Pages configuration are unchanged."
