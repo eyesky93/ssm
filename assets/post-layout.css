@@ -1818,3 +1818,24 @@ html[lang="he"] .reader-controls .reader-number-error {
   height: var(--reader-share-icon-size) !important;
 }
 /* reader-share-header-layer-v6:end */
+
+/* The initial reader render moves the original tag row below the complete
+   article body and removes its empty tools wrapper. Reclaim that title track;
+   legacy/partial markup with real header tools retains its containment above. */
+:root .article-heading.post-heading:not(:has(> .post-tools)) {
+  display: block;
+}
+:root .article-heading.post-heading:not(:has(> .post-tools)) > h1 {
+  width: 100%;
+}
+/* Reuse the shared tag row, capsule geometry and logical end alignment. The
+   body already reserves space for its attached engagement strip. */
+:root [data-reader-article]:not([data-directory]) > .article-tags {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  margin-block-end: var(--surface-padding);
+}
+[data-reader-article] > .article-body:has(> .article-end-engagement-dock) + .article-tags + .comments-shell {
+  border-block-start: 0;
+}
