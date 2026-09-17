@@ -1,0 +1,135 @@
+name: Deploy compact reader share
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/deploy-reader-share.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ssm-reader-share-presentation
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch current Pages tree and publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            git fetch origin master
+            git reset --hard origin/master
+            python - <<'PY'
+          from pathlib import Path
+          import hashlib, re
+
+          path = Path('assets/post-layout.css')
+          css = path.read_text()
+          marker = '/* reader-share-inline-left-v1 */'
+          block = r'''
+          /* reader-share-inline-left-v1 */
+          /* Reader sharing uses the same global geometry as its Share trigger.
+             Destinations open as one compact strip toward inline-start: left in
+             English and right in Hebrew. The frame keeps only a token-derived inset. */
+          :root {
+            --reader-share-option-size: var(--control-size);
+            --reader-share-icon-size: var(--control-icon-size);
+            --reader-share-gap: var(--control-item-gap);
+            --reader-share-padding: calc(var(--control-item-gap) / 2);
+          }
+          :root body .header-controls .share-menu > .share-options {
+            inset-inline-start: auto;
+            inset-inline-end: calc(100% + var(--reader-share-gap));
+            inset-block-start: 0;
+            inset-block-end: auto;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: flex-end;
+            width: max-content;
+            max-width: none;
+            gap: var(--reader-share-gap);
+            padding: var(--reader-share-padding);
+            border-radius: var(--control-radius);
+          }
+          :root body .header-controls .share-menu[data-share-side="above"] > .share-options {
+            inset-block-start: 0;
+            inset-block-end: auto;
+          }
+          :root body .header-controls .share-menu > .share-options > :is(a, button) {
+            box-sizing: border-box;
+            flex: 0 0 var(--reader-share-option-size);
+            width: var(--reader-share-option-size);
+            min-width: var(--reader-share-option-size);
+            max-width: var(--reader-share-option-size);
+            height: var(--reader-share-option-size);
+            min-height: var(--reader-share-option-size);
+            max-height: var(--reader-share-option-size);
+            inline-size: var(--reader-share-option-size);
+            min-inline-size: var(--reader-share-option-size);
+            max-inline-size: var(--reader-share-option-size);
+            block-size: var(--reader-share-option-size);
+            min-block-size: var(--reader-share-option-size);
+            max-block-size: var(--reader-share-option-size);
+            padding: var(--control-padding);
+            border-radius: var(--control-radius);
+          }
+          :root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
+            width: var(--reader-share-icon-size);
+            height: var(--reader-share-icon-size);
+          }
+          '''
+          if marker not in css:
+              css = css.rstrip() + '\n\n' + block.strip() + '\n'
+          path.write_text(css)
+
+          digest = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
+          pattern = re.compile(r'((?:/ssm)?/assets/post-layout\.css)\?v=[0-9a-f]+')
+          changed = 0
+          for html in Path('.').rglob('*.html'):
+              text = html.read_text()
+              updated = pattern.sub(rf'\1?v={digest}', text)
+              if updated != text:
+                  html.write_text(updated)
+                  changed += 1
+
+          final = path.read_text()
+          for required in (
+              marker,
+              '--reader-share-option-size: var(--control-size)',
+              'inset-inline-end: calc(100% + var(--reader-share-gap))',
+              'flex-direction: row',
+              'padding: var(--reader-share-padding)',
+          ):
+              if required not in final:
+                  raise SystemExit(f'Missing reader share rule: {required}')
+
+          sample = Path('en/index.html').read_text()
+          if not re.search(rf'(?:/ssm)?/assets/post-layout\.css\?v={digest}', sample):
+              raise SystemExit('Homepage did not receive refreshed post-layout stylesheet hash')
+          print(f'Updated {changed} HTML files; post-layout={digest}')
+          PY
+            git add assets/post-layout.css '*.html' 'en/**/*.html' 'he/**/*.html'
+            if git diff --cached --quiet; then
+              echo "Live reader share is already current."
+              exit 0
+            fi
+            git commit -m "Publish compact reader share menu"
+            if git push origin HEAD:master; then
+              exit 0
+            fi
+            echo "Concurrent Pages update detected; retrying ($attempt/3)."
+            sleep 2
+          done
+          exit 1
