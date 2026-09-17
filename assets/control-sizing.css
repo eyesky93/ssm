@@ -17,7 +17,7 @@
    source publishing runner is unavailable. Keep this one token aligned with
    src/control-spacing.css until the next successful canonical publication. */
 :root {
-  --interface-edge-gap: .65rem;
+  --interface-edge-gap: 1rem;
 }
 
 :root body .subject-nav,
