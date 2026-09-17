@@ -438,3 +438,51 @@
   --tag-capsule-size: var(--control-size);
   --compact-control-size: var(--control-size);
 }
+
+/* framed-control-component-v1 */
+:root .header-controls .framed-control,
+:root .header-controls .framed-control[aria-pressed],
+:root .header-controls .framed-control[aria-checked],
+:root .header-controls .framed-control[aria-expanded] {
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 var(--control-size);
+  width: var(--control-size);
+  min-width: var(--control-size);
+  max-width: var(--control-size);
+  height: var(--control-size);
+  min-height: var(--control-size);
+  max-height: var(--control-size);
+  inline-size: var(--control-size);
+  min-inline-size: var(--control-size);
+  max-inline-size: var(--control-size);
+  block-size: var(--control-size);
+  min-block-size: var(--control-size);
+  max-block-size: var(--control-size);
+  padding: var(--control-padding);
+  border: 1px solid var(--line-dark);
+  border-radius: var(--control-radius);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: none;
+  transform: none;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+:root .header-controls .framed-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active),
+:root .header-controls .framed-control[aria-expanded="true"] {
+  border-color: var(--accent-strong);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: none;
+  transform: none;
+}
+:root .header-controls .framed-control:is(:disabled, [aria-disabled="true"]) {
+  cursor: default;
+}
+:root .header-controls .framed-control > svg {
+  width: var(--control-icon-size);
+  height: var(--control-icon-size);
+}
