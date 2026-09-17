@@ -20,10 +20,7 @@
 :root {
   --interface-edge-gap: 0.5rem !important;
 
-  /* Match canonical global-control-size.css. The stale generated base still
-     multiplies the already-compact universal control size by .675, which makes
-     descendant-only rows visibly smaller. One shared tag capsule token keeps
-     main tags and subtags identical; Grid cards remap it below. */
+  /* Match canonical global-control-size.css. */
   --tag-capsule-size: var(--control-size) !important;
   --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px) !important;
 
@@ -40,6 +37,14 @@
   --compact-card-summary-font-size: .9rem;
   --compact-card-summary-line-height: 1.4;
   --compact-card-summary-lines: 2;
+}
+
+/* The stale generated base has a homepage-only --tag-capsule-size declaration
+   directly on subject-nav. Override it at that same component boundary so the
+   top-level row and every descendant row inherit the canonical shared size. */
+:root body .home-main .browser-toolbar .subject-nav {
+  --tag-capsule-size: var(--control-size) !important;
+  --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px) !important;
 }
 
 :root body .subject-nav,
