@@ -1557,3 +1557,21 @@ html[lang="he"] .reader-controls .reader-number-error {
   width: var(--reader-share-icon-size);
   height: var(--reader-share-icon-size);
 }
+
+/* natural-height-tiled-post-cards-v1 */
+/* Grid rows remain content-sized, but each tiled card now stops at its
+   own footer instead of stretching to the tallest sibling in the row. */
+:root {
+  --post-stream-row-size: auto;
+  --post-stream-card-align: start;
+}
+:root body .post-stream {
+  grid-auto-rows: var(--post-stream-row-size) !important;
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) {
+  align-items: var(--post-stream-card-align) !important;
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .post-card:not(.directory-card) {
+  align-self: var(--post-stream-card-align) !important;
+  height: auto !important;
+}
