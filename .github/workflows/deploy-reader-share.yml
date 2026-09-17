@@ -35,38 +35,20 @@ jobs:
 
           path = Path('assets/post-layout.css')
           css = path.read_text()
-          marker = '/* reader-share-inline-left-v1 */'
+          marker = '/* reader-share-clear-header-v2 */'
           block = r'''
-          /* reader-share-inline-left-v1 */
-          /* Reader sharing uses the same global geometry as its Share trigger.
-             Destinations open as one compact strip toward inline-start: left in
-             English and right in Hebrew. The frame keeps only a token-derived inset. */
+          /* reader-share-clear-header-v2 */
+          /* Share destinations consume the exact header-control box used by the
+             trigger, remove the old popover inset, and begin beyond Search + Pin
+             so ordinary header controls never sit on top of the open strip. */
           :root {
-            --reader-share-option-size: var(--control-size);
+            --reader-share-option-size: var(--header-control-size);
             --reader-share-icon-size: var(--control-icon-size);
             --reader-share-gap: var(--control-item-gap);
-            --reader-share-padding: calc(var(--control-item-gap) / 2);
+            --reader-share-padding: 0;
+            --reader-share-obstacle-span: calc(2 * var(--header-control-size) + var(--control-capsule-gap) + var(--header-control-gap));
           }
-          :root body .header-controls .share-menu > .share-options {
-            inset-inline-start: auto;
-            inset-inline-end: calc(100% + var(--reader-share-gap));
-            inset-block-start: 0;
-            inset-block-end: auto;
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            align-items: center;
-            justify-content: flex-end;
-            width: max-content;
-            max-width: none;
-            gap: var(--reader-share-gap);
-            padding: var(--reader-share-padding);
-            border-radius: var(--control-radius);
-          }
-          :root body .header-controls .share-menu[data-share-side="above"] > .share-options {
-            inset-block-start: 0;
-            inset-block-end: auto;
-          }
+          :root body .header-controls .share-menu > summary,
           :root body .header-controls .share-menu > .share-options > :is(a, button) {
             box-sizing: border-box;
             flex: 0 0 var(--reader-share-option-size);
@@ -82,8 +64,28 @@ jobs:
             block-size: var(--reader-share-option-size);
             min-block-size: var(--reader-share-option-size);
             max-block-size: var(--reader-share-option-size);
-            padding: var(--control-padding);
             border-radius: var(--control-radius);
+          }
+          :root body .header-controls .share-menu[open] { z-index: 30; }
+          :root body .header-controls .share-menu > .share-options,
+          :root body .header-controls .share-menu[data-share-side="above"] > .share-options {
+            inset-inline-start: auto;
+            inset-inline-end: calc(100% + var(--reader-share-obstacle-span) + var(--reader-share-gap));
+            inset-block-start: 0;
+            inset-block-end: auto;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: flex-end;
+            width: max-content;
+            max-width: none;
+            gap: var(--reader-share-gap);
+            padding: var(--reader-share-padding);
+            border-radius: var(--control-radius);
+          }
+          :root body .header-controls .share-menu > .share-options > :is(a, button) {
+            padding: var(--control-padding);
           }
           :root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
             width: var(--reader-share-icon-size);
@@ -107,10 +109,11 @@ jobs:
           final = path.read_text()
           for required in (
               marker,
-              '--reader-share-option-size: var(--control-size)',
-              'inset-inline-end: calc(100% + var(--reader-share-gap))',
-              'flex-direction: row',
-              'padding: var(--reader-share-padding)',
+              '--reader-share-option-size: var(--header-control-size)',
+              '--reader-share-padding: 0',
+              '--reader-share-obstacle-span:',
+              'inset-inline-end: calc(100% + var(--reader-share-obstacle-span) + var(--reader-share-gap))',
+              '.share-menu[open] { z-index: 30; }',
           ):
               if required not in final:
                   raise SystemExit(f'Missing reader share rule: {required}')
@@ -125,7 +128,7 @@ jobs:
               echo "Live reader share is already current."
               exit 0
             fi
-            git commit -m "Publish compact reader share menu"
+            git commit -m "Publish reader share size and overlap fix"
             if git push origin HEAD:master; then
               exit 0
             fi
