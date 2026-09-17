@@ -15,54 +15,59 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Measure main and subtag styles
+      - name: Measure real expanded homepage state
         run: |
           set -euo pipefail
           rm -rf /tmp/ssm-tag-context
           mkdir -p /tmp/ssm-tag-context/ssm
           cp -a . /tmp/ssm-tag-context/ssm/
-          cat > /tmp/ssm-tag-context/ssm/tag-context.html <<'HTML'
-          <!doctype html><html lang="en"><head><meta charset="utf-8">
-          <link rel="stylesheet" href="/ssm/assets/styles.css">
-          <link rel="stylesheet" href="/ssm/assets/post-layout.css">
-          <link rel="stylesheet" href="/ssm/assets/control-sizing.css">
-          </head><body>
-          <nav class="subject-nav">
-            <div class="tag-list" data-tag-parent="">
-              <span class="tag-option" id="main-option"><a class="tag-chip" id="main-chip"><span>Physics</span><span class="tag-count" id="main-count">5</span></a></span>
-            </div>
-            <div class="tag-list tag-descendant-list" data-tag-descendant-list>
-              <div class="tag-list tag-subgroup" data-tag-parent="physics">
-                <span class="tag-option" id="sub-option"><a class="tag-chip" id="sub-chip"><span>Analytical Mechanics</span><span class="tag-count" id="sub-count">1</span></a></span>
-              </div>
-            </div>
-          </nav>
-          <output id="metrics"></output>
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/ssm-tag-context/ssm/en/index.html')
+          text=p.read_text(encoding='utf-8')
+          probe=r'''
+          <output id="tag-style-metrics"></output>
           <script>
-          addEventListener('load', () => {
-            const ids = ['main-option','main-chip','main-count','sub-option','sub-chip','sub-count'];
-            const props = ['display','height','minHeight','paddingInlineStart','paddingInlineEnd','paddingBlockStart','paddingBlockEnd','fontSize','fontWeight','lineHeight','borderRadius','backgroundColor','borderTopWidth','borderTopColor','color','gap'];
-            const out = document.querySelector('#metrics');
-            for (const id of ids) {
-              const el = document.getElementById(id); const cs = getComputedStyle(el);
-              for (const p of props) out.dataset[id.replaceAll('-','_')+'_'+p] = cs[p];
-              out.dataset[id.replaceAll('-','_')+'_rectHeight'] = el.getBoundingClientRect().height.toFixed(3);
+          setTimeout(() => {
+            const main = document.querySelector('[data-tag-option="physics"]');
+            const mainChip = main?.querySelector(':scope > .tag-chip');
+            const mainCount = mainChip?.querySelector('.tag-count');
+            const subgroup = document.querySelector('[data-tag-parent="physics"]');
+            const sub = subgroup?.querySelector('.tag-option');
+            const subChip = sub?.querySelector(':scope > .tag-chip');
+            const subCount = subChip?.querySelector('.tag-count');
+            const out = document.querySelector('#tag-style-metrics');
+            const entries = {main,mainChip,mainCount,subgroup,sub,subChip,subCount};
+            const props=['display','height','minHeight','paddingInlineStart','paddingInlineEnd','paddingBlockStart','paddingBlockEnd','fontSize','fontWeight','lineHeight','borderRadius','backgroundColor','borderTopWidth','borderTopColor','color','gap','transform'];
+            for (const [name,el] of Object.entries(entries)) {
+              if (!el) { out.dataset[name+'_missing']='true'; continue; }
+              const cs=getComputedStyle(el);
+              for (const prop of props) out.dataset[name+'_'+prop]=cs[prop];
+              out.dataset[name+'_rectHeight']=el.getBoundingClientRect().height.toFixed(3);
+              out.dataset[name+'_class']=el.className;
+              out.dataset[name+'_style']=el.getAttribute('style')||'';
+              out.dataset[name+'_hidden']=String(el.hidden);
+              out.dataset[name+'_pressed']=el.getAttribute('aria-pressed')||'';
             }
-          });
-          </script></body></html>
-          HTML
+          }, 1800);
+          </script>
+          '''
+          text=text.replace('</body>',probe+'</body>')
+          p.write_text(text,encoding='utf-8')
+          PY
           cd /tmp/ssm-tag-context
           python3 -m http.server 8765 >/tmp/ssm-tag-context-http.log 2>&1 &
           server=$!
           trap 'kill "$server" || true' EXIT
           sleep 1
-          google-chrome --headless=new --no-sandbox --disable-gpu --disable-background-networking --virtual-time-budget=1200 --dump-dom http://127.0.0.1:8765/ssm/tag-context.html > /tmp/ssm-tag-context-dom.html
+          google-chrome --headless=new --no-sandbox --disable-gpu --disable-background-networking --virtual-time-budget=4000 --dump-dom 'http://127.0.0.1:8765/ssm/en/?tag=physics&filters=temporary' > /tmp/ssm-tag-context-dom.html
           python3 - <<'PY'
           import html,re
           from pathlib import Path
-          dom=Path('/tmp/ssm-tag-context-dom.html').read_text()
-          m=re.search(r'<output id="metrics"([^>]*)>',dom)
+          dom=Path('/tmp/ssm-tag-context-dom.html').read_text(encoding='utf-8')
+          m=re.search(r'<output id="tag-style-metrics"([^>]*)>',dom)
+          if not m: raise SystemExit('missing metrics')
           attrs={k:html.unescape(v) for k,v in re.findall(r'data-([^=]+)="([^"]*)"',m.group(1))}
-          for prefix in ('main_option','main_chip','main_count','sub_option','sub_chip','sub_count'):
+          for prefix in ('main','mainchip','maincount','subgroup','sub','subchip','subcount'):
               print(prefix, {k[len(prefix)+1:]:v for k,v in attrs.items() if k.startswith(prefix+'_')})
           PY
