@@ -1,4 +1,4 @@
-name: Diagnose subtag styling
+name: Verify subtag styling
 
 on:
   push:
@@ -8,16 +8,39 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  diagnose:
+  verify-and-cache-bust:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Trace expanded tag sizing tokens
+
+      - name: Cache-bust generated pages
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          old = 'control-sizing.css?v=5568de927a29'
+          new = 'control-sizing.css?v=c1dda34b41d5'
+          changed = 0
+          for path in Path('.').rglob('*.html'):
+              text = path.read_text(encoding='utf-8')
+              if old not in text:
+                  continue
+              path.write_text(text.replace(old, new), encoding='utf-8')
+              changed += 1
+          print(f'updated {changed} html files')
+          if changed == 0:
+              raise SystemExit('expected generated HTML fingerprint updates')
+          PY
+
+      - name: Verify real expanded menu geometry
         run: |
           set -euo pipefail
+          grep -F -- '--tag-capsule-size: var(--control-size) !important;' assets/control-sizing.css
+          grep -F -- '--tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px) !important;' assets/control-sizing.css
+
           rm -rf /tmp/ssm-tag-context
           mkdir -p /tmp/ssm-tag-context/ssm
           cp -a . /tmp/ssm-tag-context/ssm/
@@ -36,22 +59,22 @@ jobs:
               main,
               mainChip: main?.querySelector(':scope > .tag-chip'),
               mainCount: main?.querySelector('.tag-count'),
-              subgroup,
               sub,
               subChip: sub?.querySelector(':scope > .tag-chip'),
               subCount: sub?.querySelector('.tag-count')
             };
-            const props=['display','height','minHeight','paddingInlineStart','paddingInlineEnd','paddingBlockStart','paddingBlockEnd','fontSize','fontWeight','lineHeight','borderRadius','backgroundColor','borderTopWidth','borderTopColor','color','gap','transform'];
-            const vars=['--control-size','--tag-capsule-size','--tag-capsule-inner-size','--tag-capsule-padding-inline','--tag-capsule-count-inset','--tag-capsule-content-gap','--tag-count-size','--tag-count-font-size'];
             const result={};
             for (const [name,el] of Object.entries(entries)) {
               if (!el) { result[name]={missing:true}; continue; }
-              const cs=getComputedStyle(el); const item={};
-              for (const prop of props) item[prop]=cs[prop];
-              for (const v of vars) item[v]=cs.getPropertyValue(v).trim();
-              item.rectHeight=el.getBoundingClientRect().height.toFixed(3);
-              item.class=el.className; item.style=el.getAttribute('style')||''; item.hidden=el.hidden; item.pressed=el.getAttribute('aria-pressed')||'';
-              result[name]=item;
+              const cs=getComputedStyle(el);
+              result[name]={
+                height: el.getBoundingClientRect().height,
+                minHeight: parseFloat(cs.minHeight) || 0,
+                fontSize: parseFloat(cs.fontSize) || 0,
+                backgroundColor: cs.backgroundColor,
+                tagSize: cs.getPropertyValue('--tag-capsule-size').trim(),
+                controlSize: cs.getPropertyValue('--control-size').trim()
+              };
             }
             document.querySelector('#tag-style-metrics').textContent=JSON.stringify(result);
           }, 1800);
@@ -59,6 +82,7 @@ jobs:
           '''
           p.write_text(text.replace('</body>',probe+'</body>'),encoding='utf-8')
           PY
+
           cd /tmp/ssm-tag-context
           python3 -m http.server 8765 >/tmp/ssm-tag-context-http.log 2>&1 &
           server=$!
@@ -71,6 +95,28 @@ jobs:
           dom=Path('/tmp/ssm-tag-context-dom.html').read_text(encoding='utf-8')
           m=re.search(r'<pre id="tag-style-metrics">(.*?)</pre>',dom,re.S)
           if not m: raise SystemExit('missing metrics')
-          result=json.loads(html.unescape(m.group(1)))
-          for k,v in result.items(): print(k, v)
+          r=json.loads(html.unescape(m.group(1)))
+          print('subtag consistency metrics:', r)
+          for name in ('main','mainChip','mainCount','sub','subChip','subCount'):
+              assert not r.get(name,{}).get('missing'), r
+          def same(a,b,tol=.15):
+              return abs(a-b) <= tol
+          assert same(r['main']['height'], r['sub']['height']), r
+          assert same(r['mainChip']['height'], r['subChip']['height']), r
+          assert same(r['mainCount']['height'], r['subCount']['height']), r
+          assert same(r['mainChip']['fontSize'], r['subChip']['fontSize'], .01), r
+          assert r['main']['height'] >= 30, r
+          assert r['sub']['height'] >= 30, r
           PY
+
+      - name: Commit cache-bust
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -- '*.html'
+          if git diff --cached --quiet; then
+            echo 'No fingerprint changes to commit.'
+          else
+            git commit -m 'Cache-bust consistent subtag styling'
+            git push
+          fi
