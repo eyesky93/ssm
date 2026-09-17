@@ -24,7 +24,7 @@
   --tag-capsule-padding-inline: .35rem !important;
   --tag-capsule-count-inset: .2rem !important;
   --tag-capsule-content-gap: .2rem !important;
-  --tag-count-size: calc(var(--tag-capsule-size) - .4rem) !important;
+  --tag-count-size: calc(var(--tag-capsule-size) - .2rem) !important;
   --tag-count-font-size: calc(var(--tag-label-font-size) - .05rem) !important;
 }
 
