@@ -19,6 +19,7 @@
    cascade level until the next canonical publication replaces those files. */
 :root {
   --interface-edge-gap: 0.5rem !important;
+  --tag-label-font-size: 0.8rem;
 }
 
 :root body .subject-nav,
@@ -29,4 +30,11 @@
 :root body .browser-toolbar {
   padding-block: var(--interface-edge-gap) !important;
   margin-block-end: var(--interface-edge-gap) !important;
+}
+
+/* Keep tag label typography shared across filters, cards, search and Directory.
+   Count badges retain their existing independent size. */
+:root .tag-chip,
+:root .search-tag {
+  font-size: var(--tag-label-font-size) !important;
 }
