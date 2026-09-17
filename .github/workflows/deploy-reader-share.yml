@@ -111,8 +111,8 @@ jobs:
           if post_marker not in post_css:
               post_css = post_css.rstrip() + '\n\n' + post_block.strip() + '\n'
 
-          card_marker = '/* natural-height-tiled-post-cards-v1 */'
-          card_block = r'''
+          old_card_marker = '/* natural-height-tiled-post-cards-v1 */'
+          old_card_block = r'''
           /* natural-height-tiled-post-cards-v1 */
           /* Grid rows remain content-sized, but each tiled card now stops at its
              own footer instead of stretching to the tallest sibling in the row. */
@@ -129,6 +129,51 @@ jobs:
           :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .post-card:not(.directory-card) {
             align-self: var(--post-stream-card-align) !important;
             height: auto !important;
+          }
+          '''
+          post_css = post_css.replace('\n\n' + old_card_block.strip(), '')
+          post_css = post_css.replace(old_card_block.strip(), '')
+
+          card_marker = '/* equal-height-compact-card-rail-v2 */'
+          card_block = r'''
+          /* equal-height-compact-card-rail-v2 */
+          /* Every tiled card stays equal to the largest visible card. Shrink that
+             common maximum by taking Pin/Share/Read out of normal vertical flow
+             and placing it in the otherwise unused logical-end rail. */
+          :root {
+            --post-stream-row-size: 1fr;
+            --post-stream-card-align: stretch;
+            --post-card-action-rail-reserve: calc(var(--quiet-control-target-size) + var(--quiet-control-gap));
+            --post-card-footer-gap: var(--card-content-gap, var(--control-capsule-gap));
+          }
+          :root body .post-stream {
+            grid-auto-rows: var(--post-stream-row-size) !important;
+          }
+          :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) {
+            align-items: var(--post-stream-card-align) !important;
+          }
+          :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .post-card:not(.directory-card) {
+            align-self: var(--post-stream-card-align) !important;
+            height: auto !important;
+          }
+          @media (min-width: 701px) {
+            :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .card-footer {
+              grid-template-columns: minmax(0, 1fr) !important;
+              padding-block-start: var(--post-card-footer-gap) !important;
+              padding-inline-end: var(--post-card-action-rail-reserve);
+            }
+            :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .card-footer > [data-card-actions] {
+              position: absolute !important;
+              inset-inline-end: var(--card-action-inset);
+              inset-block-end: var(--card-action-inset);
+              grid-area: auto !important;
+              margin: 0 !important;
+              z-index: 1;
+            }
+            :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .post-tools {
+              box-sizing: border-box;
+              padding-inline-end: var(--post-card-action-rail-reserve);
+            }
           }
           '''
           if card_marker not in post_css:
@@ -159,17 +204,19 @@ jobs:
                   raise SystemExit(f'Missing global control rule: {required}')
 
           final_post = post_path.read_text()
+          if old_card_marker in final_post:
+              raise SystemExit('Old unequal-height card override is still present')
           for required in (
               post_marker,
               '--reader-share-option-size: var(--header-control-size);',
               'inset-inline-end: calc(100% + var(--reader-share-gap));',
-              'padding: 0;',
               'translate: none !important;',
               '.share-menu[open] { z-index: 100; }',
               card_marker,
-              '--post-stream-card-align: start;',
-              'align-items: var(--post-stream-card-align) !important;',
-              'align-self: var(--post-stream-card-align) !important;',
+              '--post-stream-row-size: 1fr;',
+              '--post-stream-card-align: stretch;',
+              'position: absolute !important;',
+              'padding-block-start: var(--post-card-footer-gap) !important;',
           ):
               if required not in final_post:
                   raise SystemExit(f'Missing live post-layout rule: {required}')
@@ -183,10 +230,10 @@ jobs:
           PY
             git add assets/control-sizing.css assets/post-layout.css '*.html' 'en/**/*.html' 'he/**/*.html'
             if git diff --cached --quiet; then
-              echo "Live global controls, reader share, and tiled card sizing are already current."
+              echo "Live equal-height card layout is already current."
               exit 0
             fi
-            git commit -m "Publish natural-height tiled post cards"
+            git commit -m "Publish equal-height compact post cards"
             if git push origin HEAD:master; then
               exit 0
             fi
