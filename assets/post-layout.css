@@ -1395,3 +1395,56 @@ html[lang="he"] .reader-controls .reader-number-error {
     order: 3;
   }
 }
+
+/* reader-share-inline-left-v1 */
+/* Reader sharing uses the same global geometry as its Share trigger.
+   Destinations open as one compact strip toward inline-start: left in
+   English and right in Hebrew. The frame keeps only a token-derived inset. */
+:root {
+  --reader-share-option-size: var(--control-size);
+  --reader-share-icon-size: var(--control-icon-size);
+  --reader-share-gap: var(--control-item-gap);
+  --reader-share-padding: calc(var(--control-item-gap) / 2);
+}
+:root body .header-controls .share-menu > .share-options {
+  inset-inline-start: auto;
+  inset-inline-end: calc(100% + var(--reader-share-gap));
+  inset-block-start: 0;
+  inset-block-end: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  width: max-content;
+  max-width: none;
+  gap: var(--reader-share-gap);
+  padding: var(--reader-share-padding);
+  border-radius: var(--control-radius);
+}
+:root body .header-controls .share-menu[data-share-side="above"] > .share-options {
+  inset-block-start: 0;
+  inset-block-end: auto;
+}
+:root body .header-controls .share-menu > .share-options > :is(a, button) {
+  box-sizing: border-box;
+  flex: 0 0 var(--reader-share-option-size);
+  width: var(--reader-share-option-size);
+  min-width: var(--reader-share-option-size);
+  max-width: var(--reader-share-option-size);
+  height: var(--reader-share-option-size);
+  min-height: var(--reader-share-option-size);
+  max-height: var(--reader-share-option-size);
+  inline-size: var(--reader-share-option-size);
+  min-inline-size: var(--reader-share-option-size);
+  max-inline-size: var(--reader-share-option-size);
+  block-size: var(--reader-share-option-size);
+  min-block-size: var(--reader-share-option-size);
+  max-block-size: var(--reader-share-option-size);
+  padding: var(--control-padding);
+  border-radius: var(--control-radius);
+}
+:root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
+  width: var(--reader-share-icon-size);
+  height: var(--reader-share-icon-size);
+}
