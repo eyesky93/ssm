@@ -1,0 +1,91 @@
+name: One-shot fix header hover
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/one-shot-fix-header-hover.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          persist-credentials: true
+
+      - name: Patch shared framed-control hover and bust cache
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import re
+
+          css_path = Path("assets/control-sizing.css")
+          css = css_path.read_text()
+          marker = "/* framed-control-component-v1 */"
+          if marker not in css:
+              raise SystemExit("framed-control marker missing")
+          head, tail = css.split(marker, 1)
+          old = '''
+:root .header-controls .framed-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active),
+:root .header-controls .framed-control[aria-expanded="true"] {
+  border-color: var(--accent-strong);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: none;
+  transform: none;
+}
+'''
+          new = '''
+:root .header-controls .framed-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active),
+:root .header-controls .framed-control[aria-expanded="true"] {
+  border-color: var(--accent-strong);
+  background: var(--surface);
+  color: var(--accent-strong);
+  box-shadow: none;
+  transform: none;
+}
+'''
+          if old not in tail:
+              if "color: var(--accent-strong);" not in tail:
+                  raise SystemExit("expected framed-control interaction block not found")
+          else:
+              tail = tail.replace(old, new, 1)
+          css = head + marker + tail
+          css_path.write_text(css)
+
+          version = hashlib.sha256(css.encode()).hexdigest()[:12]
+          pattern = re.compile(r'(<link\b[^>]*href="[^"]*assets/control-sizing\.css\?v=)[^"]+("[^>]*data-control-sizing-styles[^>]*>)', re.I)
+          changed = 0
+          for path in Path('.').rglob('*.html'):
+              text = path.read_text()
+              updated, count = pattern.subn(rf'\g<1>{version}\g<2>', text)
+              if count and updated != text:
+                  path.write_text(updated)
+                  changed += 1
+          if changed == 0:
+              raise SystemExit("no HTML control-sizing cache keys updated")
+
+          Path(".github/workflows/one-shot-fix-header-hover.yml").unlink()
+          print(f"updated {changed} HTML files; control-sizing version {version}")
+          PY
+
+      - name: Verify patch
+        run: |
+          grep -A8 'framed-control:not' assets/control-sizing.css | grep 'color: var(--accent-strong);'
+
+      - name: Commit live fix
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Make framed header icons blue on hover and bust cache"
+          git pull --rebase origin master
+          git push origin HEAD:master
