@@ -384,3 +384,41 @@
   justify-content: space-between;
   margin: 0;
 }
+
+/* accent-revert-hover-v2:start */
+/* Revert is one transparent cell inside the vertical color capsule.
+   It uses the same accent interaction as the other controls, while the
+   capsule keeps sole ownership of the outside neutral border. */
+:root body .header-actions .accent-reset {
+  position: relative !important;
+  z-index: 1 !important;
+  display: grid !important;
+  place-items: center !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: var(--ink) !important;
+}
+:root body .header-actions .accent-reset:is(:hover, :focus-visible) {
+  position: relative !important;
+  z-index: 1 !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--accent-strong) !important;
+  box-shadow: inset 0 0 0 1px var(--accent-strong) !important;
+}
+:root body .header-actions .accent-reset:focus-visible {
+  outline: 2px solid var(--accent-strong) !important;
+  outline-offset: -4px !important;
+}
+:root body .header-actions .accent-reset > svg {
+  display: block !important;
+  margin: 0 !important;
+  flex: none !important;
+  color: inherit !important;
+  stroke: currentColor !important;
+}
+:root body .header-actions .accent-panel::after {
+  z-index: 4 !important;
+}
+/* accent-revert-hover-v2:end */
