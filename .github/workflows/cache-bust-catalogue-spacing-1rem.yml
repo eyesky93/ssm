@@ -1,0 +1,45 @@
+name: Cache-bust catalogue spacing 1rem
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+  update-control-sizing-version:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update control-sizing fingerprint on generated pages
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          version = 'a292fae3de7e'
+          pattern = re.compile(r'control-sizing\.css\?v=[0-9a-f]+')
+          changed = 0
+          for path in Path('.').rglob('*.html'):
+              text = path.read_text(encoding='utf-8')
+              updated = pattern.sub(f'control-sizing.css?v={version}', text)
+              if updated != text:
+                  path.write_text(updated, encoding='utf-8')
+                  changed += 1
+          if not changed:
+              print('All generated pages already reference the current fingerprint.')
+          else:
+              print(f'Updated {changed} generated HTML pages.')
+          PY
+          if git diff --quiet -- '*.html' '**/*.html'; then
+            echo 'Fingerprint already current.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- '*.html' '**/*.html'
+          git commit -m 'Cache-bust one-rem catalogue spacing'
+          git push
