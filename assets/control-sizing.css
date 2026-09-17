@@ -20,6 +20,13 @@
 :root {
   --interface-edge-gap: 0.5rem !important;
 
+  /* Match canonical global-control-size.css. The stale generated base still
+     multiplies the already-compact universal control size by .675, which makes
+     descendant-only rows visibly smaller. One shared tag capsule token keeps
+     main tags and subtags identical; Grid cards remap it below. */
+  --tag-capsule-size: var(--control-size) !important;
+  --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px) !important;
+
   /* Compact tag variant retained only for Grid post cards. Default tags fall
      through to the original universal tag geometry in the imported base. */
   --compact-tag-label-font-size: .8rem;
