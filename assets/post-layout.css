@@ -1448,3 +1448,58 @@ html[lang="he"] .reader-controls .reader-number-error {
   width: var(--reader-share-icon-size);
   height: var(--reader-share-icon-size);
 }
+
+/* reader-share-clear-header-v2 */
+/* Share destinations consume the exact header-control box used by the
+   trigger, remove the old popover inset, and begin beyond Search + Pin
+   so ordinary header controls never sit on top of the open strip. */
+:root {
+  --reader-share-option-size: var(--header-control-size);
+  --reader-share-icon-size: var(--control-icon-size);
+  --reader-share-gap: var(--control-item-gap);
+  --reader-share-padding: 0;
+  --reader-share-obstacle-span: calc(2 * var(--header-control-size) + var(--control-capsule-gap) + var(--header-control-gap));
+}
+:root body .header-controls .share-menu > summary,
+:root body .header-controls .share-menu > .share-options > :is(a, button) {
+  box-sizing: border-box;
+  flex: 0 0 var(--reader-share-option-size);
+  width: var(--reader-share-option-size);
+  min-width: var(--reader-share-option-size);
+  max-width: var(--reader-share-option-size);
+  height: var(--reader-share-option-size);
+  min-height: var(--reader-share-option-size);
+  max-height: var(--reader-share-option-size);
+  inline-size: var(--reader-share-option-size);
+  min-inline-size: var(--reader-share-option-size);
+  max-inline-size: var(--reader-share-option-size);
+  block-size: var(--reader-share-option-size);
+  min-block-size: var(--reader-share-option-size);
+  max-block-size: var(--reader-share-option-size);
+  border-radius: var(--control-radius);
+}
+:root body .header-controls .share-menu[open] { z-index: 30; }
+:root body .header-controls .share-menu > .share-options,
+:root body .header-controls .share-menu[data-share-side="above"] > .share-options {
+  inset-inline-start: auto;
+  inset-inline-end: calc(100% + var(--reader-share-obstacle-span) + var(--reader-share-gap));
+  inset-block-start: 0;
+  inset-block-end: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  width: max-content;
+  max-width: none;
+  gap: var(--reader-share-gap);
+  padding: var(--reader-share-padding);
+  border-radius: var(--control-radius);
+}
+:root body .header-controls .share-menu > .share-options > :is(a, button) {
+  padding: var(--control-padding);
+}
+:root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
+  width: var(--reader-share-icon-size);
+  height: var(--reader-share-icon-size);
+}
