@@ -18,7 +18,7 @@
    older !important spacing declarations, so this bridge must win at the same
    cascade level until the next canonical publication replaces those files. */
 :root {
-  --interface-edge-gap: 2rem !important;
+  --interface-edge-gap: 1rem !important;
 }
 
 :root body .subject-nav,
