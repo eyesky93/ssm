@@ -14,8 +14,8 @@
      layouts keep that reserve on each post card instead of inflating the grid
      row-gap, so Directory -> first row can exactly equal the horizontal gutter. */
   --post-stream-row-gap: calc(var(--engagement-tab-height, 2rem) + var(--interface-edge-gap));
-  --post-stream-column-gap: 1rem;
-  --post-stream-compact-column-gap: .75rem;
+  --post-stream-column-gap: var(--interface-edge-gap);
+  --post-stream-compact-column-gap: var(--interface-edge-gap);
 
   /* Floating neutral controls use the same surface as their surrounding card;
      distinction comes from the shared control frame, never an accent tint. */
