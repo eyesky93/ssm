@@ -215,3 +215,29 @@
   margin: 0;
   flex: none;
 }
+
+/* Temporary Pages hotfix matching the canonical reader Read component while
+   the source publication workflow is unavailable. The frame stays neutral;
+   the unchecked state is an outline book and only the checked book is solid. */
+:root {
+  --reader-book-selected-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 5.5c3-.8 5.5-.2 7.4 1.35v12.3C9.5 17.6 7 17 4 17.8V5.5Zm16 0c-3-.8-5.5-.2-7.4 1.35v12.3c1.9-1.55 4.4-2.15 7.4-1.35V5.5Z' fill='black'/%3E%3C/svg%3E");
+}
+:root body .header-controls .read-toggle.round-control,
+:root body .header-controls .read-toggle.round-control:is(:hover, :focus-visible),
+:root body .header-controls .read-toggle.round-control[aria-checked="true"],
+:root body .header-controls .read-toggle.round-control[aria-checked="true"]:disabled,
+:root body .header-controls .read-toggle.round-control[aria-checked="true"]:is(:hover, :focus-visible) {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  opacity: 1;
+}
+:root body .header-controls .read-toggle.round-control {
+  border-color: var(--line-dark) !important;
+}
+:root body .header-controls .read-toggle.round-control:is(:hover, :focus-visible) {
+  border-color: var(--accent-strong) !important;
+}
+:root body .header-controls .read-toggle.round-control[aria-checked="true"]::before {
+  -webkit-mask: var(--reader-book-selected-icon) center / contain no-repeat !important;
+  mask: var(--reader-book-selected-icon) center / contain no-repeat !important;
+}
