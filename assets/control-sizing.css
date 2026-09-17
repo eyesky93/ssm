@@ -486,3 +486,18 @@
   width: var(--control-icon-size);
   height: var(--control-icon-size);
 }
+
+/* framed-control-settings-hover-v2:start */
+/* All independent header controls use the Settings interaction model:
+   the neutral frame stays in place while both frame and glyph/text use
+   the accent on hover/focus/press/open. This final shared rule also
+   overrides older reader-specific temporary rules. */
+:root body .header-controls .framed-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active),
+:root body .header-controls .framed-control[aria-expanded="true"] {
+  border-color: var(--accent-strong) !important;
+  background: var(--surface) !important;
+  color: var(--accent-strong) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+/* framed-control-settings-hover-v2:end */
