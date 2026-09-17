@@ -40,8 +40,8 @@ jobs:
           block = r'''
           /* accent-revert-hover-v2:start */
           /* Revert is one transparent cell inside the vertical color capsule.
-             It uses the same accent interaction as the other controls, while the
-             capsule keeps sole ownership of the outside neutral border. */
+             Hover/focus accents only the arrow glyph; the cell never paints an
+             independent frame, fill or shadow over the capsule. */
           :root body .header-actions .accent-reset {
             position: relative !important;
             z-index: 1 !important;
@@ -50,6 +50,7 @@ jobs:
             background: transparent !important;
             border-color: transparent !important;
             box-shadow: none !important;
+            outline: none !important;
             color: var(--ink) !important;
           }
           :root body .header-actions .accent-reset:is(:hover, :focus-visible) {
@@ -57,12 +58,9 @@ jobs:
             z-index: 1 !important;
             background: transparent !important;
             border-color: transparent !important;
+            box-shadow: none !important;
+            outline: none !important;
             color: var(--accent-strong) !important;
-            box-shadow: inset 0 0 0 1px var(--accent-strong) !important;
-          }
-          :root body .header-actions .accent-reset:focus-visible {
-            outline: 2px solid var(--accent-strong) !important;
-            outline-offset: -4px !important;
           }
           :root body .header-actions .accent-reset > svg {
             display: block !important;
@@ -100,12 +98,15 @@ jobs:
           for required in (
               start,
               'color: var(--accent-strong) !important',
-              'box-shadow: inset 0 0 0 1px var(--accent-strong) !important',
+              'box-shadow: none !important',
+              'outline: none !important',
               'background: transparent !important',
               'z-index: 4 !important',
           ):
               if required not in final:
                   raise SystemExit(f'Missing accent revert rule: {required}')
+          if 'box-shadow: inset 0 0 0 1px var(--accent-strong)' in final:
+              raise SystemExit('Accent revert still paints a frame')
 
           sample = Path('en/index.html').read_text()
           if not re.search(rf'(?:/ssm)?/assets/control-sizing\.css\?v={digest}', sample):
@@ -118,7 +119,7 @@ jobs:
               echo "Accent revert is already current."
               exit 0
             fi
-            git commit -m "Publish accent revert hover fix"
+            git commit -m "Publish icon-only accent revert hover"
             if git push origin HEAD:master; then
               exit 0
             fi
