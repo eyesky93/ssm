@@ -20,15 +20,21 @@
   padding: var(--post-card-content-inset);
 }
 
-/* Size each post row from that row's actual content instead of giving every
-   implicit row the catalogue-wide tallest 1fr height. Cards still stretch to
-   one common height inside each row, so row alignment is preserved without the
-   large empty zone between tags and the date/action rail. */
+/* Tiled rows are content-sized and individual cards use their own natural
+   height. The previous row-size fix still left align-items:stretch active,
+   which is why shorter cards kept the same visible dead area. */
 :root {
   --post-stream-row-size: auto;
+  --post-stream-card-align: start;
 }
 :root .post-stream {
   grid-auto-rows: var(--post-stream-row-size);
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) {
+  align-items: var(--post-stream-card-align) !important;
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .post-card:not(.directory-card) {
+  align-self: var(--post-stream-card-align) !important;
 }
 
 /* List/reader tags keep their horizontal drag row. Tiled cards use all available
