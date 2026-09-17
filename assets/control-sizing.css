@@ -14,13 +14,19 @@
 }
 
 /* Generated-site release bridge for canonical catalogue spacing while the
-   source publishing runner is unavailable. Keep this one token aligned with
-   src/control-spacing.css until the next successful canonical publication. */
+   source publishing runner is unavailable. The public bundle still contains
+   older !important spacing declarations, so this bridge must win at the same
+   cascade level until the next canonical publication replaces those files. */
 :root {
-  --interface-edge-gap: 2rem;
+  --interface-edge-gap: 2rem !important;
 }
 
 :root body .subject-nav,
 :root body .subject-nav .tag-list {
-  gap: var(--interface-edge-gap);
+  gap: var(--interface-edge-gap) !important;
+}
+
+:root body .browser-toolbar {
+  padding-block: var(--interface-edge-gap) !important;
+  margin-block-end: var(--interface-edge-gap) !important;
 }
