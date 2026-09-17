@@ -1,122 +1,79 @@
-name: Verify subtag styling
+name: Diagnose subtag cascade
 
 on:
   push:
     branches: [master]
     paths:
       - '.github/workflows/diag-tag-subgroup.yml'
-  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  verify-and-cache-bust:
-    if: github.actor != 'github-actions[bot]'
+  diagnose:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Cache-bust generated pages
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          old = 'control-sizing.css?v=5568de927a29'
-          new = 'control-sizing.css?v=c1dda34b41d5'
-          changed = 0
-          for path in Path('.').rglob('*.html'):
-              text = path.read_text(encoding='utf-8')
-              if old not in text:
-                  continue
-              path.write_text(text.replace(old, new), encoding='utf-8')
-              changed += 1
-          print(f'updated {changed} html files')
-          if changed == 0:
-              raise SystemExit('expected generated HTML fingerprint updates')
-          PY
-
-      - name: Verify real expanded menu geometry
+      - name: Trace tag capsule cascade
         run: |
           set -euo pipefail
-          grep -F -- '--tag-capsule-size: var(--control-size) !important;' assets/control-sizing.css
-          grep -F -- '--tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px) !important;' assets/control-sizing.css
-
-          rm -rf /tmp/ssm-tag-context
-          mkdir -p /tmp/ssm-tag-context/ssm
-          cp -a . /tmp/ssm-tag-context/ssm/
+          rm -rf /tmp/ssm-tag-cascade
+          mkdir -p /tmp/ssm-tag-cascade/ssm
+          cp -a . /tmp/ssm-tag-cascade/ssm/
           python3 - <<'PY'
           from pathlib import Path
-          p=Path('/tmp/ssm-tag-context/ssm/en/index.html')
+          p=Path('/tmp/ssm-tag-cascade/ssm/en/index.html')
           text=p.read_text(encoding='utf-8')
           probe=r'''
-          <pre id="tag-style-metrics"></pre>
+          <pre id="cascade-metrics"></pre>
           <script>
           setTimeout(() => {
-            const main = document.querySelector('[data-tag-option="physics"]');
-            const subgroup = document.querySelector('[data-tag-parent="physics"]');
-            const sub = subgroup?.querySelector('.tag-option');
-            const entries = {
-              main,
-              mainChip: main?.querySelector(':scope > .tag-chip'),
-              mainCount: main?.querySelector('.tag-count'),
-              sub,
-              subChip: sub?.querySelector(':scope > .tag-chip'),
-              subCount: sub?.querySelector('.tag-count')
-            };
-            const result={};
-            for (const [name,el] of Object.entries(entries)) {
-              if (!el) { result[name]={missing:true}; continue; }
-              const cs=getComputedStyle(el);
-              result[name]={
-                height: el.getBoundingClientRect().height,
-                minHeight: parseFloat(cs.minHeight) || 0,
-                fontSize: parseFloat(cs.fontSize) || 0,
-                backgroundColor: cs.backgroundColor,
-                tagSize: cs.getPropertyValue('--tag-capsule-size').trim(),
-                controlSize: cs.getPropertyValue('--control-size').trim()
-              };
+            const root=document.documentElement;
+            const main=document.querySelector('[data-tag-option="physics"]');
+            const findings=[];
+            function scanRules(rules, href, depth=0) {
+              for (const rule of rules || []) {
+                if (rule.cssRules) { try { scanRules(rule.cssRules, href, depth+1); } catch {} }
+                if (!rule.style) continue;
+                const val=rule.style.getPropertyValue('--tag-capsule-size');
+                if (!val) continue;
+                let rootMatch=false, mainMatch=false;
+                try { rootMatch=!!rule.selectorText && root.matches(rule.selectorText); } catch {}
+                try { mainMatch=!!rule.selectorText && main.matches(rule.selectorText); } catch {}
+                findings.push({href, selector:rule.selectorText||rule.cssText.slice(0,80), value:val.trim(), priority:rule.style.getPropertyPriority('--tag-capsule-size'), rootMatch, mainMatch});
+              }
             }
-            document.querySelector('#tag-style-metrics').textContent=JSON.stringify(result);
-          }, 1800);
+            for (const sheet of document.styleSheets) {
+              try { scanRules(sheet.cssRules, sheet.href||'inline'); } catch (e) { findings.push({href:sheet.href||'inline',error:String(e)}); }
+            }
+            const result={
+              rootInline:root.style.getPropertyValue('--tag-capsule-size'),
+              rootInlinePriority:root.style.getPropertyPriority('--tag-capsule-size'),
+              rootComputed:getComputedStyle(root).getPropertyValue('--tag-capsule-size').trim(),
+              mainInline:main?.style.getPropertyValue('--tag-capsule-size')||'',
+              mainInlinePriority:main?.style.getPropertyPriority('--tag-capsule-size')||'',
+              mainComputed:main?getComputedStyle(main).getPropertyValue('--tag-capsule-size').trim():'',
+              sheets:[...document.styleSheets].map((s,i)=>({i,href:s.href||'inline'})),
+              findings
+            };
+            document.querySelector('#cascade-metrics').textContent=JSON.stringify(result);
+          },1800);
           </script>
           '''
           p.write_text(text.replace('</body>',probe+'</body>'),encoding='utf-8')
           PY
-
-          cd /tmp/ssm-tag-context
-          python3 -m http.server 8765 >/tmp/ssm-tag-context-http.log 2>&1 &
+          cd /tmp/ssm-tag-cascade
+          python3 -m http.server 8765 >/tmp/ssm-tag-cascade-http.log 2>&1 &
           server=$!
           trap 'kill "$server" || true' EXIT
           sleep 1
-          google-chrome --headless=new --no-sandbox --disable-gpu --disable-background-networking --virtual-time-budget=4000 --dump-dom 'http://127.0.0.1:8765/ssm/en/?tag=physics&filters=temporary' > /tmp/ssm-tag-context-dom.html
+          google-chrome --headless=new --no-sandbox --disable-gpu --disable-background-networking --virtual-time-budget=4000 --dump-dom 'http://127.0.0.1:8765/ssm/en/?tag=physics&filters=temporary' > /tmp/ssm-tag-cascade-dom.html
           python3 - <<'PY'
           import html,re,json
           from pathlib import Path
-          dom=Path('/tmp/ssm-tag-context-dom.html').read_text(encoding='utf-8')
-          m=re.search(r'<pre id="tag-style-metrics">(.*?)</pre>',dom,re.S)
-          if not m: raise SystemExit('missing metrics')
+          dom=Path('/tmp/ssm-tag-cascade-dom.html').read_text(encoding='utf-8')
+          m=re.search(r'<pre id="cascade-metrics">(.*?)</pre>',dom,re.S)
+          if not m: raise SystemExit('missing cascade metrics')
           r=json.loads(html.unescape(m.group(1)))
-          print('subtag consistency metrics:', r)
-          for name in ('main','mainChip','mainCount','sub','subChip','subCount'):
-              assert not r.get(name,{}).get('missing'), r
-          def same(a,b,tol=.15):
-              return abs(a-b) <= tol
-          assert same(r['main']['height'], r['sub']['height']), r
-          assert same(r['mainChip']['height'], r['subChip']['height']), r
-          assert same(r['mainCount']['height'], r['subCount']['height']), r
-          assert same(r['mainChip']['fontSize'], r['subChip']['fontSize'], .01), r
-          assert r['main']['height'] >= 30, r
-          assert r['sub']['height'] >= 30, r
+          print(json.dumps(r,indent=2))
           PY
-
-      - name: Commit cache-bust
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add -- '*.html'
-          if git diff --cached --quiet; then
-            echo 'No fingerprint changes to commit.'
-          else
-            git commit -m 'Cache-bust consistent subtag styling'
-            git push
-          fi
