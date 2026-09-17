@@ -110,6 +110,29 @@ jobs:
           '''
           if post_marker not in post_css:
               post_css = post_css.rstrip() + '\n\n' + post_block.strip() + '\n'
+
+          card_marker = '/* natural-height-tiled-post-cards-v1 */'
+          card_block = r'''
+          /* natural-height-tiled-post-cards-v1 */
+          /* Grid rows remain content-sized, but each tiled card now stops at its
+             own footer instead of stretching to the tallest sibling in the row. */
+          :root {
+            --post-stream-row-size: auto;
+            --post-stream-card-align: start;
+          }
+          :root body .post-stream {
+            grid-auto-rows: var(--post-stream-row-size) !important;
+          }
+          :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) {
+            align-items: var(--post-stream-card-align) !important;
+          }
+          :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .post-card:not(.directory-card) {
+            align-self: var(--post-stream-card-align) !important;
+            height: auto !important;
+          }
+          '''
+          if card_marker not in post_css:
+              post_css = post_css.rstrip() + '\n\n' + card_block.strip() + '\n'
           post_path.write_text(post_css)
 
           control_digest = hashlib.sha256(control_path.read_bytes()).hexdigest()[:12]
@@ -143,9 +166,13 @@ jobs:
               'padding: 0;',
               'translate: none !important;',
               '.share-menu[open] { z-index: 100; }',
+              card_marker,
+              '--post-stream-card-align: start;',
+              'align-items: var(--post-stream-card-align) !important;',
+              'align-self: var(--post-stream-card-align) !important;',
           ):
               if required not in final_post:
-                  raise SystemExit(f'Missing reader share rule: {required}')
+                  raise SystemExit(f'Missing live post-layout rule: {required}')
 
           sample = Path('en/index.html').read_text()
           if not re.search(rf'(?:/ssm)?/assets/control-sizing\.css\?v={control_digest}', sample):
@@ -156,10 +183,10 @@ jobs:
           PY
             git add assets/control-sizing.css assets/post-layout.css '*.html' 'en/**/*.html' 'he/**/*.html'
             if git diff --cached --quiet; then
-              echo "Live global controls and reader share are already current."
+              echo "Live global controls, reader share, and tiled card sizing are already current."
               exit 0
             fi
-            git commit -m "Publish global Share-sized controls"
+            git commit -m "Publish natural-height tiled post cards"
             if git push origin HEAD:master; then
               exit 0
             fi
