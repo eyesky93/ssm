@@ -198,3 +198,20 @@
 :root body .post-stream:is([data-layout="list"], [data-layout="grid"]) .post-card > p {
   font-size: var(--post-card-summary-font-size) !important;
 }
+
+/* Temporary Pages hotfix matching the canonical accent-reset component.
+   Resetting the accent must remain a neutral action instead of tinting the
+   reset glyph with the very accent it restores. */
+:root body .header-actions .accent-reset {
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+}
+:root body .header-actions .accent-reset:is(:hover, :focus-visible) {
+  color: var(--ink);
+}
+:root body .header-actions .accent-reset > svg {
+  display: block;
+  margin: 0;
+  flex: none;
+}
