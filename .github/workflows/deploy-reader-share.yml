@@ -33,20 +33,35 @@ jobs:
           from pathlib import Path
           import hashlib, re
 
-          path = Path('assets/post-layout.css')
-          css = path.read_text()
-          marker = '/* reader-share-clear-header-v2 */'
-          block = r'''
-          /* reader-share-clear-header-v2 */
-          /* Share destinations consume the exact header-control box used by the
-             trigger, remove the old popover inset, and begin beyond Search + Pin
-             so ordinary header controls never sit on top of the open strip. */
+          control_path = Path('assets/control-sizing.css')
+          control_css = control_path.read_text()
+          control_marker = '/* global-share-control-size-v1 */'
+          control_block = r'''
+          /* global-share-control-size-v1 */
+          /* Use the current reader Share box as the one global framed-control
+             size. Tags and the formerly compact toolbar consume the same token. */
+          :root {
+            --control-size: 1.9575rem;
+            --tag-capsule-size: var(--control-size);
+            --compact-control-size: var(--control-size);
+          }
+          '''
+          if control_marker not in control_css:
+              control_css = control_css.rstrip() + '\n\n' + control_block.strip() + '\n'
+          control_path.write_text(control_css)
+
+          post_path = Path('assets/post-layout.css')
+          post_css = post_path.read_text()
+          post_marker = '/* reader-share-direct-left-v3 */'
+          post_block = r'''
+          /* reader-share-direct-left-v3 */
+          /* Share destinations are identical to the Share trigger and begin
+             directly at its inline-start side: left in LTR, right in RTL. */
           :root {
             --reader-share-option-size: var(--header-control-size);
             --reader-share-icon-size: var(--control-icon-size);
-            --reader-share-gap: var(--control-item-gap);
+            --reader-share-gap: var(--header-control-gap);
             --reader-share-padding: 0;
-            --reader-share-obstacle-span: calc(2 * var(--header-control-size) + var(--control-capsule-gap) + var(--header-control-gap));
           }
           :root body .header-controls .share-menu > summary,
           :root body .header-controls .share-menu > .share-options > :is(a, button) {
@@ -66,11 +81,11 @@ jobs:
             max-block-size: var(--reader-share-option-size);
             border-radius: var(--control-radius);
           }
-          :root body .header-controls .share-menu[open] { z-index: 30; }
+          :root body .header-controls .share-menu[open] { z-index: 100; }
           :root body .header-controls .share-menu > .share-options,
           :root body .header-controls .share-menu[data-share-side="above"] > .share-options {
             inset-inline-start: auto;
-            inset-inline-end: calc(100% + var(--reader-share-obstacle-span) + var(--reader-share-gap));
+            inset-inline-end: calc(100% + var(--reader-share-gap));
             inset-block-start: 0;
             inset-block-end: auto;
             display: flex;
@@ -81,8 +96,9 @@ jobs:
             width: max-content;
             max-width: none;
             gap: var(--reader-share-gap);
-            padding: var(--reader-share-padding);
+            padding: 0;
             border-radius: var(--control-radius);
+            translate: none !important;
           }
           :root body .header-controls .share-menu > .share-options > :is(a, button) {
             padding: var(--control-padding);
@@ -92,43 +108,58 @@ jobs:
             height: var(--reader-share-icon-size);
           }
           '''
-          if marker not in css:
-              css = css.rstrip() + '\n\n' + block.strip() + '\n'
-          path.write_text(css)
+          if post_marker not in post_css:
+              post_css = post_css.rstrip() + '\n\n' + post_block.strip() + '\n'
+          post_path.write_text(post_css)
 
-          digest = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
-          pattern = re.compile(r'((?:/ssm)?/assets/post-layout\.css)\?v=[0-9a-f]+')
+          control_digest = hashlib.sha256(control_path.read_bytes()).hexdigest()[:12]
+          post_digest = hashlib.sha256(post_path.read_bytes()).hexdigest()[:12]
+          control_pattern = re.compile(r'((?:/ssm)?/assets/control-sizing\.css)\?v=[0-9a-f]+')
+          post_pattern = re.compile(r'((?:/ssm)?/assets/post-layout\.css)\?v=[0-9a-f]+')
           changed = 0
           for html in Path('.').rglob('*.html'):
               text = html.read_text()
-              updated = pattern.sub(rf'\1?v={digest}', text)
+              updated = control_pattern.sub(rf'\1?v={control_digest}', text)
+              updated = post_pattern.sub(rf'\1?v={post_digest}', updated)
               if updated != text:
                   html.write_text(updated)
                   changed += 1
 
-          final = path.read_text()
+          final_control = control_path.read_text()
           for required in (
-              marker,
-              '--reader-share-option-size: var(--header-control-size)',
-              '--reader-share-padding: 0',
-              '--reader-share-obstacle-span:',
-              'inset-inline-end: calc(100% + var(--reader-share-obstacle-span) + var(--reader-share-gap))',
-              '.share-menu[open] { z-index: 30; }',
+              control_marker,
+              '--control-size: 1.9575rem;',
+              '--tag-capsule-size: var(--control-size);',
+              '--compact-control-size: var(--control-size);',
           ):
-              if required not in final:
+              if required not in final_control:
+                  raise SystemExit(f'Missing global control rule: {required}')
+
+          final_post = post_path.read_text()
+          for required in (
+              post_marker,
+              '--reader-share-option-size: var(--header-control-size);',
+              'inset-inline-end: calc(100% + var(--reader-share-gap));',
+              'padding: 0;',
+              'translate: none !important;',
+              '.share-menu[open] { z-index: 100; }',
+          ):
+              if required not in final_post:
                   raise SystemExit(f'Missing reader share rule: {required}')
 
           sample = Path('en/index.html').read_text()
-          if not re.search(rf'(?:/ssm)?/assets/post-layout\.css\?v={digest}', sample):
+          if not re.search(rf'(?:/ssm)?/assets/control-sizing\.css\?v={control_digest}', sample):
+              raise SystemExit('Homepage did not receive refreshed control stylesheet hash')
+          if not re.search(rf'(?:/ssm)?/assets/post-layout\.css\?v={post_digest}', sample):
               raise SystemExit('Homepage did not receive refreshed post-layout stylesheet hash')
-          print(f'Updated {changed} HTML files; post-layout={digest}')
+          print(f'Updated {changed} HTML files; control-sizing={control_digest}; post-layout={post_digest}')
           PY
-            git add assets/post-layout.css '*.html' 'en/**/*.html' 'he/**/*.html'
+            git add assets/control-sizing.css assets/post-layout.css '*.html' 'en/**/*.html' 'he/**/*.html'
             if git diff --cached --quiet; then
-              echo "Live reader share is already current."
+              echo "Live global controls and reader share are already current."
               exit 0
             fi
-            git commit -m "Publish reader share size and overlap fix"
+            git commit -m "Publish global Share-sized controls"
             if git push origin HEAD:master; then
               exit 0
             fi
