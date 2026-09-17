@@ -42,3 +42,24 @@
 :root .search-tag {
   font-size: var(--tag-label-font-size) !important;
 }
+
+/* The main subject menu is the same tag component as card/search/reader tags.
+   Bind its legacy structural selectors to the exact same shared density tokens. */
+:root body .subject-nav .tag-option,
+:root body .subject-nav .tag-chip,
+:root body .subject-nav .tag-option > .tag-chip {
+  height: auto !important;
+  min-height: var(--tag-capsule-size) !important;
+}
+:root body .subject-nav .tag-chip,
+:root body .subject-nav .tag-option > .tag-chip {
+  padding-inline: var(--tag-capsule-padding-inline) !important;
+  gap: var(--tag-capsule-content-gap) !important;
+}
+:root body .subject-nav .tag-chip:has(.tag-count),
+:root body .subject-nav .tag-option > .tag-chip:has(.tag-count) {
+  padding-inline-end: var(--tag-capsule-count-inset) !important;
+}
+:root body .subject-nav .tag-option > .tag-exclude {
+  inset-inline-end: var(--tag-capsule-count-inset) !important;
+}
