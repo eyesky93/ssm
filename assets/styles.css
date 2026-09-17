@@ -47,6 +47,18 @@
   margin-inline-end: calc(var(--card-action-inset) - var(--post-card-padding-inline));
 }
 
+/* Keep tag rows slightly closer to the Pin/Share/Read rail without hard-coding
+   a per-layout pixel offset. The source component owns the same shared token. */
+:root {
+  --card-tags-action-offset: var(--control-capsule-gap);
+}
+:root body .post-stream[data-layout] .post-card:not(.directory-card):has([data-card-actions]) .post-tools {
+  width: calc(100% + var(--card-tags-action-offset));
+  max-width: calc(100% + var(--card-tags-action-offset));
+  inline-size: calc(100% + var(--card-tags-action-offset));
+  max-inline-size: calc(100% + var(--card-tags-action-offset));
+}
+
 /* Public fallback for the canonical card-share component. Keep the complete
    destination row beside the Share trigger: grey popover, transparent targets,
    foreground icons at rest, and accent icons on interaction. */
