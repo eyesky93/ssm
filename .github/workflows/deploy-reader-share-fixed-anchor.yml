@@ -1,0 +1,159 @@
+name: Deploy fixed reader share anchor
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/deploy-reader-share-fixed-anchor.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ssm-reader-share-fixed-anchor
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Keep Share fixed and open destinations left
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            git fetch origin master
+            git reset --hard origin/master
+            python - <<'PY'
+          from pathlib import Path
+          import hashlib, re
+
+          path = Path('assets/post-layout.css')
+          css = path.read_text()
+          start = '/* reader-share-fixed-host-v5:start */'
+          end = '/* reader-share-fixed-host-v5:end */'
+          block = r'''
+          /* reader-share-fixed-host-v5:start */
+          :root {
+            --reader-share-option-size: var(--control-size);
+            --reader-share-gap: var(--header-control-gap);
+          }
+          :root body .header-controls .article-actions {
+            overflow: visible !important;
+          }
+          :root body .header-controls .share-menu {
+            position: relative !important;
+            box-sizing: border-box !important;
+            flex: 0 0 var(--reader-share-option-size) !important;
+            width: var(--reader-share-option-size) !important;
+            min-width: var(--reader-share-option-size) !important;
+            max-width: var(--reader-share-option-size) !important;
+            height: var(--reader-share-option-size) !important;
+            min-height: var(--reader-share-option-size) !important;
+            max-height: var(--reader-share-option-size) !important;
+            overflow: visible !important;
+          }
+          :root body .header-controls .share-menu > summary {
+            position: relative !important;
+            z-index: 2 !important;
+            box-sizing: border-box !important;
+            width: var(--reader-share-option-size) !important;
+            min-width: var(--reader-share-option-size) !important;
+            max-width: var(--reader-share-option-size) !important;
+            height: var(--reader-share-option-size) !important;
+            min-height: var(--reader-share-option-size) !important;
+            max-height: var(--reader-share-option-size) !important;
+          }
+          :root body .header-controls .share-menu[open] {
+            z-index: 200 !important;
+          }
+          :root[dir="ltr"] body .header-controls .share-menu > .share-options,
+          :root[dir="ltr"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
+            position: absolute !important;
+            left: auto !important;
+            right: calc(100% + var(--reader-share-gap)) !important;
+            top: 0 !important;
+            bottom: auto !important;
+          }
+          :root[dir="rtl"] body .header-controls .share-menu > .share-options,
+          :root[dir="rtl"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
+            position: absolute !important;
+            right: auto !important;
+            left: calc(100% + var(--reader-share-gap)) !important;
+            top: 0 !important;
+            bottom: auto !important;
+          }
+          :root body .header-controls .share-menu > .share-options {
+            display: flex !important;
+            flex-flow: row nowrap !important;
+            align-items: center !important;
+            width: max-content !important;
+            max-width: none !important;
+            gap: var(--reader-share-gap) !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            transform: none !important;
+            translate: none !important;
+            overflow: visible !important;
+          }
+          :root body .header-controls .share-menu > .share-options > :is(a, button) {
+            box-sizing: border-box !important;
+            flex: 0 0 var(--reader-share-option-size) !important;
+            width: var(--reader-share-option-size) !important;
+            min-width: var(--reader-share-option-size) !important;
+            max-width: var(--reader-share-option-size) !important;
+            height: var(--reader-share-option-size) !important;
+            min-height: var(--reader-share-option-size) !important;
+            max-height: var(--reader-share-option-size) !important;
+          }
+          /* reader-share-fixed-host-v5:end */
+          '''
+          if start in css and end in css:
+              css = re.sub(re.escape(start) + r'.*?' + re.escape(end), block.strip(), css, flags=re.S)
+          else:
+              css = css.rstrip() + '\n\n' + block.strip() + '\n'
+          path.write_text(css)
+
+          digest = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
+          pattern = re.compile(r'((?:/ssm)?/assets/post-layout\.css)\?v=[0-9a-f]+')
+          changed = 0
+          for html in Path('.').rglob('*.html'):
+              text = html.read_text()
+              updated = pattern.sub(rf'\1?v={digest}', text)
+              if updated != text:
+                  html.write_text(updated)
+                  changed += 1
+
+          final = path.read_text()
+          for required in (
+              start,
+              'flex: 0 0 var(--reader-share-option-size) !important;',
+              'right: calc(100% + var(--reader-share-gap)) !important;',
+              'left: calc(100% + var(--reader-share-gap)) !important;',
+              'padding: 0 !important;',
+          ):
+              if required not in final:
+                  raise SystemExit(f'Missing share anchor invariant: {required}')
+
+          sample = Path('en/posts/mathematical-background-1/index.html').read_text()
+          if not re.search(rf'(?:/ssm)?/assets/post-layout\.css\?v={digest}', sample):
+              raise SystemExit('Reader did not receive refreshed post-layout hash')
+          print(f'Updated {changed} HTML files; post-layout={digest}')
+          PY
+            git add assets/post-layout.css '*.html' 'en/**/*.html' 'he/**/*.html'
+            if git diff --cached --quiet; then
+              echo "Reader share anchor is already current."
+              exit 0
+            fi
+            git commit -m "Keep reader Share fixed while destinations open left"
+            if git push origin HEAD:master; then
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
