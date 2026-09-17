@@ -1,7 +1,7 @@
 /* Shared spacing contract for navigation and compact controls.
    Keep geometry here token-driven: changing one value updates every peer surface. */
 :root {
-  --control-item-gap: .35rem;
+  --control-item-gap: .45rem;
   --brand-item-gap: calc(2 * var(--control-item-gap));
   --navigation-border-inset: .5rem;
   --control-frame-width: 1px;
