@@ -1642,3 +1642,78 @@ html[lang="he"] .reader-controls .reader-number-error {
   width: var(--reader-share-icon-size);
   height: var(--reader-share-icon-size);
 }
+
+/* reader-share-fixed-host-v5:start */
+:root {
+  --reader-share-option-size: var(--control-size);
+  --reader-share-gap: var(--header-control-gap);
+}
+:root body .header-controls .article-actions {
+  overflow: visible !important;
+}
+:root body .header-controls .share-menu {
+  position: relative !important;
+  box-sizing: border-box !important;
+  flex: 0 0 var(--reader-share-option-size) !important;
+  width: var(--reader-share-option-size) !important;
+  min-width: var(--reader-share-option-size) !important;
+  max-width: var(--reader-share-option-size) !important;
+  height: var(--reader-share-option-size) !important;
+  min-height: var(--reader-share-option-size) !important;
+  max-height: var(--reader-share-option-size) !important;
+  overflow: visible !important;
+}
+:root body .header-controls .share-menu > summary {
+  position: relative !important;
+  z-index: 2 !important;
+  box-sizing: border-box !important;
+  width: var(--reader-share-option-size) !important;
+  min-width: var(--reader-share-option-size) !important;
+  max-width: var(--reader-share-option-size) !important;
+  height: var(--reader-share-option-size) !important;
+  min-height: var(--reader-share-option-size) !important;
+  max-height: var(--reader-share-option-size) !important;
+}
+:root body .header-controls .share-menu[open] {
+  z-index: 200 !important;
+}
+:root[dir="ltr"] body .header-controls .share-menu > .share-options,
+:root[dir="ltr"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
+  position: absolute !important;
+  left: auto !important;
+  right: calc(100% + var(--reader-share-gap)) !important;
+  top: 0 !important;
+  bottom: auto !important;
+}
+:root[dir="rtl"] body .header-controls .share-menu > .share-options,
+:root[dir="rtl"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
+  position: absolute !important;
+  right: auto !important;
+  left: calc(100% + var(--reader-share-gap)) !important;
+  top: 0 !important;
+  bottom: auto !important;
+}
+:root body .header-controls .share-menu > .share-options {
+  display: flex !important;
+  flex-flow: row nowrap !important;
+  align-items: center !important;
+  width: max-content !important;
+  max-width: none !important;
+  gap: var(--reader-share-gap) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transform: none !important;
+  translate: none !important;
+  overflow: visible !important;
+}
+:root body .header-controls .share-menu > .share-options > :is(a, button) {
+  box-sizing: border-box !important;
+  flex: 0 0 var(--reader-share-option-size) !important;
+  width: var(--reader-share-option-size) !important;
+  min-width: var(--reader-share-option-size) !important;
+  max-width: var(--reader-share-option-size) !important;
+  height: var(--reader-share-option-size) !important;
+  min-height: var(--reader-share-option-size) !important;
+  max-height: var(--reader-share-option-size) !important;
+}
+/* reader-share-fixed-host-v5:end */
