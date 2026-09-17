@@ -429,3 +429,12 @@
   z-index: 4 !important;
 }
 /* accent-revert-hover-v2:end */
+
+/* global-share-control-size-v1 */
+/* Use the current reader Share box as the one global framed-control
+   size. Tags and the formerly compact toolbar consume the same token. */
+:root {
+  --control-size: 1.9575rem;
+  --tag-capsule-size: var(--control-size);
+  --compact-control-size: var(--control-size);
+}
