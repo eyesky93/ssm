@@ -21,8 +21,8 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          old = 'control-sizing.css?v=6093dd3efd7f'
-          new = 'control-sizing.css?v=dce72275122e'
+          old = 'control-sizing.css?v=dce72275122e'
+          new = 'control-sizing.css?v=847f683003d1'
           changed = 0
           for path in Path('.').rglob('*.html'):
               text = path.read_text(encoding='utf-8')
@@ -93,6 +93,7 @@ jobs:
           assert abs(m['menu-height'] - m['card-height']) <= 0.6, m
           assert abs(m['menu-chip-height'] - m['card-height']) <= 0.6, m
           assert m['count-size'] < m['menu-height'], m
+          assert m['count-size'] >= m['menu-height'] * 0.78, m
           assert m['count-font'] >= m['label-font'] * 0.90, m
           PY
 
