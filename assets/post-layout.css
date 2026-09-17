@@ -19,17 +19,16 @@ html { scrollbar-gutter: stable; }
 /* Removing the separate Home link must not move the date away from the edge. */
 .article-topline .article-meta { margin-inline-start: auto; }
 
-/* A reader title and its pin/share actions are one centered row. Keep
-the desktop tag placement; on phones give tags their own scrollable row
-instead of letting the card layout lift all tools above the title. */
+/* Reader tags keep their desktop placement and their own scrollable mobile row.
+   Post actions are rendered beside search in the site header. */
 .article-heading { align-items: center; }
 .article-heading > .post-tools { align-items: center; }
 @media (max-width: 700px) {
   .article-heading.post-heading {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
     align-items: center;
-    gap: .8rem;
+    gap: var(--control-capsule-gap);
   }
   .article-heading > h1 {
     grid-column: 1;
@@ -37,12 +36,6 @@ instead of letting the card layout lift all tools above the title. */
     min-width: 0;
   }
   .article-heading > .post-tools { display: contents; }
-  .article-heading > .post-tools > :is(.article-actions, .pin-toggle) {
-    grid-column: 2;
-    grid-row: 1;
-    justify-self: end;
-    align-self: center;
-  }
   .article-heading > .post-tools > .article-tags {
     grid-column: 1 / -1;
     grid-row: 2;
@@ -212,14 +205,13 @@ instead of letting the card layout lift all tools above the title. */
 
 /* A monograph chip shows this post's explicit position, not a total. Keep the
    existing tag colors and use a separate class so hide-tag hover never replaces
-   the position with an X. Its circle, numeral and inset scale with the shared
-   control size, not the smaller compact-card font. Extra digits can widen it. */
+   the position with an X. Its badge follows the shared tag size and spacing
+   settings. Extra digits can widen it. */
 .tag-chip:is(.card-tag, .article-tag)[data-monograph-order] {
-  --monograph-order-size: calc(var(--control-size) * .625);
-  --monograph-order-inset: calc((var(--control-size) - var(--monograph-order-size)) / 2 - 1px);
-  gap: .5em;
-  padding-block: var(--monograph-order-inset);
-  padding-inline-end: var(--monograph-order-inset);
+  --monograph-order-size: var(--tag-count-size);
+  gap: var(--tag-capsule-content-gap);
+  padding-block: var(--tag-capsule-padding-block);
+  padding-inline-end: var(--tag-capsule-count-inset);
 }
 .post-monograph-order {
   display: inline-grid;
@@ -233,7 +225,7 @@ instead of letting the card layout lift all tools above the title. */
   color: var(--accent-strong);
   font-family: var(--font-interface);
   font-variant-numeric: tabular-nums;
-  font-size: calc(var(--monograph-order-size) / 2);
+  font-size: var(--tag-count-font-size);
   line-height: 1;
   white-space: nowrap;
 }
@@ -264,10 +256,10 @@ instead of letting the card layout lift all tools above the title. */
    more room; then widen the track rather than spill into a neighboring post.
    Both sides' padding and borders are included, with the same rule in RTL. */
 .post-stream[data-layout="grid"] {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(18rem, calc(var(--engagement-strip-min-width, 0px) + 2rem + 2px))), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(18rem, calc(var(--engagement-strip-min-width, 0px) + 2 * var(--surface-padding) + 2px))), 1fr));
 }
 .post-stream[data-layout="compact"] {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(15rem, calc(var(--engagement-strip-min-width, 0px) + 1.5rem + 2px))), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(15rem, calc(var(--engagement-strip-min-width, 0px) + 2 * var(--surface-padding) + 2px))), 1fr));
 }
 
 /* Published date belongs at the bottom of a reader header, immediately above
@@ -570,6 +562,84 @@ html[lang="he"] .reader-controls .reader-number-error {
 .post-stream[data-layout] > .directory-card:has([data-pin-toggle][aria-pressed="true"]),
 .post-stream[data-layout="list"] > .directory-card {
   margin-block-end: calc(var(--directory-row-gap) - var(--post-row-gap));
+}
+
+/* List and Grid share one typography contract. Compact remains intentionally smaller. */
+:root {
+  --post-card-title-font-size: 1.5rem;
+  --post-card-summary-font-size: 1rem;
+  --tag-label-font-size: 0.8rem;
+  /* All tiled post cards remain the same height, determined by the largest
+     visible card. Keep both dimensions and alignment behind shared variables. */
+  --post-stream-row-size: 1fr;
+  --post-stream-card-align: stretch;
+  /* The action rail is visually inside the card but must not contribute its
+     full vertical stack to the largest card's intrinsic height. */
+  --post-card-action-rail-reserve: calc(var(--quiet-control-target-size) + var(--quiet-control-gap));
+  --post-card-footer-gap: var(--card-content-gap, var(--control-capsule-gap));
+  /* Desktop list tags sit beside the quiet Pin/Share/Read rail. This shared
+     logical offset is intentionally visible and mirrors automatically in RTL. */
+  --post-card-tags-action-nudge: var(--surface-padding);
+}
+
+:root .tag-chip,
+:root .search-tag {
+  font-size: var(--tag-label-font-size);
+}
+
+.post-stream:is([data-layout="list"], [data-layout="grid"]) .post-card h2 {
+  font-size: var(--post-card-title-font-size);
+}
+
+.post-stream:is([data-layout="list"], [data-layout="grid"]) .post-card > p {
+  font-size: var(--post-card-summary-font-size);
+}
+
+/* Fractional implicit rows belong only to tiled catalogues. List cards stay
+   content-sized, including Directory, so tiled equal-height geometry can never
+   create blank vertical space in list view. */
+:root .post-stream[data-layout="list"] {
+  grid-auto-rows: auto;
+}
+:root .post-stream:is([data-layout="grid"], [data-layout="compact"]) {
+  grid-auto-rows: var(--post-stream-row-size);
+  align-items: var(--post-stream-card-align);
+}
+:root .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .post-card:not(.directory-card) {
+  align-self: var(--post-stream-card-align);
+}
+
+/* In tiled desktop cards, Pin/Share/Read occupies a narrow absolute rail at the
+   logical end. The rail therefore reuses otherwise empty right-side space
+   instead of adding its full three-control height below the text/tags. The date
+   remains in normal flow and the largest content card still sets every tile's
+   common height. */
+@media (min-width: 701px) {
+  :root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .card-footer {
+    grid-template-columns: minmax(0, 1fr) !important;
+    padding-block-start: var(--post-card-footer-gap) !important;
+    padding-inline-end: var(--post-card-action-rail-reserve);
+  }
+  :root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .card-footer > [data-card-actions] {
+    position: absolute !important;
+    inset-inline-end: var(--card-action-inset);
+    inset-block-end: var(--card-action-inset);
+    grid-area: auto !important;
+    margin: 0 !important;
+    z-index: 1;
+  }
+  :root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .post-tools {
+    box-sizing: border-box;
+    padding-inline-end: var(--post-card-action-rail-reserve);
+  }
+
+  /* In desktop list view the tags live in the heading while Pin/Share/Read live
+     in the footer rail. Increasing the tag row's width did not change its painted
+     position; move the row itself toward the same logical edge instead. */
+  :root .post-stream[data-layout="list"] .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .post-tools {
+    position: relative;
+    inset-inline-end: calc(0px - var(--post-card-tags-action-nudge));
+  }
 }
 
 /* Standalone comment buttons share the pin's neutral states and highlight.
@@ -974,8 +1044,8 @@ html[lang="he"] .reader-controls .reader-number-error {
 .comments-shell { scroll-margin-block-start: 1rem; }
 
 /* Quiet controls are a separate variant, not miniature round controls. Every
-   homepage layout uses the same geometry and neutral palette. Article controls
-   and the full-size sharing choices retain the ordinary control family. */
+   homepage layout uses the same geometry and neutral palette. Card sharing
+   choices inherit this quiet family; article sharing keeps full-size controls. */
 :root {
   --quiet-control-icon-size: calc(var(--control-size) / 3);
   --quiet-control-target-size: calc(var(--control-size) * .55);
@@ -987,6 +1057,8 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-checkbox-hover-background: var(--code-bg);
   --quiet-control-radius: calc(var(--quiet-control-icon-size) / 6);
   --card-content-gap: var(--control-capsule-gap);
+  --card-action-inset: calc(var(--control-capsule-gap) / 2);
+  --card-tags-action-offset: var(--control-capsule-gap);
 }
 
 /* The variant owns all states together, so a pin state, open menu, theme
@@ -1084,6 +1156,8 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root .post-stream[data-layout] .card-footer > [data-card-actions] {
   grid-area: 1 / 2;
   justify-self: end;
+  margin-inline-end: calc(var(--card-action-inset) - var(--post-card-padding-inline));
+  margin-block-end: calc(var(--card-action-inset) - var(--post-card-padding-block));
 }
 :root .post-stream[data-layout] [data-card-actions] > .card-share-menu {
   position: relative;
@@ -1092,13 +1166,94 @@ html[lang="he"] .reader-controls .reader-number-error {
   inset: auto;
   margin: 0;
 }
+
+/* Share destinations sit beside, and are vertically centered on, the Share
+   trigger. The popover uses the global neutral-grey surface token; individual
+   icons stay unframed and use the quiet family foreground emphasis on hover. */
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
+  inset-inline-end: calc(100% + var(--quiet-control-gap));
+  inset-block-start: 50%;
+  inset-block-end: auto;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: max-content;
+  max-width: none;
+  gap: var(--quiet-control-gap);
+  padding: var(--quiet-control-gap);
+  border: 0;
+  border-radius: var(--control-radius);
+  background: var(--code-bg);
+  box-shadow: none;
+  overflow: visible;
+}
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) {
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 var(--quiet-control-target-size);
+  width: var(--quiet-control-target-size);
+  min-width: var(--quiet-control-target-size);
+  max-width: var(--quiet-control-target-size);
+  height: var(--quiet-control-target-size);
+  min-height: var(--quiet-control-target-size);
+  max-height: var(--quiet-control-target-size);
+  inline-size: var(--quiet-control-target-size);
+  min-inline-size: var(--quiet-control-target-size);
+  max-inline-size: var(--quiet-control-target-size);
+  block-size: var(--quiet-control-target-size);
+  min-block-size: var(--quiet-control-target-size);
+  max-block-size: var(--quiet-control-target-size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--quiet-control-radius);
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  opacity: 1;
+  box-shadow: none;
+  transform: none;
+}
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) > svg {
+  width: var(--quiet-control-icon-size);
+  height: var(--quiet-control-icon-size);
+}
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--quiet-control-active-color);
+  box-shadow: none;
+}
+/* Placement is horizontal regardless of the generic share-side hint; that hint
+   exists for vertical popovers elsewhere and must not move card sharing. */
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu[data-share-side="above"] > .share-options {
+  inset-inline-end: calc(100% + var(--quiet-control-gap));
+  inset-block-start: 50%;
+  inset-block-end: auto;
+  transform: translateY(-50%);
+}
+
 :root .post-stream[data-layout] .post-card:has([data-card-actions]) > p {
   padding-inline-end: 0;
 }
 
+/* Let the tag/tool row use a small amount of the otherwise empty inset between
+   card content and the Pin/Share/Read rail. The shared token keeps the spacing
+   consistent in every layout and mirrors naturally in RTL. */
+:root .post-stream[data-layout] .post-card:not(.directory-card):has([data-card-actions]) .post-tools {
+  width: calc(100% + var(--card-tags-action-offset));
+  max-width: calc(100% + var(--card-tags-action-offset));
+  inline-size: calc(100% + var(--card-tags-action-offset));
+  max-inline-size: calc(100% + var(--card-tags-action-offset));
+}
+
 /* Tiled cards inherit one content flow: title, subtitle (when shown), tags,
    footer. Flatten only the layout wrapper, not the semantic links/controls.
-   List view keeps its existing title-side tag placement, without DOM moves. */
+   List view keeps its existing title-side tag placement on desktop. */
 :root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card) > .post-heading {
   display: contents;
 }
@@ -1122,41 +1277,130 @@ html[lang="he"] .reader-controls .reader-number-error {
   order: 3;
 }
 
-
-/* source-delta-1d149eed */
+/* Phones always use the semantic stacked card flow, even though the persisted
+   desktop layout value may still be list/grid/compact. Tags therefore follow
+   the subtitle instead of inheriting list view's desktop title-side placement. */
 @media (max-width: 700px) {
-  .article-heading.post-heading { grid-template-columns: minmax(0, 1fr); gap: var(--control-capsule-gap); }
-  .article-heading > .post-tools > :is(.article-actions, .pin-toggle) { display: none; }
-}
-.tag-chip:is(.card-tag, .article-tag)[data-monograph-order] {
-  --monograph-order-size: var(--tag-count-size);
-  gap: var(--tag-capsule-content-gap);
-  padding-block: var(--tag-capsule-padding-block);
-  padding-inline-end: var(--tag-capsule-count-inset);
-}
-.post-monograph-order { font-size: var(--tag-count-font-size); }
-.post-stream[data-layout="grid"] {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(18rem, calc(var(--engagement-strip-min-width, 0px) + 2 * var(--surface-padding) + 2px))), 1fr));
-}
-.post-stream[data-layout="compact"] {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(15rem, calc(var(--engagement-strip-min-width, 0px) + 2 * var(--surface-padding) + 2px))), 1fr));
-}
-:root { --card-action-inset: calc(var(--control-capsule-gap) / 2); }
-:root .post-stream[data-layout] .card-footer > [data-card-actions] {
-  margin-inline-end: calc(var(--card-action-inset) - var(--post-card-padding-inline));
-  margin-block-end: calc(var(--card-action-inset) - var(--post-card-padding-block));
+  :root .post-stream[data-layout] .post-card:not(.directory-card) > .post-heading {
+    display: contents;
+  }
+  :root .post-stream[data-layout] .post-heading > h2 {
+    order: 0;
+    margin-block: 0 var(--card-content-gap);
+  }
+  :root .post-stream[data-layout] .post-card:not(.directory-card) > p {
+    order: 1;
+    margin-block: 0;
+  }
+  :root .post-stream[data-layout] .post-tools {
+    order: 2;
+    justify-content: flex-start;
+    margin-block-start: var(--card-content-gap);
+  }
+  :root .post-stream[data-layout] .card-tags > :nth-child(1 of :not([hidden])) {
+    margin-inline-start: 0;
+  }
+  :root .post-stream[data-layout] .card-footer {
+    order: 3;
+  }
 }
 
-/* Reader header layout: title and tags share the complete heading row, while
-   tags may wrap onto as many rows as needed. The header Read action is a book
-   icon; its stored read state and accessible labels remain unchanged. */
-:root .read-toggle.round-control {
+/* Directory uses the same action wrapper as every other card. Its single pin
+   belongs on the heading's cross-axis center and uses the shared card-action
+   edge inset instead of stopping at the normal content padding. */
+:root .post-stream[data-layout] .directory-heading > [data-card-actions] {
+  align-self: center;
+  justify-content: center;
+  margin-inline-end: calc(var(--card-action-inset) - var(--post-card-padding-inline));
+}
+
+/* Reader-header rules own reader-specific content and layout. The common
+   Pin/Share/Read/language/Settings frame and interaction model lives in
+   framed-control.css. */
+:root {
+  /* Reader sharing is derived from the same global control model as its Share
+     trigger. Change the control tokens once and both trigger and destinations
+     resize together. */
+  --reader-share-option-size: var(--control-size);
+  --reader-share-icon-size: var(--control-icon-size);
+  --reader-share-gap: var(--control-item-gap);
+  --reader-share-padding: calc(var(--control-item-gap) / 2);
+
+  /* Read is also tokenized: unchecked uses the outline mask and checked swaps
+     only the glyph to a solid book. The control frame never becomes inverse. */
+  --reader-book-outline-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 5.5c3-.8 5.7-.2 8 1.6v12c-2.3-1.8-5-2.4-8-1.6V5.5Zm16 0c-3-.8-5.7-.2-8 1.6v12c2.3-1.8 5-2.4 8-1.6V5.5Z' fill='none' stroke='black' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --reader-book-selected-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 5.5c3-.8 5.5-.2 7.4 1.35v12.3C9.5 17.6 7 17 4 17.8V5.5Zm16 0c-3-.8-5.5-.2-7.4 1.35v12.3c1.9-1.55 4.4-2.15 7.4-1.35V5.5Z' fill='black'/%3E%3C/svg%3E");
+}
+
+/* Search has its own compound field; independent framed header controls all use
+   .framed-control instead of component-specific frame or hover selectors. */
+:root .header-controls .site-search .search-toggle:is(:hover, :focus-visible, [aria-expanded="true"]) {
+  color: var(--ink);
+}
+:root .header-controls .site-search .search-bar:has(.search-toggle:is(:hover, :focus-visible)) {
+  border-color: var(--accent-strong);
+}
+
+/* Share destinations form one compact strip that grows toward inline-start:
+   left on English pages and right on Hebrew pages. The destination cells are
+   exactly the same size as Share and the surrounding frame keeps only a small,
+   token-derived inset instead of the former large popover padding. */
+:root body .header-controls .share-menu > .share-options {
+  inset-inline-start: auto;
+  inset-inline-end: calc(100% + var(--reader-share-gap));
+  inset-block-start: 0;
+  inset-block-end: auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  width: max-content;
+  max-width: none;
+  gap: var(--reader-share-gap);
+  padding: var(--reader-share-padding);
+  border-radius: var(--control-radius);
+}
+:root body .header-controls .share-menu[data-share-side="above"] > .share-options {
+  inset-block-start: 0;
+  inset-block-end: auto;
+}
+:root body .header-controls .share-menu > .share-options > :is(a, button) {
+  box-sizing: border-box;
+  flex: 0 0 var(--reader-share-option-size);
+  width: var(--reader-share-option-size);
+  min-width: var(--reader-share-option-size);
+  max-width: var(--reader-share-option-size);
+  height: var(--reader-share-option-size);
+  min-height: var(--reader-share-option-size);
+  max-height: var(--reader-share-option-size);
+  inline-size: var(--reader-share-option-size);
+  min-inline-size: var(--reader-share-option-size);
+  max-inline-size: var(--reader-share-option-size);
+  block-size: var(--reader-share-option-size);
+  min-block-size: var(--reader-share-option-size);
+  max-block-size: var(--reader-share-option-size);
+  padding: var(--control-padding);
+  border-radius: var(--control-radius);
+}
+:root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
+  width: var(--reader-share-icon-size);
+  height: var(--reader-share-icon-size);
+}
+
+/* Read contributes only its semantic glyph state. framed-control owns the
+   surrounding frame, background, foreground and pointer/focus/active states. */
+:root .header-controls .read-toggle.round-control {
+  --reader-book-icon: var(--reader-book-outline-icon);
   position: relative;
   font-size: 0;
   line-height: 0;
-  text-decoration: none;
+  opacity: 1;
 }
-:root .read-toggle.round-control::before {
+:root .header-controls .read-toggle.round-control[aria-checked="true"] {
+  --reader-book-icon: var(--reader-book-selected-icon);
+}
+:root .header-controls .read-toggle.round-control::before {
   content: "";
   display: block;
   inline-size: var(--control-icon-size);
@@ -1164,127 +1408,15 @@ html[lang="he"] .reader-controls .reader-number-error {
   border: 0;
   border-radius: 0;
   background: currentColor;
-  box-shadow: none;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 5.5c3-.8 5.7-.2 8 1.6v12c-2.3-1.8-5-2.4-8-1.6V5.5Zm16 0c-3-.8-5.7-.2-8 1.6v12c2.3-1.8 5-2.4 8-1.6V5.5Z' fill='none' stroke='black' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 5.5c3-.8 5.7-.2 8 1.6v12c-2.3-1.8-5-2.4-8-1.6V5.5Zm16 0c-3-.8-5.7-.2-8 1.6v12c2.3-1.8 5-2.4 8-1.6V5.5Z' fill='none' stroke='black' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
-}
-:root .article-heading.post-heading > .post-tools {
-  min-width: 0;
-  max-width: none;
-}
-:root .article-heading .article-tags {
-  width: 100%;
-  max-width: none;
-  min-width: 0;
-  flex: 1 1 100%;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  justify-content: flex-end;
-  overflow: visible;
-  overscroll-behavior: auto;
-  padding: 0;
-  margin: 0;
-}
-:root .article-heading .article-tags > :not([hidden]) {
-  min-width: 0;
-  max-width: 100%;
-  flex: 0 1 auto;
-}
-:root .article-heading .article-tags > :nth-child(1 of :not([hidden])) {
-  margin-inline-start: 0;
-}
-@media (min-width: 701px) {
-  :root .article-heading.post-heading {
-    display: grid;
-    grid-template-columns: fit-content(60%) minmax(0, 1fr);
-    align-items: start;
-    column-gap: 1.5rem;
-  }
-  :root .article-heading.post-heading > h1 {
-    grid-column: 1;
-    grid-row: 1;
-    min-width: 0;
-  }
-  :root .article-heading.post-heading > .post-tools {
-    grid-column: 2;
-    grid-row: 1;
-    width: 100%;
-    align-items: flex-start;
-  }
-}
-
-/* reader-pin-read-state-v2 */
-:root .header-controls .pin-toggle[aria-pressed="true"],
-:root .header-controls .pin-toggle[aria-pressed="true"]:is(:hover, :focus-visible) {
-  background: var(--surface);
-  color: var(--ink);
-  border-color: var(--line-dark);
-}
-:root .header-controls .read-toggle.round-control {
-  opacity: 1;
-  color: var(--line-dark);
-}
-:root .header-controls .read-toggle.round-control[aria-checked="true"],
-:root .header-controls .read-toggle.round-control[aria-checked="true"]:is(:hover, :focus-visible) {
-  color: var(--ink);
-}
-:root .header-controls .read-toggle.round-control::before {
   color: inherit;
+  box-shadow: none;
+  opacity: 1;
+  -webkit-mask: var(--reader-book-icon) center / contain no-repeat;
+  mask: var(--reader-book-icon) center / contain no-repeat;
 }
 
-/* reader-header-hover-contract-v3 */
-:root .header-controls .pin-toggle[aria-pressed="true"],
-:root .header-controls .pin-toggle[aria-pressed="true"]:is(:hover, :focus-visible) {
-  background: var(--surface);
-  color: var(--ink);
-}
-:root .header-controls :is(
-  .pin-toggle,
-  .share-menu > summary,
-  .read-toggle.round-control,
-  .language-nav > a,
-  .language-nav > select,
-  .settings-toggle
-) {
-  border-color: var(--line-dark);
-  box-shadow: none;
-  transform: none;
-}
-:root .header-controls :is(
-  .pin-toggle,
-  .share-menu > summary,
-  .read-toggle.round-control,
-  .language-nav > a,
-  .language-nav > select,
-  .settings-toggle
-):is(:hover, :focus-visible) {
-  border-color: var(--accent-strong);
-  box-shadow: none;
-  transform: none;
-}
-:root .header-controls .site-search .search-toggle:is(:hover, :focus-visible, [aria-expanded="true"]) {
-  color: var(--ink);
-}
-:root .header-controls .site-search .search-bar:has(.search-toggle:is(:hover, :focus-visible)) {
-  border-color: var(--accent-strong);
-}
-:root .header-controls .read-toggle.round-control {
-  opacity: 1;
-  color: var(--line-dark);
-}
-:root .header-controls .read-toggle.round-control[aria-checked="true"],
-:root .header-controls .read-toggle.round-control[aria-checked="true"]:disabled,
-:root .header-controls .read-toggle.round-control[aria-checked="true"]:is(:hover, :focus-visible) {
-  color: var(--ink);
-  opacity: 1;
-}
-:root .header-controls .read-toggle.round-control::before {
-  color: inherit;
-  background: currentColor;
-  opacity: 1;
-}
-
-/* Reader title/tag hard separation: generated-site live invariant. */
+/* The tools column is a hard containment boundary. Long tag strips scroll
+   inside it instead of painting into the title's grid track. */
 :root .article-heading.post-heading > .post-tools {
   min-width: 0;
   max-width: none;
@@ -1312,10 +1444,11 @@ html[lang="he"] .reader-controls .reader-number-error {
   flex: 0 0 auto;
   white-space: nowrap;
 }
-:root .article-heading .article-tags > :nth-child(1 of :not([hidden])) {
-  margin-inline-start: auto;
-}
+
 @media (min-width: 701px) {
+  /* A fixed two-track proportion creates a real divide at every desktop width:
+     the title owns the first 40% of available track space and tags the second
+     60%, with a permanent gap between them. Neither track may invade the other. */
   :root .article-heading.post-heading {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
@@ -1338,488 +1471,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   }
 }
 
-
-/* card-share-horizontal-quiet-v1 */
-:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options { inset-inline-end: 0; inset-block-start: calc(100% + var(--quiet-control-gap)); display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; width: max-content; max-width: none; gap: var(--quiet-control-gap); padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; overflow: visible; }
-:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) { box-sizing: border-box; display: inline-grid; place-items: center; flex: 0 0 var(--quiet-control-target-size); width: var(--quiet-control-target-size); min-width: var(--quiet-control-target-size); max-width: var(--quiet-control-target-size); height: var(--quiet-control-target-size); min-height: var(--quiet-control-target-size); max-height: var(--quiet-control-target-size); inline-size: var(--quiet-control-target-size); min-inline-size: var(--quiet-control-target-size); max-inline-size: var(--quiet-control-target-size); block-size: var(--quiet-control-target-size); min-block-size: var(--quiet-control-target-size); max-block-size: var(--quiet-control-target-size); margin: 0; padding: 0; border: 0; border-radius: var(--quiet-control-radius); background: transparent; color: var(--quiet-control-color); box-shadow: none; transform: none; }
-:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) > svg { width: var(--quiet-control-icon-size); height: var(--quiet-control-icon-size); }
-:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) { border: 0; background: transparent; color: var(--quiet-control-active-color); box-shadow: none; }
-:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):focus-visible { outline: 1px solid var(--quiet-control-color); outline-offset: 0; }
-:root .post-stream[data-layout] [data-card-actions] .card-share-menu[data-share-side="above"] > .share-options { inset-block-start: auto; inset-block-end: calc(100% + var(--quiet-control-gap)); }
-
-/* card-share-neutral-global-v2 */
-:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
-  border: 0;
-  background: var(--code-bg);
-  box-shadow: none;
-}
-:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) {
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--ink);
-  box-shadow: none;
-}
-:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) {
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--accent);
-  box-shadow: none;
-}
-
-/* mobile-card-tag-flow-v1 */
-/* Phones use one semantic flow regardless of the persisted desktop
-   layout choice: title, subtitle, tags, then footer/actions. */
-@media (max-width: 700px) {
-  :root .post-stream[data-layout] .post-card:not(.directory-card) > .post-heading {
-    display: contents;
-  }
-  :root .post-stream[data-layout] .post-heading > h2 {
-    order: 0;
-    margin-block: 0 var(--card-content-gap);
-  }
-  :root .post-stream[data-layout] .post-card:not(.directory-card) > p {
-    order: 1;
-    margin-block: 0;
-  }
-  :root .post-stream[data-layout] .post-tools {
-    order: 2;
-    justify-content: flex-start;
-    margin-block-start: var(--card-content-gap);
-  }
-  :root .post-stream[data-layout] .card-tags > :nth-child(1 of :not([hidden])) {
-    margin-inline-start: 0;
-  }
-  :root .post-stream[data-layout] .card-footer {
-    order: 3;
-  }
-}
-
-/* reader-share-inline-left-v1 */
-/* Reader sharing uses the same global geometry as its Share trigger.
-   Destinations open as one compact strip toward inline-start: left in
-   English and right in Hebrew. The frame keeps only a token-derived inset. */
-:root {
-  --reader-share-option-size: var(--control-size);
-  --reader-share-icon-size: var(--control-icon-size);
-  --reader-share-gap: var(--control-item-gap);
-  --reader-share-padding: calc(var(--control-item-gap) / 2);
-}
-:root body .header-controls .share-menu > .share-options {
-  inset-inline-start: auto;
-  inset-inline-end: calc(100% + var(--reader-share-gap));
-  inset-block-start: 0;
-  inset-block-end: auto;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: flex-end;
-  width: max-content;
-  max-width: none;
-  gap: var(--reader-share-gap);
-  padding: var(--reader-share-padding);
-  border-radius: var(--control-radius);
-}
-:root body .header-controls .share-menu[data-share-side="above"] > .share-options {
-  inset-block-start: 0;
-  inset-block-end: auto;
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) {
-  box-sizing: border-box;
-  flex: 0 0 var(--reader-share-option-size);
-  width: var(--reader-share-option-size);
-  min-width: var(--reader-share-option-size);
-  max-width: var(--reader-share-option-size);
-  height: var(--reader-share-option-size);
-  min-height: var(--reader-share-option-size);
-  max-height: var(--reader-share-option-size);
-  inline-size: var(--reader-share-option-size);
-  min-inline-size: var(--reader-share-option-size);
-  max-inline-size: var(--reader-share-option-size);
-  block-size: var(--reader-share-option-size);
-  min-block-size: var(--reader-share-option-size);
-  max-block-size: var(--reader-share-option-size);
-  padding: var(--control-padding);
-  border-radius: var(--control-radius);
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
-  width: var(--reader-share-icon-size);
-  height: var(--reader-share-icon-size);
-}
-
-/* reader-share-clear-header-v2 */
-/* Share destinations consume the exact header-control box used by the
-   trigger, remove the old popover inset, and begin beyond Search + Pin
-   so ordinary header controls never sit on top of the open strip. */
-:root {
-  --reader-share-option-size: var(--header-control-size);
-  --reader-share-icon-size: var(--control-icon-size);
-  --reader-share-gap: var(--control-item-gap);
-  --reader-share-padding: 0;
-  --reader-share-obstacle-span: calc(2 * var(--header-control-size) + var(--control-capsule-gap) + var(--header-control-gap));
-}
-:root body .header-controls .share-menu > summary,
-:root body .header-controls .share-menu > .share-options > :is(a, button) {
-  box-sizing: border-box;
-  flex: 0 0 var(--reader-share-option-size);
-  width: var(--reader-share-option-size);
-  min-width: var(--reader-share-option-size);
-  max-width: var(--reader-share-option-size);
-  height: var(--reader-share-option-size);
-  min-height: var(--reader-share-option-size);
-  max-height: var(--reader-share-option-size);
-  inline-size: var(--reader-share-option-size);
-  min-inline-size: var(--reader-share-option-size);
-  max-inline-size: var(--reader-share-option-size);
-  block-size: var(--reader-share-option-size);
-  min-block-size: var(--reader-share-option-size);
-  max-block-size: var(--reader-share-option-size);
-  border-radius: var(--control-radius);
-}
-:root body .header-controls .share-menu[open] { z-index: 30; }
-:root body .header-controls .share-menu > .share-options,
-:root body .header-controls .share-menu[data-share-side="above"] > .share-options {
-  inset-inline-start: auto;
-  inset-inline-end: calc(100% + var(--reader-share-obstacle-span) + var(--reader-share-gap));
-  inset-block-start: 0;
-  inset-block-end: auto;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: flex-end;
-  width: max-content;
-  max-width: none;
-  gap: var(--reader-share-gap);
-  padding: var(--reader-share-padding);
-  border-radius: var(--control-radius);
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) {
-  padding: var(--control-padding);
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
-  width: var(--reader-share-icon-size);
-  height: var(--reader-share-icon-size);
-}
-
-/* reader-share-direct-left-v3 */
-/* Share destinations are identical to the Share trigger and begin
-   directly at its inline-start side: left in LTR, right in RTL. */
-:root {
-  --reader-share-option-size: var(--header-control-size);
-  --reader-share-icon-size: var(--control-icon-size);
-  --reader-share-gap: var(--header-control-gap);
-  --reader-share-padding: 0;
-}
-:root body .header-controls .share-menu > summary,
-:root body .header-controls .share-menu > .share-options > :is(a, button) {
-  box-sizing: border-box;
-  flex: 0 0 var(--reader-share-option-size);
-  width: var(--reader-share-option-size);
-  min-width: var(--reader-share-option-size);
-  max-width: var(--reader-share-option-size);
-  height: var(--reader-share-option-size);
-  min-height: var(--reader-share-option-size);
-  max-height: var(--reader-share-option-size);
-  inline-size: var(--reader-share-option-size);
-  min-inline-size: var(--reader-share-option-size);
-  max-inline-size: var(--reader-share-option-size);
-  block-size: var(--reader-share-option-size);
-  min-block-size: var(--reader-share-option-size);
-  max-block-size: var(--reader-share-option-size);
-  border-radius: var(--control-radius);
-}
-:root body .header-controls .share-menu[open] { z-index: 100; }
-:root body .header-controls .share-menu > .share-options,
-:root body .header-controls .share-menu[data-share-side="above"] > .share-options {
-  inset-inline-start: auto;
-  inset-inline-end: calc(100% + var(--reader-share-gap));
-  inset-block-start: 0;
-  inset-block-end: auto;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  justify-content: flex-end;
-  width: max-content;
-  max-width: none;
-  gap: var(--reader-share-gap);
-  padding: 0;
-  border-radius: var(--control-radius);
-  translate: none !important;
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) {
-  padding: var(--control-padding);
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
-  width: var(--reader-share-icon-size);
-  height: var(--reader-share-icon-size);
-}
-
-/* reader-share-physical-left-v4 */
-/* Force the reader share strip to the physical left of Share in LTR
-   and physical right in RTL. This beats logical-side ambiguity and
-   viewport clamping while keeping the trigger visible. */
-:root {
-  --reader-share-option-size: var(--control-size);
-  --reader-share-icon-size: var(--control-icon-size);
-  --reader-share-gap: var(--header-control-gap);
-  --reader-share-padding: 0;
-}
-:root body .header-controls .share-menu > summary,
-:root body .header-controls .share-menu > .share-options > :is(a, button) {
-  box-sizing: border-box;
-  flex: 0 0 var(--reader-share-option-size);
-  width: var(--reader-share-option-size);
-  min-width: var(--reader-share-option-size);
-  max-width: var(--reader-share-option-size);
-  height: var(--reader-share-option-size);
-  min-height: var(--reader-share-option-size);
-  max-height: var(--reader-share-option-size);
-  inline-size: var(--reader-share-option-size);
-  min-inline-size: var(--reader-share-option-size);
-  max-inline-size: var(--reader-share-option-size);
-  block-size: var(--reader-share-option-size);
-  min-block-size: var(--reader-share-option-size);
-  max-block-size: var(--reader-share-option-size);
-  border-radius: var(--control-radius);
-}
-:root body .header-controls .share-menu[open] { z-index: 100; }
-:root[dir="ltr"] body .header-controls .share-menu > .share-options,
-:root[dir="ltr"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
-  position: absolute !important;
-  left: auto !important;
-  right: calc(100% + var(--reader-share-gap)) !important;
-  top: 0 !important;
-  bottom: auto !important;
-}
-:root[dir="rtl"] body .header-controls .share-menu > .share-options,
-:root[dir="rtl"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
-  position: absolute !important;
-  right: auto !important;
-  left: calc(100% + var(--reader-share-gap)) !important;
-  top: 0 !important;
-  bottom: auto !important;
-}
-:root body .header-controls .share-menu > .share-options,
-:root body .header-controls .share-menu[data-share-side="above"] > .share-options {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  width: max-content;
-  max-width: none;
-  gap: var(--reader-share-gap);
-  padding: 0;
-  border-radius: var(--control-radius);
-  transform: none !important;
-  translate: none !important;
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) {
-  padding: var(--control-padding);
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
-  width: var(--reader-share-icon-size);
-  height: var(--reader-share-icon-size);
-}
-
-/* reader-share-fixed-host-v5:start */
-:root {
-  --reader-share-option-size: var(--control-size);
-  --reader-share-gap: var(--header-control-gap);
-}
-:root body .header-controls .article-actions {
-  overflow: visible !important;
-}
-:root body .header-controls .share-menu {
-  position: relative !important;
-  box-sizing: border-box !important;
-  flex: 0 0 var(--reader-share-option-size) !important;
-  width: var(--reader-share-option-size) !important;
-  min-width: var(--reader-share-option-size) !important;
-  max-width: var(--reader-share-option-size) !important;
-  height: var(--reader-share-option-size) !important;
-  min-height: var(--reader-share-option-size) !important;
-  max-height: var(--reader-share-option-size) !important;
-  overflow: visible !important;
-}
-:root body .header-controls .share-menu > summary {
-  position: relative !important;
-  z-index: 2 !important;
-  box-sizing: border-box !important;
-  width: var(--reader-share-option-size) !important;
-  min-width: var(--reader-share-option-size) !important;
-  max-width: var(--reader-share-option-size) !important;
-  height: var(--reader-share-option-size) !important;
-  min-height: var(--reader-share-option-size) !important;
-  max-height: var(--reader-share-option-size) !important;
-}
-:root body .header-controls .share-menu[open] {
-  z-index: 200 !important;
-}
-:root[dir="ltr"] body .header-controls .share-menu > .share-options,
-:root[dir="ltr"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
-  position: absolute !important;
-  left: auto !important;
-  right: calc(100% + var(--reader-share-gap)) !important;
-  top: 0 !important;
-  bottom: auto !important;
-}
-:root[dir="rtl"] body .header-controls .share-menu > .share-options,
-:root[dir="rtl"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
-  position: absolute !important;
-  right: auto !important;
-  left: calc(100% + var(--reader-share-gap)) !important;
-  top: 0 !important;
-  bottom: auto !important;
-}
-:root body .header-controls .share-menu > .share-options {
-  display: flex !important;
-  flex-flow: row nowrap !important;
-  align-items: center !important;
-  width: max-content !important;
-  max-width: none !important;
-  gap: var(--reader-share-gap) !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  transform: none !important;
-  translate: none !important;
-  overflow: visible !important;
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) {
-  box-sizing: border-box !important;
-  flex: 0 0 var(--reader-share-option-size) !important;
-  width: var(--reader-share-option-size) !important;
-  min-width: var(--reader-share-option-size) !important;
-  max-width: var(--reader-share-option-size) !important;
-  height: var(--reader-share-option-size) !important;
-  min-height: var(--reader-share-option-size) !important;
-  max-height: var(--reader-share-option-size) !important;
-}
-/* reader-share-fixed-host-v5:end */
-
-/* equal-height-compact-card-rail-v2 */
-/* Every tiled card stays equal to the largest visible card. Shrink that
-   common maximum by taking Pin/Share/Read out of normal vertical flow
-   and placing it in the otherwise unused logical-end rail. */
-:root {
-  --post-stream-row-size: 1fr;
-  --post-stream-card-align: stretch;
-  --post-card-action-rail-reserve: calc(var(--quiet-control-target-size) + var(--quiet-control-gap));
-  --post-card-footer-gap: var(--card-content-gap, var(--control-capsule-gap));
-}
-:root body .post-stream {
-  grid-auto-rows: var(--post-stream-row-size) !important;
-}
-:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) {
-  align-items: var(--post-stream-card-align) !important;
-}
-:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .post-card:not(.directory-card) {
-  align-self: var(--post-stream-card-align) !important;
-  height: auto !important;
-}
-@media (min-width: 701px) {
-  :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .card-footer {
-    grid-template-columns: minmax(0, 1fr) !important;
-    padding-block-start: var(--post-card-footer-gap) !important;
-    padding-inline-end: var(--post-card-action-rail-reserve);
-  }
-  :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .card-footer > [data-card-actions] {
-    position: absolute !important;
-    inset-inline-end: var(--card-action-inset);
-    inset-block-end: var(--card-action-inset);
-    grid-area: auto !important;
-    margin: 0 !important;
-    z-index: 1;
-  }
-  :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .post-tools {
-    box-sizing: border-box;
-    padding-inline-end: var(--post-card-action-rail-reserve);
-  }
-}
-
-/* reader-share-header-layer-v6:start */
-:root {
-  --reader-share-option-size: var(--control-size);
-  --reader-share-icon-size: var(--control-icon-size);
-  --reader-share-gap: var(--header-control-gap);
-  --reader-share-layer: 1000;
-}
-:root body .header-controls .article-actions:has(.share-menu[open]) {
-  position: relative !important;
-  z-index: var(--reader-share-layer) !important;
-  overflow: visible !important;
-}
-:root body .header-controls .share-menu {
-  position: relative !important;
-  box-sizing: border-box !important;
-  flex: 0 0 var(--reader-share-option-size) !important;
-  width: var(--reader-share-option-size) !important;
-  min-width: var(--reader-share-option-size) !important;
-  max-width: var(--reader-share-option-size) !important;
-  height: var(--reader-share-option-size) !important;
-  min-height: var(--reader-share-option-size) !important;
-  max-height: var(--reader-share-option-size) !important;
-  overflow: visible !important;
-}
-:root body .header-controls .share-menu > summary {
-  position: relative !important;
-  z-index: calc(var(--reader-share-layer) + 2) !important;
-}
-:root body .header-controls .share-menu[open] {
-  z-index: calc(var(--reader-share-layer) + 1) !important;
-}
-:root[dir="ltr"] body .header-controls .share-menu > .share-options,
-:root[dir="ltr"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
-  position: absolute !important;
-  left: auto !important;
-  right: calc(100% + var(--reader-share-gap)) !important;
-  top: 50% !important;
-  bottom: auto !important;
-}
-:root[dir="rtl"] body .header-controls .share-menu > .share-options,
-:root[dir="rtl"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
-  position: absolute !important;
-  right: auto !important;
-  left: calc(100% + var(--reader-share-gap)) !important;
-  top: 50% !important;
-  bottom: auto !important;
-}
-:root body .header-controls .share-menu > .share-options,
-:root body .header-controls .share-menu[data-share-side="above"] > .share-options {
-  z-index: var(--reader-share-layer) !important;
-  display: flex !important;
-  flex-flow: row nowrap !important;
-  align-items: center !important;
-  width: max-content !important;
-  max-width: none !important;
-  gap: var(--reader-share-gap) !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  transform: translateY(-50%) !important;
-  translate: none !important;
-  overflow: visible !important;
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) {
-  box-sizing: border-box !important;
-  flex: 0 0 var(--reader-share-option-size) !important;
-  width: var(--reader-share-option-size) !important;
-  min-width: var(--reader-share-option-size) !important;
-  max-width: var(--reader-share-option-size) !important;
-  height: var(--reader-share-option-size) !important;
-  min-height: var(--reader-share-option-size) !important;
-  max-height: var(--reader-share-option-size) !important;
-  padding: var(--control-padding) !important;
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
-  width: var(--reader-share-icon-size) !important;
-  height: var(--reader-share-icon-size) !important;
-}
-/* reader-share-header-layer-v6:end */
-
-/* The initial reader render moves the original tag row below the complete
+/* The initial reader render moves the original tag row into the end of the
    article body and removes its empty tools wrapper. Reclaim that title track;
    legacy/partial markup with real header tools retains its containment above. */
 :root .article-heading.post-heading:not(:has(> .post-tools)) {
@@ -1828,14 +1480,122 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root .article-heading.post-heading:not(:has(> .post-tools)) > h1 {
   width: 100%;
 }
-/* Reuse the shared tag row, capsule geometry and logical end alignment. The
-   body already reserves space for its attached engagement strip. */
-:root [data-reader-article]:not([data-directory]) > .article-tags {
+/* Reuse the shared tag row and capsule geometry directly under the post copy,
+   above the body's lower border and attached engagement strip. Logical start is
+   left in LTR and right in RTL. */
+:root [data-reader-article]:not([data-directory]) > .article-body > .article-tags {
   width: 100%;
   max-width: 100%;
   margin: 0;
-  margin-block-end: var(--surface-padding);
+  font-family: var(--font-interface);
+  line-height: normal;
 }
-[data-reader-article] > .article-body:has(> .article-end-engagement-dock) + .article-tags + .comments-shell {
-  border-block-start: 0;
+:root [data-reader-article]:not([data-directory]) > .article-body > .article-tags > :nth-child(1 of :not([hidden])) {
+  margin-inline-start: 0;
+}
+
+/* Reader share menu geometry.
+   Destinations use the exact same global control box as Share and open directly
+   beside it: left in LTR and right in RTL. No extra outer padding. */
+:root {
+  --reader-share-option-size: var(--control-size);
+  --reader-share-icon-size: var(--control-icon-size);
+  --reader-share-gap: var(--header-control-gap);
+  --reader-share-padding: 0;
+  --reader-share-layer: 1000;
+}
+
+/* Search owns a z-index in the header. Raise the complete article action group
+   while Share is open so Search/Pin can never paint on top of the destinations. */
+:root body .header-controls .article-actions:has(.share-menu[open]) {
+  position: relative;
+  z-index: var(--reader-share-layer);
+  overflow: visible;
+}
+
+/* Keep the details host exactly one control wide while open. The destination
+   strip is absolutely positioned and must never change this flex item's width. */
+:root body .header-controls .share-menu {
+  position: relative;
+  box-sizing: border-box;
+  flex: 0 0 var(--reader-share-option-size);
+  width: var(--reader-share-option-size);
+  min-width: var(--reader-share-option-size);
+  max-width: var(--reader-share-option-size);
+  height: var(--reader-share-option-size);
+  min-height: var(--reader-share-option-size);
+  max-height: var(--reader-share-option-size);
+  overflow: visible;
+}
+
+/* Trigger and destinations consume one identical global control box. */
+:root body .header-controls .share-menu > summary,
+:root body .header-controls .share-menu > .share-options > :is(a, button) {
+  box-sizing: border-box;
+  flex: 0 0 var(--reader-share-option-size);
+  width: var(--reader-share-option-size);
+  min-width: var(--reader-share-option-size);
+  max-width: var(--reader-share-option-size);
+  height: var(--reader-share-option-size);
+  min-height: var(--reader-share-option-size);
+  max-height: var(--reader-share-option-size);
+  inline-size: var(--reader-share-option-size);
+  min-inline-size: var(--reader-share-option-size);
+  max-inline-size: var(--reader-share-option-size);
+  block-size: var(--reader-share-option-size);
+  min-block-size: var(--reader-share-option-size);
+  max-block-size: var(--reader-share-option-size);
+  border-radius: var(--control-radius);
+}
+
+:root body .header-controls .share-menu > summary {
+  position: relative;
+  z-index: calc(var(--reader-share-layer) + 2);
+}
+:root body .header-controls .share-menu[open] {
+  z-index: calc(var(--reader-share-layer) + 1);
+}
+
+/* Use physical sides deliberately. Share stays at its normal position; only
+   the out-of-flow destination strip extends away from it. */
+:root[dir="ltr"] body .header-controls .share-menu > .share-options,
+:root[dir="ltr"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
+  position: absolute !important;
+  left: auto !important;
+  right: calc(100% + var(--reader-share-gap)) !important;
+  top: 50% !important;
+  bottom: auto !important;
+}
+:root[dir="rtl"] body .header-controls .share-menu > .share-options,
+:root[dir="rtl"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
+  position: absolute !important;
+  right: auto !important;
+  left: calc(100% + var(--reader-share-gap)) !important;
+  top: 50% !important;
+  bottom: auto !important;
+}
+
+:root body .header-controls .share-menu > .share-options,
+:root body .header-controls .share-menu[data-share-side="above"] > .share-options {
+  z-index: var(--reader-share-layer);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: max-content;
+  max-width: none;
+  gap: var(--reader-share-gap);
+  padding: var(--reader-share-padding);
+  margin: 0;
+  border-radius: var(--control-radius);
+  transform: translateY(-50%) !important;
+  translate: none !important;
+  overflow: visible;
+}
+:root body .header-controls .share-menu > .share-options > :is(a, button) {
+  padding: var(--control-padding);
+}
+:root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
+  width: var(--reader-share-icon-size);
+  height: var(--reader-share-icon-size);
 }

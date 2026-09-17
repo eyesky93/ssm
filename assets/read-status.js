@@ -208,7 +208,10 @@
     }
     function markVisibleArticle() {
       if (!article || article.dataset.directory !== void 0) return;
-      if (article.hidden) { articleVisitStarted = false; return; }
+      if (article.hidden) {
+        articleVisitStarted = false;
+        return;
+      }
       if (document2.visibilityState === "hidden" || articleVisitStarted) return;
       articleVisitStarted = true;
       if (!store.isRead(article.dataset.postId)) store.set(article.dataset.postId, true);
@@ -227,14 +230,23 @@
       });
     }
     window2.addEventListener("storage", (event) => {
-      if (event.key === key || event.key === null) { store.refresh(); render(); }
+      if (event.key === key || event.key === null) {
+        store.refresh();
+        render();
+      }
     });
     window2.addEventListener("pageshow", (event) => {
       if (event.persisted) articleVisitStarted = false;
-      store.refresh(); render(); markVisibleArticle();
+      store.refresh();
+      render();
+      markVisibleArticle();
     });
     document2.addEventListener("visibilitychange", () => {
-      if (document2.visibilityState === "visible") { store.refresh(); render(); markVisibleArticle(); }
+      if (document2.visibilityState === "visible") {
+        store.refresh();
+        render();
+        markVisibleArticle();
+      }
     });
     if (article && window2.MutationObserver) {
       new window2.MutationObserver(markVisibleArticle).observe(article, { attributes: true, attributeFilter: ["hidden"] });

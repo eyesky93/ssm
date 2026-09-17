@@ -1,31 +1,1290 @@
-@import url("./control-sizing-live-base.css?v=d1c7c9e32100");
-
-/* Generated-site release bridge for canonical list-card geometry while the
-   source publishing runner is unavailable. The next successful canonical
-   publication replaces this wrapper. */
-:root body .post-stream[data-layout="list"] {
-  grid-auto-rows: auto !important;
-}
-
-/* Keep Directory on the same shared List/Grid title scale as ordinary cards. */
-:root body .post-stream[data-layout="list"] .directory-card h2 {
-  font-size: var(--grid-post-title-size, 1.5rem);
-  line-height: var(--grid-post-title-line-height, 1.2);
-}
-
-/* Generated-site release bridge for canonical catalogue spacing while the
-   source publishing runner is unavailable. The public bundle still contains
-   older !important spacing declarations, so this bridge must win at the same
-   cascade level until the next canonical publication replaces those files. */
+/* Shared control geometry. --control-size owns dimensions; --control-radius
+   owns rounded frames, tracks and selected cells throughout the site.
+   Loaded last in <head>, before paint.
+   Tags and count badges derive their compact geometry from this same setting;
+   quiet card actions and engagement tabs remain separate control variants. */
 :root {
-  --interface-edge-gap: 0.5rem !important;
+  --control-size: 2.9rem;
+  --control-radius: calc(var(--control-size) * .16);
+  --control-inner-radius: max(0px, calc(var(--control-radius) - 1px));
+  --control-capsule-gap: .5rem;
+  --control-inner-size: calc(var(--control-size) - 2px);
+  --header-control-size: var(--control-size);
+  --reader-control-size: var(--control-size);
+  --surface-padding: calc(var(--control-capsule-gap) * 2);
+  --control-icon-size: 1.35rem;
+  --control-padding: max(0px, calc((var(--control-size) - var(--control-icon-size) - 2px) / 2));
+  /* Every tag surface uses the same compact frame with no vertical padding. */
+  --tag-capsule-size: calc(var(--control-size) * .675);
+  --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
+  --tag-capsule-radius: var(--control-radius);
+  --tag-capsule-padding-block: 0;
+  --tag-capsule-padding-inline: var(--control-capsule-gap);
+  --tag-capsule-count-inset: calc(var(--control-capsule-gap) / 2);
+  --tag-capsule-content-gap: calc(var(--control-capsule-gap) / 2);
+  --tag-capsule-gap: calc(var(--control-capsule-gap) / 2);
+  --tag-count-size: calc(var(--tag-capsule-inner-size) - 2 * var(--tag-capsule-count-inset));
+  --tag-count-font-size: calc(var(--tag-count-size) * .65);
+}
 
-  /* Match canonical global-control-size.css. */
-  --tag-capsule-size: var(--control-size) !important;
-  --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px) !important;
+/* Retain the component names as aliases, never independent size settings.
+   Search, the settings outline, layout track and vertical color capsule all
+   derive their existing grid calculations from the header alias. */
+.header-controls {
+  --header-control-size: var(--control-size);
+  --header-control-gap: var(--control-capsule-gap);
+  --header-control-half-gap: calc(var(--control-capsule-gap) / 2);
+}
+.reader-controls { --reader-control-size: var(--control-size); }
 
-  /* Compact tag variant retained only for Grid post cards. Default tags fall
-     through to the original universal tag geometry in the imported base. */
+/* Full-size capsules. Text may wrap rather than clip at extreme zoom. */
+:root .control-capsule,
+:root .wordmark,
+:root .search-submit,
+:root .primary-button,
+:root .language-nav a,
+:root .language-nav select,
+:root .subscribe-dialog .topic-option span,
+:root .subscribe-dialog .language-select-all,
+:root .newsletter-settings .topic-option,
+:root .newsletter-settings button {
+  box-sizing: border-box;
+  min-height: var(--control-size);
+  border-radius: var(--control-radius);
+}
+:root .wordmark { height: var(--control-size); padding-block: 0; }
+
+/* One compact tag model for filters, post layouts, search and Directory.
+   Count badges fit inside the frame; selection and scrolling stay shared.
+   Logical padding also keeps the count and its overlaid X aligned in RTL. */
+:root .tag-chip,
+:root .search-tag,
+:root .tag-option > .tag-chip,
+:root .post-stream[data-layout] .tag-chip {
+  box-sizing: border-box;
+  min-height: var(--tag-capsule-size);
+  border-radius: var(--tag-capsule-radius);
+  padding-block: var(--tag-capsule-padding-block);
+  padding-inline: var(--tag-capsule-padding-inline);
+  gap: var(--tag-capsule-content-gap);
+}
+
+/* A split tag owns its outside border; its child fills only the inside. */
+:root .tag-option,
+:root .post-stream[data-layout] .tag-option {
+  box-sizing: border-box;
+  min-height: var(--tag-capsule-size);
+  border-radius: var(--tag-capsule-radius);
+}
+:root .tag-option > .tag-chip,
+:root .tag-option > .tag-chip:is(:hover, :focus-visible),
+:root .post-stream[data-layout] .tag-option > .tag-chip,
+:root .post-stream[data-layout] .tag-option > .tag-chip:is(:hover, :focus-visible) {
+  min-height: var(--tag-capsule-inner-size);
+  padding-block: var(--tag-capsule-padding-block);
+}
+:root .tag-chip:has(.post-monograph-order),
+:root .tag-chip:has(.tag-count),
+:root .post-stream[data-layout] .tag-chip:has(.tag-count) {
+  padding-inline-end: var(--tag-capsule-count-inset);
+}
+:root .tag-option > .tag-exclude,
+:root .post-stream[data-layout] .tag-option > .tag-exclude {
+  inset-inline-end: var(--tag-capsule-count-inset);
+}
+
+/* Count and exclusion controls share the badge geometry in all tag rows. */
+:root .tag-exclude { padding: var(--tag-capsule-count-inset); }
+
+/* Tighten the spaces between tags, including subtag rows, without altering
+   wrapping, scroll behavior, title placement or unrelated control spacing. */
+:root .subject-nav,
+:root .tag-list,
+:root .search-suggestions,
+:root .card-tags,
+:root .article-tags,
+:root .post-stream[data-layout] .card-tags,
+:root .post-stream[data-layout] .article-tags {
+  gap: var(--tag-capsule-gap);
+}
+
+/* The framed variant belongs to this size family; quiet controls own
+   their neutral geometry. All standalone framed controls, dialogs, comment
+   sign-in providers, Directory controls and newsletter appearance controls. */
+:root .round-control,
+:root .settings-toggle,
+:root .settings-action,
+:root .accent-control,
+:root .view-control,
+:root .accent-picker,
+:root .accent-reset,
+:root .random-post,
+:root .theme-toggle,
+:root .header-controls > .language-nav,
+:root .header-controls > .language-nav > a,
+:root .header-controls > .language-nav > select,
+:root .view-switch button,
+:root .clear-filter,
+:root .filter-reset-slot,
+:root .pin-toggle:where(:not(.quiet-control)),
+:root .post-stream[data-layout] .pin-toggle:where(:not(.quiet-control)),
+:root .share-menu summary:where(:not(.quiet-control)),
+:root .share-options a,
+:root .share-options button,
+:root .search-dialog-close,
+:root .subscription-close,
+:root .back-to-top,
+:root .post-navigation > a,
+:root .reader-controls .post-position,
+:root [data-ssm-comments] .comment-provider-button,
+:root [data-ssm-comments] .comment-toolbar [data-format="help"],
+:root [data-directory] .map-switch > a,
+:root .map-toolbar .map-history-button,
+:root .map-zoom-control > button,
+:root .settings-theme-track .settings-theme-choice:not(.settings-theme-auto),
+:root .newsletter-settings button.settings-color-reset {
+  box-sizing: border-box;
+  width: var(--control-size);
+  min-width: var(--control-size);
+  max-width: var(--control-size);
+  height: var(--control-size);
+  min-height: var(--control-size);
+  max-height: var(--control-size);
+  inline-size: var(--control-size);
+  min-inline-size: var(--control-size);
+  max-inline-size: var(--control-size);
+  block-size: var(--control-size);
+  min-block-size: var(--control-size);
+  max-block-size: var(--control-size);
+  flex: 0 0 var(--control-size);
+  border-radius: var(--control-radius);
+}
+
+/* Every standalone icon frame uses the same content inset. Text labels,
+   nested tracks and native color swatches retain their own content layout. */
+:root .round-control,
+:root .settings-toggle,
+:root .settings-action,
+:root .view-control,
+:root .accent-reset,
+:root .random-post,
+:root .theme-toggle,
+:root .search-submit,
+:root .search-dialog-close,
+:root .view-switch button,
+:root .pin-toggle:where(:not(.quiet-control)),
+:root .post-stream[data-layout] .pin-toggle:where(:not(.quiet-control)),
+:root .share-menu summary:where(:not(.quiet-control)),
+:root .share-options a,
+:root .share-options button,
+:root .subscription-close {
+  padding: var(--control-padding);
+}
+
+/* Multi-button hosts retain the horizontal layout track and the two-cell
+   vertical color capsule geometry. */
+.color-settings,
+.view-settings {
+  flex-basis: var(--control-size);
+  width: var(--control-size);
+  height: var(--control-size);
+}
+.accent-panel,
+.view-switch { width: var(--control-size); }
+/* The inline layout selector owns three cells, not one button's flex basis.
+   Size its host from the complete track so the capsule cannot clip its choices. */
+:root .toolbar-view { flex: 0 0 auto; width: max-content; height: var(--control-size); }
+
+/* The same corner setting shapes horizontal/vertical tracks and their cells.
+   Pseudo-element borders inherit it; native swatches fill the inset frame. */
+:root .search-bar,
+:root .accent-panel,
+:root .header-actions .accent-panel,
+:root .view-switch,
+:root .settings-theme-track,
+:root .settings-theme-thumb,
+:root .settings-theme-track .settings-theme-choice,
+:root .settings-color-group {
+  border-radius: var(--control-radius);
+}
+:root .accent-picker::-webkit-color-swatch { border-radius: var(--control-inner-radius); }
+:root .accent-picker::-moz-color-swatch { border-radius: var(--control-inner-radius); }
+:root .search-suggestions {
+  margin-inline: var(--control-radius);
+  border-radius: 0 0 var(--control-radius) var(--control-radius);
+}
+
+/* Search's enclosing 1px frame owns the outside size. Its buttons and
+   input fill the inside, without growing the capsule or clipping its curves. */
+:root .search-toggle,
+:root .search-clear {
+  box-sizing: border-box;
+  flex: 0 0 var(--control-inner-size);
+  width: var(--control-inner-size);
+  height: var(--control-inner-size);
+  border-radius: var(--control-inner-radius);
+}
+:root .search-clear { margin-inline-end: 0; }
+:root .subscription-intro { padding-inline-end: calc(var(--control-size) + .5rem); }
+.post-navigation { grid-template-columns: var(--control-size) minmax(0, 1fr) var(--control-size); }
+@media (min-width: 701px) {
+  .post-stream[data-layout="list"] .post-card > p { padding-inline-end: calc(var(--control-size) + .8rem); }
+}
+
+/* Layout and Tags/Library are the same capsule: one outside frame, rounded
+   choices, a neutral selected fill and accent feedback only on other choices. */
+:root .toolbar-view > .view-switch,
+:root .map-switch {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: max-content;
+  height: var(--control-size);
+  padding: 0;
+  border: 0;
+  border-radius: var(--control-radius);
+  gap: var(--control-capsule-gap);
+  background: var(--surface);
+  box-shadow: none;
+  overflow: hidden;
+  isolation: isolate;
+}
+.map-switch { position: relative; }
+:root .toolbar-view > .view-switch::after,
+:root .map-switch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border: 1px solid var(--line-dark);
+  border-radius: inherit;
+  pointer-events: none;
+}
+:root .toolbar-view .view-switch > button,
+:root [data-directory] .map-switch > a {
+  display: grid;
+  place-items: center;
+  position: relative;
+  z-index: 1;
+  padding: .65rem;
+  border: 1px solid transparent;
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: none;
+  transform: none;
+}
+:root .toolbar-view .view-switch > button:is(:hover, :focus-visible),
+:root [data-directory] .map-switch > a:is(:hover, :focus-visible) {
+  z-index: 3;
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
+}
+:root .toolbar-view .view-switch > button[aria-pressed="true"],
+:root .toolbar-view .view-switch > button[aria-pressed="true"]:is(:hover, :focus-visible),
+:root [data-directory] .map-switch > a[aria-current="true"],
+:root [data-directory] .map-switch > a[aria-current="true"]:is(:hover, :focus-visible) {
+  z-index: 3;
+  background: var(--inverse-bg);
+  border-color: var(--inverse-bg);
+  color: var(--inverse-ink);
+}
+/* Keep keyboard focus inside the clipped capsule rather than losing its ring. */
+:root .toolbar-view .view-switch > button:focus-visible,
+:root [data-directory] .map-switch > a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -4px;
+}
+:root .toolbar-view .view-switch svg,
+:root .map-switch svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Mirror the list glyph in RTL, not its button, capsule or other view icons. */
+:root[dir="rtl"] .view-switch button[data-view="list"] > svg,
+:root[dir="rtl"] .view-control svg[data-view-icon="list"] {
+  transform: scaleX(-1);
+  transform-origin: center;
+}
+
+/* All Directory corner controls use the small gap above the mode capsule.
+   Keep top, bottom and side distances equal, independent of viewport gutters. */
+:root [data-directory] .map-stage {
+  --directory-control-inset: var(--control-capsule-gap);
+}
+:root [data-directory] .map-stage > .map-mode-controls,
+:root [data-directory] .map-toolbar {
+  inset-inline-start: auto;
+  inset-inline-end: var(--directory-control-inset);
+}
+/* Anchor the complete controls, never individual buttons or their hit areas. */
+:root [data-directory] .map-stage > .map-mode-controls {
+  inset-block-start: var(--directory-control-inset);
+}
+:root [data-directory] .map-toolbar {
+  inset-block-end: var(--directory-control-inset);
+  margin-block-end: 0;
+  gap: .5rem;
+}
+:root [data-directory] .map-history-controls { gap: .5rem; }
+
+/* Directory and reader navigation share the same neutral buttons and shadow.
+   Keep fill and ink neutral; the shared interaction ring below supplies feedback. */
+:root .reader-controls :is(.back-to-top, .post-navigation > a, .post-position),
+:root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]) {
+  border: 1px solid var(--line-dark);
+  border-radius: var(--control-radius);
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  --control-rest-shadow: 0 8px 24px rgb(0 0 0 / .18);
+  box-shadow: var(--control-rest-shadow);
+  transition: none;
+  -webkit-tap-highlight-color: transparent;
+}
+/* Reader number/input typography has its own responsive overrides. */
+:root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]) {
+  font-family: var(--font-interface);
+  font-size: .75rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+:root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]):is(:hover, :focus, :focus-visible, :active) {
+  border-color: var(--line-dark);
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+}
+:root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]):focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+}
+/* Navigation shares Pin/Share's global highlight width and theme/accent color.
+   Paint outside the shared frame and retain its floating shadow. Hover is
+   local to the actual control, never its dock; a mouse click does not latch it.
+   The input replacing the page number uses the same .post-position contract. */
+:root .reader-controls :is(.back-to-top, .post-navigation > a, .post-position):not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible),
+:root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]):not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible) {
+  border-color: var(--accent-strong);
+  box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color), var(--control-rest-shadow);
+  outline: none;
+}
+/* Forced-colors mode suppresses shadows; retain a real keyboard-focus outline. */
+@media (forced-colors: active) {
+  :root .reader-controls :is(.back-to-top, .post-navigation > a, .post-position):not(:disabled):not([aria-disabled="true"]):focus-visible,
+  :root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]):not(:disabled):not([aria-disabled="true"]):focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+:root [data-directory] .map-toolbar .map-history-button { padding: .72rem; }
+:root [data-directory] .map-toolbar [data-map-zoom-toggle] { padding: .25rem; }
+:root [data-directory] .map-history-button svg {
+  width: 100%;
+  height: 100%;
+  stroke-width: 1.8;
+}
+:root [data-directory] .map-toolbar button:disabled { opacity: .45; cursor: default; }
+:root .map-toolbar,
+:root .map-zoom-control { width: var(--control-size); }
+:root .map-zoom-control { height: var(--control-size); }
+:root .map-zoom-panel {
+  box-sizing: border-box;
+  width: var(--control-size);
+  min-height: var(--control-size);
+  height: calc(5 * var(--control-size));
+  padding-block-end: calc(var(--control-size) + .5rem);
+  border-radius: var(--control-radius);
+  border-color: var(--line-dark);
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  box-shadow: 0 8px 24px rgb(0 0 0 / .18);
+}
+/* Fixed numeral and percent slots prevent selection/typing from shifting the
+   readout. Use the same font as the closed button in either document direction. */
+:root .map-zoom-entry {
+  display: grid;
+  grid-template-columns: calc(3ch + 2px) max-content;
+  justify-content: center;
+  align-items: center;
+  width: var(--control-inner-size);
+  height: var(--control-inner-size);
+  font-family: var(--font-interface);
+  font-size: .75rem;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+  color: var(--inverse-ink);
+}
+:root .map-zoom-entry input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 1.25em;
+  margin: 0;
+  padding: 0 1px;
+  font: inherit;
+  font-variant-numeric: inherit;
+  text-align: right;
+  direction: ltr;
+  color: var(--inverse-ink);
+  caret-color: var(--inverse-ink);
+}
+:root [data-reader-article][data-directory] .map-stage > .map-filter-bar {
+  inset-block-start: calc(var(--directory-control-inset) + var(--control-size) + var(--control-capsule-gap));
+  inset-inline-start: var(--directory-control-inset);
+  inset-inline-end: var(--directory-control-inset);
+  padding-block: 0;
+}
+/* Library subjects get the full row below Read/mode, in either direction. */
+:root [data-directory] .map-filter-bar .tag-list { justify-content: flex-end; }
+@keyframes map-zoom-open {
+  from { clip-path: inset(80% 0 0 round var(--control-radius)); }
+  to { clip-path: inset(0 round var(--control-radius)); }
+}
+
+/* Newsletter appearance capsules: replace every fixed track width and thumb
+   offset, not just the button height. Logical positioning mirrors in RTL. */
+:root .settings-theme-track {
+  gap: .5rem;
+  grid-template-columns: calc(var(--control-size) + 2.5rem) repeat(2, var(--control-size));
+  width: calc(3 * var(--control-size) + 3.5rem);
+  height: var(--control-size);
+}
+:root .settings-theme-track .settings-theme-auto,
+:root .settings-theme-thumb {
+  width: calc(var(--control-size) + 2.5rem);
+  height: var(--control-size);
+}
+:root .settings-theme-track:has([value="light"]:checked) .settings-theme-thumb {
+  width: var(--control-size);
+  inset-inline-start: calc(var(--control-size) + 3rem);
+  transform: none;
+}
+:root .settings-theme-track:has([value="dark"]:checked) .settings-theme-thumb {
+  width: var(--control-size);
+  inset-inline-start: calc(2 * var(--control-size) + 3.5rem);
+  transform: none;
+}
+:root .settings-color-group {
+  gap: .5rem;
+  width: calc(2 * var(--control-size) + .5rem);
+  height: var(--control-size);
+  flex-basis: calc(2 * var(--control-size) + .5rem);
+}
+
+:root .settings-theme-thumb { transition: inset-inline-start .18s ease, width .18s ease; }
+@media (prefers-reduced-motion: reduce) {
+  :root .settings-theme-thumb { transition: none; }
+}
+
+/* Mobile reader dock: previous, editable position, next share one bottom row.
+   Back to top stays above its physical right edge, including in RTL. The
+   existing visibility model owns hiding; never reserve an empty upper row. */
+@media (max-width: 700px) {
+  :root .reader-controls {
+    width: calc(3 * var(--control-size) + 2 * var(--control-capsule-gap));
+    gap: var(--control-capsule-gap);
+  }
+  :root .reader-controls > [data-reader-top] {
+    margin-left: auto;
+    margin-right: 0;
+  }
+  :root .reader-controls .post-navigation:not([hidden]) {
+    display: grid;
+    grid-template-columns: repeat(3, var(--control-size));
+    grid-template-rows: var(--control-size);
+    gap: var(--control-capsule-gap);
+    width: 100%;
+  }
+  :root .reader-controls [data-post-prev] { grid-area: 1 / 1; }
+  :root .reader-controls :is([data-reader-jump], [data-reader-jump-input]) { grid-area: 1 / 2; }
+  :root .reader-controls [data-post-next] { grid-area: 1 / 3; }
+  /* Invalid-number feedback must remain on-screen above the whole dock,
+     not collide with Back to top or create a fourth navigation cell. */
+  :root .reader-controls .reader-number-error {
+    inset-inline-end: 0;
+    inset-block-end: calc(100% + var(--control-capsule-gap));
+    max-inline-size: min(20rem, calc(100vw - 2rem - env(safe-area-inset-left) - env(safe-area-inset-right)));
+  }
+
+  /* The toolbar keeps its ordinary wrapped flow and one shared control height.
+     Help is a flexible capsule at the end of the last line, not a fixed square
+     whose width strands it on a separate row. No cloned or moved buttons. */
+  :root [data-ssm-comments] .comment-toolbar {
+    --comment-tool-size: calc(var(--control-size) - .4rem);
+    --comment-tool-gap: calc(var(--control-capsule-gap) * .4);
+    --comment-tool-inline-size: var(--comment-tool-size);
+    gap: var(--comment-tool-gap);
+  }
+  :root [data-ssm-comments] .comment-toolbar > button[data-format]:not([data-format="help"]) {
+    flex: 0 0 var(--comment-tool-inline-size);
+    width: var(--comment-tool-inline-size);
+    min-width: 0;
+    inline-size: var(--comment-tool-inline-size);
+    min-inline-size: 0;
+    block-size: var(--control-size);
+    min-block-size: var(--control-size);
+    padding-inline: .2rem;
+  }
+  :root [data-ssm-comments] .comment-toolbar > button[data-format="help"] {
+    flex: 1 1 var(--comment-tool-size);
+    width: auto;
+    min-width: var(--comment-tool-size);
+    max-width: none;
+    inline-size: auto;
+    min-inline-size: var(--comment-tool-size);
+    max-inline-size: none;
+    margin-inline: 0;
+    border-radius: var(--control-radius);
+  }
+}
+/* Wider phones fit nine ordinary tools per line instead of eight plus an
+   orphan Help row. Narrow phones retain the larger wrapped targets above.
+   Padding and gaps are included in the flex basis, including fractional px. */
+@media (min-width: 381px) and (max-width: 700px) {
+  :root [data-ssm-comments] .comment-toolbar {
+    --comment-tool-inline-size: min(var(--comment-tool-size), calc((100% - 8 * var(--comment-tool-gap)) / 9));
+  }
+}
+
+
+/* The tag reset belongs to the compact tag row, including its empty slot. */
+:root .subject-nav :is(.clear-filter, .filter-reset-slot) {
+  width: var(--tag-capsule-size);
+  min-width: var(--tag-capsule-size);
+  max-width: var(--tag-capsule-size);
+  height: var(--tag-capsule-size);
+  min-height: var(--tag-capsule-size);
+  max-height: var(--tag-capsule-size);
+  inline-size: var(--tag-capsule-size);
+  min-inline-size: var(--tag-capsule-size);
+  max-inline-size: var(--tag-capsule-size);
+  block-size: var(--tag-capsule-size);
+  min-block-size: var(--tag-capsule-size);
+  max-block-size: var(--tag-capsule-size);
+  flex-basis: var(--tag-capsule-size);
+  padding: var(--tag-capsule-count-inset);
+}
+
+/* Header read state uses the shared frame and the same checkbox as cards. */
+:root .read-toggle.round-control {
+  padding: var(--control-padding);
+  transform: none;
+}
+:root .read-toggle.round-control::before {
+  inline-size: var(--control-icon-size);
+  block-size: var(--control-icon-size);
+  font-size: var(--control-icon-size);
+  border-radius: var(--control-inner-radius);
+}
+
+/* shared-compact-toolbar-control-size-v1 */
+/* Header toolbar controls and the tag-row reset are one compact control
+   family. Change the shared token once; every member follows it. */
+:root {
+  --compact-control-size: var(--tag-capsule-size);
+}
+:root .header-controls {
+  --header-control-size: var(--compact-control-size);
+  --header-control-inner-size: calc(var(--header-control-size) - 2px);
+  --header-control-padding: max(0px, calc((var(--header-control-size) - var(--control-icon-size) - 2px) / 2));
+}
+
+:root .subject-nav :is(.clear-filter, .filter-reset-slot) {
+  width: var(--compact-control-size);
+  min-width: var(--compact-control-size);
+  max-width: var(--compact-control-size);
+  height: var(--compact-control-size);
+  min-height: var(--compact-control-size);
+  max-height: var(--compact-control-size);
+  inline-size: var(--compact-control-size);
+  min-inline-size: var(--compact-control-size);
+  max-inline-size: var(--compact-control-size);
+  block-size: var(--compact-control-size);
+  min-block-size: var(--compact-control-size);
+  max-block-size: var(--compact-control-size);
+  flex-basis: var(--compact-control-size);
+}
+
+:root .header-controls :is(
+  .settings-toggle,
+  .round-control,
+  .pin-toggle:where(:not(.quiet-control)),
+  .share-menu summary:where(:not(.quiet-control)),
+  .language-nav,
+  .language-nav > a,
+  .language-nav > select,
+  .toolbar-view .view-switch > button
+) {
+  box-sizing: border-box;
+  width: var(--header-control-size);
+  min-width: var(--header-control-size);
+  max-width: var(--header-control-size);
+  height: var(--header-control-size);
+  min-height: var(--header-control-size);
+  max-height: var(--header-control-size);
+  inline-size: var(--header-control-size);
+  min-inline-size: var(--header-control-size);
+  max-inline-size: var(--header-control-size);
+  block-size: var(--header-control-size);
+  min-block-size: var(--header-control-size);
+  max-block-size: var(--header-control-size);
+  flex: 0 0 var(--header-control-size);
+}
+
+:root .header-controls :is(
+  .settings-toggle,
+  .round-control,
+  .pin-toggle:where(:not(.quiet-control)),
+  .share-menu summary:where(:not(.quiet-control)),
+  .toolbar-view .view-switch > button
+) {
+  padding: var(--header-control-padding);
+}
+
+:root .header-controls .toolbar-view,
+:root .header-controls .toolbar-view > .view-switch {
+  height: var(--header-control-size);
+  min-height: var(--header-control-size);
+  max-height: var(--header-control-size);
+}
+
+:root .header-controls :is(.search-toggle, .search-clear) {
+  box-sizing: border-box;
+  flex: 0 0 var(--header-control-inner-size);
+  width: var(--header-control-inner-size);
+  min-width: var(--header-control-inner-size);
+  max-width: var(--header-control-inner-size);
+  height: var(--header-control-inner-size);
+  min-height: var(--header-control-inner-size);
+  max-height: var(--header-control-inner-size);
+  inline-size: var(--header-control-inner-size);
+  block-size: var(--header-control-inner-size);
+}
+
+/* Main-menu tags use the universal tag settings in control-sizing.css.
+   No menu-specific padding, badge size or hover geometry. */
+
+/* Shared spacing contract for navigation and compact controls.
+   Keep geometry here token-driven: changing one value updates every peer surface. */
+:root {
+  --control-item-gap: .45rem;
+  --brand-item-gap: calc(2 * var(--control-item-gap));
+  --navigation-border-inset: .5rem;
+  --control-frame-width: 1px;
+
+  /* Visible catalogue spacing: tag-to-tag gaps, toolbar breathing room and
+     card gutters in every homepage layout all consume this one shared token. */
+  --interface-edge-gap: 0.5rem;
+
+  /* Ordinary post rows need room for their detached engagement tabs. Tiled
+     layouts keep that reserve on each ordinary post card so every visible
+     edge gap, both between columns and below Directory, comes from the same
+     global interface-edge spacing token. */
+  --post-stream-row-gap: calc(var(--engagement-tab-height, 2rem) + var(--interface-edge-gap));
+  --post-stream-column-gap: var(--interface-edge-gap);
+  --post-stream-compact-column-gap: var(--interface-edge-gap);
+
+  /* Grid typography is a shared post-card scale. List view deliberately consumes
+     these exact same tokens; compact view keeps its smaller dedicated scale. */
+  --grid-post-title-size: 1.5rem;
+  --grid-post-title-line-height: 1.2;
+  --grid-post-summary-size: 1rem;
+  --grid-post-summary-line-height: 1.5;
+
+  /* List cards are content-sized. Their controls live on one dedicated rail,
+     with equal top/bottom corner insets and a reserved content lane. */
+  --list-post-card-padding-block: var(--control-capsule-gap);
+  --list-post-card-content-gap: var(--control-item-gap);
+  --list-post-action-inset: var(--card-action-inset);
+  --list-post-action-lane: calc(var(--quiet-control-target-size) + var(--control-capsule-gap));
+
+  /* Floating neutral controls use the same surface as their surrounding card;
+     distinction comes from the shared control frame, never an accent tint. */
+  --neutral-control-surface: var(--surface);
+  --neutral-control-frame: var(--line-dark);
+}
+
+/* Independent header controls and the cells inside the layout capsule use the
+   same gap. Do not derive this from card padding or icon size. */
+:root body .header-controls {
+  --header-control-gap: var(--control-item-gap);
+  --header-control-half-gap: calc(var(--control-item-gap) / 2);
+  gap: var(--control-item-gap);
+}
+:root body .toolbar-view > .view-switch {
+  gap: var(--control-item-gap);
+}
+
+/* Main tags, descendant rows and the reset control share the catalogue gap. */
+:root body .subject-nav,
+:root body .subject-nav .tag-list {
+  gap: var(--interface-edge-gap);
+}
+
+/* Brand navigation has one deliberate larger step, still derived from the same
+   global control gap. SSM and About occupy the same control-height box. */
+:root body .primary-nav {
+  gap: var(--brand-item-gap);
+}
+:root body .primary-nav > :is(.wordmark, .about-link) {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-size);
+  height: var(--control-size);
+}
+:root body .primary-nav > .about-link {
+  padding-block: 0;
+}
+
+/* The toolbar's own bottom padding supplies the one shared visible edge gap.
+   Do not add a second margin below its border before the first catalogue card. */
+:root body .site-header {
+  min-height: 0;
+  padding-block: var(--interface-edge-gap);
+}
+:root body .browser-toolbar {
+  padding-block: var(--interface-edge-gap);
+  margin-block-end: 0;
+}
+
+/* List keeps its total row clearance. Both tiled axes use the same compact
+   interface edge gap. The detached engagement reserve stays on ordinary post
+   cards, so matching the column gutters never crowds the tabs below a row. */
+:root body .post-stream {
+  --active-post-stream-column-gap: var(--post-stream-column-gap);
+  row-gap: var(--post-stream-row-gap);
+  column-gap: var(--active-post-stream-column-gap);
+}
+:root body .post-stream[data-layout="compact"] {
+  --active-post-stream-column-gap: var(--post-stream-compact-column-gap);
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) {
+  row-gap: var(--interface-edge-gap);
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .post-card:not(.directory-card) {
+  margin-block-end: calc(var(--post-stream-row-gap) - var(--interface-edge-gap));
+}
+
+/* Directory has no detached engagement strip. List view still reclaims the
+   unused reserve; tiled Directory cards need no margin correction at all. */
+:root body .post-stream[data-layout="list"] > .directory-card:not([hidden]) {
+  margin-block-end: calc(var(--interface-edge-gap) - var(--post-stream-row-gap));
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .directory-card:not([hidden]):has([data-pin-toggle][aria-pressed="true"]) {
+  margin-block-end: 0;
+}
+
+/* Card actions are one compact vertical stack in every homepage layout.
+   DOM order is Pin, Share, Read and remains top-to-bottom in both directions.
+   The stack width and spacing are entirely owned by the shared quiet-control
+   geometry, so changing those global tokens updates every layout together. */
+:root body .post-stream[data-layout] [data-card-actions] {
+  position: static;
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-flow: column nowrap;
+  align-items: center;
+  align-self: end;
+  justify-content: flex-end;
+  gap: var(--quiet-control-gap);
+  width: var(--quiet-control-target-size);
+  max-width: 100%;
+  margin: 0;
+}
+
+:root body .post-stream[data-layout] .card-footer:has(> [data-card-actions]) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--quiet-control-target-size);
+  align-items: end;
+  column-gap: var(--control-capsule-gap);
+}
+:root body .post-stream[data-layout] .card-footer:has(> [data-card-actions]) > time {
+  grid-area: 1 / 1;
+  align-self: end;
+  padding-block-end: calc((var(--quiet-control-target-size) - 1lh) / 2);
+}
+:root body .post-stream[data-layout] .card-footer > [data-card-actions] {
+  grid-area: 1 / 2;
+  justify-self: end;
+  margin-inline-end: calc(var(--card-action-inset) - var(--post-card-padding-inline));
+  margin-block-end: calc(var(--card-action-inset) - var(--post-card-padding-block));
+}
+
+/* Grid and list share one typography contract. This makes the list genuinely
+   as compact as grid without duplicating literal font sizes in another selector. */
+:root body .post-stream:is([data-layout="grid"], [data-layout="list"]) .post-card:not(.directory-card) h2 {
+  font-size: var(--grid-post-title-size);
+  line-height: var(--grid-post-title-line-height);
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="list"]) .post-card:not(.directory-card) > p {
+  font-size: var(--grid-post-summary-size);
+  line-height: var(--grid-post-summary-line-height);
+}
+
+/* List cards use three non-overlapping regions: title/text, a tag strip that
+   reserves the action rail, and the action rail itself. Pin and Read occupy
+   symmetric top/bottom corners; Share stays centered between them. */
+:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) {
+  position: relative;
+  padding-block: var(--list-post-card-padding-block);
+}
+:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) .post-heading {
+  margin-block-end: var(--list-post-card-content-gap);
+}
+:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) .post-tools {
+  box-sizing: border-box;
+  padding-inline-end: var(--list-post-action-lane);
+}
+:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > p {
+  padding-inline-end: var(--list-post-action-lane);
+}
+:root body .post-stream[data-layout="list"] .card-footer:has(> [data-card-actions]) {
+  display: block;
+  margin-block-start: var(--list-post-card-content-gap);
+  padding-block-start: 0;
+}
+:root body .post-stream[data-layout="list"] .card-footer:has(> [data-card-actions]) > time {
+  display: block;
+  padding-block-end: 0;
+}
+:root body .post-stream[data-layout="list"] .card-footer > [data-card-actions] {
+  position: absolute;
+  inset-inline-end: var(--list-post-action-inset);
+  inset-block-start: var(--list-post-action-inset);
+  inset-block-end: var(--list-post-action-inset);
+  justify-content: space-between;
+  margin: 0;
+}
+
+/* Directory uses only its pin, centered on the heading cross-axis. */
+:root body .post-stream[data-layout] .directory-heading > [data-card-actions] {
+  align-self: center;
+  justify-content: center;
+}
+
+/* The language glyph is a true centered cell. Hebrew uses the site's Hebrew UI
+   font even when it is the language-switch label on an English page. */
+:root body .header-controls > .language-nav {
+  display: grid;
+  place-items: center;
+}
+:root body .header-controls > .language-nav > a {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  line-height: 1;
+  text-align: center;
+}
+:root body .header-controls > .language-nav > a[lang="he"] {
+  font-family: var(--font-interface-hebrew), var(--font-interface);
+}
+:root body .header-controls > .language-nav > select {
+  padding-inline: 0;
+  line-height: 1;
+  text-align: center;
+  text-align-last: center;
+}
+
+/* Card sharing consumes the global neutral surface and frame. */
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
+  border: var(--control-frame-width) solid var(--neutral-control-frame);
+  background: var(--neutral-control-surface);
+  box-shadow: none;
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  box-shadow: none;
+}
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--accent);
+  box-shadow: none;
+}
+
+/* Settings panel geometry is derived only from the shared header-control tokens.
+   No settings-specific button size, radius, icon size or spacing constants. */
+:root .header-actions {
+  --settings-cell: var(--header-control-size);
+  --settings-gap: var(--header-control-gap);
+  --settings-padding: var(--header-control-half-gap);
+  --settings-color-width: var(--settings-cell);
+  --settings-color-height: auto;
+  --settings-layout-width: max-content;
+  --settings-layout-height: auto;
+  /* Keep the panel frame padded by half a shared gap while aligning the actual
+     grid cells with the last three header-control columns. */
+  inset-inline-end: calc(0px - var(--settings-padding));
+  inset-block-start: calc(100% + var(--settings-gap) - var(--settings-padding));
+  inline-size: max-content;
+  min-inline-size: 0;
+  padding: var(--settings-padding);
+  gap: 0;
+  border: 0;
+  border-radius: var(--control-radius);
+  background: transparent;
+  box-shadow: none;
+  isolation: isolate;
+}
+
+/* The old generated SVG had fixed 160x108 geometry. The actual frame now
+   follows the live grid dimensions and the same global corner radius. */
+:root .header-actions > .settings-outline { display: none; }
+:root .header-actions::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border: 1px solid var(--line-dark);
+  border-radius: var(--control-radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  pointer-events: none;
+}
+:root .header-actions > * { position: relative; z-index: 1; }
+
+/* The settings grid is parameterized by --settings-cell and --settings-gap.
+   Mobile can therefore switch to the mobile header geometry by overriding only
+   those aliases; the grid never falls back to a separate spacing model. */
+:root .settings-lower {
+  display: grid;
+  grid-template-columns: repeat(3, var(--settings-cell));
+  grid-template-rows: repeat(2, var(--settings-cell));
+  gap: var(--settings-gap);
+  inline-size: max-content;
+  block-size: auto;
+  align-items: stretch;
+  justify-items: stretch;
+  direction: ltr;
+}
+:root .settings-lower > .updates-controls { display: contents; }
+:root .settings-lower > .updates-controls > :first-child { grid-column: 1; grid-row: 1; }
+:root .settings-lower > .updates-controls > :nth-child(2) { grid-column: 2; grid-row: 1; }
+:root .settings-lower > .random-post { grid-column: 1; grid-row: 2; }
+:root .settings-lower > .theme-toggle { grid-column: 2; grid-row: 2; }
+:root .settings-lower > .color-settings {
+  grid-column: 3;
+  grid-row: 1 / 3;
+  align-self: stretch;
+  inline-size: var(--settings-cell);
+  block-size: auto;
+  width: var(--settings-cell);
+  height: auto;
+  min-height: 0;
+  max-height: none;
+}
+
+/* Every settings button consumes the exact same geometry contract as the
+   Search/Layout/Language/Settings controls in the header. */
+:root .header-actions :is(.settings-action, .random-post, .theme-toggle, .accent-picker, .accent-reset) {
+  box-sizing: border-box;
+  inline-size: var(--settings-cell);
+  min-inline-size: var(--settings-cell);
+  max-inline-size: var(--settings-cell);
+  block-size: var(--settings-cell);
+  min-block-size: var(--settings-cell);
+  max-block-size: var(--settings-cell);
+  width: var(--settings-cell);
+  min-width: var(--settings-cell);
+  max-width: var(--settings-cell);
+  height: var(--settings-cell);
+  min-height: var(--settings-cell);
+  max-height: var(--settings-cell);
+  flex: 0 0 var(--settings-cell);
+  padding: var(--header-control-padding);
+  border-radius: var(--control-radius);
+}
+:root :is(.settings-toggle, .header-actions .settings-action, .header-actions .random-post, .header-actions .theme-toggle, .header-actions .accent-reset) > svg {
+  inline-size: var(--control-icon-size);
+  block-size: var(--control-icon-size);
+  width: var(--control-icon-size);
+  height: var(--control-icon-size);
+}
+
+/* Revert is a transparent cell inside the single color capsule. Hover/focus
+   changes only the arrow glyph to the shared accent interaction color; the cell
+   itself never paints a separate frame, fill, shadow or outline. */
+:root .header-actions .accent-reset {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  outline: none;
+  color: var(--ink);
+}
+:root .header-actions .accent-reset:is(:hover, :focus-visible) {
+  z-index: 1;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  outline: none;
+  color: var(--accent-strong);
+}
+:root .header-actions .accent-reset > svg {
+  display: block;
+  margin: 0;
+  flex: none;
+  color: inherit;
+  stroke: currentColor;
+}
+
+/* The color control is one two-row track. Its children use the same settings
+   cell and gap aliases as the rest of the panel. */
+:root .header-actions .accent-control { display: none; }
+:root .header-actions .accent-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  box-sizing: border-box;
+  display: none;
+  grid-template-rows: repeat(2, var(--settings-cell));
+  gap: var(--settings-gap);
+  width: auto;
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--control-radius);
+  background: var(--surface);
+  box-shadow: none;
+  overflow: hidden;
+}
+:root .header-actions .color-settings[open] > .accent-panel { display: grid; }
+:root .header-actions .accent-panel::after {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  border: 1px solid var(--line-dark);
+  border-radius: inherit;
+  pointer-events: none;
+}
+:root .header-actions .accent-panel > * { border-color: transparent; }
+:root .header-actions .accent-picker::-webkit-color-swatch { border-radius: var(--control-inner-radius); }
+:root .header-actions .accent-picker::-moz-color-swatch { border-radius: var(--control-inner-radius); }
+
+/* Mobile-only header control sizing.
+   Desktop keeps the compact header family. Phones restore the full global
+   control size and all dependent header/settings geometry follows the same
+   aliases instead of introducing per-button dimensions. */
+:root {
+  --mobile-header-control-size: var(--control-size);
+  --mobile-header-control-gap: var(--control-capsule-gap);
+  --mobile-header-group-gap: var(--mobile-header-control-gap);
+  --mobile-wordmark-size: var(--mobile-header-control-size);
+  --mobile-wordmark-padding-inline: calc(2 * var(--mobile-header-control-gap));
+  --mobile-wordmark-radius: var(--control-radius);
+  --mobile-settings-panel-gap: var(--mobile-header-control-gap);
+  --mobile-settings-panel-z: 60;
+}
+
+@media (max-width: 700px) {
+  /* Keep both header groups on one centered line and use the same spacing token
+     between SSM/About and the Search/Language/Settings controls. */
+  :root body .site-header {
+    position: relative;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: var(--mobile-header-group-gap);
+    overflow: visible;
+  }
+  :root body .primary-nav {
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: var(--mobile-header-group-gap);
+    align-items: center;
+  }
+  :root body .primary-nav .about-link {
+    white-space: nowrap;
+  }
+  :root body .header-controls {
+    --header-control-size: var(--mobile-header-control-size);
+    --header-control-inner-size: calc(var(--mobile-header-control-size) - 2px);
+    --header-control-padding: max(0px, calc((var(--mobile-header-control-size) - var(--control-icon-size) - 2px) / 2));
+    --header-control-gap: var(--mobile-header-control-gap) !important;
+    --header-control-half-gap: calc(var(--mobile-header-control-gap) / 2) !important;
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+    min-width: 0;
+    align-items: center;
+    gap: var(--header-control-gap) !important;
+    margin-inline-start: 0;
+  }
+
+  /* Search, language, settings, layout/navigation hosts and the settings panel
+     all consume the header aliases above, so their tracks, hit areas, popup grid
+     and offsets scale together. Keep the tag row on its compact tag geometry. */
+  :root body .header-controls .site-search,
+  :root body .header-controls .search-shell,
+  :root body .header-controls .search-bar,
+  :root body .header-controls .toolbar-view,
+  :root body .header-controls .toolbar-view > .view-switch {
+    height: var(--header-control-size);
+    min-height: var(--header-control-size);
+    max-height: var(--header-control-size);
+  }
+  :root body .header-settings {
+    flex: 0 0 var(--header-control-size);
+    inline-size: var(--header-control-size);
+    block-size: var(--header-control-size);
+  }
+
+  /* Every mobile header target uses the same centering contract. This changes
+     alignment only; sizing remains owned by the global control variables. */
+  :root body .header-controls :is(
+    .search-toggle,
+    .language-nav,
+    .language-nav > a,
+    .language-nav > select,
+    .settings-toggle
+  ) {
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    line-height: 1;
+  }
+  :root body .header-controls :is(.search-toggle, .settings-toggle) {
+    display: grid;
+    place-items: center;
+  }
+  :root body .header-controls :is(.search-toggle, .settings-toggle) > svg,
+  :root body .header-actions :is(.settings-action, .random-post, .accent-reset) > svg {
+    display: block;
+    inline-size: var(--control-icon-size);
+    block-size: var(--control-icon-size);
+    width: var(--control-icon-size);
+    height: var(--control-icon-size);
+    margin: 0;
+    flex: 0 0 var(--control-icon-size);
+  }
+  /* Theme visibility belongs to the theme state: do not force both SVGs on. */
+  :root body .header-actions .theme-toggle > svg {
+    inline-size: var(--control-icon-size);
+    block-size: var(--control-icon-size);
+    width: var(--control-icon-size);
+    height: var(--control-icon-size);
+    margin: 0;
+    flex: 0 0 var(--control-icon-size);
+  }
+
+  /* The mobile brand frame belongs to the same geometry family as the enlarged
+     header controls. Desktop keeps the compact wordmark unchanged. */
+  :root body .wordmark {
+    flex: 0 0 auto;
+    min-height: var(--mobile-wordmark-size) !important;
+    height: var(--mobile-wordmark-size) !important;
+    padding-block: 0 !important;
+    padding-inline: var(--mobile-wordmark-padding-inline) !important;
+    border-radius: var(--mobile-wordmark-radius) !important;
+  }
+
+  /* Settings is a true popover on phones. The content columns are not merely
+     similar to the header: they use the exact same cell and gap tokens. Keeping
+     the rightmost cell anchored to Settings therefore puts the middle cell
+     directly below Language and the left cell below Compact view. */
+  :root body .header-settings .header-actions {
+    --settings-cell: var(--mobile-header-control-size);
+    --settings-gap: var(--mobile-header-control-gap);
+    --settings-padding: calc(var(--mobile-header-control-gap) / 2);
+    z-index: var(--mobile-settings-panel-z);
+    inset-inline-end: calc(0px - var(--settings-padding));
+    inset-block-start: calc(100% + var(--mobile-settings-panel-gap) - var(--settings-padding));
+  }
+  :root body .header-settings .settings-lower,
+  :root body .header-settings .header-actions .accent-panel {
+    gap: var(--mobile-header-control-gap) !important;
+  }
+  :root body .header-actions :is(.settings-action, .random-post, .theme-toggle, .accent-reset) {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    justify-content: center;
+    line-height: 1;
+  }
+}
+
+/* One universal framed-control size.
+   Preserve the current reader Share dimensions as the site-wide control box;
+   tags and formerly compact toolbar controls consume that same global token. */
+:root {
+  --control-size: 1.9575rem;
+  --tag-capsule-size: var(--control-size);
+  --compact-control-size: var(--control-size);
+}
+
+/* framed-control-component-v1 */
+/* Independent header actions inherit one frame class. Functional classes such
+   as pin-toggle, read-toggle and settings-toggle own only their glyph/content
+   semantics; geometry and interaction feedback live here. */
+:root .header-controls .framed-control,
+:root .header-controls .framed-control[aria-pressed],
+:root .header-controls .framed-control[aria-checked],
+:root .header-controls .framed-control[aria-expanded] {
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 var(--control-size);
+  width: var(--control-size);
+  min-width: var(--control-size);
+  max-width: var(--control-size);
+  height: var(--control-size);
+  min-height: var(--control-size);
+  max-height: var(--control-size);
+  inline-size: var(--control-size);
+  min-inline-size: var(--control-size);
+  max-inline-size: var(--control-size);
+  block-size: var(--control-size);
+  min-block-size: var(--control-size);
+  max-block-size: var(--control-size);
+  padding: var(--control-padding);
+  border: 1px solid var(--line-dark);
+  border-radius: var(--control-radius);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: none;
+  transform: none;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Match Settings: interaction accents the glyph/text through currentColor as
+   well as the frame. Every framed header control inherits this one behavior. */
+:root .header-controls .framed-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active),
+:root .header-controls .framed-control[aria-expanded="true"] {
+  border-color: var(--accent-strong);
+  background: var(--surface);
+  color: var(--accent-strong);
+  box-shadow: none;
+  transform: none;
+}
+
+:root .header-controls .framed-control:is(:disabled, [aria-disabled="true"]) {
+  cursor: default;
+}
+
+:root .header-controls .framed-control > svg {
+  width: var(--control-icon-size);
+  height: var(--control-icon-size);
+}
+
+/* Default tag geometry remains owned by control-sizing.css. This late layer
+   defines one compact tag variant for Grid cards and one Compact-card content
+   variant, using inherited shared tokens rather than duplicate components. */
+:root {
   --compact-tag-label-font-size: .8rem;
   --compact-tag-capsule-size: calc(var(--control-size) * .575);
   --compact-tag-capsule-padding-inline: .35rem;
@@ -33,70 +1292,55 @@
   --compact-tag-capsule-content-gap: .2rem;
   --compact-tag-count-size: calc(var(--compact-tag-capsule-size) - .2rem);
   --compact-tag-count-font-size: calc(var(--compact-tag-label-font-size) - .05rem);
-
   --compact-card-summary-font-size: .9rem;
   --compact-card-summary-line-height: 1.4;
   --compact-card-summary-lines: 2;
 }
 
-/* The stale generated base has a homepage-only --tag-capsule-size declaration
-   directly on subject-nav. Override it at that same component boundary so the
-   top-level row and every descendant row inherit the canonical shared size. */
-:root body .home-main .browser-toolbar .subject-nav {
-  --tag-capsule-size: var(--control-size) !important;
-  --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px) !important;
-}
-
-:root body .subject-nav,
-:root body .subject-nav .tag-list {
-  gap: var(--interface-edge-gap) !important;
-}
-
-:root body .browser-toolbar {
-  padding-block: var(--interface-edge-gap) !important;
-  margin-block-end: var(--interface-edge-gap) !important;
-}
-
-/* Restore the canonical tag hover surface: the whole tag uses the same
-   --soft-accent fill as its count badge. Selected/excluded states stay intact. */
+/* The count badge already uses --soft-accent. Restore that same fill to the
+   hovered/focused tag surface without changing selected or excluded states.
+   Split filter tags paint on their outer frame; standalone chips paint directly. */
 :root body .tag-option:not(.is-excluded):not(:has(> .tag-chip[aria-pressed="true"])):is(:hover, :has(:focus-visible)),
 :root body .tag-chip:not([aria-pressed="true"]):not(.tag-option > .tag-chip):is(:hover, :focus-visible) {
-  background: var(--soft-accent) !important;
+  background: var(--soft-accent);
 }
 
-/* Grid post cards keep the current dense tag variant by remapping the same
-   universal tag tokens at card scope. */
+/* Grid post cards retain the current dense tags. Compact cards no longer show
+   tags, so the compact tag variant does not leak into that layout. */
 :root body .post-stream[data-layout="grid"] .post-card {
-  --tag-label-font-size: var(--compact-tag-label-font-size) !important;
-  --tag-capsule-size: var(--compact-tag-capsule-size) !important;
-  --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px) !important;
-  --tag-capsule-padding-inline: var(--compact-tag-capsule-padding-inline) !important;
-  --tag-capsule-count-inset: var(--compact-tag-capsule-count-inset) !important;
-  --tag-capsule-content-gap: var(--compact-tag-capsule-content-gap) !important;
-  --tag-count-size: var(--compact-tag-count-size) !important;
-  --tag-count-font-size: var(--compact-tag-count-font-size) !important;
+  --tag-label-font-size: var(--compact-tag-label-font-size);
+  --tag-capsule-size: var(--compact-tag-capsule-size);
+  --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
+  --tag-capsule-padding-inline: var(--compact-tag-capsule-padding-inline);
+  --tag-capsule-count-inset: var(--compact-tag-capsule-count-inset);
+  --tag-capsule-content-gap: var(--compact-tag-capsule-content-gap);
+  --tag-count-size: var(--compact-tag-count-size);
+  --tag-count-font-size: var(--compact-tag-count-font-size);
 }
 
 :root body .post-stream[data-layout="grid"] .post-card .tag-chip {
-  font-size: var(--tag-label-font-size) !important;
+  font-size: var(--tag-label-font-size);
 }
 
-/* Compact swaps its tag row for the post's existing subtitle/summary. Tags stay
-   in the DOM so changing layouts restores them without rebuilding card content. */
+/* Compact replaces the tag row with the post's existing subtitle/summary. Keep
+   tags in the DOM so switching layouts is immediate and filtering semantics do
+   not change; only their Compact presentation is hidden. */
 :root body .post-stream[data-layout="compact"] .post-card:not(.directory-card) .card-tags {
-  display: none !important;
+  display: none;
 }
 
+/* Current post markup places only the tag row in post-tools. Collapse that
+   empty structural row without hiding future non-tag tools. */
 :root body .post-stream[data-layout="compact"] .post-card:not(.directory-card) .post-tools:has(> .card-tags:only-child) {
-  display: none !important;
+  display: none;
 }
 
 :root body .post-stream[data-layout="compact"] .post-card:not(.directory-card) > p {
-  display: -webkit-box !important;
-  -webkit-box-orient: vertical !important;
-  -webkit-line-clamp: var(--compact-card-summary-lines) !important;
-  line-clamp: var(--compact-card-summary-lines) !important;
-  overflow: hidden !important;
-  font-size: var(--compact-card-summary-font-size) !important;
-  line-height: var(--compact-card-summary-line-height) !important;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--compact-card-summary-lines);
+  line-clamp: var(--compact-card-summary-lines);
+  overflow: hidden;
+  font-size: var(--compact-card-summary-font-size);
+  line-height: var(--compact-card-summary-line-height);
 }
