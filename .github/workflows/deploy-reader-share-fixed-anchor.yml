@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: ssm-reader-share-fixed-anchor
+  group: ssm-header-hover-cache-fix
   cancel-in-progress: false
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Keep Share fixed and open destinations left
+      - name: Publish shared Settings-style header hover
         shell: bash
         run: |
           set -euo pipefail
@@ -33,85 +33,25 @@ jobs:
           from pathlib import Path
           import hashlib, re
 
-          path = Path('assets/post-layout.css')
+          path = Path('assets/control-sizing.css')
           css = path.read_text()
-          start = '/* reader-share-fixed-host-v5:start */'
-          end = '/* reader-share-fixed-host-v5:end */'
+          start = '/* framed-control-settings-hover-v2:start */'
+          end = '/* framed-control-settings-hover-v2:end */'
           block = r'''
-          /* reader-share-fixed-host-v5:start */
-          :root {
-            --reader-share-option-size: var(--control-size);
-            --reader-share-gap: var(--header-control-gap);
-          }
-          :root body .header-controls .article-actions {
-            overflow: visible !important;
-          }
-          :root body .header-controls .share-menu {
-            position: relative !important;
-            box-sizing: border-box !important;
-            flex: 0 0 var(--reader-share-option-size) !important;
-            width: var(--reader-share-option-size) !important;
-            min-width: var(--reader-share-option-size) !important;
-            max-width: var(--reader-share-option-size) !important;
-            height: var(--reader-share-option-size) !important;
-            min-height: var(--reader-share-option-size) !important;
-            max-height: var(--reader-share-option-size) !important;
-            overflow: visible !important;
-          }
-          :root body .header-controls .share-menu > summary {
-            position: relative !important;
-            z-index: 2 !important;
-            box-sizing: border-box !important;
-            width: var(--reader-share-option-size) !important;
-            min-width: var(--reader-share-option-size) !important;
-            max-width: var(--reader-share-option-size) !important;
-            height: var(--reader-share-option-size) !important;
-            min-height: var(--reader-share-option-size) !important;
-            max-height: var(--reader-share-option-size) !important;
-          }
-          :root body .header-controls .share-menu[open] {
-            z-index: 200 !important;
-          }
-          :root[dir="ltr"] body .header-controls .share-menu > .share-options,
-          :root[dir="ltr"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
-            position: absolute !important;
-            left: auto !important;
-            right: calc(100% + var(--reader-share-gap)) !important;
-            top: 0 !important;
-            bottom: auto !important;
-          }
-          :root[dir="rtl"] body .header-controls .share-menu > .share-options,
-          :root[dir="rtl"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
-            position: absolute !important;
-            right: auto !important;
-            left: calc(100% + var(--reader-share-gap)) !important;
-            top: 0 !important;
-            bottom: auto !important;
-          }
-          :root body .header-controls .share-menu > .share-options {
-            display: flex !important;
-            flex-flow: row nowrap !important;
-            align-items: center !important;
-            width: max-content !important;
-            max-width: none !important;
-            gap: var(--reader-share-gap) !important;
-            padding: 0 !important;
-            margin: 0 !important;
+          /* framed-control-settings-hover-v2:start */
+          /* All independent header controls use the Settings interaction model:
+             the neutral frame stays in place while both frame and glyph/text use
+             the accent on hover/focus/press/open. This final shared rule also
+             overrides older reader-specific temporary rules. */
+          :root body .header-controls .framed-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active),
+          :root body .header-controls .framed-control[aria-expanded="true"] {
+            border-color: var(--accent-strong) !important;
+            background: var(--surface) !important;
+            color: var(--accent-strong) !important;
+            box-shadow: none !important;
             transform: none !important;
-            translate: none !important;
-            overflow: visible !important;
           }
-          :root body .header-controls .share-menu > .share-options > :is(a, button) {
-            box-sizing: border-box !important;
-            flex: 0 0 var(--reader-share-option-size) !important;
-            width: var(--reader-share-option-size) !important;
-            min-width: var(--reader-share-option-size) !important;
-            max-width: var(--reader-share-option-size) !important;
-            height: var(--reader-share-option-size) !important;
-            min-height: var(--reader-share-option-size) !important;
-            max-height: var(--reader-share-option-size) !important;
-          }
-          /* reader-share-fixed-host-v5:end */
+          /* framed-control-settings-hover-v2:end */
           '''
           if start in css and end in css:
               css = re.sub(re.escape(start) + r'.*?' + re.escape(end), block.strip(), css, flags=re.S)
@@ -120,7 +60,7 @@ jobs:
           path.write_text(css)
 
           digest = hashlib.sha256(path.read_bytes()).hexdigest()[:12]
-          pattern = re.compile(r'((?:/ssm)?/assets/post-layout\.css)\?v=[0-9a-f]+')
+          pattern = re.compile(r'((?:/ssm)?/assets/control-sizing\.css)\?v=[0-9a-f]+')
           changed = 0
           for html in Path('.').rglob('*.html'):
               text = html.read_text()
@@ -132,25 +72,29 @@ jobs:
           final = path.read_text()
           for required in (
               start,
-              'flex: 0 0 var(--reader-share-option-size) !important;',
-              'right: calc(100% + var(--reader-share-gap)) !important;',
-              'left: calc(100% + var(--reader-share-gap)) !important;',
-              'padding: 0 !important;',
+              'border-color: var(--accent-strong) !important;',
+              'color: var(--accent-strong) !important;',
+              end,
           ):
               if required not in final:
-                  raise SystemExit(f'Missing share anchor invariant: {required}')
+                  raise SystemExit(f'Missing header-hover invariant: {required}')
 
-          sample = Path('en/posts/mathematical-background-1/index.html').read_text()
-          if not re.search(rf'(?:/ssm)?/assets/post-layout\.css\?v={digest}', sample):
-              raise SystemExit('Reader did not receive refreshed post-layout hash')
-          print(f'Updated {changed} HTML files; post-layout={digest}')
+          sample = Path('en/posts/welcome/index.html').read_text()
+          if not re.search(rf'(?:/ssm)?/assets/control-sizing\.css\?v={digest}', sample):
+              raise SystemExit('Reader did not receive refreshed control-sizing hash')
+
+          failed = Path('.github/workflows/one-shot-fix-header-hover.yml')
+          if failed.exists():
+              failed.unlink()
+          Path('.github/workflows/deploy-reader-share-fixed-anchor.yml').unlink()
+          print(f'Updated {changed} HTML files; control-sizing={digest}')
           PY
-            git add assets/post-layout.css '*.html' 'en/**/*.html' 'he/**/*.html'
+            git add -A
             if git diff --cached --quiet; then
-              echo "Reader share anchor is already current."
+              echo "Header hover behavior is already current."
               exit 0
             fi
-            git commit -m "Keep reader Share fixed while destinations open left"
+            git commit -m "Make header control glyphs blue on hover with cache bust"
             if git push origin HEAD:master; then
               exit 0
             fi
