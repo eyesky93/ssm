@@ -25,7 +25,7 @@
 @media (max-width: 700px) {
   :root body .header-controls {
     --header-control-size: var(--mobile-header-control-size);
-    --header-control-inner-size: calc(var(--mobile-header-control-size) - 2px);
+    --header-control-inner-size: calc(var(--mobile-header-header-control-size) - 2px);
     --header-control-padding: max(0px, calc((var(--mobile-header-control-size) - var(--control-icon-size) - 2px) / 2));
     --header-control-gap: var(--mobile-header-control-gap) !important;
     --header-control-half-gap: calc(var(--mobile-header-control-gap) / 2) !important;
@@ -310,23 +310,25 @@
   }
 }
 
-/* tiled-gap-structural-v1 */
-/* This is the last-loaded live guard for the canonical spacing contract.
-   Grid/compact row gutters use the exact same global token as their columns.
-   Ordinary cards reserve the detached engagement strip in their own margin;
-   Directory has no strip, so its next visible edge is exactly one tile gutter. */
+/* tiled-gap-structural-v2 */
+/* Visible vertical gaps use the same global compact interface spacing token.
+   Grid and compact keep their independent horizontal gutters. Ordinary cards
+   reserve the detached engagement strip in their own margin; Directory has no
+   strip, so Directory -> first row is exactly one interface-edge gap. */
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) {
+  --active-post-stream-row-gap: var(--interface-edge-gap, var(--control-item-gap, .35rem));
+  row-gap: var(--active-post-stream-row-gap) !important;
+}
 :root body .post-stream[data-layout="grid"] {
   --active-post-stream-column-gap: var(--post-stream-column-gap, 1rem);
-  row-gap: var(--active-post-stream-column-gap) !important;
   column-gap: var(--active-post-stream-column-gap) !important;
 }
 :root body .post-stream[data-layout="compact"] {
   --active-post-stream-column-gap: var(--post-stream-compact-column-gap, .75rem);
-  row-gap: var(--active-post-stream-column-gap) !important;
   column-gap: var(--active-post-stream-column-gap) !important;
 }
 :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .post-card:not(.directory-card) {
-  margin-block-end: calc(var(--post-stream-row-gap, 2.35rem) - var(--active-post-stream-column-gap)) !important;
+  margin-block-end: calc(var(--post-stream-row-gap, 2.35rem) - var(--active-post-stream-row-gap)) !important;
 }
 :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .directory-card:not([hidden]):has([data-pin-toggle][aria-pressed="true"]) {
   margin-block-end: 0 !important;
