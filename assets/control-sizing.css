@@ -819,7 +819,7 @@
 
 /* Grid and list share one typography contract. This makes the list genuinely
    as compact as grid without duplicating literal font sizes in another selector. */
-:root body .post-stream:is([data-layout="grid"], [data-layout="list"]) .post-card:not(.directory-card) h2 {
+:root body .post-stream:is([data-layout="grid"], [data-layout="list"]) .post-card h2 {
   font-size: var(--grid-post-title-size);
   line-height: var(--grid-post-title-line-height);
 }
