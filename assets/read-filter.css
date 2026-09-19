@@ -1,0 +1,107 @@
+/* Personal Read reuses the normal pill, count, selected and exclude states. */
+[data-personal-read-filter] .tag-count { font-variant-numeric: tabular-nums; width: auto; padding-inline: .3em; }
+[data-personal-read-filter] > .tag-chip:disabled { cursor: default; }
+/* Read and the mode switch share a row independent of Library subject filters. */
+[data-directory] .map-stage > .map-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+  gap: var(--control-capsule-gap);
+}
+[data-directory] .map-stage > :is(.map-filter-bar, .map-mode-controls) {
+  font-family: var(--font-interface);
+  font-size: 1rem;
+  line-height: normal;
+}
+html[lang="he"] [data-directory] .map-stage > :is(.map-filter-bar, .map-mode-controls) { font-family: var(--font-interface-hebrew), var(--font-content); }
+.map-read-filter { flex: 0 0 auto; }
+/* The personal tree control inherits the main menu's count-only hover delay,
+   X/restore icons, keyboard access and touch restore states without overrides. */
+/* Preserve native Tab transfer while focus moves between the two buttons. */
+:root .map-read-filter.tag-option.is-keyboard-active .tag-exclude { opacity: 1; visibility: visible; transition: none; }
+:root .map-read-filter.tag-option.is-keyboard-active .tag-count { opacity: 0; transition: none; }
+[data-directory] .map-filter-bar > .map-filters { flex: 1 1 10rem; min-width: 0; }
+/* Dimming is visual only: node links, count links, branches and connectors remain. */
+[data-hierarchy-map][data-dim-read="true"] .map-node[data-read-complete="true"],
+[data-hierarchy-map][data-dim-unread="true"] .map-node[data-unread-complete="true"] {
+  filter: grayscale(1);
+  opacity: .6;
+}
+
+/* The reset slot is only a layout host. The button owns the shared compact
+   control inset, so adding the wrapper must never offset it from adjacent tags. */
+:root .subject-nav .tag-list > .filter-reset-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* One edge inset owns both axes of every ordinary post tile. Do not split the
+   block and inline spacing: resizing cards or changing layouts must preserve
+   exactly the same distance from the top and logical side borders to content. */
+:root .post-card:not(.directory-card) {
+  --post-card-content-inset: var(--surface-padding);
+  --post-card-padding-inline: var(--post-card-content-inset);
+  --post-card-padding-block: var(--post-card-content-inset);
+  padding: var(--post-card-content-inset);
+}
+
+/* List/reader tags keep their horizontal drag row. Tiled cards use all available
+   width and move complete tag capsules onto additional rows. */
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  overflow: visible;
+}
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tag {
+  max-width: 100%;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags > :nth-child(1 of :not([hidden])) {
+  margin-inline-start: 0;
+}
+
+/* One global spacing token owns the compact interface chrome: header-to-rule,
+   rule-to-tags, inter-control/inter-tag spacing, and tag-row edge spacing.
+   Post rows deliberately keep their own geometry because their engagement tabs
+   live outside the card border; post-layout.css reserves that space and gives
+   only Directory -> first post the reduced row distance. */
+:root {
+  --interface-gap: var(--tag-capsule-gap, .25rem);
+}
+:root .site-header {
+  min-height: 0;
+  padding-block: var(--interface-gap);
+  gap: var(--interface-gap);
+}
+:root .header-controls {
+  --header-control-gap: var(--interface-gap) !important;
+  --header-control-half-gap: calc(var(--interface-gap) / 2) !important;
+  gap: var(--interface-gap);
+}
+:root .toolbar-view > .view-switch {
+  gap: var(--interface-gap) !important;
+}
+:root :is(.subject-nav, .tag-list) {
+  gap: var(--interface-gap) !important;
+}
+:root .browser-toolbar {
+  padding-block: var(--interface-gap);
+  margin-block-end: var(--interface-gap);
+}
+
+/* The brand uses the same compact height as the header controls instead of the
+   full-size control family. Width stays content-driven for the SSM lettering. */
+:root .wordmark {
+  min-height: var(--compact-control-size) !important;
+  height: var(--compact-control-size) !important;
+  padding-block: 0 !important;
+  padding-inline: calc(3 * var(--interface-gap)) !important;
+  border-radius: var(--control-radius) !important;
+}

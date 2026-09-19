@@ -23,7 +23,7 @@
     transition: none !important;
   }
 </style>
-<script data-home-first-paint data-home-state-scripts="[&quot;site&quot;,&quot;pins&quot;,&quot;post-browser&quot;,&quot;read-status&quot;,&quot;post-votes&quot;]">// Installed before the first paint of home, grid, reader, About and Directory
+<script data-home-first-paint data-home-state-scripts="[&quot;site&quot;]">// Installed before the first paint of home, grid, reader, About and Directory
 // pages. The historical data-home-* attributes remain a single shared gate.
 // Offline owner editions retain their own startup and make no new requests.
 (() => {
@@ -78,11 +78,7 @@
   root.setAttribute("data-home-starting", "");
 })();
 </script>
-<link rel="preload" as="script" href="/ssm/assets/site.js?v=c8d28451bd27">
-<link rel="modulepreload" href="/ssm/assets/pins.js?v=844bfcf48f61">
-<link rel="modulepreload" href="/ssm/assets/post-browser.js?v=4b1cdd10156a">
-<link rel="modulepreload" href="/ssm/assets/read-status.js?v=98c677c76014">
-<link rel="modulepreload" href="/ssm/assets/post-votes.js?v=2e3157e81ccb">
+<link rel="preload" as="script" href="/ssm/assets/site.js?v=f220b6eb8bd2">
 <script data-home-appearance-src="/ssm/assets/appearance.js?v=fb8acf9f4164">(() => {
   const root = document.documentElement;
   const defaults = {
@@ -195,23 +191,21 @@
 })();
 </script>
 <!-- ssm-home-first-paint:end -->
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=792cf9d62467">
-  <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=74a55bfd591a" data-post-layout-styles>
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=3bc67f3ec335" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=dd1360848db6">
+  
+  
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=e51d813010ae" data-control-sizing-styles>
 </head>
-<body data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="https://ssm-pin-stats.eyesky93.workers.dev/pins" data-read-storage="ssm-read:/ssm">
+<body>
   <header class="site-header">
     <nav class="primary-nav" aria-label="ניווט ראשי">
-      <a class="wordmark" data-filter-context-link href="/ssm/he/" data-reader-back>SSM</a>
+      <a class="wordmark" data-filter-context-link href="/ssm/he/">SSM</a>
       <a class="about-link" data-filter-context-link href="/ssm/he/about/" aria-current="page">אודות</a>
     </nav>
     <div class="header-controls">
       
       
-      <div class="view-settings toolbar-view" data-view-menu data-active-view="list" data-view-storage="ssm-view:/ssm" data-inline-options="true">
-    
-    <div class="view-switch" data-view-options role="group" aria-label="תצוגת פוסטים"><button type="button" data-view="list" aria-pressed="true" aria-label="תצוגת רשימה" title="תצוגת רשימה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01" stroke-width="3"/></svg></button><button type="button" data-view="grid" aria-pressed="false" aria-label="תצוגת רשת" title="תצוגת רשת"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></button><button type="button" data-view="compact" aria-pressed="false" aria-label="תצוגה מצומצמת" title="תצוגה מצומצמת"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="4" height="4" rx="0.65"/><rect x="10" y="3" width="4" height="4" rx="0.65"/><rect x="17" y="3" width="4" height="4" rx="0.65"/><rect x="3" y="10" width="4" height="4" rx="0.65"/><rect x="10" y="10" width="4" height="4" rx="0.65"/><rect x="17" y="10" width="4" height="4" rx="0.65"/><rect x="3" y="17" width="4" height="4" rx="0.65"/><rect x="10" y="17" width="4" height="4" rx="0.65"/><rect x="17" y="17" width="4" height="4" rx="0.65"/></svg></button></div>
-  </div>
+      
       <nav class="language-nav" aria-label="שפה"><a class="framed-control" href="/ssm/en/about/" data-filter-context-link data-language="en" lang="en" dir="ltr" aria-label="English" title="English">En</a></nav>
       <div class="header-settings" data-header-settings data-open="false">
         <button class="settings-toggle framed-control" type="button" data-settings-toggle aria-expanded="false" aria-controls="site-settings" aria-label="הגדרות" title="הגדרות"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 2-.6 2.5-2 1.2-2.5-.7L2 9.2l1.9 1.8v2L2 14.8 4.4 19l2.5-.7 2 1.2.6 2.5h5l.6-2.5 2-1.2 2.5.7 2.4-4.2-1.9-1.8v-2L22 9.2 19.6 5l-2.5.7-2-1.2L14.5 2Z"/><circle cx="12" cy="12" r="3.5"/></svg></button>
@@ -265,8 +259,8 @@
   <footer class="site-footer">
     <span>© 2026 SSM</span>
   </footer>
-  <div class="reader-controls" data-reader-controls data-reader-visible="false"><a class="back-to-top" aria-label="חזרה לראש העמוד" title="חזרה לראש העמוד" href="#" data-reader-top><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg></a></div>
-  <dialog class="subscribe-dialog" id="subscription-dialog" data-subscribe-dialog aria-labelledby="subscription-title">
+  <button class="back-to-top" type="button" data-back-to-top data-visible="false" hidden aria-label="חזרה לראש העמוד" title="חזרה לראש העמוד"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg></button>
+  <dialog class="subscribe-dialog" id="subscription-dialog" data-subscribe-dialog aria-labelledby="subscription-title" aria-describedby="subscription-description">
     <div class="subscription-card">
       <button class="subscription-close" type="button" data-subscribe-close aria-label="סגירה">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
@@ -274,13 +268,13 @@
       <div class="subscription-intro">
       <p class="eyebrow">להישאר מעודכנים</p>
         <h2 id="subscription-title">קבלת עדכונים על רשימות חדשות</h2>
-        
+        <p id="subscription-description">השתמשו ב־RSS, או קבלו רשימות חדשות בדוא״ל בשפות ובנושאים שבחרתם.</p>
       </div>
       <div class="updates-subscription">
       <h3>עדכונים בדוא״ל</h3>
         <form class="subscribe-form" data-subscribe-form action="https://ssm-newsletter.eyesky93.workers.dev/api/subscriptions/v2" method="post"
         data-working="מתבצעת הרשמה…"
-        data-success="נשלחה הודעת אימות לדוא״ל. בדקו את תיבת הדואר כדי לאשר את ההרשמה."
+        data-success="בדקו את תיבת הדוא״ל ואשרו את ההרשמה. בהמשך אפשר לשנות שפות, נושאים, תדירות ומראה דרך כפתור שינוי ההגדרות בהודעות."
         data-error="לא הצלחנו להתחיל את ההרשמה. אפשר לנסות שוב."
         data-topic-required="יש לבחור לפחות נושא מסוים אחד, או לבחור בכל הנושאים."
         data-language-required="יש לבחור שפה אחת לפחות."
@@ -297,17 +291,17 @@
         </fieldset>
         <fieldset class="topic-picker language-picker">
           <legend>שפות</legend>
-          
+          <p class="form-note">בחרו שפה אחת או יותר. שפת האתר הנוכחית נבחרת כברירת מחדל.</p>
           <div class="language-options">
             <button class="language-select-all" type="button" data-newsletter-language-all aria-pressed="false">בחירת הכול</button>
             <label class="topic-option"><input type="checkbox" name="languages" value="en" data-newsletter-language ><span lang="en" dir="ltr">English</span></label><label class="topic-option"><input type="checkbox" name="languages" value="he" data-newsletter-language checked><span lang="he" dir="rtl">עברית</span></label>
           </div>
-          
-          <p class="subscription-actions"><a href="/ssm/he/newsletter-settings/">ניהול הגדרות</a></p>
+          <p class="form-note">ברירת המחדל היא הודעה שבועית בשעה 20:00 לפי שעון ישראל. רק עדכונים מתאימים נשלחים, בהודעה אחת. אפשר לשנות את ההעדפות דרך הקישור בהודעות.</p>
+          <p class="form-note"><a href="/ssm/he/newsletter-settings/">כבר נרשמתם? שינוי הגדרות עדכונים</a></p>
         </fieldset>
         <fieldset class="topic-picker">
           <legend>נושאים</legend>
-          
+          <p class="form-note">אפשר לבחור את כל הנושאים או כל שילוב ביניהם.</p>
           <div class="topic-scopes">
             <label class="topic-option">
     <input type="radio" name="scope" value="all" checked data-topic-all>
@@ -347,21 +341,17 @@
     <span>תורת שדות קונפורמית</span>
   </label></div></div>
         </fieldset>
-        <input type="hidden" name="consent" value="yes">
-        
+        <label class="consent-row"><input type="checkbox" name="consent" value="yes" required><span>אני מסכים או מסכימה לקבל עדכונים בדוא״ל על פוסטים חדשים ב־SSM. ידוע לי שצריך לאשר את ההרשמה בדוא״ל.</span></label>
+        <p class="form-note">הכתובת מוצפנת באחסון. אין פיקסלים למעקב. אפשר לבטל הרשמה מכל הודעת דוא״ל.</p>
         <p class="form-status" data-subscribe-status role="status" aria-live="polite"></p>
       </form>
       </div>
     </div>
   </dialog>
-  <script data-home-state-script="site" src="/ssm/assets/site.js?v=c8d28451bd27" defer></script>
-  <p class="visually-hidden" role="status" data-pin-status data-saved="הפוסט הוצמד." data-removed="הצמדת הפוסט בוטלה." data-temporary="הדפדפן אינו מאפשר לשמור את הבחירה. היא תישמר רק בעמוד הזה."></p>
-  <script data-home-state-script="pins" type="module" src="/ssm/assets/pins.js?v=844bfcf48f61"></script>
-  <script data-home-state-script="post-browser" type="module" src="/ssm/assets/post-browser.js?v=4b1cdd10156a"></script>
-  <p class="visually-hidden" role="status" data-read-status data-read="הפוסט סומן כנקרא." data-unread="הפוסט סומן כלא נקרא." data-temporary="הדפדפן אינו מאפשר לשמור את הבחירה. היא תישמר רק בעמוד הזה."></p>
-  <script data-home-state-script="read-status" type="module" src="/ssm/assets/read-status.js?v=98c677c76014"></script>
-  <p class="visually-hidden" role="status" aria-live="polite" data-post-vote-status data-saved="ההצבעה בעד נוספה." data-removed="ההצבעה בעד בוטלה." data-unavailable="ההצבעות אינן זמינות כרגע."></p>
-  <script data-home-state-script="post-votes" type="module" src="/ssm/assets/post-votes.js?v=2e3157e81ccb"></script>
-  <script type="module" src="/ssm/assets/statistics-tracker.js?v=411f4a66a910"></script>
+  <script data-home-state-script="site" src="/ssm/assets/site.js?v=f220b6eb8bd2" defer></script>
+  
+  
+  <script src="/ssm/assets/random-post.js?v=d59de821ea88" defer></script>
+  
 </body>
 </html>

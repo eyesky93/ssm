@@ -10,6 +10,7 @@ export class CommentsLoader {
     this.window = windowRef;
     this.loadModule = loadModule;
     this.module = host.dataset.commentsModule;
+    this.stylesheet = host.dataset.commentsStyle;
     this.section = host.closest?.("#comments") || host;
     this.promise = null;
     this.observer = null;
@@ -36,6 +37,15 @@ export class CommentsLoader {
     if (this.promise || !this.module) return this.promise;
     this.host.dataset.commentsModuleState = "loading";
     this.observer?.disconnect();
+    if (this.stylesheet && !this.document.querySelector?.('link[data-comments-style]')) {
+      const link = this.document.createElement?.("link");
+      if (link) {
+        link.rel = "stylesheet";
+        link.href = this.stylesheet;
+        link.dataset.commentsStyle = "";
+        this.document.head?.append?.(link);
+      }
+    }
     this.promise = Promise.resolve(this.loadModule(this.module))
       .then(value => {
         this.host.dataset.commentsModuleState = "loaded";

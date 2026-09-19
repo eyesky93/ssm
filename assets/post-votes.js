@@ -150,6 +150,7 @@ export function initializePostVotes(document, window, { randomId } = {}) {
       const busy = Boolean(!group.initialLoadComplete || group.loading || group.mutating);
       button.disabled = busy || !group.available;
       button.setAttribute("aria-pressed", String(group.upvoted));
+      button.dataset.selected = String(group.upvoted);
       if (busy) button.setAttribute("aria-busy", "true");
       else button.removeAttribute("aria-busy");
       renderCount(part.count, group.count === null

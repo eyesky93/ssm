@@ -78,6 +78,7 @@
   --notice-ink: #171717;
   --unread-bg: #f2f2f2;
   --shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+  --minimum-touch-target: 2.75rem;
   /* Global font parameters. Change these four values to retheme typography
      without having to hunt through component selectors. */
   --font-content: Georgia, "Times New Roman", "Noto Serif Hebrew", serif;
@@ -194,6 +195,12 @@ select:focus-visible {
   text-decoration: none;
 }
 
+.wordmark:is(:hover, :focus, :focus-visible, :active, :visited) {
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  text-decoration: none;
+}
+
 .about-link { font-weight: 700; text-decoration: none; text-underline-offset: 0.25em; }
 .about-link:is(:hover, :focus-visible) { color: var(--accent-strong); text-decoration: underline; }
 .about-link:hover, .about-link[aria-current="page"] { text-decoration: underline; }
@@ -303,7 +310,7 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
   font-weight: 600;
   cursor: pointer;
 }
-.search-case:is(:hover, :focus-visible, [aria-pressed="true"]) {
+.search-case:is(:hover, :focus-visible, [data-selected="true"]) {
   color: var(--accent-strong);
   outline: none;
   text-decoration: underline;
@@ -378,14 +385,14 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
   overscroll-behavior: contain;
 }
 .search-tag { overflow-wrap: anywhere; }
-.search-tag:is(:hover, :focus-visible, [aria-pressed="true"]) {
+.search-tag:is(:hover, :focus-visible, [data-selected="true"]) {
   border-color: var(--accent);
   color: var(--accent);
 }
-.search-tag[aria-pressed="true"] {
+.search-tag[data-selected="true"] {
   background: var(--soft-accent);
 }
-.search-tag[aria-pressed="true"]:is(:hover, :focus-visible) {
+.search-tag[data-selected="true"]:is(:hover, :focus-visible) {
   border-color: var(--accent-strong);
   color: var(--accent-strong);
 }
@@ -704,9 +711,9 @@ h3 {
 .tag-chip:has(.tag-count) { padding-inline-end: 0.5rem; }
 .tag-option { position: relative; display: inline-flex; align-items: center; max-width: 100%; border: 1px solid var(--line-dark); border-radius: 999px; background: var(--surface); }
 .tag-option:has(> .tag-chip.is-ancestor) { border-color: var(--accent-strong); }
-.tag-option:has(> .tag-chip[aria-pressed="true"]) { background: var(--soft-accent); border-color: var(--accent); box-shadow: none; }
+.tag-option:has(> .tag-chip[data-selected="true"]) { background: var(--soft-accent); border-color: var(--accent); box-shadow: none; }
 .tag-option > .tag-chip, .tag-option > .tag-chip:is(:hover, :focus-visible) { min-width: 0; min-height: calc(var(--minimum-touch-target) - 2px); border: 0; background: transparent; box-shadow: none; transform: none; }
-.tag-option > .tag-chip[aria-pressed="true"] { color: var(--accent-strong); }
+.tag-option > .tag-chip[data-selected="true"] { color: var(--accent-strong); }
 .tag-option.is-excluded { background: var(--code-bg); border-color: var(--line); box-shadow: none; }
 .tag-option.is-excluded .tag-chip, .tag-option.is-excluded .tag-count { color: var(--muted); cursor: pointer; }
 .tag-option.is-excluded .tag-count { background: var(--line); }
@@ -745,8 +752,8 @@ h3 {
 .tag-option:has(.tag-count:hover, .tag-exclude:hover) .tag-exclude::after { opacity: 1; visibility: visible; transition: opacity 0s 1.2s, visibility 0s 1.2s; }
 .tag-exclude:focus-visible::after { opacity: 1; visibility: visible; transition: none; }
 .tag-exclude svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.tag-exclude [data-exclude-icon="restore"], .tag-exclude[aria-pressed="true"] [data-exclude-icon="remove"] { display: none; }
-.tag-exclude[aria-pressed="true"] [data-exclude-icon="restore"] { display: block; }
+.tag-exclude [data-exclude-icon="restore"], .tag-exclude[data-selected="true"] [data-exclude-icon="remove"] { display: none; }
+.tag-exclude[data-selected="true"] [data-exclude-icon="restore"] { display: block; }
 /* Keyboard focus and a focused touch selection expose the same action. */
 @media (hover: none), (pointer: coarse) {
   .tag-option:focus-within .tag-exclude { opacity: 1; visibility: visible; transition: none; }
@@ -776,14 +783,14 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 .toolbar-view > .view-switch { position: relative; display: flex; flex-direction: row; width: auto; height: var(--header-control-size); overflow: hidden; padding: 0; gap: var(--header-control-gap); border: 0; box-shadow: none; }
 .toolbar-view > .view-switch::after { content: ""; position: absolute; z-index: 2; inset: 0; border: 1px solid var(--line-dark); border-radius: inherit; pointer-events: none; }
 .toolbar-view .view-switch button { border-color: transparent; }
-.toolbar-view .view-switch button:is([aria-pressed="true"], :hover, :focus-visible) { position: relative; z-index: 3; }
+.toolbar-view .view-switch button:is([data-selected="true"], :hover, :focus-visible) { position: relative; z-index: 3; }
 @media (max-width: 700px) {
   .toolbar-view { display: none; }
 }
 .filter-controls { min-width: 0; }
 .filter-reset-slot { display: block; flex: 0 0 var(--minimum-touch-target); width: var(--minimum-touch-target); height: var(--minimum-touch-target); }
 .view-switch button { display: grid; place-items: center; flex: 0 0 var(--minimum-touch-target); width: var(--minimum-touch-target); height: var(--minimum-touch-target); border: 1px solid var(--line-dark); border-radius: 50%; padding: 0.65rem; color: var(--ink); background: var(--surface); cursor: pointer; }
-.toolbar-view .view-switch button[aria-pressed="true"] { background: var(--inverse-bg); color: var(--inverse-ink); border-color: var(--inverse-bg); }
+.toolbar-view .view-switch button[data-selected="true"] { background: var(--inverse-bg); color: var(--inverse-ink); border-color: var(--inverse-bg); }
 .settings-toggle:is(:hover, :focus-visible, [aria-expanded="true"]),
 .settings-action:not(:disabled):is(:hover, :focus-visible),
 .accent-control:is(:hover, :focus-visible),
@@ -796,7 +803,7 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   border-color: var(--accent-strong);
   color: var(--accent-strong);
 }
-.toolbar-view .view-switch button[aria-pressed="true"]:is(:hover, :focus-visible) { background: var(--inverse-bg); color: var(--inverse-ink); border-color: var(--inverse-bg); }
+.toolbar-view .view-switch button[data-selected="true"]:is(:hover, :focus-visible) { background: var(--inverse-bg); color: var(--inverse-ink); border-color: var(--inverse-bg); }
 .view-control svg, .view-switch svg, .clear-filter svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .clear-filter { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 var(--minimum-touch-target); width: var(--minimum-touch-target); height: var(--minimum-touch-target); border: 1px solid var(--line-dark); border-radius: 50%; background: var(--surface); color: var(--ink); padding: 0.65rem; cursor: pointer; }
 .clear-filter:not(:disabled):is(:hover, :focus-visible) { border-color: var(--accent-strong); color: var(--accent-strong); }
@@ -880,16 +887,16 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   color: var(--ink);
   cursor: pointer;
 }
-.pin-toggle[aria-pressed="true"] {
+.pin-toggle[data-selected="true"] {
   background: var(--inverse-bg);
   color: var(--inverse-ink);
   border-color: var(--inverse-bg);
 }
 .pin-toggle svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
 .pin-toggle[aria-pressed="false"] .pin-head { fill: none; }
-.pin-toggle[aria-pressed="true"] .pin-head { fill: currentColor; }
+.pin-toggle[data-selected="true"] .pin-head { fill: currentColor; }
 .pin-toggle[aria-pressed="false"]:not(:disabled):is(:hover, :focus-visible) { box-shadow: 0 0 0 3px var(--soft-accent); }
-.pin-toggle[aria-pressed="true"]:hover { box-shadow: 0 0 0 3px var(--soft-accent); }
+.pin-toggle[data-selected="true"]:hover { box-shadow: 0 0 0 3px var(--soft-accent); }
 .pin-toggle:disabled { cursor: default; }
 .post-engagement {
   display: inline-grid;
@@ -934,7 +941,7 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   font-weight: 700;
   line-height: 1;
 }
-.post-vote[aria-pressed="true"] .post-vote-count { color: var(--accent); }
+.post-vote[data-selected="true"] .post-vote-count { color: var(--accent); }
 .post-vote:hover:not(:disabled) { box-shadow: inset 0 0 0 3px var(--soft-accent); }
 .post-vote:focus-visible { outline-offset: -3px; }
 .post-vote:disabled { cursor: default; opacity: 0.55; }
@@ -1336,8 +1343,8 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   bottom: max(1rem, env(safe-area-inset-bottom));
   display: grid;
   place-items: center;
-  width: 2.9rem;
-  height: 2.9rem;
+  width: var(--minimum-touch-target);
+  height: var(--minimum-touch-target);
   border: 1px solid var(--line-dark);
   border-radius: 50%;
   background: var(--inverse-bg);
@@ -1534,7 +1541,7 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 .comment-providers { display: flex; flex-wrap: wrap; gap: .4rem; }
 [data-ssm-comments] button, [data-ssm-comments] select, .comment-account-dialog input, .comment-editor-dialog input { font: inherit; font-size: .875rem; border: 1px solid var(--line); border-radius: .45rem; padding: .48rem .7rem; background: var(--paper); color: var(--ink); }
 [data-ssm-comments] button { cursor: pointer; }
-[data-ssm-comments] button:hover:not(:disabled), [data-ssm-comments] button[aria-pressed="true"] { border-color: var(--accent-strong); color: var(--accent-strong); background: var(--surface); }
+[data-ssm-comments] button:hover:not(:disabled), [data-ssm-comments] button[data-selected="true"] { border-color: var(--accent-strong); color: var(--accent-strong); background: var(--surface); }
 [data-ssm-comments] button:disabled { opacity: .48; cursor: not-allowed; }
 [data-ssm-comments] .comment-provider-button { display: grid; place-items: center; flex: 0 0 var(--minimum-touch-target); inline-size: var(--minimum-touch-target); block-size: var(--minimum-touch-target); padding: .7rem; border-color: var(--line-dark); border-radius: 50%; background: var(--surface); }
 [data-ssm-comments] .comment-provider-button:hover:not(:disabled) { background: var(--soft-accent); }
@@ -1647,17 +1654,17 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   background: var(--surface-translucent);
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
 }
-.post-card:has([data-pin-toggle][aria-pressed="true"]) {
+.post-card:has([data-pin-toggle][data-selected="true"]) {
   box-shadow: -.32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
 }
-.unread-card:has([data-pin-toggle][aria-pressed="true"]) {
+.unread-card:has([data-pin-toggle][data-selected="true"]) {
   background: var(--unread-bg);
   box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
 }
-[dir="rtl"] .post-card:has([data-pin-toggle][aria-pressed="true"]) {
+[dir="rtl"] .post-card:has([data-pin-toggle][data-selected="true"]) {
   box-shadow: .32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
 }
-[dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]) {
+[dir="rtl"] .unread-card:has([data-pin-toggle][data-selected="true"]) {
   box-shadow: .32rem 0 0 var(--accent), var(--shadow);
 }
 
@@ -1668,7 +1675,7 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   --post-frame-color: var(--line-dark);
   border-color: var(--line-dark) !important;
 }
-.post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+.post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   --post-frame-color: color-mix(in srgb, var(--line-dark) 72%, #000);
   border-color: color-mix(in srgb, var(--line-dark) 72%, #000) !important;
   box-shadow: -.32rem 0 0 color-mix(in srgb, var(--line-dark) 72%, #000), 0 1px 0 rgba(0, 0, 0, 0.03);
@@ -1677,13 +1684,13 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   --post-frame-color: var(--accent-strong);
   border-color: var(--accent-strong) !important;
 }
-.unread-card:has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+.unread-card:has([data-pin-toggle][data-selected="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   box-shadow: -.32rem 0 0 var(--accent-strong), var(--shadow);
 }
-[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   box-shadow: .32rem 0 0 color-mix(in srgb, var(--line-dark) 72%, #000), 0 1px 0 rgba(0, 0, 0, 0.03);
 }
-[dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+[dir="rtl"] .unread-card:has([data-pin-toggle][data-selected="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   box-shadow: .32rem 0 0 var(--accent-strong), var(--shadow);
 }
 /* Contain the lowered stats layer without creating a stacking context on
@@ -1941,27 +1948,27 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   --post-frame-color: var(--line);
   border-color: var(--line) !important;
 }
-.post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:hover),
-.post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:focus-within) {
+.post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):has(.post-engagement:hover),
+.post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):has(.post-engagement:focus-within) {
   box-shadow: -.32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
 }
-.unread-card:has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:hover),
-.unread-card:has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:focus-within) {
+.unread-card:has([data-pin-toggle][data-selected="true"]):has(.post-engagement:hover),
+.unread-card:has([data-pin-toggle][data-selected="true"]):has(.post-engagement:focus-within) {
   box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
 }
-[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:hover),
-[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:focus-within) {
+[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):has(.post-engagement:hover),
+[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):has(.post-engagement:focus-within) {
   box-shadow: .32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
 }
-[dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:hover),
-[dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(.post-engagement:focus-within) {
+[dir="rtl"] .unread-card:has([data-pin-toggle][data-selected="true"]):has(.post-engagement:hover),
+[dir="rtl"] .unread-card:has([data-pin-toggle][data-selected="true"]):has(.post-engagement:focus-within) {
   box-shadow: .32rem 0 0 var(--accent), var(--shadow);
 }
 
 /* A selected upvote sits above the post boundary. Its resting selected
    state uses --accent; only hovering/focusing the upvote itself strengthens
    it to --accent-strong. No other engagement hover changes the selected tab. */
-.post-engagement .post-vote[aria-pressed="true"] {
+.post-engagement .post-vote[data-selected="true"] {
   z-index: 7;
   color: var(--accent);
   border-block-end-color: var(--accent);
@@ -1979,22 +1986,22 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   box-shadow: inset 0 1px 0 var(--accent-strong);
   outline: none;
 }
-.post-engagement .post-vote[aria-pressed="true"]:hover:not(:disabled),
-.post-engagement .post-vote[aria-pressed="true"]:focus-visible {
+.post-engagement .post-vote[data-selected="true"]:hover:not(:disabled),
+.post-engagement .post-vote[data-selected="true"]:focus-visible {
   color: var(--accent-strong);
 }
 .post-engagement .post-vote:hover:not(:disabled) svg,
 .post-engagement .post-vote:focus-visible svg {
   color: var(--accent-strong);
 }
-.post-engagement .post-vote[aria-pressed="true"] svg,
-.post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
+.post-engagement .post-vote[data-selected="true"] svg,
+.post-engagement .post-vote[data-selected="true"] .post-vote-count {
   color: var(--accent);
 }
-.post-engagement .post-vote[aria-pressed="true"]:hover:not(:disabled) svg,
-.post-engagement .post-vote[aria-pressed="true"]:focus-visible svg,
-.post-engagement .post-vote[aria-pressed="true"]:hover:not(:disabled) .post-vote-count,
-.post-engagement .post-vote[aria-pressed="true"]:focus-visible .post-vote-count {
+.post-engagement .post-vote[data-selected="true"]:hover:not(:disabled) svg,
+.post-engagement .post-vote[data-selected="true"]:focus-visible svg,
+.post-engagement .post-vote[data-selected="true"]:hover:not(:disabled) .post-vote-count,
+.post-engagement .post-vote[data-selected="true"]:focus-visible .post-vote-count {
   color: var(--accent-strong);
 }
 
@@ -2007,10 +2014,10 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 }
 /* Active upvotes reveal the existing top border without changing geometry.
    Suppress the old inset stroke so the top edge is painted only once. */
-.post-card > .post-engagement > .post-vote:is([aria-pressed="true"], :hover, :focus-visible) {
+.post-card > .post-engagement > .post-vote:is([data-selected="true"], :hover, :focus-visible) {
   box-shadow: none;
 }
-.post-card > .post-engagement > .post-vote[aria-pressed="true"] {
+.post-card > .post-engagement > .post-vote[data-selected="true"] {
   border-block-start-color: var(--accent);
 }
 .post-card > .post-engagement > .post-vote:hover:not(:disabled),
@@ -2032,7 +2039,7 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 /* Language preferences reuse the topic pills without checkmarks or icon slots. */
 .subscribe-dialog .language-options { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; margin-block-start: .65rem; }
 .subscribe-dialog .language-select-all { min-height: 2.4rem; border: 1px solid var(--line-dark); border-radius: 999px; padding: .4rem .8rem; background: var(--surface); color: var(--ink); font: inherit; font-size: .875rem; font-weight: 700; cursor: pointer; }
-.subscribe-dialog .language-select-all[aria-pressed="true"] { border-color: var(--accent-strong); background: var(--soft-accent); color: var(--accent-strong); box-shadow: inset 0 0 0 1px var(--accent-strong); }
+.subscribe-dialog .language-select-all[data-selected="true"] { border-color: var(--accent-strong); background: var(--soft-accent); color: var(--accent-strong); box-shadow: inset 0 0 0 1px var(--accent-strong); }
 .subscribe-dialog .language-select-all:is(:hover,:focus-visible) { border-color: var(--accent-strong); }
 .subscribe-dialog .topic-option span { gap: 0; }
 .subscribe-dialog .topic-option span::before { content: none; display: none; }
@@ -2047,231 +2054,3 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 .read-toggle.round-control { border: 1px solid var(--line-dark); background: var(--surface); color: var(--ink); }
 .read-toggle.round-control:is(:hover, :focus-visible) { border-color: var(--accent-strong); }
 .read-toggle.round-control[aria-checked="true"]::before { color: var(--ink); }
-
-/* Directory starts just below the site divider, without the article's
-   extra heading margin. Hidden inline readers keep their usual spacing. */
-.site-main:has(> [data-reader-article][data-directory]:not([hidden])) {
-  padding-block-start: .75rem;
-}
-[data-reader-article][data-directory] > .article-header > .article-heading {
-  margin-block-start: 0;
-}
-
-.hierarchy-map { min-width: 0; margin-block: 1.5rem; font-family: var(--font-content); }
-.hierarchy-map [hidden] { display: none !important; }
-.map-stage { position: relative; border: 1px solid var(--line-dark); border-radius: .8rem; background: var(--paper); overflow: hidden; }
-.map-toolbar { position: absolute; z-index: 3; inset-inline-start: .75rem; bottom: .75rem; display: flex; flex-direction: column; align-items: stretch; gap: 4px; width: var(--control-size); margin: 0; }
-.map-history-controls { display: flex; justify-content: space-between; gap: 4px; }
-.map-toolbar button, .map-toolbar > a { display: inline-flex; justify-content: center; align-items: center; min-width: var(--control-size); min-height: var(--control-size); height: var(--control-size); padding: 4px 8px; border: 1px solid var(--line-dark); border-radius: 1.5rem; color: var(--ink); background: var(--paper); font: inherit; font-size: 13px; line-height: 1.2; text-decoration: none; cursor: pointer; }
-.map-toolbar button:not(:disabled):is(:hover, :focus-visible), .map-toolbar > a:hover { color: var(--accent-strong); border-color: var(--accent-strong); }
-.map-toolbar button:disabled { opacity: .45; cursor: default; }
-.map-toolbar output { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
-.map-viewport { max-width: 100%; min-height: 12rem; max-height: clamp(22rem, 60vh, 38rem); overflow: auto; overscroll-behavior: auto; touch-action: pan-x pan-y; direction: ltr; background: var(--paper); cursor: grab; }
-.map-viewport.is-panning, .map-viewport.is-panning * { cursor: grabbing; user-select: none; }
-.map-sizer { position: relative; margin-inline: auto; }
-.map-canvas { position: relative; width: max-content; padding: 2rem; transform-origin: left top; }
-.map-enhanced .map-canvas { position: absolute; top: 0; left: 0; }
-.map-levels { display: flex; flex-direction: column; align-items: center; gap: 4rem; }
-.map-level { display: grid; grid-template-columns: repeat(var(--map-columns), max-content); justify-content: center; justify-items: center; align-items: start; gap: 2rem; }
-html[dir="rtl"] .map-level { direction: rtl; }
-.article-body .map-node { position: relative; max-width: 20rem; color: var(--ink); text-decoration: none; font-family: var(--font-interface); line-height: normal; }
-.article-body .map-node:is(:hover, :focus-visible), .map-node .tag-count { color: var(--accent); }
-.article-body .map-node:hover { border-color: var(--accent); }
-.map-node-copy { display: flex; flex-direction: column; gap: .2rem; }
-html[lang="he"] .map-node { font-family: var(--font-interface-hebrew), var(--font-content); }
-@media (min-width: 701px) { .map-node { padding-block: .4rem; } }
-.article-body .map-external-node { border-style: dashed; }
-.map-edges { position: absolute; inset: 0; overflow: visible; pointer-events: none; color: var(--muted); }
-.map-edges marker path { fill: currentColor; }
-.map-edge { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-dasharray: none; }
-.hierarchy-map :is(a, button, [tabindex]):not(.tag-count):focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 3px; }
-.article-body .map-node > a.tag-count:focus-visible { outline: none; color: var(--accent-strong); text-decoration: underline; text-underline-offset: .15em; }
-html[lang="he"] .hierarchy-map { font-family: var(--font-interface-hebrew), var(--font-content); }
-
-
-/* The navigation arrows use the same round frames and accent as post controls. */
-.map-toolbar .map-history-button { flex: 0 0 var(--control-size); width: var(--control-size); height: var(--control-size); padding: 7px; border-radius: 50%; }
-.map-history-button svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-html[dir="rtl"] .map-history-button svg { transform: scaleX(-1); }
-
-.hierarchy-map .map-filter-bar { border: 0; padding-top: 0; }
-.map-filters { font-family: var(--font-interface); font-size: 1rem; line-height: normal; }
-.article-body .map-filters .tag-chip { color: var(--ink); text-decoration: none; }
-html[lang="he"] .map-filters { font-family: var(--font-interface-hebrew), var(--font-content); }
-.map-filter-empty { padding: 2rem; margin: 0; font-size: 1.15rem; }
-
-.map-zoom-control { position: relative; }
-.map-zoom-control > button { width: 100%; font-variant-numeric: tabular-nums; }
-.map-zoom-panel { position: absolute; z-index: 2; inset-inline-start: calc(100% + .5rem); bottom: 0; display: flex; align-items: center; width: min(12rem, calc(100vw - 10rem)); min-height: var(--minimum-touch-target); padding: .6rem .8rem; border: 1px solid var(--line-dark); border-radius: 1.5rem; background: var(--surface); }
-.map-zoom-panel input { width: 100%; min-width: 0; margin: 0; accent-color: var(--accent); direction: ltr; cursor: pointer; }
-
-.map-enhanced { overflow: clip; touch-action: pan-x pan-y; min-height: 8rem; }
-.map-enhanced .map-sizer { position: absolute; inset: 0; margin: 0; pointer-events: none; }
-.map-enhanced .map-canvas { pointer-events: auto; }
-.map-viewport { position: relative; }
-.map-filter-empty { min-height: 8rem; }
-
-.map-filter-empty { display: flex; align-items: center; justify-content: center; padding: 1rem 7.5rem; }
-
-.map-switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: max-content; max-width: 100%; padding: 5px; margin-bottom: 1rem; border: 1px solid var(--line-dark); border-radius: 999px; background: var(--surface); }
-.article-body .map-switch a { position: relative; display: flex; justify-content: center; min-width: 3rem; min-height: var(--minimum-touch-target); align-items: center; padding: .5rem .75rem; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--ink); text-decoration: none; font-family: var(--font-interface); }
-.article-body .map-switch [aria-current="true"] { color: var(--accent); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 15%, var(--paper)); }
-html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-hebrew), var(--font-content); }
-
-/* One stable frame for every Directory view, including empty results. */
-.map-ready .map-stage { height: clamp(33rem, 90vh, 57rem); }
-.map-ready [data-map-view], .map-ready .map-viewport, .map-ready .map-filter-empty { height: 100%; }
-.map-ready .map-viewport { min-height: 0; max-height: none; }
-
-.map-switch svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
-
-/* Keep Read beside the mode switch as one stable, direction-aware row. */
-.map-stage > .map-mode-controls { position: absolute; z-index: 4; inset-inline-start: .5rem; top: .5rem; display: flex; align-items: center; gap: var(--control-capsule-gap, .5rem); max-width: calc(100% - 1rem); margin: 0; }
-.map-mode-controls > :is(.map-switch, .map-read-filter) { flex: 0 0 auto; margin: 0; }
-.map-toolbar { width: var(--control-size); gap: 8px; }
-.map-history-controls { flex-direction: column; gap: 8px; align-items: center; }
-.map-toolbar .map-history-button { flex-basis: var(--control-size); }
-.map-zoom-control { order: -1; width: var(--control-size); height: var(--control-size); }
-.map-zoom-control > button { position: relative; width: var(--control-size); height: var(--control-size); min-height: var(--control-size); padding: 0; border-radius: 50%; font-size: 12px; }
-.map-zoom-control:has([aria-expanded="true"]) > button { visibility: hidden; }
-.map-zoom-panel { inset-inline-start: 0; bottom: 0; width: var(--control-size); height: calc(5 * var(--control-size)); padding: 14px 0 52px; border-radius: var(--control-radius); justify-content: center; background: var(--paper); transform-origin: bottom; animation: map-zoom-open .16s ease-out; }
-.map-zoom-panel [type="range"] { writing-mode: vertical-lr; direction: rtl; width: 24px; height: 100%; }
-.map-zoom-entry { position: absolute; bottom: 0; left: 0; width: var(--control-inner-size); height: var(--control-inner-size); display: flex; align-items: center; justify-content: center; direction: ltr; font-size: 11px; }
-.map-zoom-entry input { appearance: textfield; width: 26px; padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; text-align: right; }
-.map-zoom-entry input::-webkit-inner-spin-button, .map-zoom-entry input::-webkit-outer-spin-button { appearance: none; margin: 0; }
-@keyframes map-zoom-open { from { clip-path: inset(80% 0 0 round var(--control-radius)); } to { clip-path: inset(0 round var(--control-radius)); } }
-@media (prefers-reduced-motion: reduce) { .map-zoom-panel { animation: none; } }
-
-.map-zoom-entry input:focus-visible { outline: none; }
-.map-zoom-panel:focus-within { border-color: var(--accent); }
-
-.article-body span.map-node { cursor: default; }
-
-.article-body .map-node > a.map-node-copy { color: inherit; text-decoration: none; }
-.map-node > a.map-node-copy::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
-.article-body .map-node > a.tag-count { position: relative; z-index: 1; color: var(--accent); text-decoration: none; cursor: pointer; }
-.article-body .map-node:focus-within { color: var(--accent); border-color: var(--accent); }
-
-/* Library filters overlay the frame beside the mode switch. */
-[data-reader-article][data-directory] .map-stage > .map-filter-bar {
-  position: absolute;
-  z-index: 4;
-  inset-block-start: .5rem;
-  inset-inline-start: var(--directory-control-inset, .5rem);
-  inset-inline-end: .75rem;
-  margin: 0;
-  padding: 6px 0;
-  overflow: visible;
-}
-[data-directory] .map-filter-bar .tag-list { flex-wrap: wrap; }
-[data-directory] .map-filter-bar .tag-list.tag-subgroup { display: flex; flex-basis: 100%; }
-[data-directory] .map-filter-bar .tag-option { flex: 0 0 auto; }
-[data-directory] .map-filter-bar .tag-descendant-list:empty { display: none; }
-
-/* Personal Read reuses the normal pill, count, selected and exclude states. */
-[data-personal-read-filter] .tag-count { font-variant-numeric: tabular-nums; width: auto; padding-inline: .3em; }
-[data-personal-read-filter] > .tag-chip:disabled { cursor: default; }
-/* Read and the mode switch share a row independent of Library subject filters. */
-[data-directory] .map-stage > .map-filter-bar {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row-reverse;
-  align-items: flex-start;
-  gap: var(--control-capsule-gap);
-}
-[data-directory] .map-stage > :is(.map-filter-bar, .map-mode-controls) {
-  font-family: var(--font-interface);
-  font-size: 1rem;
-  line-height: normal;
-}
-html[lang="he"] [data-directory] .map-stage > :is(.map-filter-bar, .map-mode-controls) { font-family: var(--font-interface-hebrew), var(--font-content); }
-.map-read-filter { flex: 0 0 auto; }
-/* The personal tree control inherits the main menu's count-only hover delay,
-   X/restore icons, keyboard access and touch restore states without overrides. */
-/* Preserve native Tab transfer while focus moves between the two buttons. */
-:root .map-read-filter.tag-option.is-keyboard-active .tag-exclude { opacity: 1; visibility: visible; transition: none; }
-:root .map-read-filter.tag-option.is-keyboard-active .tag-count { opacity: 0; transition: none; }
-[data-directory] .map-filter-bar > .map-filters { flex: 1 1 10rem; min-width: 0; }
-/* Dimming is visual only: node links, count links, branches and connectors remain. */
-[data-hierarchy-map][data-dim-read="true"] .map-node[data-read-complete="true"],
-[data-hierarchy-map][data-dim-unread="true"] .map-node[data-unread-complete="true"] {
-  filter: grayscale(1);
-  opacity: .6;
-}
-
-/* The reset slot is only a layout host. The button owns the shared compact
-   control inset, so adding the wrapper must never offset it from adjacent tags. */
-:root .subject-nav .tag-list > .filter-reset-slot {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-
-/* One edge inset owns both axes of every ordinary post tile. Do not split the
-   block and inline spacing: resizing cards or changing layouts must preserve
-   exactly the same distance from the top and logical side borders to content. */
-:root .post-card:not(.directory-card) {
-  --post-card-content-inset: var(--surface-padding);
-  --post-card-padding-inline: var(--post-card-content-inset);
-  --post-card-padding-block: var(--post-card-content-inset);
-  padding: var(--post-card-content-inset);
-}
-
-/* List/reader tags keep their horizontal drag row. Tiled cards use all available
-   width and move complete tag capsules onto additional rows. */
-.post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  overflow: visible;
-}
-.post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tag {
-  max-width: 100%;
-  min-width: 0;
-  flex: 0 1 auto;
-}
-.post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags > :nth-child(1 of :not([hidden])) {
-  margin-inline-start: 0;
-}
-
-/* One global spacing token owns the compact interface chrome: header-to-rule,
-   rule-to-tags, inter-control/inter-tag spacing, and tag-row edge spacing.
-   Post rows deliberately keep their own geometry because their engagement tabs
-   live outside the card border; post-layout.css reserves that space and gives
-   only Directory -> first post the reduced row distance. */
-:root {
-  --interface-gap: var(--tag-capsule-gap, .25rem);
-}
-:root .site-header {
-  min-height: 0;
-  padding-block: var(--interface-gap);
-  gap: var(--interface-gap);
-}
-:root .header-controls {
-  --header-control-gap: var(--interface-gap) !important;
-  --header-control-half-gap: calc(var(--interface-gap) / 2) !important;
-  gap: var(--interface-gap);
-}
-:root .toolbar-view > .view-switch {
-  gap: var(--interface-gap) !important;
-}
-:root :is(.subject-nav, .tag-list) {
-  gap: var(--interface-gap) !important;
-}
-:root .browser-toolbar {
-  padding-block: var(--interface-gap);
-  margin-block-end: var(--interface-gap);
-}
-
-/* The brand uses the same compact height as the header controls instead of the
-   full-size control family. Width stays content-driven for the SSM lettering. */
-:root .wordmark {
-  min-height: var(--compact-control-size) !important;
-  height: var(--compact-control-size) !important;
-  padding-block: 0 !important;
-  padding-inline: calc(3 * var(--interface-gap)) !important;
-  border-radius: var(--control-radius) !important;
-}

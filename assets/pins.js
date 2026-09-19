@@ -77,6 +77,7 @@ export function initializePins(document, window) {
       const button = card.querySelector("[data-pin-toggle]");
       button.disabled = false;
       button.setAttribute("aria-pressed", String(pinned));
+      button.dataset.selected = String(pinned);
       button.setAttribute("aria-label", pinned ? button.dataset.labelUnpin : button.dataset.labelPin);
       button.title = button.getAttribute("aria-label");
     }

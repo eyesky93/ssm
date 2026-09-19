@@ -8,14 +8,6 @@ html { scrollbar-gutter: stable; }
    Other links and keyboard-focus outlines keep their existing styling. */
 .post-card h2 a:hover { text-decoration: none; }
 
-/* SSM keeps its monochrome background and lettering on every page and in
-   every interaction state. Only switching the site theme inverts its colors. */
-.wordmark,
-.wordmark:is(:hover, :focus, :focus-visible, :active, :visited) {
-  background: var(--inverse-bg);
-  color: var(--inverse-ink);
-  text-decoration: none;
-}
 /* Removing the separate Home link must not move the date away from the edge. */
 .article-topline .article-meta { margin-inline-start: auto; }
 
@@ -329,7 +321,7 @@ html { scrollbar-gutter: stable; }
    above scrolling page/graph content without inheriting article transforms.
    All buttons retain the original Back to top size, inverse fill and shadow. */
 .reader-controls {
-  --reader-control-size: 2.9rem;
+  --reader-control-size: var(--minimum-touch-target);
   position: fixed;
   inset-inline-end: max(1rem, env(safe-area-inset-right));
   inset-block-end: max(1rem, env(safe-area-inset-bottom));

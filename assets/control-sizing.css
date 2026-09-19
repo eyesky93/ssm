@@ -5,7 +5,6 @@
    quiet card actions and engagement tabs remain separate control variants. */
 :root {
   --control-size: 1.9575rem;
-  --minimum-touch-target: 2.75rem;
   --control-radius: calc(var(--control-size) * .16);
   --control-inner-radius: max(0px, calc(var(--control-radius) - 1px));
   --control-capsule-gap: .5rem;
@@ -1292,8 +1291,8 @@
 /* The count badge already uses --soft-accent. Restore that same fill to the
    hovered/focused tag surface without changing selected or excluded states.
    Split filter tags paint on their outer frame; standalone chips paint directly. */
-:root body .tag-option:not(.is-excluded):not(:has(> .tag-chip[aria-pressed="true"])):is(:hover, :has(:focus-visible)),
-:root body .tag-chip:not([aria-pressed="true"]):not(.tag-option > .tag-chip):is(:hover, :focus-visible) {
+:root body .tag-option:not(.is-excluded):not(:has(> .tag-chip[data-selected="true"])):is(:hover, :has(:focus-visible)),
+:root body .tag-chip:not([data-selected="true"]):not(.tag-option > .tag-chip):is(:hover, :focus-visible) {
   background: var(--soft-accent);
 }
 
@@ -1347,7 +1346,7 @@
   display: none;
 }
 
-:root .tag-option:not(.is-excluded):not(:has(> .tag-chip[aria-pressed="true"])):hover {
+:root .tag-option:not(.is-excluded):not(:has(> .tag-chip[data-selected="true"])):hover {
   border-color: var(--accent);
 }
 /* The legacy combined post-tag anchor remains in the DOM only as the
@@ -1359,43 +1358,43 @@
 }
 /* Unselected counts keep the base accent; only their label changes
    to that same accent on hover or visible keyboard focus. */
-:root .tag-option:not(.is-excluded) > .tag-chip:not([aria-pressed="true"]) .tag-count {
+:root .tag-option:not(.is-excluded) > .tag-chip:not([data-selected="true"]) .tag-count {
   color: var(--accent);
 }
-:root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip:not([aria-pressed="true"]) {
+:root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip:not([data-selected="true"]) {
   color: var(--accent);
 }
 /* Selected tags keep the soft fill while their label, count and frame
    share one accent state. Excluded tags and the delayed hide action keep
    their existing neutral styling and behavior. */
-:root .tag-option:not(.is-excluded):has(> .tag-chip[aria-pressed="true"]) {
+:root .tag-option:not(.is-excluded):has(> .tag-chip[data-selected="true"]) {
   background: var(--soft-accent);
   border-color: var(--accent);
 }
-:root .tag-option:not(.is-excluded) > .tag-chip[aria-pressed="true"],
-:root .tag-option:not(.is-excluded) > .tag-chip[aria-pressed="true"] .tag-count {
+:root .tag-option:not(.is-excluded) > .tag-chip[data-selected="true"],
+:root .tag-option:not(.is-excluded) > .tag-chip[data-selected="true"] .tag-count {
   color: var(--accent);
 }
-:root .tag-option:not(.is-excluded):has(> .tag-chip[aria-pressed="true"]):is(:hover, :has(:focus-visible)) {
+:root .tag-option:not(.is-excluded):has(> .tag-chip[data-selected="true"]):is(:hover, :has(:focus-visible)) {
   border-color: var(--accent-strong);
 }
-:root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[aria-pressed="true"],
-:root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[aria-pressed="true"] .tag-count {
+:root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[data-selected="true"],
+:root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[data-selected="true"] .tag-count {
   color: var(--accent-strong);
 }
 /* Article-page tags mirror the filter-chip palette. Their selected state
    is exposed by post-browser through aria-pressed, without changing tag
    navigation behavior or geometry. */
-:root .article-tag[aria-pressed="true"] {
+:root .article-tag[data-selected="true"] {
   background: var(--soft-accent);
   color: var(--accent);
   border-color: var(--accent);
 }
-:root .article-tag[aria-pressed="true"]:is(:hover, :focus-visible) {
+:root .article-tag[data-selected="true"]:is(:hover, :focus-visible) {
   color: var(--accent-strong);
   border-color: var(--accent-strong);
 }
-:root .article-tag:not([aria-pressed="true"]):is(:hover, :focus-visible) {
+:root .article-tag:not([data-selected="true"]):is(:hover, :focus-visible) {
   color: var(--accent);
   border-color: var(--accent);
 }
@@ -1447,25 +1446,25 @@
   color: var(--line-dark);
   border-color: var(--line-dark);
 }
-:root .post-engagement .post-vote[aria-pressed="true"] {
+:root .post-engagement .post-vote[data-selected="true"] {
   background: var(--soft-accent);
 }
-:root .post-engagement .post-vote[aria-pressed="true"] svg,
-:root .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
+:root .post-engagement .post-vote[data-selected="true"] svg,
+:root .post-engagement .post-vote[data-selected="true"] .post-vote-count {
   color: var(--accent);
 }
 :root .post-engagement .post-vote:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
   color: var(--accent-strong);
   border-inline-start-color: var(--accent-strong);
 }
-:root .post-engagement .post-vote[aria-pressed="true"]:is(:hover, :focus-visible):not(:disabled) svg,
-:root .post-engagement .post-vote[aria-pressed="true"]:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
+:root .post-engagement .post-vote[data-selected="true"]:is(:hover, :focus-visible):not(:disabled) svg,
+:root .post-engagement .post-vote[data-selected="true"]:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
   color: var(--accent-strong);
 }
-:root .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
+:root .post-engagement .post-vote[data-selected="true"] .post-vote-count {
   border-inline-start-color: var(--accent);
 }
-:root .post-engagement .post-vote[aria-pressed="true"]:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
+:root .post-engagement .post-vote[data-selected="true"]:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
   border-inline-start-color: var(--accent-strong);
 }
 /* Neutral hover shades strengthen toward the foreground, not toward
@@ -1495,12 +1494,12 @@
 :root :is(.control-highlight, .pin-toggle, .share-menu > summary):not(.quiet-control):is(:disabled, [aria-disabled="true"]) {
   box-shadow: none;
 }
-:root .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+:root .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   --post-frame-color: var(--line-strong);
   border-color: var(--line-strong) !important;
   box-shadow: -.32rem 0 0 var(--line-strong), 0 1px 0 rgba(0, 0, 0, 0.03);
 }
-:root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+:root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   box-shadow: .32rem 0 0 var(--line-strong), 0 1px 0 rgba(0, 0, 0, 0.03);
 }
 :root .post-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > .post-engagement::before {
@@ -1545,11 +1544,11 @@
   border-left: 0;
   border-right: 1px solid var(--line);
 }
-:root[dir="rtl"] .post-engagement .post-vote[aria-pressed="true"] {
+:root[dir="rtl"] .post-engagement .post-vote[data-selected="true"] {
   border-left-color: var(--accent);
   border-right-color: var(--accent);
 }
-:root[dir="rtl"] .post-engagement .post-vote[aria-pressed="true"] .post-vote-count {
+:root[dir="rtl"] .post-engagement .post-vote[data-selected="true"] .post-vote-count {
   border-left: 0;
   border-right: 1px solid var(--accent);
 }
@@ -1573,12 +1572,12 @@
   --post-frame-color: var(--line) !important;
   border-color: var(--line) !important;
 }
-:root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:hover),
-:root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
+:root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):has(> .post-engagement:hover),
+:root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):has(> .post-engagement:focus-within) {
   box-shadow: .32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03) !important;
 }
-:root[dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:hover),
-:root[dir="rtl"] .unread-card:has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement:focus-within) {
+:root[dir="rtl"] .unread-card:has([data-pin-toggle][data-selected="true"]):has(> .post-engagement:hover),
+:root[dir="rtl"] .unread-card:has([data-pin-toggle][data-selected="true"]):has(> .post-engagement:focus-within) {
   box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
 }
 

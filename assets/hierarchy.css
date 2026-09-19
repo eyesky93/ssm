@@ -1,0 +1,119 @@
+/* Directory starts just below the site divider, without the article's
+   extra heading margin. Hidden inline readers keep their usual spacing. */
+.site-main:has(> [data-reader-article][data-directory]:not([hidden])) {
+  padding-block-start: .75rem;
+}
+[data-reader-article][data-directory] > .article-header > .article-heading {
+  margin-block-start: 0;
+}
+
+.hierarchy-map { min-width: 0; margin-block: 1.5rem; font-family: var(--font-content); }
+.hierarchy-map [hidden] { display: none !important; }
+.map-stage { position: relative; border: 1px solid var(--line-dark); border-radius: .8rem; background: var(--paper); overflow: hidden; }
+.map-toolbar { position: absolute; z-index: 3; inset-inline-start: .75rem; bottom: .75rem; display: flex; flex-direction: column; align-items: stretch; gap: 4px; width: var(--control-size); margin: 0; }
+.map-history-controls { display: flex; justify-content: space-between; gap: 4px; }
+.map-toolbar button, .map-toolbar > a { display: inline-flex; justify-content: center; align-items: center; min-width: var(--control-size); min-height: var(--control-size); height: var(--control-size); padding: 4px 8px; border: 1px solid var(--line-dark); border-radius: 1.5rem; color: var(--ink); background: var(--paper); font: inherit; font-size: 13px; line-height: 1.2; text-decoration: none; cursor: pointer; }
+.map-toolbar button:not(:disabled):is(:hover, :focus-visible), .map-toolbar > a:hover { color: var(--accent-strong); border-color: var(--accent-strong); }
+.map-toolbar button:disabled { opacity: .45; cursor: default; }
+.map-toolbar output { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
+.map-viewport { max-width: 100%; min-height: 12rem; max-height: clamp(22rem, 60vh, 38rem); overflow: auto; overscroll-behavior: auto; touch-action: pan-x pan-y; direction: ltr; background: var(--paper); cursor: grab; }
+.map-viewport.is-panning, .map-viewport.is-panning * { cursor: grabbing; user-select: none; }
+.map-sizer { position: relative; margin-inline: auto; }
+.map-canvas { position: relative; width: max-content; padding: 2rem; transform-origin: left top; }
+.map-enhanced .map-canvas { position: absolute; top: 0; left: 0; }
+.map-levels { display: flex; flex-direction: column; align-items: center; gap: 4rem; }
+.map-level { display: grid; grid-template-columns: repeat(var(--map-columns), max-content); justify-content: center; justify-items: center; align-items: start; gap: 2rem; }
+html[dir="rtl"] .map-level { direction: rtl; }
+.article-body .map-node { position: relative; max-width: 20rem; color: var(--ink); text-decoration: none; font-family: var(--font-interface); line-height: normal; }
+.article-body .map-node:is(:hover, :focus-visible), .map-node .tag-count { color: var(--accent); }
+.article-body .map-node:hover { border-color: var(--accent); }
+.map-node-copy { display: flex; flex-direction: column; gap: .2rem; }
+html[lang="he"] .map-node { font-family: var(--font-interface-hebrew), var(--font-content); }
+@media (min-width: 701px) { .map-node { padding-block: .4rem; } }
+.article-body .map-external-node { border-style: dashed; }
+.map-edges { position: absolute; inset: 0; overflow: visible; pointer-events: none; color: var(--muted); }
+.map-edges marker path { fill: currentColor; }
+.map-edge { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-dasharray: none; }
+.hierarchy-map :is(a, button, [tabindex]):not(.tag-count):focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 3px; }
+.article-body .map-node > a.tag-count:focus-visible { outline: none; color: var(--accent-strong); text-decoration: underline; text-underline-offset: .15em; }
+html[lang="he"] .hierarchy-map { font-family: var(--font-interface-hebrew), var(--font-content); }
+
+
+/* The navigation arrows use the same round frames and accent as post controls. */
+.map-toolbar .map-history-button { flex: 0 0 var(--control-size); width: var(--control-size); height: var(--control-size); padding: 7px; border-radius: 50%; }
+.map-history-button svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+html[dir="rtl"] .map-history-button svg { transform: scaleX(-1); }
+
+.hierarchy-map .map-filter-bar { border: 0; padding-top: 0; }
+.map-filters { font-family: var(--font-interface); font-size: 1rem; line-height: normal; }
+.article-body .map-filters .tag-chip { color: var(--ink); text-decoration: none; }
+html[lang="he"] .map-filters { font-family: var(--font-interface-hebrew), var(--font-content); }
+.map-filter-empty { padding: 2rem; margin: 0; font-size: 1.15rem; }
+
+.map-zoom-control { position: relative; }
+.map-zoom-control > button { width: 100%; font-variant-numeric: tabular-nums; }
+.map-zoom-panel { position: absolute; z-index: 2; inset-inline-start: calc(100% + .5rem); bottom: 0; display: flex; align-items: center; width: min(12rem, calc(100vw - 10rem)); min-height: var(--minimum-touch-target); padding: .6rem .8rem; border: 1px solid var(--line-dark); border-radius: 1.5rem; background: var(--surface); }
+.map-zoom-panel input { width: 100%; min-width: 0; margin: 0; accent-color: var(--accent); direction: ltr; cursor: pointer; }
+
+.map-enhanced { overflow: clip; touch-action: pan-x pan-y; min-height: 8rem; }
+.map-enhanced .map-sizer { position: absolute; inset: 0; margin: 0; pointer-events: none; }
+.map-enhanced .map-canvas { pointer-events: auto; }
+.map-viewport { position: relative; }
+.map-filter-empty { min-height: 8rem; }
+
+.map-filter-empty { display: flex; align-items: center; justify-content: center; padding: 1rem 7.5rem; }
+
+.map-switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: max-content; max-width: 100%; padding: 5px; margin-bottom: 1rem; border: 1px solid var(--line-dark); border-radius: 999px; background: var(--surface); }
+.article-body .map-switch a { position: relative; display: flex; justify-content: center; min-width: 3rem; min-height: var(--minimum-touch-target); align-items: center; padding: .5rem .75rem; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--ink); text-decoration: none; font-family: var(--font-interface); }
+.article-body .map-switch [aria-current="true"] { color: var(--accent); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 15%, var(--paper)); }
+html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-hebrew), var(--font-content); }
+
+/* One stable frame for every Directory view, including empty results. */
+.map-ready .map-stage { height: clamp(33rem, 90vh, 57rem); }
+.map-ready [data-map-view], .map-ready .map-viewport, .map-ready .map-filter-empty { height: 100%; }
+.map-ready .map-viewport { min-height: 0; max-height: none; }
+
+.map-switch svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Keep Read beside the mode switch as one stable, direction-aware row. */
+.map-stage > .map-mode-controls { position: absolute; z-index: 4; inset-inline-start: .5rem; top: .5rem; display: flex; align-items: center; gap: var(--control-capsule-gap, .5rem); max-width: calc(100% - 1rem); margin: 0; }
+.map-mode-controls > :is(.map-switch, .map-read-filter) { flex: 0 0 auto; margin: 0; }
+.map-toolbar { width: var(--control-size); gap: 8px; }
+.map-history-controls { flex-direction: column; gap: 8px; align-items: center; }
+.map-toolbar .map-history-button { flex-basis: var(--control-size); }
+.map-zoom-control { order: -1; width: var(--control-size); height: var(--control-size); }
+.map-zoom-control > button { position: relative; width: var(--control-size); height: var(--control-size); min-height: var(--control-size); padding: 0; border-radius: 50%; font-size: 12px; }
+.map-zoom-control:has([aria-expanded="true"]) > button { visibility: hidden; }
+.map-zoom-panel { inset-inline-start: 0; bottom: 0; width: var(--control-size); height: calc(5 * var(--control-size)); padding: 14px 0 52px; border-radius: var(--control-radius); justify-content: center; background: var(--paper); transform-origin: bottom; animation: map-zoom-open .16s ease-out; }
+.map-zoom-panel [type="range"] { writing-mode: vertical-lr; direction: rtl; width: 24px; height: 100%; }
+.map-zoom-entry { position: absolute; bottom: 0; left: 0; width: var(--control-inner-size); height: var(--control-inner-size); display: flex; align-items: center; justify-content: center; direction: ltr; font-size: 11px; }
+.map-zoom-entry input { appearance: textfield; width: 26px; padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; text-align: right; }
+.map-zoom-entry input::-webkit-inner-spin-button, .map-zoom-entry input::-webkit-outer-spin-button { appearance: none; margin: 0; }
+@keyframes map-zoom-open { from { clip-path: inset(80% 0 0 round var(--control-radius)); } to { clip-path: inset(0 round var(--control-radius)); } }
+@media (prefers-reduced-motion: reduce) { .map-zoom-panel { animation: none; } }
+
+.map-zoom-entry input:focus-visible { outline: none; }
+.map-zoom-panel:focus-within { border-color: var(--accent); }
+
+.article-body span.map-node { cursor: default; }
+
+.article-body .map-node > a.map-node-copy { color: inherit; text-decoration: none; }
+.map-node > a.map-node-copy::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.article-body .map-node > a.tag-count { position: relative; z-index: 1; color: var(--accent); text-decoration: none; cursor: pointer; }
+.article-body .map-node:focus-within { color: var(--accent); border-color: var(--accent); }
+
+/* Library filters overlay the frame beside the mode switch. */
+[data-reader-article][data-directory] .map-stage > .map-filter-bar {
+  position: absolute;
+  z-index: 4;
+  inset-block-start: .5rem;
+  inset-inline-start: var(--directory-control-inset, .5rem);
+  inset-inline-end: .75rem;
+  margin: 0;
+  padding: 6px 0;
+  overflow: visible;
+}
+[data-directory] .map-filter-bar .tag-list { flex-wrap: wrap; }
+[data-directory] .map-filter-bar .tag-list.tag-subgroup { display: flex; flex-basis: 100%; }
+[data-directory] .map-filter-bar .tag-option { flex: 0 0 auto; }
+[data-directory] .map-filter-bar .tag-descendant-list:empty { display: none; }

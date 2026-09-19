@@ -462,6 +462,7 @@
         button.dataset.searchTag = tag.key;
         const pressed = selectedTags.has(tag.key);
         button.setAttribute("aria-pressed", String(pressed));
+        button.dataset.selected = String(pressed);
         button.textContent = tag.label;
         if (pressed) {
           const remove = document2.createElement("span");
@@ -518,6 +519,7 @@
         ({ query, caseSensitive, selectedTags } = mobileOriginal);
         input.value = query;
         caseButton.setAttribute("aria-pressed", String(caseSensitive));
+        caseButton.dataset.selected = String(caseSensitive);
         clear.hidden = !(query || selectedTags.size);
       }
       mobileOriginal = null;
@@ -631,6 +633,7 @@
       suggestionsDismissed = false;
       query = input.value.slice(0, 500);
       caseButton.setAttribute("aria-pressed", String(caseSensitive));
+      caseButton.dataset.selected = String(caseSensitive);
       clear.hidden = !(query || selectedTags.size);
       setOpenState(control.dataset.open === "true");
       if (!dialog.open && !isReading()) {
@@ -657,6 +660,7 @@
       input.value = query;
       suggestionsDismissed = false;
       caseButton.setAttribute("aria-pressed", String(caseSensitive));
+      caseButton.dataset.selected = String(caseSensitive);
       clear.hidden = !(query || selectedTags.size);
       if (query.trim() || selectedTags.size) {
         setOpenState(!mobile.matches);
@@ -1281,7 +1285,11 @@
       streams.forEach((stream) => {
         stream.dataset.layout = effectiveView;
       });
-      views.forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.view === view)));
+      views.forEach((button) => {
+        const active = button.dataset.view === view;
+        button.setAttribute("aria-pressed", String(active));
+        button.dataset.selected = String(active);
+      });
       for (const menu of menus) {
         menu.dataset.activeView = view;
         const summary = menu.querySelector("[data-view-summary]");
@@ -1501,17 +1509,18 @@
       if (search) count = search.apply();
       for (const chip of selectorChips) {
         const tag = chip.dataset.tagFilter;
-        chip.setAttribute("aria-pressed", String(selected.has(chip.dataset.tagFilter)));
+        chip.dataset.selected = String(selected.has(chip.dataset.tagFilter));
         chip.disabled = false;
         chip.classList.toggle("is-ancestor", [...selected].some((other) => other.startsWith(`${tag}:`)));
       }
       for (const chip of articleTagChips) {
-        chip.setAttribute("aria-pressed", String(selected.has(chip.dataset.tagFilter)));
+        chip.dataset.selected = String(selected.has(chip.dataset.tagFilter));
       }
       for (const button of excludeButtons) {
         if (button.dataset.excludeTag === READ_TAG) button.disabled = false;
         const active = excluded.has(button.dataset.excludeTag);
         button.setAttribute("aria-pressed", String(active));
+        button.dataset.selected = String(active);
         button.setAttribute("aria-label", active ? button.dataset.labelRestore : button.dataset.labelExclude);
         const option = button.closest("[data-tag-option]");
         if (option) {
