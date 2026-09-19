@@ -66,6 +66,18 @@ html { scrollbar-gutter: stable; }
 .card-tags::-webkit-scrollbar,
 .article-tags::-webkit-scrollbar { display: none; }
 
+.compact-post-tag {
+  white-space: nowrap;
+}
+.post-tag-icon {
+  width: 1em;
+  height: 1em;
+  object-fit: contain;
+  vertical-align: -.125em;
+  fill: currentColor;
+  stroke: none;
+}
+
 .card-tags > :not([hidden]),
 .article-tags > :not([hidden]) {
   flex: 0 0 auto;
@@ -148,18 +160,18 @@ html { scrollbar-gutter: stable; }
   color: var(--accent-strong);
 }
 
-/* Every Directory graph control uses the same circular 44px target. */
+/* Every Directory graph control uses the same circular var(--minimum-touch-target) target. */
 [data-directory] .map-switch > a,
 [data-directory] .map-toolbar .map-history-button,
 [data-directory] .map-zoom-control > button {
   box-sizing: border-box;
-  width: 44px;
-  min-width: 44px;
-  max-width: 44px;
-  height: 44px;
-  min-height: 44px;
-  max-height: 44px;
-  flex: 0 0 44px;
+  width: var(--minimum-touch-target);
+  min-width: var(--minimum-touch-target);
+  max-width: var(--minimum-touch-target);
+  height: var(--minimum-touch-target);
+  min-height: var(--minimum-touch-target);
+  max-height: var(--minimum-touch-target);
+  flex: 0 0 var(--minimum-touch-target);
   padding: 0;
   border-radius: 50%;
 }
@@ -1280,6 +1292,12 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* Phones always use the semantic stacked card flow, even though the persisted
    desktop layout value may still be list/grid/compact. Tags therefore follow
    the subtitle instead of inheriting list view's desktop title-side placement. */
+@media (max-width: 700px) and (pointer: coarse) {
+  :root .post-stream[data-layout] .post-card {
+    --quiet-control-target-size: var(--minimum-touch-target);
+  }
+}
+
 @media (max-width: 700px) {
   :root .post-stream[data-layout] .post-card:not(.directory-card) > .post-heading {
     display: contents;
