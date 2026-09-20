@@ -829,6 +829,13 @@ html[lang="he"] .reader-controls .reader-number-error {
   min-inline-size: 0;
   margin: 0;
 }
+.comment-section-count {
+  color: var(--muted);
+  font-family: var(--font-interface);
+  font-size: .5em;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
 .comment-section-heading > .comment-thread-header {
   flex: 0 0 auto;
   flex-wrap: nowrap;
