@@ -1222,10 +1222,11 @@
   }
 }
 
-/* framed-control-component-v1 */
-/* Independent header actions inherit one frame class. Functional classes such
-   as pin-toggle, read-toggle and settings-toggle own only their glyph/content
-   semantics; geometry and interaction feedback live here. */
+/* framed-control-component-v2 */
+/* Every standalone header/settings control uses exactly class="framed-control".
+   Functional identity is metadata, never an extra CSS class. The crossed grouped
+   controls (layout selector and accent-color capsule) deliberately stay outside
+   this component. */
 :root .header-controls .framed-control,
 :root .header-controls .framed-control[aria-pressed],
 :root .header-controls .framed-control[aria-checked],
@@ -1233,20 +1234,20 @@
   box-sizing: border-box;
   display: inline-grid;
   place-items: center;
-  flex: 0 0 var(--control-size);
-  width: var(--control-size);
-  min-width: var(--control-size);
-  max-width: var(--control-size);
-  height: var(--control-size);
-  min-height: var(--control-size);
-  max-height: var(--control-size);
-  inline-size: var(--control-size);
-  min-inline-size: var(--control-size);
-  max-inline-size: var(--control-size);
-  block-size: var(--control-size);
-  min-block-size: var(--control-size);
-  max-block-size: var(--control-size);
-  padding: var(--control-padding);
+  flex: 0 0 var(--header-control-size);
+  width: var(--header-control-size);
+  min-width: var(--header-control-size);
+  max-width: var(--header-control-size);
+  height: var(--header-control-size);
+  min-height: var(--header-control-size);
+  max-height: var(--header-control-size);
+  inline-size: var(--header-control-size);
+  min-inline-size: var(--header-control-size);
+  max-inline-size: var(--header-control-size);
+  block-size: var(--header-control-size);
+  min-block-size: var(--header-control-size);
+  max-block-size: var(--header-control-size);
+  padding: var(--header-control-padding, var(--control-padding));
   border: 1px solid var(--line-dark);
   border-radius: var(--control-radius);
   background: var(--surface);
@@ -1258,8 +1259,6 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Match Settings: interaction accents the glyph/text through currentColor as
-   well as the frame. Every framed header control inherits this one behavior. */
 :root .header-controls .framed-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active),
 :root .header-controls .framed-control[aria-expanded="true"] {
   border-color: var(--accent-strong);
@@ -1274,8 +1273,141 @@
 }
 
 :root .header-controls .framed-control > svg {
+  display: block;
   width: var(--control-icon-size);
   height: var(--control-icon-size);
+  margin: 0;
+}
+
+/* Settings trigger glyph. */
+:root .framed-control[data-framed-role~="settings-toggle"] > svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+:root .framed-control[data-framed-role~="settings-toggle"] > svg path { fill: currentColor; }
+:root .framed-control[data-framed-role~="settings-toggle"] > svg circle {
+  fill: var(--surface);
+  stroke: none;
+}
+
+/* RSS/subscribe cells keep only icon semantics; their frame is the shared class. */
+:root .header-actions .framed-control[data-framed-role~="settings-action"] {
+  position: relative;
+}
+:root .header-actions .framed-control[data-framed-role~="settings-action"] > svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+:root .header-actions .framed-control[data-framed-role~="rss-action"] circle {
+  fill: currentColor;
+  stroke: none;
+}
+:root .header-actions .framed-control[data-framed-role~="settings-action"]:hover .settings-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition-delay: .65s;
+}
+:root .header-actions .framed-control[data-framed-role~="settings-action"]:focus-visible .settings-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition-delay: 0s;
+}
+
+/* Preserve the settings grid positions without giving these buttons unique classes. */
+:root .settings-lower > .framed-control[data-framed-role~="random-post"] {
+  grid-column: 1;
+  grid-row: 2;
+}
+:root .settings-lower > .framed-control[data-framed-role~="theme-toggle"] {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+/* Random-post glyph. */
+:root .framed-control[data-framed-role~="random-post"] > svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+:root .framed-control[data-framed-role~="random-post"] > svg circle {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* Theme glyphs share the button class; only the current icon is visible. */
+:root .framed-control[data-framed-role~="theme-toggle"] > svg {
+  display: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  vector-effect: non-scaling-stroke;
+}
+:root .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="dark"] {
+  fill: currentColor;
+  stroke: currentColor;
+}
+:root[data-theme="light"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="dark"],
+:root[data-theme="dark"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="light"] {
+  display: block;
+}
+
+/* Article pin state. */
+:root .framed-control[data-framed-role~="pin-toggle"] > svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+:root .framed-control[data-framed-role~="pin-toggle"][aria-pressed="false"] .pin-head { fill: none; }
+:root .framed-control[data-framed-role~="pin-toggle"][data-selected="true"] {
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
+  border-color: var(--inverse-bg);
+}
+:root .framed-control[data-framed-role~="pin-toggle"][data-selected="true"] .pin-head { fill: currentColor; }
+
+/* Article read state. The visible checkbox is content inside the same frame. */
+:root .framed-control[data-framed-role~="read-toggle"] {
+  position: relative;
+  font-size: 0;
+  line-height: 0;
+}
+:root .framed-control[data-framed-role~="read-toggle"]::before {
+  content: "\200B";
+  display: inline-grid;
+  place-items: center;
+  inline-size: var(--control-icon-size);
+  block-size: var(--control-icon-size);
+  box-sizing: border-box;
+  border: 1px solid var(--line-dark);
+  border-radius: var(--control-inner-radius);
+  background: var(--surface);
+  color: var(--accent-strong);
+  font-family: var(--font-interface);
+  font-size: calc(var(--control-icon-size) * .72);
+  font-weight: 900;
+  line-height: 1;
+}
+:root .framed-control[data-framed-role~="read-toggle"][aria-checked="true"]::before {
+  content: "✓";
+  color: var(--line);
+  border-color: var(--line);
+}
+:root .framed-control[data-framed-role~="read-toggle"]:is(:hover, :focus-visible)::before {
+  border-color: currentColor;
 }
 
 /* Default tag geometry remains owned by control-sizing.css. This late layer
@@ -1496,10 +1628,10 @@
 :root[data-theme="dark"] {
   --control-highlight-color: color-mix(in srgb, var(--paper), var(--accent) 40%);
 }
-:root :is(.control-highlight, .pin-toggle, .share-menu > summary):not(.quiet-control):not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible) {
+:root :is(.control-highlight, .pin-toggle, .share-menu > summary:not(.framed-control)):not(.quiet-control):not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible) {
   box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
 }
-:root :is(.control-highlight, .pin-toggle, .share-menu > summary):not(.quiet-control):is(:disabled, [aria-disabled="true"]) {
+:root :is(.control-highlight, .pin-toggle, .share-menu > summary:not(.framed-control)):not(.quiet-control):is(:disabled, [aria-disabled="true"]) {
   box-shadow: none;
 }
 :root .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
