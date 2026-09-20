@@ -1407,17 +1407,17 @@ html[lang="he"] .reader-controls .reader-number-error {
 
 /* Read contributes only its semantic glyph state. framed-control owns the
    surrounding frame, background, foreground and pointer/focus/active states. */
-:root .header-controls .read-toggle.round-control {
+:root .header-controls .framed-control[data-framed-role~="read-toggle"] {
   --reader-book-icon: var(--reader-book-outline-icon);
   position: relative;
   font-size: 0;
   line-height: 0;
   opacity: 1;
 }
-:root .header-controls .read-toggle.round-control[aria-checked="true"] {
+:root .header-controls .framed-control[data-framed-role~="read-toggle"][aria-checked="true"] {
   --reader-book-icon: var(--reader-book-selected-icon);
 }
-:root .header-controls .read-toggle.round-control::before {
+:root .header-controls .framed-control[data-framed-role~="read-toggle"]::before {
   content: "";
   display: block;
   inline-size: var(--control-icon-size);

@@ -1379,37 +1379,6 @@
 }
 :root .framed-control[data-framed-role~="pin-toggle"][data-selected="true"] .pin-head { fill: currentColor; }
 
-/* Article read state. The visible checkbox is content inside the same frame. */
-:root .framed-control[data-framed-role~="read-toggle"] {
-  position: relative;
-  font-size: 0;
-  line-height: 0;
-}
-:root .framed-control[data-framed-role~="read-toggle"]::before {
-  content: "\200B";
-  display: inline-grid;
-  place-items: center;
-  inline-size: var(--control-icon-size);
-  block-size: var(--control-icon-size);
-  box-sizing: border-box;
-  border: 1px solid var(--line-dark);
-  border-radius: var(--control-inner-radius);
-  background: var(--surface);
-  color: var(--accent-strong);
-  font-family: var(--font-interface);
-  font-size: calc(var(--control-icon-size) * .72);
-  font-weight: 900;
-  line-height: 1;
-}
-:root .framed-control[data-framed-role~="read-toggle"][aria-checked="true"]::before {
-  content: "✓";
-  color: var(--line);
-  border-color: var(--line);
-}
-:root .framed-control[data-framed-role~="read-toggle"]:is(:hover, :focus-visible)::before {
-  border-color: currentColor;
-}
-
 /* Default tag geometry remains owned by control-sizing.css. This late layer
    defines one compact tag variant for Grid cards and one Compact-card content
    variant, using inherited shared tokens rather than duplicate components. */
@@ -1578,11 +1547,11 @@
   box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
 }
 
-:root .read-toggle:not(.quiet-control)[aria-checked="true"]::before {
+:root .framed-control[data-framed-role~="read-toggle"][aria-checked="true"]::before {
   color: var(--line);
   border-color: var(--line);
 }
-:root .read-toggle:not(.quiet-control)[aria-checked="true"]:is(:hover, :focus-visible)::before {
+:root .framed-control[data-framed-role~="read-toggle"][aria-checked="true"]:is(:hover, :focus-visible)::before {
   color: var(--line-dark);
   border-color: var(--line-dark);
 }
