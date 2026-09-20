@@ -698,7 +698,7 @@ h3 {
   border-radius: 999px;
   padding: 0.45rem 0.9rem;
   background: var(--surface);
-  color: var(--ink);
+  color: var(--tag-text);
   text-decoration: none;
   font: inherit;
   font-size: 0.875rem;
@@ -1193,7 +1193,7 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   font-size: 1.7em;
 }
 
-.article-body a {
+.article-body a:not(.tag-chip) {
   color: var(--accent-strong);
   text-decoration-thickness: 0.08em;
   text-underline-offset: 0.12em;
