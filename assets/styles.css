@@ -79,6 +79,13 @@
   --unread-bg: #f2f2f2;
   --shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
   --minimum-touch-target: 2.75rem;
+  /* Shared tag state. Home filters, card tags and reader tags use the same
+     palette: accent communicates state through frame/fill, never text color. */
+  --tag-text: var(--ink);
+  --tag-text-muted: var(--muted);
+  --tag-state-fill: var(--soft-accent);
+  --tag-state-border: var(--accent);
+  --tag-state-border-strong: var(--accent-strong);
   /* Global font parameters. Change these four values to retheme typography
      without having to hunt through component selectors. */
   --font-content: Georgia, "Times New Roman", "Noto Serif Hebrew", serif;
@@ -386,15 +393,15 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
 }
 .search-tag { overflow-wrap: anywhere; }
 .search-tag:is(:hover, :focus-visible, [data-selected="true"]) {
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: var(--tag-state-border);
+  color: var(--tag-text);
 }
 .search-tag[data-selected="true"] {
-  background: var(--soft-accent);
+  background: var(--tag-state-fill);
 }
 .search-tag[data-selected="true"]:is(:hover, :focus-visible) {
-  border-color: var(--accent-strong);
-  color: var(--accent-strong);
+  border-color: var(--tag-state-border-strong);
+  color: var(--tag-text);
 }
 .search-tag-remove { flex: 0 0 auto; font-size: 1rem; line-height: 1; }
 html[lang="he"] .search-tag { font-family: var(--font-interface-hebrew), var(--font-content); }
@@ -710,14 +717,14 @@ h3 {
 .tag-chip > span:first-child { min-width: 0; overflow-wrap: anywhere; }
 .tag-chip:has(.tag-count) { padding-inline-end: 0.5rem; }
 .tag-option { position: relative; display: inline-flex; align-items: center; max-width: 100%; border: 1px solid var(--line-dark); border-radius: 999px; background: var(--surface); }
-.tag-option:has(> .tag-chip.is-ancestor) { border-color: var(--accent-strong); }
-.tag-option:has(> .tag-chip[data-selected="true"]) { background: var(--soft-accent); border-color: var(--accent); box-shadow: none; }
+.tag-option:has(> .tag-chip.is-ancestor) { border-color: var(--tag-state-border-strong); }
+.tag-option:has(> .tag-chip[data-selected="true"]) { background: var(--tag-state-fill); border-color: var(--tag-state-border); box-shadow: none; }
 .tag-option > .tag-chip, .tag-option > .tag-chip:is(:hover, :focus-visible) { min-width: 0; min-height: calc(var(--minimum-touch-target) - 2px); border: 0; background: transparent; box-shadow: none; transform: none; }
-.tag-option > .tag-chip[data-selected="true"] { color: var(--accent-strong); }
+.tag-option > .tag-chip[data-selected="true"] { color: var(--tag-text); }
 .tag-option.is-excluded { background: var(--code-bg); border-color: var(--line); box-shadow: none; }
-.tag-option.is-excluded .tag-chip, .tag-option.is-excluded .tag-count { color: var(--muted); cursor: pointer; }
+.tag-option.is-excluded .tag-chip, .tag-option.is-excluded .tag-count { color: var(--tag-text-muted); cursor: pointer; }
 .tag-option.is-excluded .tag-count { background: var(--line); }
-.tag-option:not(.is-excluded):hover, .tag-option:has(:focus-visible) { border-color: var(--accent-strong); }
+.tag-option:not(.is-excluded):hover, .tag-option:has(:focus-visible) { border-color: var(--tag-state-border-strong); }
 [dir="rtl"] .tag-option { direction: rtl; }
 .tag-exclude { position: absolute; inset-inline-end: 0.5rem; inset-block-start: 50%; transform: translateY(-50%); display: grid; place-items: center; width: var(--tag-count-size); height: var(--tag-count-size); padding: 0.35rem; border: 0; border-radius: 50%; background: var(--line); color: var(--ink); cursor: pointer; opacity: 0; visibility: hidden; }
 /* Swap after hovering the count itself continuously for 0.7 seconds.
@@ -762,7 +769,7 @@ h3 {
   .tag-option.is-restored:not(.is-excluded):not(:has(:focus-visible)) .tag-count { opacity: 1; transition: none; }
 }
 
-.tag-chip:is(:hover, :focus-visible) { border-color: var(--accent-strong); box-shadow: none; transform: none; }
+.tag-chip:is(:hover, :focus-visible) { border-color: var(--tag-state-border-strong); color: var(--tag-text); box-shadow: none; transform: none; }
 
 .tag-count {
   display: grid;
@@ -771,8 +778,8 @@ h3 {
   min-width: var(--tag-count-size, 1.8rem);
   height: var(--tag-count-size, 1.8rem);
   border-radius: 50%;
-  background: var(--soft-accent);
-  color: var(--accent-strong);
+  background: var(--tag-state-fill);
+  color: var(--tag-text);
   font-size: var(--tag-count-font-size);
   flex-shrink: 0;
 }

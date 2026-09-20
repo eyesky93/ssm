@@ -1293,7 +1293,7 @@
    Split filter tags paint on their outer frame; standalone chips paint directly. */
 :root body .tag-option:not(.is-excluded):not(:has(> .tag-chip[data-selected="true"])):is(:hover, :has(:focus-visible)),
 :root body .tag-chip:not([data-selected="true"]):not(.tag-option > .tag-chip):is(:hover, :focus-visible) {
-  background: var(--soft-accent);
+  background: var(--tag-state-fill);
 }
 
 /* Grid post cards retain the current dense tags. Compact cards no longer show
@@ -1347,7 +1347,7 @@
 }
 
 :root .tag-option:not(.is-excluded):not(:has(> .tag-chip[data-selected="true"])):hover {
-  border-color: var(--accent);
+  border-color: var(--tag-state-border);
 }
 /* The legacy combined post-tag anchor remains in the DOM only as the
    behavior source for split hierarchy chips. Its hidden state must win
@@ -1359,59 +1359,59 @@
 /* Unselected counts keep the base accent; only their label changes
    to that same accent on hover or visible keyboard focus. */
 :root .tag-option:not(.is-excluded) > .tag-chip:not([data-selected="true"]) .tag-count {
-  color: var(--accent);
+  color: var(--tag-text);
 }
 :root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip:not([data-selected="true"]) {
-  color: var(--accent);
+  color: var(--tag-text);
 }
 /* Selected tags keep the soft fill while their label, count and frame
    share one accent state. Excluded tags and the delayed hide action keep
    their existing neutral styling and behavior. */
 :root .tag-option:not(.is-excluded):has(> .tag-chip[data-selected="true"]) {
-  background: var(--soft-accent);
-  border-color: var(--accent);
+  background: var(--tag-state-fill);
+  border-color: var(--tag-state-border);
 }
 :root .tag-option:not(.is-excluded) > .tag-chip[data-selected="true"],
 :root .tag-option:not(.is-excluded) > .tag-chip[data-selected="true"] .tag-count {
-  color: var(--accent);
+  color: var(--tag-text);
 }
 :root .tag-option:not(.is-excluded):has(> .tag-chip[data-selected="true"]):is(:hover, :has(:focus-visible)) {
-  border-color: var(--accent-strong);
+  border-color: var(--tag-state-border-strong);
 }
 :root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[data-selected="true"],
 :root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[data-selected="true"] .tag-count {
-  color: var(--accent-strong);
+  color: var(--tag-text);
 }
 /* Article-page tags mirror the filter-chip palette. Their selected state
    is exposed by post-browser through aria-pressed, without changing tag
    navigation behavior or geometry. */
 :root .article-tag[data-selected="true"] {
-  background: var(--soft-accent);
-  color: var(--accent);
-  border-color: var(--accent);
+  background: var(--tag-state-fill);
+  color: var(--tag-text);
+  border-color: var(--tag-state-border);
 }
 :root .article-tag[data-selected="true"]:is(:hover, :focus-visible) {
-  color: var(--accent-strong);
-  border-color: var(--accent-strong);
+  color: var(--tag-text);
+  border-color: var(--tag-state-border-strong);
 }
 :root .article-tag:not([data-selected="true"]):is(:hover, :focus-visible) {
-  color: var(--accent);
-  border-color: var(--accent);
+  color: var(--tag-text);
+  border-color: var(--tag-state-border);
 }
 /* Hovering or keyboard-focusing one tag highlights every visible copy of
    that exact topic across the menu, post cards and article page. Keep
    selected fills intact; synchronize only text/count and frame color. */
 :root .tag-option:not(.is-excluded):has(> .tag-chip.is-topic-hovered) {
-  border-color: var(--accent) !important;
+  border-color: var(--tag-state-border) !important;
 }
 :root .tag-option:not(.is-excluded) > .tag-chip.is-topic-hovered,
 :root .card-tag.is-topic-hovered,
 :root .article-tag.is-topic-hovered {
-  color: var(--accent) !important;
-  border-color: var(--accent) !important;
+  color: var(--tag-text) !important;
+  border-color: var(--tag-state-border) !important;
 }
 :root .tag-option:not(.is-excluded) > .tag-chip.is-topic-hovered .tag-count {
-  color: var(--accent) !important;
+  color: var(--tag-text) !important;
 }
 
 /* Every unread post owns the outside accent ribbon, independent of pin
@@ -1447,7 +1447,7 @@
   border-color: var(--line-dark);
 }
 :root .post-engagement .post-vote[data-selected="true"] {
-  background: var(--soft-accent);
+  background: var(--tag-state-fill);
 }
 :root .post-engagement .post-vote[data-selected="true"] svg,
 :root .post-engagement .post-vote[data-selected="true"] .post-vote-count {
