@@ -12,9 +12,7 @@
 .map-stage { position: relative; border: 1px solid var(--line-dark); border-radius: .8rem; background: var(--paper); overflow: hidden; }
 .map-toolbar { position: absolute; z-index: 3; inset-inline-start: .75rem; bottom: .75rem; display: flex; flex-direction: column; align-items: stretch; gap: 4px; width: var(--control-size); margin: 0; }
 .map-history-controls { display: flex; justify-content: space-between; gap: 4px; }
-.map-toolbar button, .map-toolbar > a { display: inline-flex; justify-content: center; align-items: center; min-width: var(--control-size); min-height: var(--control-size); height: var(--control-size); padding: 4px 8px; border: 1px solid var(--line-dark); border-radius: 1.5rem; color: var(--ink); background: var(--paper); font: inherit; font-size: 13px; line-height: 1.2; text-decoration: none; cursor: pointer; }
-.map-toolbar button:not(:disabled):is(:hover, :focus-visible), .map-toolbar > a:hover { color: var(--accent-strong); border-color: var(--accent-strong); }
-.map-toolbar button:disabled { opacity: .45; cursor: default; }
+.map-toolbar button, .map-toolbar > a { font: inherit; line-height: 1.2; text-decoration: none; }
 .map-toolbar output { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
 .map-viewport { max-width: 100%; min-height: 12rem; max-height: clamp(22rem, 60vh, 38rem); overflow: auto; overscroll-behavior: auto; touch-action: pan-x pan-y; direction: ltr; background: var(--paper); cursor: grab; }
 .map-viewport.is-panning, .map-viewport.is-panning * { cursor: grabbing; user-select: none; }
@@ -40,8 +38,8 @@ html[lang="he"] .hierarchy-map { font-family: var(--font-interface-hebrew), var(
 
 
 /* The navigation arrows use the same round frames and accent as post controls. */
-.map-toolbar .map-history-button { flex: 0 0 var(--control-size); width: var(--control-size); height: var(--control-size); padding: var(--control-padding); border-radius: 50%; }
-.map-history-button svg { width: var(--control-icon-size); height: var(--control-icon-size); fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.map-toolbar .map-history-button { }
+.map-history-button svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 html[dir="rtl"] .map-history-button svg { transform: scaleX(-1); }
 
 .hierarchy-map .map-filter-bar { border: 0; padding-top: 0; }
@@ -51,7 +49,7 @@ html[lang="he"] .map-filters { font-family: var(--font-interface-hebrew), var(--
 .map-filter-empty { padding: 2rem; margin: 0; font-size: 1.15rem; }
 
 .map-zoom-control { position: relative; }
-.map-zoom-control > button { width: 100%; font-variant-numeric: tabular-nums; }
+.map-zoom-control > button { position: relative; white-space: nowrap; }
 .map-zoom-panel { position: absolute; z-index: 2; inset-inline-start: calc(100% + .5rem); bottom: 0; display: flex; align-items: center; width: min(12rem, calc(100vw - 10rem)); min-height: var(--minimum-touch-target); padding: .6rem .8rem; border: 1px solid var(--line-dark); border-radius: 1.5rem; background: var(--surface); }
 .map-zoom-panel input { width: 100%; min-width: 0; margin: 0; accent-color: var(--accent); direction: ltr; cursor: pointer; }
 
@@ -80,9 +78,8 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 .map-mode-controls > :is(.map-switch, .map-read-filter) { flex: 0 0 auto; margin: 0; }
 .map-toolbar { width: var(--control-size); gap: var(--control-capsule-gap); }
 .map-history-controls { flex-direction: column; gap: var(--control-capsule-gap); align-items: center; }
-.map-toolbar .map-history-button { flex-basis: var(--control-size); }
 .map-zoom-control { order: -1; width: var(--control-size); height: var(--control-size); }
-.map-zoom-control > button { position: relative; width: var(--control-size); height: var(--control-size); min-height: var(--control-size); padding: 0; border-radius: 50%; font-size: .625rem; white-space: nowrap; }
+.map-zoom-control > button { position: relative; white-space: nowrap; }
 .map-zoom-control:has([aria-expanded="true"]) > button { visibility: hidden; }
 .map-zoom-panel { inset-inline-start: 0; bottom: 0; width: var(--control-size); height: calc(5 * var(--control-size)); padding: 14px 0 52px; border-radius: var(--control-radius); justify-content: center; background: var(--paper); transform-origin: bottom; animation: map-zoom-open .16s ease-out; }
 .map-zoom-panel [type="range"] { writing-mode: vertical-lr; direction: rtl; width: 24px; height: 100%; }

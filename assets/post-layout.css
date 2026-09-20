@@ -152,21 +152,7 @@ html { scrollbar-gutter: stable; }
   color: var(--accent-strong);
 }
 
-/* Every Directory graph control uses the same circular var(--minimum-touch-target) target. */
-[data-directory] .map-switch > a,
-[data-directory] .map-toolbar .map-history-button,
-[data-directory] .map-zoom-control > button {
-  box-sizing: border-box;
-  width: var(--minimum-touch-target);
-  min-width: var(--minimum-touch-target);
-  max-width: var(--minimum-touch-target);
-  height: var(--minimum-touch-target);
-  min-height: var(--minimum-touch-target);
-  max-height: var(--minimum-touch-target);
-  flex: 0 0 var(--minimum-touch-target);
-  padding: 0;
-  border-radius: 50%;
-}
+/* Directory graph buttons consume the shared framed-control classes. */
 
 /* Settle each strip's initial values and geometry before its first visible paint.
    Visibility preserves its box (and IntersectionObserver loading). No-JS readers
@@ -360,72 +346,33 @@ html { scrollbar-gutter: stable; }
 .reader-controls [data-reader-jump][hidden],
 .reader-controls [data-reader-jump-input][hidden] { display: none; }
 .reader-controls :is(.back-to-top, .post-navigation > a, .post-position) {
-  box-sizing: border-box;
   position: static;
   inset: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  width: var(--reader-control-size);
-  min-width: var(--reader-control-size);
-  height: var(--reader-control-size);
-  min-height: var(--reader-control-size);
   margin: 0;
-  padding: .72rem;
-  border: 1px solid var(--line-dark);
-  border-radius: 50%;
-  background: var(--inverse-bg);
-  color: var(--inverse-ink);
   font-family: var(--font-interface);
-  font-size: .75rem;
+  font-size: var(--control-label-font-size);
   line-height: 1;
   text-decoration: none;
   font-variant-numeric: tabular-nums;
-  box-shadow: 0 8px 24px rgb(0 0 0 / .18);
   opacity: 1;
   visibility: inherit;
-  transform: none;
   pointer-events: auto;
   transition: none;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
 }
 /* The number advertises direct editing through its text cursor, not a ring.
    The caret/selection stays within the unchanged circle when editing. */
-.reader-controls .post-position,
-.reader-controls .post-position:is(:hover, :focus, :focus-visible, :active) {
-  padding: .25rem;
+.reader-controls .post-position {
   font-weight: 400;
   font-style: normal;
   letter-spacing: normal;
   cursor: text;
-  outline: none;
-  outline-offset: 0;
 }
 .reader-controls .post-position[data-reader-position-stacked="true"] {
   flex-direction: column;
   gap: .1rem;
   font-size: .6875rem;
 }
-/* Side controls keep their neutral fill, lettering and border in every state.
-   This does not alter accent feedback on tags, engagement or the top menu. */
-.reader-controls :is(.back-to-top, .post-navigation > a, .post-position):is(:hover, :focus, :focus-visible, :active) {
-  background: var(--inverse-bg);
-  border-color: var(--line-dark);
-  color: var(--inverse-ink);
-}
-.reader-controls .post-navigation > a[aria-disabled="true"],
-.reader-controls .post-position:disabled {
-  background: var(--inverse-bg);
-  color: var(--inverse-ink);
-  border-color: var(--line-dark);
-  opacity: .45;
-  cursor: default;
-}
 .reader-controls svg {
-  width: 100%;
-  height: 100%;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.8;
@@ -435,7 +382,6 @@ html { scrollbar-gutter: stable; }
 /* Editing replaces the bottom number, using exactly the same circular box.
    Labels remain in native hover tooltips and accessible names, not a panel. */
 .reader-controls input.reader-position-input {
-  padding: .25rem;
   text-align: center;
   cursor: text;
   caret-color: var(--inverse-ink);
@@ -646,82 +592,23 @@ html[lang="he"] .reader-controls .reader-number-error {
   }
 }
 
-/* Standalone comment buttons share the pin's neutral states and highlight.
-   Sorting keeps the existing page-layout capsule. Ordinary formatting tools
-   keep their original base styles; only Help is a standalone framed button.
-   Component palette tokens are consumed here and on hover/focus, so a
-   variant never loses its colors to these higher-specificity base rules. */
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]) {
-  box-sizing: border-box;
-  min-block-size: var(--control-size);
-  border: 1px solid var(--line-dark);
-  border-radius: var(--control-radius);
-  background: var(--comment-control-bg, var(--surface));
-  color: var(--comment-control-ink, var(--ink));
-  box-shadow: none;
-  transform: none;
-}
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(:disabled):is(:hover, :focus-visible) {
-  background: var(--comment-control-bg, var(--surface));
-  color: var(--comment-control-ink, var(--ink));
-  border-color: var(--line-dark);
-  box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
-}
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
-  background: var(--inverse-bg);
-  color: var(--inverse-ink);
-  border-color: var(--inverse-bg);
-}
-/* Low-specificity geometry cannot override the provider's own icon inset.
-   Longer text actions remain capsules; the layout capsule sizes its own cells. */
-:root :is([data-ssm-comments], .comment-section-heading) :where(.comment-refresh-control button, .comment-provider-button, .comment-actions > button[aria-pressed]) {
-  inline-size: var(--control-size);
-  min-inline-size: var(--control-size);
-  max-inline-size: var(--control-size);
-  block-size: var(--control-size);
-  min-block-size: var(--control-size);
-  max-block-size: var(--control-size);
-  flex: 0 0 var(--control-size);
-  display: inline-grid;
-  place-items: center;
-  padding: 0;
-  border-radius: var(--control-radius);
-}
-/* Match navigation's inverse palette: light frames and dark artwork in dark
-   mode, with the corresponding inverse in light mode. Preserve the shared
-   size, icon inset, disabled state and existing hover/focus highlight.
-   Set the shared component palette instead of competing with the base
-   selector: all providers keep these colors at rest, hover and focus. */
-:root :is([data-ssm-comments], .comment-section-heading) button.comment-provider-button {
-  --comment-control-bg: var(--inverse-bg);
-  --comment-control-ink: var(--inverse-ink);
-  padding: max(0px, calc((var(--control-size) - 1.35rem - 2px) / 2));
-  border-radius: var(--control-radius);
+/* Comment-specific behavior for controls that consume the shared framed
+   component. Frame geometry, radius, padding, palette and interaction paint
+   live only in framed-control.css. Ordinary formatting tools are intentionally
+   not framed controls. */
+
+:root :is([data-ssm-comments], .comment-section-heading) .comment-provider-button {
   overflow: hidden;
 }
 :root :is([data-ssm-comments], .comment-section-heading) .comment-provider-button > svg {
-  display: block;
-  width: 1.35rem;
-  height: 1.35rem;
-  max-inline-size: 100%;
-  max-block-size: 100%;
   fill: currentColor;
 }
-/* Only the standalone refresh button needs room for the pin-style ring.
-   Never raise every sort cell above the layout capsule's outside border. */
-:root :is([data-ssm-comments], .comment-section-heading) .comment-refresh-control .view-switch { overflow: visible; }
-:root :is([data-ssm-comments], .comment-section-heading) .comment-refresh-control .view-switch > button {
-  border-color: var(--line-dark);
+:root :is([data-ssm-comments], .comment-section-heading) .comment-refresh-control .view-switch {
+  overflow: visible;
 }
-:root :is([data-ssm-comments], .comment-section-heading) .comment-refresh-control svg {
-  width: 1.35rem;
-  height: 1.35rem;
-}
-/* The existing loader disables Refresh until its request settles, including
-   errors. Animate only the arrows; the shared button and capsule stay still.
-   The arrowheads point counterclockwise: every full turn follows that same
-   direction without reversing. Clearing loading restores the resting icon. */
+
+/* The loader disables Refresh until its request settles. Animate only the
+   glyph; the shared frame stays still. */
 @media (prefers-reduced-motion: no-preference) {
   :root :is([data-ssm-comments], .comment-section-heading) [data-comment-refresh]:disabled > svg {
     transform-box: view-box;
@@ -733,23 +620,17 @@ html[lang="he"] .reader-controls .reader-number-error {
   from { transform: rotate(0turn); }
   to { transform: rotate(-1turn); }
 }
-:root :is([data-ssm-comments], .comment-section-heading) .comment-sort-controls [data-comment-sort="oldest"] > svg {
-  width: 1.6rem;
-  height: 1.6rem;
-}
-/* Help remains separate at the logical end of the original toolbar.
-   The base toolbar owns wrapping, spacing and the full-width bottom divider. */
+
+/* Help is the only framed formatting-toolbar action. */
 :root [data-ssm-comments] .comment-toolbar [data-format="help"] {
   font-family: var(--font-interface);
-  font-size: 1.15rem;
+  font-size: calc(var(--control-icon-size) * .85);
   font-weight: 600;
   line-height: 1;
 }
 
-/* Contrast-only correction for the original plain formatting tools. Reuse
-   the theme's neutral greys instead of near-identical paper/surface fills.
-   Inset edges do not alter any target, spacing, corner or font dimensions.
-   Help, sorting, refresh and provider buttons retain their separate styles. */
+/* Ordinary formatting tools deliberately remain a separate compact editor
+   surface; they are not site navigation buttons. */
 :root [data-ssm-comments] .comment-toolbar {
   border-block-end-color: var(--line-dark);
 }
@@ -767,28 +648,18 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root [data-ssm-comments] .comment-toolbar > button[data-format]:not([data-format="help"]):focus-visible {
   outline-color: var(--ink);
 }
-/* A disabled tool stays visibly muted, without fading the entire control and
-   compounding the grey glyph with another opacity reduction. */
 :root [data-ssm-comments] .comment-toolbar > button[data-format]:not([data-format="help"]):disabled {
   background: var(--surface);
   color: var(--muted);
   box-shadow: inset 0 0 0 1px var(--line);
 }
 
-/* Keep the Preview label, but reserve no blank body beneath it. The editor
-   hides only the body for empty drafts; rendered content sets its own height. */
 :root [data-ssm-comments] .comment-preview { min-block-size: 0; }
 
-/* Empty discussions have nothing to sort. Inspect only the actual live thread,
-   not example comments or the composer preview. This also applies before the
-   first response and updates immediately when the last comment is removed.
-   Hide the whole capsule without reserving space; Refresh stays available.
-   !important overrides the capsule's inline mobile display, not its design. */
 .comments-shell:not(:has([data-ssm-comments] > .comment-thread > .comment-item)) > .comment-section-heading .comment-sort-controls,
 [data-ssm-comments]:not(:has(> .comment-thread > .comment-item)) > .comment-thread-header .comment-sort-controls {
   display: none !important;
 }
-
 
 /* The per-line view uses the existing composer, toolbar and theme tokens. */
 .comment-composer > textarea[hidden] { display: none; }
@@ -866,27 +737,11 @@ html[lang="he"] .reader-controls .reader-number-error {
   gap: var(--comment-tool-gap, .2rem);
   margin-inline-start: auto;
 }
-:root [data-ssm-comments] .comment-toolbar-session > button {
-  display: grid;
-  place-items: center;
-  padding: 0;
-}
 :root [data-ssm-comments] .comment-toolbar-session [data-format="help"] { margin-inline: 0; }
-:root [data-ssm-comments] [data-comment-logout] > svg { inline-size: 1.35rem; block-size: 1.35rem; }
 :root [data-ssm-comments] [data-comment-logout]:dir(rtl) > svg { transform: scaleX(-1); }
 @media (max-width: 700px) {
   :root [data-ssm-comments] .comment-toolbar-session {
     flex: 1 0 calc(2 * var(--control-size) + var(--comment-tool-gap, .2rem));
-  }
-  :root [data-ssm-comments] .comment-toolbar-session > button[data-format="help"] {
-    flex: 1 1 var(--control-size);
-    width: auto;
-    min-width: var(--control-size);
-    max-width: none;
-    inline-size: auto;
-    min-inline-size: var(--control-size);
-    max-inline-size: none;
-    border-radius: var(--control-radius);
   }
 }
 /* With a second end action, ten compact tools fit the wider-phone first row;
@@ -1344,9 +1199,6 @@ html[lang="he"] .reader-controls .reader-number-error {
 
 /* Search has its own compound field; independent framed header controls all use
    .framed-control instead of component-specific frame or hover selectors. */
-:root .header-controls .site-search .search-toggle:is(:hover, :focus-visible, [aria-expanded="true"]) {
-  color: var(--ink);
-}
 :root .header-controls .site-search .search-bar:has(.search-toggle:is(:hover, :focus-visible)) {
   border-color: var(--accent-strong);
 }
@@ -1375,42 +1227,20 @@ html[lang="he"] .reader-controls .reader-number-error {
   inset-block-start: 0;
   inset-block-end: auto;
 }
-:root body .header-controls .share-menu > .share-options > :is(a, button) {
-  box-sizing: border-box;
-  flex: 0 0 var(--reader-share-option-size);
-  width: var(--reader-share-option-size);
-  min-width: var(--reader-share-option-size);
-  max-width: var(--reader-share-option-size);
-  height: var(--reader-share-option-size);
-  min-height: var(--reader-share-option-size);
-  max-height: var(--reader-share-option-size);
-  inline-size: var(--reader-share-option-size);
-  min-inline-size: var(--reader-share-option-size);
-  max-inline-size: var(--reader-share-option-size);
-  block-size: var(--reader-share-option-size);
-  min-block-size: var(--reader-share-option-size);
-  max-block-size: var(--reader-share-option-size);
-  padding: var(--control-padding);
-  border-radius: var(--control-radius);
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
-  width: var(--reader-share-icon-size);
-  height: var(--reader-share-icon-size);
-}
 
 /* Read contributes only its semantic glyph state. framed-control owns the
    surrounding frame, background, foreground and pointer/focus/active states. */
-:root .header-controls .read-toggle.round-control {
+:root .header-controls .read-toggle.framed-control {
   --reader-book-icon: var(--reader-book-outline-icon);
   position: relative;
   font-size: 0;
   line-height: 0;
   opacity: 1;
 }
-:root .header-controls .read-toggle.round-control[aria-checked="true"] {
+:root .header-controls .read-toggle.framed-control[aria-checked="true"] {
   --reader-book-icon: var(--reader-book-selected-icon);
 }
-:root .header-controls .read-toggle.round-control::before {
+:root .header-controls .read-toggle.framed-control::before {
   content: "";
   display: block;
   inline-size: var(--control-icon-size);
@@ -1538,34 +1368,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   overflow: visible;
 }
 
-/* Trigger and destinations consume one identical global control box. */
-:root body .header-controls .share-menu > summary,
-:root body .header-controls .share-menu > .share-options > :is(a, button) {
-  box-sizing: border-box;
-  flex: 0 0 var(--reader-share-option-size);
-  width: var(--reader-share-option-size);
-  min-width: var(--reader-share-option-size);
-  max-width: var(--reader-share-option-size);
-  height: var(--reader-share-option-size);
-  min-height: var(--reader-share-option-size);
-  max-height: var(--reader-share-option-size);
-  inline-size: var(--reader-share-option-size);
-  min-inline-size: var(--reader-share-option-size);
-  max-inline-size: var(--reader-share-option-size);
-  block-size: var(--reader-share-option-size);
-  min-block-size: var(--reader-share-option-size);
-  max-block-size: var(--reader-share-option-size);
-  border-radius: var(--control-radius);
-}
-
-:root body .header-controls .share-menu > summary {
-  position: relative;
-  z-index: calc(var(--reader-share-layer) + 2);
-}
-:root body .header-controls .share-menu[open] {
-  z-index: calc(var(--reader-share-layer) + 1);
-}
-
 /* Use physical sides deliberately. Share stays at its normal position; only
    the out-of-flow destination strip extends away from it. */
 :root[dir="ltr"] body .header-controls .share-menu > .share-options,
@@ -1601,11 +1403,4 @@ html[lang="he"] .reader-controls .reader-number-error {
   transform: translateY(-50%) !important;
   translate: none !important;
   overflow: visible;
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) {
-  padding: var(--control-padding);
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
-  width: var(--reader-share-icon-size);
-  height: var(--reader-share-icon-size);
 }
