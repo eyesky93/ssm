@@ -1,15 +1,1 @@
-(() => {
-  const chooseRandomPost = (paths, currentPath) => {
-    const alternatives = paths.filter(path => path !== currentPath);
-    const choices = alternatives.length ? alternatives : paths;
-    return choices.length ? choices[Math.floor(Math.random() * choices.length)] : null;
-  };
-  document.querySelectorAll("[data-random-posts]").forEach(button => {
-    button.addEventListener("click", () => {
-      let paths = [];
-      try { paths = JSON.parse(button.dataset.randomPosts || "[]"); } catch { return; }
-      const target = chooseRandomPost(paths, window.location.pathname);
-      if (target) window.location.assign(target);
-    });
-  });
-})();
+(()=>{const e=(t,n)=>{const o=t.filter(r=>r!==n),a=o.length?o:t;return a.length?a[Math.floor(Math.random()*a.length)]:null};document.querySelectorAll("[data-random-posts]").forEach(t=>{t.addEventListener("click",()=>{let n=[];try{n=JSON.parse(t.dataset.randomPosts||"[]")}catch{return}const o=e(n,window.location.pathname);o&&window.location.assign(o)})})})();
