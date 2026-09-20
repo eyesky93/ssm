@@ -40,8 +40,8 @@ html[lang="he"] .hierarchy-map { font-family: var(--font-interface-hebrew), var(
 
 
 /* The navigation arrows use the same round frames and accent as post controls. */
-.map-toolbar .map-history-button { flex: 0 0 var(--control-size); width: var(--control-size); height: var(--control-size); padding: 7px; border-radius: 50%; }
-.map-history-button svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.map-toolbar .map-history-button { flex: 0 0 var(--control-size); width: var(--control-size); height: var(--control-size); padding: var(--control-padding); border-radius: 50%; }
+.map-history-button svg { width: var(--control-icon-size); height: var(--control-icon-size); fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 html[dir="rtl"] .map-history-button svg { transform: scaleX(-1); }
 
 .hierarchy-map .map-filter-bar { border: 0; padding-top: 0; }
@@ -78,11 +78,11 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 /* Keep Read beside the mode switch as one stable, direction-aware row. */
 .map-stage > .map-mode-controls { position: absolute; z-index: 4; inset-inline-start: .5rem; top: .5rem; display: flex; align-items: center; gap: var(--control-capsule-gap, .5rem); max-width: calc(100% - 1rem); margin: 0; }
 .map-mode-controls > :is(.map-switch, .map-read-filter) { flex: 0 0 auto; margin: 0; }
-.map-toolbar { width: var(--control-size); gap: 8px; }
-.map-history-controls { flex-direction: column; gap: 8px; align-items: center; }
+.map-toolbar { width: var(--control-size); gap: var(--control-capsule-gap); }
+.map-history-controls { flex-direction: column; gap: var(--control-capsule-gap); align-items: center; }
 .map-toolbar .map-history-button { flex-basis: var(--control-size); }
 .map-zoom-control { order: -1; width: var(--control-size); height: var(--control-size); }
-.map-zoom-control > button { position: relative; width: var(--control-size); height: var(--control-size); min-height: var(--control-size); padding: 0; border-radius: 50%; font-size: 12px; }
+.map-zoom-control > button { position: relative; width: var(--control-size); height: var(--control-size); min-height: var(--control-size); padding: 0; border-radius: 50%; font-size: .625rem; white-space: nowrap; }
 .map-zoom-control:has([aria-expanded="true"]) > button { visibility: hidden; }
 .map-zoom-panel { inset-inline-start: 0; bottom: 0; width: var(--control-size); height: calc(5 * var(--control-size)); padding: 14px 0 52px; border-radius: var(--control-radius); justify-content: center; background: var(--paper); transform-origin: bottom; animation: map-zoom-open .16s ease-out; }
 .map-zoom-panel [type="range"] { writing-mode: vertical-lr; direction: rtl; width: 24px; height: 100%; }

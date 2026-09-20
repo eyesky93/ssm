@@ -266,7 +266,7 @@
   place-items: center;
   position: relative;
   z-index: 1;
-  padding: .65rem;
+  padding: var(--control-padding);
   border: 1px solid transparent;
   background: var(--surface);
   color: var(--ink);
@@ -297,6 +297,8 @@
 }
 :root .toolbar-view .view-switch svg,
 :root .map-switch svg {
+  display: block;
+  place-self: center;
   width: 1.25rem;
   height: 1.25rem;
   fill: none;
@@ -330,9 +332,9 @@
 :root [data-directory] .map-toolbar {
   inset-block-end: var(--directory-control-inset);
   margin-block-end: 0;
-  gap: .5rem;
+  gap: var(--control-capsule-gap);
 }
-:root [data-directory] .map-history-controls { gap: .5rem; }
+:root [data-directory] .map-history-controls { gap: var(--control-capsule-gap); }
 
 /* Directory and reader navigation share the same neutral buttons and shadow.
    Keep fill and ink neutral; the shared interaction ring below supplies feedback. */
@@ -381,8 +383,12 @@
     outline-offset: 2px;
   }
 }
-:root [data-directory] .map-toolbar .map-history-button { padding: .72rem; }
-:root [data-directory] .map-toolbar [data-map-zoom-toggle] { padding: .25rem; }
+:root [data-directory] .map-toolbar .map-history-button { padding: var(--control-padding); }
+:root [data-directory] .map-toolbar [data-map-zoom-toggle] {
+  padding: .25rem;
+  font-size: .625rem;
+  white-space: nowrap;
+}
 :root [data-directory] .map-history-button svg {
   width: 100%;
   height: 100%;
