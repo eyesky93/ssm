@@ -79,10 +79,12 @@
   --unread-bg: #f2f2f2;
   --shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
   --minimum-touch-target: 2.75rem;
-  /* Shared tag state. Home filters, card tags and reader tags use the same
-     palette: accent communicates state through frame/fill, never text color. */
+  /* Shared tag state. Labels remain neutral; numeric count badges retain the
+     accent so counts stay visually distinct from tag names in every surface. */
   --tag-text: var(--ink);
   --tag-text-muted: var(--muted);
+  --tag-count-text: var(--accent);
+  --tag-count-text-strong: var(--accent-strong);
   --tag-state-fill: var(--soft-accent);
   --tag-state-border: var(--accent);
   --tag-state-border-strong: var(--accent-strong);
@@ -779,7 +781,7 @@ h3 {
   height: var(--tag-count-size, 1.8rem);
   border-radius: 50%;
   background: var(--tag-state-fill);
-  color: var(--tag-text);
+  color: var(--tag-count-text);
   font-size: var(--tag-count-font-size);
   flex-shrink: 0;
 }

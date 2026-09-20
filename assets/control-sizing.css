@@ -1362,31 +1362,33 @@
 :root .article-tags > .tag-chip[hidden] {
   display: none !important;
 }
-/* Unselected counts keep the base accent; only their label changes
-   to that same accent on hover or visible keyboard focus. */
+/* Counts remain accent-colored independently of the neutral tag label. */
 :root .tag-option:not(.is-excluded) > .tag-chip:not([data-selected="true"]) .tag-count {
-  color: var(--tag-text);
+  color: var(--tag-count-text);
 }
 :root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip:not([data-selected="true"]) {
   color: var(--tag-text);
 }
-/* Selected tags keep the soft fill while their label, count and frame
-   share one accent state. Excluded tags and the delayed hide action keep
-   their existing neutral styling and behavior. */
+/* Selected tags keep the soft fill and accent frame while labels remain
+   neutral and their numeric count keeps its accent affordance. */
 :root .tag-option:not(.is-excluded):has(> .tag-chip[data-selected="true"]) {
   background: var(--tag-state-fill);
   border-color: var(--tag-state-border);
 }
-:root .tag-option:not(.is-excluded) > .tag-chip[data-selected="true"],
-:root .tag-option:not(.is-excluded) > .tag-chip[data-selected="true"] .tag-count {
+:root .tag-option:not(.is-excluded) > .tag-chip[data-selected="true"] {
   color: var(--tag-text);
+}
+:root .tag-option:not(.is-excluded) > .tag-chip[data-selected="true"] .tag-count {
+  color: var(--tag-count-text);
 }
 :root .tag-option:not(.is-excluded):has(> .tag-chip[data-selected="true"]):is(:hover, :has(:focus-visible)) {
   border-color: var(--tag-state-border-strong);
 }
-:root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[data-selected="true"],
-:root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[data-selected="true"] .tag-count {
+:root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[data-selected="true"] {
   color: var(--tag-text);
+}
+:root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[data-selected="true"] .tag-count {
+  color: var(--tag-count-text-strong);
 }
 /* Article-page tags mirror the filter-chip palette. Their selected state
    is exposed by post-browser through aria-pressed, without changing tag
@@ -1417,7 +1419,7 @@
   border-color: var(--tag-state-border) !important;
 }
 :root .tag-option:not(.is-excluded) > .tag-chip.is-topic-hovered .tag-count {
-  color: var(--tag-text) !important;
+  color: var(--tag-count-text-strong) !important;
 }
 
 /* Every unread post owns the outside accent ribbon, independent of pin
