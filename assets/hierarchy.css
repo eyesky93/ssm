@@ -41,7 +41,7 @@ html[lang="he"] .hierarchy-map { font-family: var(--font-interface-hebrew), var(
 
 /* The navigation arrows use the same round frames and accent as post controls. */
 .map-toolbar .map-history-button { flex: 0 0 var(--control-size); width: var(--control-size); height: var(--control-size); padding: var(--control-padding); border-radius: 50%; }
-.map-history-button .navigation-arrow { width: var(--control-icon-size); height: var(--control-icon-size); }
+.map-history-button .navigation-arrow { width: var(--navigation-icon-size); height: var(--navigation-icon-size); }
 
 .hierarchy-map .map-filter-bar { border: 0; padding-top: 0; }
 .map-filters { font-family: var(--font-interface); font-size: 1rem; line-height: normal; }

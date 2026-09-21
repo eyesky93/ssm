@@ -16,10 +16,12 @@
   --surface-padding: calc(var(--control-capsule-gap) * 2);
   --control-icon-size: 1.35rem;
   --control-padding: max(0px, calc((var(--control-size) - var(--control-icon-size) - 2px) / 2));
-  /* Reader navigation scale is globally tunable: arrows share the canonical
-     icon size while the editable page number stays intentionally quieter. */
-  --reader-navigation-icon-size: var(--control-icon-size);
-  --reader-navigation-padding: max(0px, calc((var(--reader-control-size) - var(--reader-navigation-icon-size) - 2px) / 2));
+  /* Navigation glyphs use one global visual scale across reader, post,
+     inline-home and Directory controls. Reader number typography remains separate. */
+  --navigation-icon-size: var(--control-icon-size);
+  --navigation-icon-stroke-width: 1.8;
+  --navigation-control-padding: max(0px, calc((var(--control-size) - var(--navigation-icon-size) - 2px) / 2));
+  --reader-navigation-padding: max(0px, calc((var(--reader-control-size) - var(--navigation-icon-size) - 2px) / 2));
   --reader-position-font-size: .625rem;
   --reader-position-stacked-font-size: .5625rem;
   /* Every tag surface uses the same compact frame with no vertical padding. */
@@ -391,16 +393,16 @@
     outline-offset: 2px;
   }
 }
-:root [data-directory] .map-toolbar .map-history-button { padding: var(--control-padding); }
+:root [data-directory] .map-toolbar .map-history-button { padding: var(--navigation-control-padding); }
 :root [data-directory] .map-toolbar [data-map-zoom-toggle] {
   padding: .25rem;
   font-size: .625rem;
   white-space: nowrap;
 }
 :root [data-directory] .map-history-button svg {
-  width: 100%;
-  height: 100%;
-  stroke-width: 1.8;
+  width: var(--navigation-icon-size);
+  height: var(--navigation-icon-size);
+  stroke-width: var(--navigation-icon-stroke-width);
 }
 :root [data-directory] .map-toolbar button:disabled { opacity: .45; cursor: default; }
 :root .map-toolbar,

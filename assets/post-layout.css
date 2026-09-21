@@ -413,11 +413,11 @@ html { scrollbar-gutter: stable; }
   cursor: default;
 }
 .reader-controls svg {
-  width: var(--reader-navigation-icon-size);
-  height: var(--reader-navigation-icon-size);
+  width: var(--navigation-icon-size);
+  height: var(--navigation-icon-size);
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.8;
+  stroke-width: var(--navigation-icon-stroke-width);
   stroke-linecap: round;
   stroke-linejoin: round;
 }
