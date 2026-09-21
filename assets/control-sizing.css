@@ -31,7 +31,8 @@
   --post-tag-capsule-size: calc(var(--control-size) * .575);
   --post-tag-label-font-size: .8rem;
   --post-tag-line-height: 1;
-  --post-tag-label-optical-offset: calc(var(--post-tag-capsule-size) * -0.055);
+  --post-tag-label-optical-offset-ratio: -0.055;
+  --post-tag-label-optical-offset: calc(var(--post-tag-capsule-size) * var(--post-tag-label-optical-offset-ratio));
   --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
   --tag-capsule-radius: var(--control-radius);
   --tag-capsule-padding-block: 0;
