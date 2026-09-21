@@ -28,6 +28,8 @@
   --reader-position-stacked-font-size: .5625rem;
   /* Every tag surface uses the same compact frame with no vertical padding. */
   --tag-capsule-size: var(--control-size);
+  --post-tag-capsule-size: calc(var(--control-size) * .575);
+  --post-tag-label-font-size: .8rem;
   --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
   --tag-capsule-radius: var(--control-radius);
   --tag-capsule-padding-block: 0;
@@ -1404,8 +1406,8 @@
    defines one compact tag variant for Grid cards and one Compact-card content
    variant, using inherited shared tokens rather than duplicate components. */
 :root {
-  --compact-tag-label-font-size: .8rem;
-  --compact-tag-capsule-size: calc(var(--control-size) * .575);
+  --compact-tag-label-font-size: var(--post-tag-label-font-size);
+  --compact-tag-capsule-size: var(--post-tag-capsule-size);
   --compact-tag-capsule-padding-inline: .35rem;
   --compact-tag-capsule-count-inset: .2rem;
   --compact-tag-capsule-content-gap: .2rem;
@@ -1414,6 +1416,14 @@
   --compact-card-summary-font-size: .9rem;
   --compact-card-summary-line-height: 1.4;
   --compact-card-summary-lines: 2;
+}
+
+/* Post-card and reader tags share one compact global geometry. The classes
+   remap only the existing tag tokens; menu/search/filter tags retain the
+   universal default size. */
+:root :is(.card-tag, .article-tag) {
+  --tag-capsule-size: var(--post-tag-capsule-size);
+  font-size: var(--post-tag-label-font-size);
 }
 
 /* The count badge already uses --soft-accent. Restore that same fill to the
