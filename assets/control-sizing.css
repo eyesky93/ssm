@@ -28,6 +28,10 @@
   --reader-navigation-padding: max(0px, calc((var(--reader-control-size) - var(--navigation-icon-size) - 2px) / 2));
   --reader-position-font-size: .625rem;
   --reader-position-stacked-font-size: .5625rem;
+  --directory-zoom-toggle-font-size: .625rem;
+  --directory-zoom-entry-font-size: .75rem;
+  --control-input-focus-font-size: 1rem;
+  --directory-zoom-input-visual-scale: .75;
   /* Every tag surface uses the same compact frame with no vertical padding. */
   --tag-capsule-size: var(--control-size);
   --post-tag-capsule-size: calc(var(--control-size) * .575);
@@ -441,7 +445,7 @@
 :root [data-directory] .map-toolbar .map-history-button { padding: var(--control-padding); }
 :root [data-directory] .map-toolbar [data-map-zoom-toggle] {
   padding: .25rem;
-  font-size: .625rem;
+  font-size: var(--directory-zoom-toggle-font-size);
   white-space: nowrap;
 }
 :root [data-directory] .map-history-button svg {
@@ -475,7 +479,7 @@
   width: var(--control-inner-size);
   height: var(--control-inner-size);
   font-family: var(--font-interface);
-  font-size: .75rem;
+  font-size: var(--directory-zoom-entry-font-size);
   line-height: 1.25;
   font-variant-numeric: tabular-nums;
   direction: ltr;
@@ -489,8 +493,11 @@
   margin: 0;
   padding: 0 1px;
   font: inherit;
+  font-size: var(--control-input-focus-font-size);
   font-variant-numeric: inherit;
   text-align: right;
+  transform: scale(var(--directory-zoom-input-visual-scale));
+  transform-origin: right center;
   direction: ltr;
   color: var(--inverse-ink);
   caret-color: var(--inverse-ink);
