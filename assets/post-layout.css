@@ -1400,8 +1400,9 @@ html[lang="he"] .reader-controls .reader-number-error {
 
 /* Search has its own compound field; independent framed header controls all use
    .framed-control instead of component-specific frame or hover selectors. */
-:root .header-controls .site-search .search-toggle:is(:hover, :focus-visible, [aria-expanded="true"]) {
-  color: var(--ink);
+:root .header-controls .site-search .search-toggle:is(:hover, :focus-visible, :active, [aria-expanded="true"]),
+:root .header-controls .site-search[data-open="true"] .search-toggle {
+  color: var(--accent-strong);
 }
 :root .header-controls .site-search .search-bar:has(.search-toggle:is(:hover, :focus-visible)) {
   border-color: var(--accent-strong);
