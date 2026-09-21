@@ -1280,6 +1280,7 @@
   background: var(--surface);
   color: var(--accent-strong);
   box-shadow: none;
+  outline: none;
   transform: none;
 }
 
