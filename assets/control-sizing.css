@@ -1236,14 +1236,14 @@
 }
 
 /* framed-control-component-v2 */
-/* Every standalone header/settings control uses exactly class="framed-control".
+/* Every standalone framed control uses exactly class="framed-control".
    Functional identity is metadata, never an extra CSS class. The crossed grouped
    controls (layout selector and accent-color capsule) deliberately stay outside
    this component. */
-:root .header-controls .framed-control,
-:root .header-controls .framed-control[aria-pressed],
-:root .header-controls .framed-control[aria-checked],
-:root .header-controls .framed-control[aria-expanded] {
+:root .framed-control,
+:root .framed-control[aria-pressed],
+:root .framed-control[aria-checked],
+:root .framed-control[aria-expanded] {
   box-sizing: border-box;
   display: inline-grid;
   place-items: center;
@@ -1272,8 +1272,8 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-:root .header-controls .framed-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active),
-:root .header-controls .framed-control[aria-expanded="true"] {
+:root .framed-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active),
+:root .framed-control[aria-expanded="true"] {
   border-color: var(--accent-strong);
   background: var(--surface);
   color: var(--accent-strong);
@@ -1281,11 +1281,11 @@
   transform: none;
 }
 
-:root .header-controls .framed-control:is(:disabled, [aria-disabled="true"]) {
+:root .framed-control:is(:disabled, [aria-disabled="true"]) {
   cursor: default;
 }
 
-:root .header-controls .framed-control > svg {
+:root .framed-control > svg {
   display: block;
   width: var(--control-icon-size);
   height: var(--control-icon-size);
@@ -1386,6 +1386,16 @@
 }
 :root .framed-control[data-framed-role~="pin-toggle"][aria-pressed="false"] .pin-head { fill: none; }
 :root .framed-control[data-framed-role~="pin-toggle"][data-selected="true"] .pin-head { fill: currentColor; }
+
+/* Comment Refresh uses the same frame class as the top menu. Only glyph
+   semantics live in metadata so the frame, size, hover and focus stay shared. */
+:root .framed-control[data-framed-role~="comment-refresh"] > svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 
 /* Default tag geometry remains owned by control-sizing.css. This late layer
    defines one compact tag variant for Grid cards and one Compact-card content

@@ -642,7 +642,7 @@ html[lang="he"] .reader-controls .reader-number-error {
    keep their original base styles; only Help is a standalone framed button.
    Component palette tokens are consumed here and on hover/focus, so a
    variant never loses its colors to these higher-specificity base rules. */
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]) {
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control) {
   box-sizing: border-box;
   min-block-size: var(--control-size);
   border: 1px solid var(--line-dark);
@@ -652,21 +652,22 @@ html[lang="he"] .reader-controls .reader-number-error {
   box-shadow: none;
   transform: none;
 }
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(:disabled):is(:hover, :focus-visible) {
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):not(:disabled):is(:hover, :focus-visible) {
   background: var(--comment-control-bg, var(--surface));
   color: var(--comment-control-ink, var(--ink));
   border-color: var(--line-dark);
   box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
 }
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
   background: var(--inverse-bg);
   color: var(--inverse-ink);
   border-color: var(--inverse-bg);
 }
 /* Low-specificity geometry cannot override the provider's own icon inset.
-   Longer text actions remain capsules; the layout capsule sizes its own cells. */
-:root :is([data-ssm-comments], .comment-section-heading) :where(.comment-refresh-control button, .comment-provider-button, .comment-actions > button[aria-pressed]) {
+   Longer text actions remain capsules; the layout capsule sizes its own cells.
+   Refresh is a standalone framed-control and is deliberately not duplicated here. */
+:root :is([data-ssm-comments], .comment-section-heading) :where(.comment-provider-button, .comment-actions > button[aria-pressed]) {
   inline-size: var(--control-size);
   min-inline-size: var(--control-size);
   max-inline-size: var(--control-size);
@@ -698,16 +699,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   max-inline-size: 100%;
   max-block-size: 100%;
   fill: currentColor;
-}
-/* Only the standalone refresh button needs room for the pin-style ring.
-   Never raise every sort cell above the layout capsule's outside border. */
-:root :is([data-ssm-comments], .comment-section-heading) .comment-refresh-control .view-switch { overflow: visible; }
-:root :is([data-ssm-comments], .comment-section-heading) .comment-refresh-control .view-switch > button {
-  border-color: var(--line-dark);
-}
-:root :is([data-ssm-comments], .comment-section-heading) .comment-refresh-control svg {
-  width: 1.35rem;
-  height: 1.35rem;
 }
 /* The existing loader disables Refresh until its request settles, including
    errors. Animate only the arrows; the shared button and capsule stay still.
@@ -819,13 +810,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   flex: 1 1 auto;
   min-inline-size: 0;
   margin: 0;
-}
-.comment-section-count {
-  color: var(--muted);
-  font-family: var(--font-interface);
-  font-size: .5em;
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
 }
 .comment-section-heading > .comment-thread-header {
   flex: 0 0 auto;
