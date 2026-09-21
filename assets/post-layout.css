@@ -1372,11 +1372,41 @@ html[lang="he"] .reader-controls .reader-number-error {
   inset-block-start: calc(100% + var(--header-control-row-gap));
   display: grid;
   grid-template-columns: repeat(var(--reader-header-action-columns), var(--header-control-size));
+  grid-template-rows: var(--header-control-size);
   gap: var(--header-control-gap);
-  align-items: center;
+  align-items: stretch;
   justify-items: center;
   width: max-content;
   z-index: 20;
+}
+
+/* Keep Details from contributing intrinsic width/height at high browser zoom.
+   Its host is exactly one global header-control cell; the absolute share
+   popovers remain free to overflow without shifting the closed Share button. */
+:root body:has([data-reader-article]:not([hidden], [data-directory])) .header-controls > .article-actions > .share-menu {
+  box-sizing: border-box;
+  display: block;
+  width: var(--header-control-size);
+  min-width: var(--header-control-size);
+  max-width: var(--header-control-size);
+  height: var(--header-control-size);
+  min-height: var(--header-control-size);
+  max-height: var(--header-control-size);
+  inline-size: var(--header-control-size);
+  min-inline-size: var(--header-control-size);
+  max-inline-size: var(--header-control-size);
+  block-size: var(--header-control-size);
+  min-block-size: var(--header-control-size);
+  max-block-size: var(--header-control-size);
+  margin: 0;
+  line-height: 0;
+}
+:root body:has([data-reader-article]:not([hidden], [data-directory])) .header-controls > .article-actions > .share-menu > summary {
+  width: 100%;
+  height: 100%;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
 }
 
 /* Search has its own compound field; independent framed header controls all use
