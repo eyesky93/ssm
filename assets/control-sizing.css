@@ -10,7 +10,7 @@
   --control-capsule-gap: .5rem;
   --control-inner-size: calc(var(--control-size) - 2px);
   --header-control-size: var(--control-size);
-  --header-control-row-gap: var(--control-capsule-gap);
+  --header-control-row-gap: var(--control-item-gap, var(--control-capsule-gap));
   --header-control-extra-row-offset: 0px;
   --reader-control-size: var(--control-size);
   --surface-padding: calc(var(--control-capsule-gap) * 2);
@@ -1090,7 +1090,7 @@
    aliases instead of introducing per-button dimensions. */
 :root {
   --mobile-header-control-size: max(var(--minimum-touch-target), var(--control-size));
-  --mobile-header-control-gap: var(--control-capsule-gap);
+  --mobile-header-control-gap: var(--control-item-gap, var(--control-capsule-gap));
   --mobile-header-group-gap: var(--mobile-header-control-gap);
   --mobile-wordmark-size: var(--mobile-header-control-size);
   --mobile-wordmark-padding-inline: calc(2 * var(--mobile-header-control-gap));

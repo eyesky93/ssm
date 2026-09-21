@@ -81,9 +81,9 @@ html[lang="he"] [data-directory] .map-stage > :is(.map-filter-bar, .map-mode-con
   gap: var(--interface-gap);
 }
 :root .header-controls {
-  --header-control-gap: var(--interface-gap) !important;
-  --header-control-half-gap: calc(var(--interface-gap) / 2) !important;
-  gap: var(--interface-gap);
+  --header-control-gap: var(--control-item-gap, var(--interface-gap)) !important;
+  --header-control-half-gap: calc(var(--header-control-gap) / 2) !important;
+  gap: var(--header-control-gap);
 }
 :root .toolbar-view > .view-switch {
   gap: var(--interface-gap) !important;
