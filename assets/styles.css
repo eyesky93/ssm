@@ -497,7 +497,7 @@ html[lang="he"] :is(.search-dialog-header h2, .search-submit) { font-family: var
   position: absolute;
   z-index: 30;
   inset-inline-end: calc(0px - var(--header-control-half-gap) - var(--settings-padding));
-  inset-block-start: calc(100% + var(--header-control-half-gap) - var(--settings-padding));
+  inset-block-start: calc(100% + var(--header-control-extra-row-offset) + var(--header-control-half-gap) - var(--settings-padding));
   justify-items: stretch;
   gap: 0;
   inline-size: calc(var(--settings-layout-width) + var(--settings-padding) + var(--settings-padding));

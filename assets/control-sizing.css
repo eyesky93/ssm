@@ -10,6 +10,8 @@
   --control-capsule-gap: .5rem;
   --control-inner-size: calc(var(--control-size) - 2px);
   --header-control-size: var(--control-size);
+  --header-control-row-gap: var(--control-capsule-gap);
+  --header-control-extra-row-offset: 0px;
   --reader-control-size: var(--control-size);
   --surface-padding: calc(var(--control-capsule-gap) * 2);
   --control-icon-size: 1.35rem;
@@ -1207,7 +1209,7 @@
     --settings-padding: calc(var(--mobile-header-control-gap) / 2);
     z-index: var(--mobile-settings-panel-z);
     inset-inline-end: calc(0px - var(--settings-padding));
-    inset-block-start: calc(100% + var(--mobile-settings-panel-gap) - var(--settings-padding));
+    inset-block-start: calc(100% + var(--header-control-extra-row-offset) + var(--mobile-settings-panel-gap) - var(--settings-padding));
   }
   :root body .header-settings .settings-lower,
   :root body .header-settings .header-actions .accent-panel {
