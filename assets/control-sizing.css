@@ -29,9 +29,7 @@
   --reader-position-font-size: .625rem;
   --reader-position-stacked-font-size: .5625rem;
   --directory-zoom-toggle-font-size: .625rem;
-  --directory-zoom-entry-font-size: .75rem;
-  --control-input-focus-font-size: 1rem;
-  --directory-zoom-input-visual-scale: .75;
+  --directory-zoom-entry-font-size: var(--directory-zoom-toggle-font-size);
   /* Every tag surface uses the same compact frame with no vertical padding. */
   --tag-capsule-size: var(--control-size);
   --post-tag-capsule-size: calc(var(--control-size) * .575);
@@ -474,35 +472,42 @@
   color: var(--inverse-ink);
   box-shadow: 0 8px 24px rgb(0 0 0 / .18);
 }
-/* Fixed numeral and percent slots prevent selection/typing from shifting the
-   readout. Use the same font as the closed button in either document direction. */
+/* The opened editor must look exactly like the closed percentage button.
+   Both states inherit the same global font token. The digit-count state only
+   changes the input's content width, so 17% and 400% are centered as complete
+   strings without any focus-only font or transform. */
 :root .map-zoom-entry {
   display: grid;
-  grid-template-columns: calc(3ch + 2px) max-content;
-  justify-content: center;
-  align-items: center;
-  width: var(--control-inner-size);
-  height: var(--control-inner-size);
+  place-items: center;
+  width: var(--control-size);
+  height: var(--control-size);
   font-family: var(--font-interface);
   font-size: var(--directory-zoom-entry-font-size);
-  line-height: 1.25;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
   direction: ltr;
   color: var(--inverse-ink);
 }
+:root .map-zoom-entry-value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1;
+  font-variant-numeric: inherit;
+}
 :root .map-zoom-entry input {
   box-sizing: border-box;
-  width: 100%;
+  width: calc(var(--directory-zoom-digit-count, 3) * 1ch);
   min-width: 0;
-  height: 1.25em;
+  height: 1em;
   margin: 0;
-  padding: 0 1px;
+  padding: 0;
   font: inherit;
-  font-size: var(--control-input-focus-font-size);
+  font-size: inherit;
   font-variant-numeric: inherit;
   text-align: right;
-  transform: scale(var(--directory-zoom-input-visual-scale));
-  transform-origin: right center;
   direction: ltr;
   color: var(--inverse-ink);
   caret-color: var(--inverse-ink);
