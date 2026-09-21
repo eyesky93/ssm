@@ -198,7 +198,9 @@ html { scrollbar-gutter: stable; }
 .article-header:has(> .article-engagement-dock) { position: relative; }
 .article-header > .article-engagement-dock {
   position: absolute;
-  inset-block-start: calc(100% + 1px);
+  /* The stats' own 1px top border occupies the same row as the reader
+     header's bottom rule. Do not push the dock one pixel below that line. */
+  inset-block-start: 100%;
   inset-inline-end: 0;
   margin: 0;
   padding: 0;
