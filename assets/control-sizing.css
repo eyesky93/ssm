@@ -206,8 +206,8 @@
 .color-settings,
 .view-settings {
   flex-basis: var(--control-size);
-  width: var(--control-switch-cell-size);
-  height: var(--control-switch-cell-size);
+  width: var(--control-size);
+  height: var(--control-size);
 }
 .accent-panel,
 .view-switch { width: var(--control-size); }
@@ -288,8 +288,8 @@
   z-index: 0;
   inset-block: 0;
   inset-inline-start: var(--control-switch-offset);
-  width: var(--control-size);
-  height: var(--control-size);
+  width: var(--control-switch-cell-size);
+  height: var(--control-switch-cell-size);
   border-radius: var(--control-radius);
   background: var(--inverse-bg);
   pointer-events: none;
