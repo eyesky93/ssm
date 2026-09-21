@@ -1046,9 +1046,8 @@ html[lang="he"] .reader-controls .reader-number-error {
   --card-tags-action-offset: var(--control-capsule-gap);
 }
 
-/* The variant owns geometry and palette together. The two card states that
-   need persistent emphasis—selected Pin and unread Read—opt into the shared
-   global control highlight below without restoring round-control geometry. */
+/* The variant owns geometry and palette together. Selected Pin and unread
+   Read use the same foreground emphasis as Share, with no extra frame. */
 :root .post-stream[data-layout] [data-card-actions] .quiet-control {
   box-sizing: border-box;
   position: relative;
@@ -1085,18 +1084,9 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 :root .post-stream[data-layout] [data-card-actions] .quiet-control:not(:disabled):is(:hover, :focus-visible, :active),
 :root .post-stream[data-layout] [data-card-actions] .quiet-control[aria-pressed="true"],
+:root .post-stream[data-layout] [data-card-actions] .read-toggle.quiet-control[aria-checked="false"],
 :root .post-stream[data-layout] [data-card-actions] details[open] > .quiet-control {
   color: var(--quiet-control-active-color);
-}
-
-/* State emphasis on cards uses the same site-wide highlight tokens as the
-   other controls. Selected Pin and unread Read stay highlighted at rest;
-   geometry, icon size and state colors remain unchanged. */
-:root .post-stream[data-layout] [data-card-actions] :is(
-  .pin-toggle.quiet-control[aria-pressed="true"],
-  .read-toggle.quiet-control[aria-checked="false"]
-):not(:disabled):not([aria-disabled="true"]) {
-  box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
 }
 /* Keyboard focus remains visible but neutral and rectangular; mouse hovering
    changes the glyph only. No focus-within ring on the stack or menu host. */
@@ -1116,6 +1106,10 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 :root .post-stream[data-layout] [data-card-actions] .quiet-control--checkbox[aria-checked="true"]::before {
   border-color: var(--quiet-checkbox-color);
+}
+:root .post-stream[data-layout] [data-card-actions] .read-toggle.quiet-control--checkbox[aria-checked="false"]::before {
+  border-color: var(--quiet-control-active-color);
+  color: var(--quiet-control-active-color);
 }
 :root .post-stream[data-layout] [data-card-actions] .quiet-control--checkbox:not(:disabled):is(:hover, :focus-visible, :active)::before {
   border-color: var(--quiet-checkbox-hover-color);
