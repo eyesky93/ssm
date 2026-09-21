@@ -471,8 +471,9 @@ html { scrollbar-gutter: stable; }
 }
 
 /* The same engagement strip appears below the header AND the article body.
-   Each sits immediately outside its own real border. Reserve the lower tabs'
-   height before comments, and remove only the now-duplicate comments border. */
+   On both reader lines, the stats' own 1px top border occupies the same row as
+   the host rule. Reserve the lower tabs' height before comments, and remove only
+   the now-duplicate comments border. */
 [data-reader-article]:not([data-directory]) > .article-body:has(> .article-end-engagement-dock) {
   position: relative;
   border-block-end: 1px solid var(--line);
@@ -480,7 +481,8 @@ html { scrollbar-gutter: stable; }
 }
 .article-body > .article-end-engagement-dock {
   position: absolute;
-  inset-block-start: calc(100% + 1px);
+  /* Match the header dock: the stats top border overlaps the article-body rule. */
+  inset-block-start: 100%;
   inset-inline-end: 0;
   margin: 0;
   padding: 0;
