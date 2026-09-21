@@ -255,6 +255,9 @@
    choices, a neutral selected fill and accent feedback only on other choices. */
 :root .toolbar-view > .view-switch,
 :root .map-switch {
+  --control-switch-cell-size: var(--header-control-size, var(--control-size));
+  --control-switch-gap: var(--header-control-gap, var(--control-capsule-gap));
+  --control-switch-offset: 0px;
   position: relative;
   display: flex;
   flex-direction: row;
@@ -264,11 +267,32 @@
   padding: 0;
   border: 0;
   border-radius: var(--control-radius);
-  gap: var(--control-capsule-gap);
+  gap: var(--control-switch-gap);
   background: var(--surface);
   box-shadow: none;
   overflow: hidden;
   isolation: isolate;
+}
+:root .toolbar-view > .view-switch:has(> :nth-child(2)[aria-pressed="true"]),
+:root .map-switch:has(> :nth-child(2)[aria-current="true"]) {
+  --control-switch-offset: calc(var(--control-switch-cell-size) + var(--control-switch-gap));
+}
+:root .toolbar-view > .view-switch:has(> :nth-child(3)[aria-pressed="true"]) {
+  --control-switch-offset: calc(2 * (var(--control-switch-cell-size) + var(--control-switch-gap)));
+}
+:root .toolbar-view > .view-switch::before,
+:root .map-switch::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset-block-start: 0;
+  inset-inline-start: var(--control-switch-offset);
+  width: var(--control-switch-cell-size);
+  height: var(--control-switch-cell-size);
+  border-radius: var(--control-radius);
+  background: var(--inverse-bg);
+  pointer-events: none;
+  transition: inset-inline-start var(--control-switch-duration) var(--control-switch-easing);
 }
 :root .toolbar-view > .view-switch::after,
 :root .map-switch::after {
@@ -288,13 +312,12 @@
   z-index: 1;
   padding: var(--control-padding);
   border: 1px solid transparent;
-  background: var(--surface);
+  background: transparent;
   color: var(--ink);
   text-decoration: none;
   box-shadow: none;
   transform: none;
   transition:
-    background-color var(--control-switch-duration) var(--control-switch-easing),
     border-color var(--control-switch-duration) var(--control-switch-easing),
     color var(--control-switch-duration) var(--control-switch-easing);
 }
@@ -309,8 +332,8 @@
 :root [data-directory] .map-switch > a[aria-current="true"],
 :root [data-directory] .map-switch > a[aria-current="true"]:is(:hover, :focus-visible) {
   z-index: 3;
-  background: var(--inverse-bg);
-  border-color: var(--inverse-bg);
+  background: transparent;
+  border-color: transparent;
   color: var(--inverse-ink);
 }
 /* Keep keyboard focus inside the clipped capsule rather than losing its ring. */
@@ -511,6 +534,8 @@
     width var(--control-switch-duration) var(--control-switch-easing);
 }
 @media (prefers-reduced-motion: reduce) {
+  :root .toolbar-view > .view-switch::before,
+  :root .map-switch::before,
   :root .toolbar-view .view-switch > button,
   :root [data-directory] .map-switch > a,
   :root .settings-theme-thumb { transition: none; }
@@ -751,10 +776,6 @@
   --header-control-half-gap: calc(var(--control-item-gap) / 2);
   gap: var(--control-item-gap);
 }
-:root body .toolbar-view > .view-switch {
-  gap: var(--control-item-gap);
-}
-
 /* Main tags, descendant rows and the reset control share the catalogue gap. */
 :root body .subject-nav,
 :root body .subject-nav .tag-list {
