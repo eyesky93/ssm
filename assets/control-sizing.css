@@ -8,6 +8,8 @@
   --control-radius: calc(var(--control-size) * .16);
   --control-inner-radius: max(0px, calc(var(--control-radius) - 1px));
   --control-capsule-gap: .5rem;
+  --control-switch-duration: .18s;
+  --control-switch-easing: cubic-bezier(.2, .8, .2, 1);
   --directory-control-spacing: var(--control-capsule-gap);
   --control-inner-size: calc(var(--control-size) - 2px);
   --header-control-size: var(--control-size);
@@ -253,6 +255,8 @@
    choices, a neutral selected fill and accent feedback only on other choices. */
 :root .toolbar-view > .view-switch,
 :root .map-switch {
+  --control-switch-offset: 0px;
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -267,7 +271,28 @@
   overflow: hidden;
   isolation: isolate;
 }
-.map-switch { position: relative; }
+:root .toolbar-view > .view-switch:has(> :nth-child(2)[aria-pressed="true"]),
+:root .map-switch:has(> :nth-child(2)[aria-current="true"]) {
+  --control-switch-offset: calc(var(--control-size) + var(--control-capsule-gap));
+}
+:root .toolbar-view > .view-switch:has(> :nth-child(3)[aria-pressed="true"]),
+:root .map-switch:has(> :nth-child(3)[aria-current="true"]) {
+  --control-switch-offset: calc(var(--control-size) + var(--control-capsule-gap) + var(--control-size) + var(--control-capsule-gap));
+}
+:root .toolbar-view > .view-switch::before,
+:root .map-switch::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset-block: 0;
+  inset-inline-start: var(--control-switch-offset);
+  width: var(--control-size);
+  height: var(--control-size);
+  border-radius: var(--control-radius);
+  background: var(--inverse-bg);
+  pointer-events: none;
+  transition: inset-inline-start var(--control-switch-duration) var(--control-switch-easing);
+}
 :root .toolbar-view > .view-switch::after,
 :root .map-switch::after {
   content: "";
@@ -286,11 +311,13 @@
   z-index: 1;
   padding: var(--control-padding);
   border: 1px solid transparent;
-  background: var(--surface);
+  background: transparent;
   color: var(--ink);
   text-decoration: none;
   box-shadow: none;
   transform: none;
+  transition: color var(--control-switch-duration) var(--control-switch-easing),
+    border-color var(--control-switch-duration) var(--control-switch-easing);
 }
 :root .toolbar-view .view-switch > button:is(:hover, :focus-visible),
 :root [data-directory] .map-switch > a:is(:hover, :focus-visible) {
@@ -303,8 +330,8 @@
 :root [data-directory] .map-switch > a[aria-current="true"],
 :root [data-directory] .map-switch > a[aria-current="true"]:is(:hover, :focus-visible) {
   z-index: 3;
-  background: var(--inverse-bg);
-  border-color: var(--inverse-bg);
+  background: transparent;
+  border-color: transparent;
   color: var(--inverse-ink);
 }
 /* Keep keyboard focus inside the clipped capsule rather than losing its ring. */
@@ -500,8 +527,15 @@
   flex-basis: calc(2 * var(--control-size) + .5rem);
 }
 
-:root .settings-theme-thumb { transition: inset-inline-start .18s ease, width .18s ease; }
+:root .settings-theme-thumb {
+  transition: inset-inline-start var(--control-switch-duration) var(--control-switch-easing),
+    width var(--control-switch-duration) var(--control-switch-easing);
+}
 @media (prefers-reduced-motion: reduce) {
+  :root .toolbar-view > .view-switch::before,
+  :root .map-switch::before,
+  :root .toolbar-view .view-switch > button,
+  :root [data-directory] .map-switch > a,
   :root .settings-theme-thumb { transition: none; }
 }
 
