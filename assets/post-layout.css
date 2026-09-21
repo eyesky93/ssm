@@ -936,7 +936,7 @@ html[lang="he"] .reader-controls .reader-number-error {
    round-button family. Keep one interaction contract for every active tab.
    Both actions use the normal foreground at rest; muted ink is reserved for
    passive counters such as views, never the clickable comments segment. */
-:root { --engagement-tab-height: 2rem; }
+:root { --engagement-tab-height: 1.8rem; }
 :root .post-engagement { --stat-segment-height: var(--engagement-tab-height); }
 :root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments) {
   font: inherit;

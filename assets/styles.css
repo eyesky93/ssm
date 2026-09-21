@@ -1819,7 +1819,7 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 
 .post-engagement {
   --stat-segment-width: 3rem;
-  --stat-segment-height: 2rem;
+  --stat-segment-height: var(--engagement-tab-height, 1.8rem);
   display: inline-flex;
   flex-flow: row nowrap;
   align-items: stretch;
