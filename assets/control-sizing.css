@@ -10,6 +10,7 @@
   --control-capsule-gap: .5rem;
   --control-switch-duration: .18s;
   --control-switch-easing: cubic-bezier(.2, .8, .2, 1);
+  --control-switch-icon-size: 1.25rem;
   --directory-control-spacing: var(--control-capsule-gap);
   --control-inner-size: calc(var(--control-size) - 2px);
   --header-control-size: var(--control-size);
@@ -362,8 +363,8 @@
 :root .map-switch svg {
   display: block;
   place-self: center;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--control-switch-icon-size);
+  height: var(--control-switch-icon-size);
   fill: none;
   stroke: currentColor;
   stroke-width: 1.7;

@@ -711,10 +711,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   from { transform: rotate(0turn); }
   to { transform: rotate(-1turn); }
 }
-:root :is([data-ssm-comments], .comment-section-heading) .comment-sort-controls [data-comment-sort="oldest"] > svg {
-  width: 1.6rem;
-  height: 1.6rem;
-}
 /* Help remains separate at the logical end of the original toolbar.
    The base toolbar owns wrapping, spacing and the full-width bottom divider. */
 :root [data-ssm-comments] .comment-toolbar [data-format="help"] {
