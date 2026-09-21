@@ -258,6 +258,8 @@
   --control-switch-cell-size: var(--header-control-size, var(--control-size));
   --control-switch-gap: var(--header-control-gap, var(--control-capsule-gap));
   --control-switch-offset: 0px;
+  --control-switch-thumb-width: var(--control-switch-cell-size);
+  --control-switch-thumb-height: var(--control-switch-cell-size);
   position: relative;
   display: flex;
   flex-direction: row;
@@ -287,12 +289,19 @@
   z-index: 0;
   inset-block-start: 0;
   inset-inline-start: var(--control-switch-offset);
-  width: var(--control-switch-cell-size);
-  height: var(--control-switch-cell-size);
+  width: var(--control-switch-thumb-width);
+  height: var(--control-switch-thumb-height);
   border-radius: var(--control-radius);
   background: var(--inverse-bg);
   pointer-events: none;
-  transition: inset-inline-start var(--control-switch-duration) var(--control-switch-easing);
+  transition: none;
+}
+:root .toolbar-view > .view-switch.switch-animation-ready::before,
+:root .map-switch.switch-animation-ready::before {
+  transition:
+    inset-inline-start var(--control-switch-duration) var(--control-switch-easing),
+    width var(--control-switch-duration) var(--control-switch-easing),
+    height var(--control-switch-duration) var(--control-switch-easing);
 }
 :root .toolbar-view > .view-switch::after,
 :root .map-switch::after {
