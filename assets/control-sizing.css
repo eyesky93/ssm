@@ -1109,6 +1109,9 @@
     gap: var(--mobile-header-group-gap);
     overflow: visible;
   }
+  :root body:has([data-reader-article]:not([hidden], [data-directory])) .site-header {
+    --header-control-extra-row-offset: calc(var(--mobile-header-control-size) + var(--mobile-header-control-gap));
+  }
   :root body .primary-nav {
     flex: 1 1 auto;
     min-width: 0;
