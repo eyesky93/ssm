@@ -80,7 +80,7 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 .map-toolbar { width: var(--control-size); gap: var(--directory-control-spacing); }
 .map-history-controls { flex-direction: column; gap: var(--directory-control-spacing); align-items: center; }
 .map-toolbar .map-history-button { flex-basis: var(--control-size); }
-.map-zoom-control { order: -1; width: var(--control-size); height: var(--control-size); }
+.map-zoom-control { order: -1; display: grid; place-items: center; width: var(--control-size); height: var(--control-size); }
 .map-zoom-control > button { position: relative; width: var(--control-size); height: var(--control-size); min-height: var(--control-size); padding: 0; border-radius: 50%; font-size: .625rem; white-space: nowrap; }
 .map-zoom-control:has([aria-expanded="true"]) > button { visibility: hidden; }
 .map-zoom-panel { inset-inline-start: 0; bottom: 0; width: var(--control-size); height: calc(5 * var(--control-size)); padding: 14px 0 52px; border-radius: var(--control-radius); justify-content: center; background: var(--paper); transform-origin: bottom; animation: map-zoom-open .16s ease-out; }
