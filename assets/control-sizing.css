@@ -39,6 +39,11 @@
   --post-tag-line-height: 1;
   --post-tag-label-optical-offset-ratio: -0.055;
   --post-tag-label-optical-offset: calc(var(--post-tag-capsule-size) * var(--post-tag-label-optical-offset-ratio));
+  --post-tag-capsule-padding-inline: .35rem;
+  --post-tag-capsule-count-inset: .2rem;
+  --post-tag-capsule-content-gap: .2rem;
+  --post-tag-count-size: calc(var(--post-tag-capsule-size) - .2rem);
+  --post-tag-count-font-size: calc(var(--post-tag-label-font-size) - .05rem);
   --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
   --tag-capsule-radius: var(--control-radius);
   --tag-capsule-padding-block: 0;
@@ -1454,16 +1459,9 @@
 }
 
 /* Default tag geometry remains owned by control-sizing.css. This late layer
-   defines one compact tag variant for Grid cards and one Compact-card content
-   variant, using inherited shared tokens rather than duplicate components. */
+   maps post/reader tag classes to the shared post-tag tokens and keeps Compact
+   card content behavior separate from tag geometry. */
 :root {
-  --compact-tag-label-font-size: var(--post-tag-label-font-size);
-  --compact-tag-capsule-size: var(--post-tag-capsule-size);
-  --compact-tag-capsule-padding-inline: .35rem;
-  --compact-tag-capsule-count-inset: .2rem;
-  --compact-tag-capsule-content-gap: .2rem;
-  --compact-tag-count-size: calc(var(--compact-tag-capsule-size) - .2rem);
-  --compact-tag-count-font-size: calc(var(--compact-tag-label-font-size) - .05rem);
   --compact-card-summary-font-size: .9rem;
   --compact-card-summary-line-height: 1.4;
   --compact-card-summary-lines: 2;
@@ -1474,6 +1472,11 @@
    universal default size. */
 :root :is(.card-tag, .article-tag) {
   --tag-capsule-size: var(--post-tag-capsule-size);
+  --tag-capsule-padding-inline: var(--post-tag-capsule-padding-inline);
+  --tag-capsule-count-inset: var(--post-tag-capsule-count-inset);
+  --tag-capsule-content-gap: var(--post-tag-capsule-content-gap);
+  --tag-count-size: var(--post-tag-count-size);
+  --tag-count-font-size: var(--post-tag-count-font-size);
   font-size: var(--post-tag-label-font-size);
   line-height: var(--post-tag-line-height);
 }
@@ -1497,22 +1500,8 @@
   background: var(--tag-state-fill);
 }
 
-/* Grid post cards retain the current dense tags. Compact cards no longer show
-   tags, so the compact tag variant does not leak into that layout. */
-:root body .post-stream[data-layout="grid"] .post-card {
-  --tag-label-font-size: var(--compact-tag-label-font-size);
-  --tag-capsule-size: var(--compact-tag-capsule-size);
-  --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
-  --tag-capsule-padding-inline: var(--compact-tag-capsule-padding-inline);
-  --tag-capsule-count-inset: var(--compact-tag-capsule-count-inset);
-  --tag-capsule-content-gap: var(--compact-tag-capsule-content-gap);
-  --tag-count-size: var(--compact-tag-count-size);
-  --tag-count-font-size: var(--compact-tag-count-font-size);
-}
-
-:root body .post-stream[data-layout="grid"] .post-card .tag-chip {
-  font-size: var(--tag-label-font-size);
-}
+/* List and Grid cards render the same .card-tag/.tag-chip component and inherit
+   the same post-tag tokens above. Layout changes must not redefine tag geometry. */
 
 /* Compact replaces the tag row with the post's existing subtitle/summary. Keep
    tags in the DOM so switching layouts is immediate and filtering semantics do
