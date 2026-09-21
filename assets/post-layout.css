@@ -757,16 +757,6 @@ html[lang="he"] .reader-controls .reader-number-error {
    hides only the body for empty drafts; rendered content sets its own height. */
 :root [data-ssm-comments] .comment-preview { min-block-size: 0; }
 
-/* Empty discussions have nothing to sort. Inspect only the actual live thread,
-   not example comments or the composer preview. This also applies before the
-   first response and updates immediately when the last comment is removed.
-   Hide the whole capsule without reserving space; Refresh stays available.
-   !important overrides the capsule's inline mobile display, not its design. */
-.comments-shell:not(:has([data-ssm-comments] > .comment-thread > .comment-item)) > .comment-section-heading .comment-sort-controls,
-[data-ssm-comments]:not(:has(> .comment-thread > .comment-item)) > .comment-thread-header .comment-sort-controls {
-  display: none !important;
-}
-
 
 /* The per-line view uses the existing composer, toolbar and theme tokens. */
 .comment-composer > textarea[hidden] { display: none; }
