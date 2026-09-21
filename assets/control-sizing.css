@@ -777,15 +777,15 @@
   padding-block: 0;
 }
 
-/* The toolbar's own bottom padding supplies the one shared visible edge gap.
-   Do not add a second margin below its border before the first catalogue card. */
+/* The toolbar uses the shared edge gap on both sides of its bottom rule:
+   controls-to-rule comes from padding; rule-to-first-card comes from margin. */
 :root body .site-header {
   min-height: 0;
   padding-block: var(--interface-edge-gap);
 }
 :root body .browser-toolbar {
   padding-block: var(--interface-edge-gap);
-  margin-block-end: 0;
+  margin-block-end: var(--interface-edge-gap);
 }
 
 /* List keeps its total row clearance. Both tiled axes use the same compact
