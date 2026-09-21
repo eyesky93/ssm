@@ -934,7 +934,7 @@
   /* Keep the panel frame padded by half a shared gap while aligning the actual
      grid cells with the last three header-control columns. */
   inset-inline-end: calc(0px - var(--settings-padding));
-  inset-block-start: calc(100% + var(--settings-gap) - var(--settings-padding));
+  inset-block-start: calc(100% + var(--interface-edge-gap));
   inline-size: max-content;
   min-inline-size: 0;
   padding: var(--settings-padding);
@@ -1110,7 +1110,7 @@
     overflow: visible;
   }
   :root body:has([data-reader-article]:not([hidden], [data-directory])) .site-header {
-    --header-control-extra-row-offset: calc(var(--mobile-header-control-size) + var(--mobile-header-control-gap));
+    --header-control-extra-row-offset: calc(var(--mobile-header-control-size) + var(--header-control-half-gap));
   }
   :root body .primary-nav {
     flex: 1 1 auto;
@@ -1212,7 +1212,7 @@
     --settings-padding: calc(var(--mobile-header-control-gap) / 2);
     z-index: var(--mobile-settings-panel-z);
     inset-inline-end: calc(0px - var(--settings-padding));
-    inset-block-start: calc(100% + var(--header-control-extra-row-offset) + var(--mobile-settings-panel-gap) - var(--settings-padding));
+    inset-block-start: calc(100% + var(--interface-edge-gap));
   }
   :root body .header-settings .settings-lower,
   :root body .header-settings .header-actions .accent-panel {

@@ -1345,10 +1345,10 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* On a visible post reader, the site header keeps only the persistent menu
    controls above its border. Pin/Share/Read sit outside the header, below that
    rule, while retaining the exact same three shared control tracks. The
-   reserved space and Settings popover offset both use the same global row
-   offset token, so size/gap changes stay synchronized. */
+   reserved row, rule-to-control inset and Settings panel padding are all
+   derived from the shared header/control spacing tokens. */
 :root body:has([data-reader-article]:not([hidden], [data-directory])) .site-header {
-  --header-control-extra-row-offset: calc(var(--header-control-size) + var(--header-control-row-gap));
+  --header-control-extra-row-offset: calc(var(--header-control-size) + var(--header-control-half-gap));
   position: relative;
   margin-block-end: var(--header-control-extra-row-offset);
 }
@@ -1358,7 +1358,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root body:has([data-reader-article]:not([hidden], [data-directory])) .header-controls > .article-actions {
   position: absolute;
   inset-inline-end: 0;
-  inset-block-start: calc(100% + var(--header-control-row-gap));
+  inset-block-start: calc(100% + var(--interface-edge-gap) + var(--header-control-half-gap));
   display: grid;
   grid-template-columns: repeat(var(--reader-header-action-columns), var(--header-control-size));
   grid-template-rows: var(--header-control-size);
