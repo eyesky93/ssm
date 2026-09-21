@@ -31,6 +31,7 @@
   --post-tag-capsule-size: calc(var(--control-size) * .575);
   --post-tag-label-font-size: .8rem;
   --post-tag-line-height: 1;
+  --post-tag-label-optical-offset: calc(var(--post-tag-capsule-size) * -0.055);
   --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
   --tag-capsule-radius: var(--control-radius);
   --tag-capsule-padding-block: 0;
@@ -1425,6 +1426,15 @@
   --tag-capsule-size: var(--post-tag-capsule-size);
   font-size: var(--post-tag-label-font-size);
   line-height: var(--post-tag-line-height);
+}
+
+/* Text-only compact post tags need an optical correction because the font's
+   ascent/descent box is not visually centered even when the flex line box is.
+   The offset is owned by the global post-tag geometry above; icon tags stay
+   untouched. */
+:root :is(.card-tag, .article-tag) .compact-post-tag:not(:has(.post-tag-icon)) {
+  display: inline-block;
+  transform: translateY(var(--post-tag-label-optical-offset));
 }
 
 /* The count badge already uses --soft-accent. Restore that same fill to the
