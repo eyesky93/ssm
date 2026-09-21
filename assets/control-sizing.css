@@ -1372,11 +1372,6 @@
   stroke-linecap: round;
 }
 :root .framed-control[data-framed-role~="pin-toggle"][aria-pressed="false"] .pin-head { fill: none; }
-:root .framed-control[data-framed-role~="pin-toggle"][data-selected="true"] {
-  background: var(--inverse-bg);
-  color: var(--inverse-ink);
-  border-color: var(--inverse-bg);
-}
 :root .framed-control[data-framed-role~="pin-toggle"][data-selected="true"] .pin-head { fill: currentColor; }
 
 /* Default tag geometry remains owned by control-sizing.css. This late layer
