@@ -213,7 +213,11 @@
 .view-switch { width: var(--control-size); }
 /* The inline layout selector owns three cells, not one button's flex basis.
    Size its host from the complete track so the capsule cannot clip its choices. */
-:root .toolbar-view { flex: 0 0 auto; width: max-content; height: var(--control-size); }
+:root .toolbar-view {
+  flex: 0 0 auto;
+  width: max-content;
+  height: var(--header-control-size, var(--control-size));
+}
 
 /* The same corner setting shapes horizontal/vertical tracks and their cells.
    Pseudo-element borders inherit it; native swatches fill the inset frame. */
@@ -259,8 +263,7 @@
   --control-switch-gap: var(--header-control-gap, var(--control-capsule-gap));
   --control-switch-offset: 0px;
   position: relative;
-  display: flex;
-  flex-direction: row;
+  display: grid;
   align-items: center;
   width: max-content;
   height: var(--control-switch-cell-size);
@@ -272,6 +275,12 @@
   box-shadow: none;
   overflow: hidden;
   isolation: isolate;
+}
+:root .toolbar-view > .view-switch {
+  grid-template-columns: repeat(3, var(--control-switch-cell-size));
+}
+:root .map-switch {
+  grid-template-columns: repeat(2, var(--control-switch-cell-size));
 }
 :root .toolbar-view > .view-switch:has(> :nth-child(2)[aria-pressed="true"]),
 :root .map-switch:has(> :nth-child(2)[aria-current="true"]) {
@@ -307,11 +316,25 @@
 }
 :root .toolbar-view .view-switch > button,
 :root [data-directory] .map-switch > a {
+  box-sizing: border-box;
   display: grid;
   place-items: center;
   position: relative;
   z-index: 1;
-  padding: var(--control-padding);
+  flex: 0 0 var(--control-switch-cell-size);
+  width: var(--control-switch-cell-size);
+  min-width: var(--control-switch-cell-size);
+  max-width: var(--control-switch-cell-size);
+  height: var(--control-switch-cell-size);
+  min-height: var(--control-switch-cell-size);
+  max-height: var(--control-switch-cell-size);
+  inline-size: var(--control-switch-cell-size);
+  min-inline-size: var(--control-switch-cell-size);
+  max-inline-size: var(--control-switch-cell-size);
+  block-size: var(--control-switch-cell-size);
+  min-block-size: var(--control-switch-cell-size);
+  max-block-size: var(--control-switch-cell-size);
+  padding: var(--header-control-padding, var(--control-padding));
   border: 1px solid transparent;
   background: transparent;
   color: var(--ink);
@@ -777,7 +800,7 @@
   gap: var(--control-item-gap);
 }
 :root body .toolbar-view > .view-switch {
-  gap: var(--control-item-gap);
+  --control-switch-gap: var(--control-item-gap);
 }
 
 /* Main tags, descendant rows and the reset control share the catalogue gap. */
