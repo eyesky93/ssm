@@ -255,6 +255,7 @@
    choices, a neutral selected fill and accent feedback only on other choices. */
 :root .toolbar-view > .view-switch,
 :root .map-switch {
+  --control-switch-gap: var(--header-control-gap, var(--control-capsule-gap));
   --control-switch-offset: 0px;
   position: relative;
   display: flex;
@@ -265,7 +266,7 @@
   padding: 0;
   border: 0;
   border-radius: var(--control-radius);
-  gap: var(--control-capsule-gap);
+  gap: var(--control-switch-gap);
   background: var(--surface);
   box-shadow: none;
   overflow: hidden;
@@ -273,11 +274,11 @@
 }
 :root .toolbar-view > .view-switch:has(> :nth-child(2)[aria-pressed="true"]),
 :root .map-switch:has(> :nth-child(2)[aria-current="true"]) {
-  --control-switch-offset: calc(var(--control-size) + var(--control-capsule-gap));
+  --control-switch-offset: calc(var(--control-size) + var(--control-switch-gap));
 }
 :root .toolbar-view > .view-switch:has(> :nth-child(3)[aria-pressed="true"]),
 :root .map-switch:has(> :nth-child(3)[aria-current="true"]) {
-  --control-switch-offset: calc(var(--control-size) + var(--control-capsule-gap) + var(--control-size) + var(--control-capsule-gap));
+  --control-switch-offset: calc(var(--control-size) + var(--control-switch-gap) + var(--control-size) + var(--control-switch-gap));
 }
 :root .toolbar-view > .view-switch::before,
 :root .map-switch::before {
