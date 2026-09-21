@@ -213,11 +213,7 @@
 .view-switch { width: var(--control-size); }
 /* The inline layout selector owns three cells, not one button's flex basis.
    Size its host from the complete track so the capsule cannot clip its choices. */
-:root .toolbar-view {
-  flex: 0 0 auto;
-  width: max-content;
-  height: var(--header-control-size, var(--control-size));
-}
+:root .toolbar-view { flex: 0 0 auto; width: max-content; height: var(--control-size); }
 
 /* The same corner setting shapes horizontal/vertical tracks and their cells.
    Pseudo-element borders inherit it; native swatches fill the inset frame. */
@@ -259,50 +255,20 @@
    choices, a neutral selected fill and accent feedback only on other choices. */
 :root .toolbar-view > .view-switch,
 :root .map-switch {
-  --control-switch-cell-size: var(--header-control-size, var(--control-size));
-  --control-switch-gap: var(--header-control-gap, var(--control-capsule-gap));
-  --control-switch-offset: 0px;
   position: relative;
-  display: grid;
+  display: flex;
+  flex-direction: row;
   align-items: center;
   width: max-content;
-  height: var(--control-switch-cell-size);
+  height: var(--control-size);
   padding: 0;
   border: 0;
   border-radius: var(--control-radius);
-  gap: var(--control-switch-gap);
+  gap: var(--control-capsule-gap);
   background: var(--surface);
   box-shadow: none;
   overflow: hidden;
   isolation: isolate;
-}
-:root .toolbar-view > .view-switch {
-  grid-template-columns: repeat(3, var(--control-switch-cell-size));
-}
-:root .map-switch {
-  grid-template-columns: repeat(2, var(--control-switch-cell-size));
-}
-:root .toolbar-view > .view-switch:has(> :nth-child(2)[aria-pressed="true"]),
-:root .map-switch:has(> :nth-child(2)[aria-current="true"]) {
-  --control-switch-offset: calc(var(--control-switch-cell-size) + var(--control-switch-gap));
-}
-:root .toolbar-view > .view-switch:has(> :nth-child(3)[aria-pressed="true"]),
-:root .map-switch:has(> :nth-child(3)[aria-current="true"]) {
-  --control-switch-offset: calc(var(--control-switch-cell-size) + var(--control-switch-gap) + var(--control-switch-cell-size) + var(--control-switch-gap));
-}
-:root .toolbar-view > .view-switch::before,
-:root .map-switch::before {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  inset-block: 0;
-  inset-inline-start: var(--control-switch-offset);
-  width: var(--control-switch-cell-size);
-  height: var(--control-switch-cell-size);
-  border-radius: var(--control-radius);
-  background: var(--inverse-bg);
-  pointer-events: none;
-  transition: inset-inline-start var(--control-switch-duration) var(--control-switch-easing);
 }
 :root .toolbar-view > .view-switch::after,
 :root .map-switch::after {
@@ -316,33 +282,21 @@
 }
 :root .toolbar-view .view-switch > button,
 :root [data-directory] .map-switch > a {
-  box-sizing: border-box;
   display: grid;
   place-items: center;
   position: relative;
   z-index: 1;
-  flex: 0 0 var(--control-switch-cell-size);
-  width: var(--control-switch-cell-size);
-  min-width: var(--control-switch-cell-size);
-  max-width: var(--control-switch-cell-size);
-  height: var(--control-switch-cell-size);
-  min-height: var(--control-switch-cell-size);
-  max-height: var(--control-switch-cell-size);
-  inline-size: var(--control-switch-cell-size);
-  min-inline-size: var(--control-switch-cell-size);
-  max-inline-size: var(--control-switch-cell-size);
-  block-size: var(--control-switch-cell-size);
-  min-block-size: var(--control-switch-cell-size);
-  max-block-size: var(--control-switch-cell-size);
-  padding: var(--header-control-padding, var(--control-padding));
+  padding: var(--control-padding);
   border: 1px solid transparent;
-  background: transparent;
+  background: var(--surface);
   color: var(--ink);
   text-decoration: none;
   box-shadow: none;
   transform: none;
-  transition: color var(--control-switch-duration) var(--control-switch-easing),
-    border-color var(--control-switch-duration) var(--control-switch-easing);
+  transition:
+    background-color var(--control-switch-duration) var(--control-switch-easing),
+    border-color var(--control-switch-duration) var(--control-switch-easing),
+    color var(--control-switch-duration) var(--control-switch-easing);
 }
 :root .toolbar-view .view-switch > button:is(:hover, :focus-visible),
 :root [data-directory] .map-switch > a:is(:hover, :focus-visible) {
@@ -355,8 +309,8 @@
 :root [data-directory] .map-switch > a[aria-current="true"],
 :root [data-directory] .map-switch > a[aria-current="true"]:is(:hover, :focus-visible) {
   z-index: 3;
-  background: transparent;
-  border-color: transparent;
+  background: var(--inverse-bg);
+  border-color: var(--inverse-bg);
   color: var(--inverse-ink);
 }
 /* Keep keyboard focus inside the clipped capsule rather than losing its ring. */
@@ -557,8 +511,6 @@
     width var(--control-switch-duration) var(--control-switch-easing);
 }
 @media (prefers-reduced-motion: reduce) {
-  :root .toolbar-view > .view-switch::before,
-  :root .map-switch::before,
   :root .toolbar-view .view-switch > button,
   :root [data-directory] .map-switch > a,
   :root .settings-theme-thumb { transition: none; }
@@ -800,7 +752,7 @@
   gap: var(--control-item-gap);
 }
 :root body .toolbar-view > .view-switch {
-  --control-switch-gap: var(--control-item-gap);
+  gap: var(--control-item-gap);
 }
 
 /* Main tags, descendant rows and the reset control share the catalogue gap. */
