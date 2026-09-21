@@ -1082,10 +1082,16 @@ html[lang="he"] .reader-controls .reader-number-error {
   width: var(--quiet-control-icon-size);
   height: var(--quiet-control-icon-size);
 }
-/* A pinned card keeps the filled pin at rest, but hovering previews the
-   unpinned state by emptying only the pin head. Size and color stay unchanged. */
+/* Pin hover previews the opposite toggle state without changing geometry:
+   pinned -> grey + hollow, unpinned -> active black + filled. */
+:root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="true"]:hover {
+  color: var(--quiet-control-color);
+}
 :root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="true"]:hover .pin-head {
   fill: none;
+}
+:root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="false"]:hover .pin-head {
+  fill: currentColor;
 }
 :root .post-stream[data-layout] [data-card-actions] .quiet-control:not(:disabled):is(:hover, :focus-visible, :active),
 :root .post-stream[data-layout] [data-card-actions] .quiet-control[aria-pressed="true"],
