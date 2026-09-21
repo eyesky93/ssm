@@ -1043,7 +1043,7 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   cursor: pointer;
 }
 
-.navigation-arrow { width: var(--navigation-icon-size); height: var(--navigation-icon-size); fill: none; stroke: currentColor; stroke-width: var(--navigation-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
+.navigation-arrow { fill: none; stroke: currentColor; stroke-width: var(--navigation-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
 [dir="rtl"] .navigation-arrow { transform: scaleX(-1); }
 
 .post-navigation { display: grid; grid-template-columns: var(--minimum-touch-target) minmax(0, 1fr) var(--minimum-touch-target); align-items: center; gap: 1rem; margin-block-start: 1.5rem; padding-block: 1rem; border-block-start: 1px solid var(--line); }
@@ -1052,6 +1052,7 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 .post-navigation .post-prev { grid-column: 1; grid-row: 1; }
 .post-navigation .post-next { grid-column: 3; grid-row: 1; }
 .post-navigation [hidden] { display: none; }
+.post-navigation .navigation-arrow { width: var(--navigation-post-icon-size); height: var(--navigation-post-icon-size); }
 .post-position { grid-column: 2; grid-row: 1; justify-self: center; color: var(--muted); font-size: 0.95rem; font-variant-numeric: tabular-nums; }
 
 
@@ -1077,7 +1078,7 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   font-weight: 800;
   text-decoration: none;
 }
-.back-link .navigation-arrow { flex: none; }
+.back-link .navigation-arrow { width: var(--navigation-inline-icon-size); height: var(--navigation-inline-icon-size); flex: none; }
 
 .article-shell {
   width: 100%;
@@ -1377,7 +1378,7 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 .back-to-top[data-visible="true"],
 .back-to-top:focus-visible { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; transition-delay: 0s; }
 .back-to-top:hover { background: var(--accent-strong); border-color: var(--accent-strong); color: var(--paper); }
-.back-to-top svg { width: var(--navigation-icon-size); height: var(--navigation-icon-size); fill: none; stroke: currentColor; stroke-width: var(--navigation-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
+.back-to-top svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: var(--navigation-icon-stroke-width); stroke-linecap: round; stroke-linejoin: round; }
 
 .site-footer {
   display: flex;
