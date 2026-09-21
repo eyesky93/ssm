@@ -268,51 +268,38 @@ html { scrollbar-gutter: stable; }
   grid-template-columns: repeat(auto-fill, minmax(min(100%, max(15rem, calc(var(--engagement-strip-min-width, 0px) + 2 * var(--surface-padding) + 2px))), 1fr));
 }
 
-/* Published date belongs at the bottom of a reader header, immediately above
-   its attached engagement tabs. Reorder the existing non-interactive date row
-   in the first CSS layout: no duplicate date, new request or late DOM move.
-   The existing logical end alignment mirrors the placement in Hebrew. */
+/* Keep the reader title on its own row, then keep subtitle and Published date
+   on the same baseline at every responsive width. Browser zoom reduces the CSS
+   viewport width, so this geometry must not switch to a stacked mobile flow.
+   The subtitle owns the flexible track; the date stays at logical end. */
 [data-reader-article]:not([data-directory]) > .article-header {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  column-gap: 1.5rem;
   padding-block-end: .5rem;
 }
-[data-reader-article]:not([data-directory]) > .article-header > .article-topline {
-  order: 1;
-  margin-block-start: .75rem;
-}
 [data-reader-article]:not([data-directory]) > .article-header > .article-heading {
+  grid-column: 1 / -1;
+  grid-row: 1;
   margin-block-start: 0;
 }
-/* Share the subtitle's last baseline with the date on wider screens. The
-   title/tools keep their full row; long subtitles wrap within their own column
-   without moving the date away from the logical end or covering the tabs.
-   Phones retain the stacked flow above, so neither text nor date is clipped.
-*/
-@media (min-width: 701px) {
-  [data-reader-article]:not([data-directory]) > .article-header {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    column-gap: 1.5rem;
-  }
-  [data-reader-article]:not([data-directory]) > .article-header > .article-heading {
-    grid-column: 1 / -1;
-    grid-row: 1;
-  }
-  [data-reader-article]:not([data-directory]) > .article-header > .article-summary {
-    grid-column: 1;
-    grid-row: 2;
-    min-width: 0;
-    align-self: last baseline;
-  }
-  [data-reader-article]:not([data-directory]) > .article-header > .article-topline {
-    grid-column: 2;
-    grid-row: 2;
-    min-width: 0;
-    max-width: 100%;
-    align-self: last baseline;
-    margin-block-start: .85rem;
-  }
+[data-reader-article]:not([data-directory]) > .article-header > .article-summary {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+  align-self: last baseline;
+}
+[data-reader-article]:not([data-directory]) > .article-header > .article-topline {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+  max-width: 100%;
+  align-self: last baseline;
+  margin-block-start: .85rem;
+}
+[data-reader-article]:not([data-directory]) > .article-header > .article-topline .article-meta {
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 /* Tighten only the visible reader, not the home/inline catalogue or Directory. */
 .site-main:has(> [data-reader-article]:not([hidden], [data-directory])) {
