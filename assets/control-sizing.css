@@ -16,6 +16,12 @@
   --surface-padding: calc(var(--control-capsule-gap) * 2);
   --control-icon-size: 1.35rem;
   --control-padding: max(0px, calc((var(--control-size) - var(--control-icon-size) - 2px) / 2));
+  /* Reader navigation scale is globally tunable: arrows share the canonical
+     icon size while the editable page number stays intentionally quieter. */
+  --reader-navigation-icon-size: var(--control-icon-size);
+  --reader-navigation-padding: max(0px, calc((var(--reader-control-size) - var(--reader-navigation-icon-size) - 2px) / 2));
+  --reader-position-font-size: .625rem;
+  --reader-position-stacked-font-size: .5625rem;
   /* Every tag surface uses the same compact frame with no vertical padding. */
   --tag-capsule-size: var(--control-size);
   --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
