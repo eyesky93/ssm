@@ -791,10 +791,11 @@
   --grid-post-summary-size: 1rem;
   --grid-post-summary-line-height: 1.5;
 
-  /* Standard Grid/List cards share one vertical edge inset. Grid keeps its
-     own alias so its geometry can stay explicit without introducing literals. */
+  /* Standard Grid/Compact/List cards share one vertical edge inset. Each
+     layout keeps an alias so its geometry stays explicit without literals. */
   --standard-post-card-padding-block: var(--control-capsule-gap);
   --grid-post-card-padding-block: var(--standard-post-card-padding-block);
+  --compact-post-card-padding-block: var(--standard-post-card-padding-block);
   --list-post-card-padding-block: var(--standard-post-card-padding-block);
 
   /* List cards are content-sized. Their controls live on one dedicated rail,
@@ -916,13 +917,19 @@
   margin-block-end: calc(var(--card-action-inset) - var(--post-card-padding-block));
 }
 
-/* Grid uses the same vertical card inset as List. Keeping the block padding
-   symmetric also places the date on the same bottom rhythm as the Read control. */
+/* Grid and Compact use the same vertical card inset as List. Keeping the block
+   padding symmetric also places the date on the same bottom rhythm as Read. */
 :root body .post-stream[data-layout="grid"] .post-card:not(.directory-card) {
   padding-block: var(--grid-post-card-padding-block);
 }
+:root body .post-stream[data-layout="compact"] .post-card:not(.directory-card) {
+  padding-block: var(--compact-post-card-padding-block);
+}
 :root body .post-stream[data-layout="grid"] .post-card:not(.directory-card) .card-footer > [data-card-actions] {
   inset-block-end: var(--grid-post-card-padding-block);
+}
+:root body .post-stream[data-layout="compact"] .post-card:not(.directory-card) .card-footer > [data-card-actions] {
+  inset-block-end: var(--compact-post-card-padding-block);
 }
 
 /* Grid and list share one typography contract. This makes the list genuinely
