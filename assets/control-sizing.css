@@ -206,8 +206,8 @@
 .color-settings,
 .view-settings {
   flex-basis: var(--control-size);
-  width: var(--control-size);
-  height: var(--control-size);
+  width: var(--control-switch-cell-size);
+  height: var(--control-switch-cell-size);
 }
 .accent-panel,
 .view-switch { width: var(--control-size); }
@@ -255,6 +255,7 @@
    choices, a neutral selected fill and accent feedback only on other choices. */
 :root .toolbar-view > .view-switch,
 :root .map-switch {
+  --control-switch-cell-size: var(--header-control-size, var(--control-size));
   --control-switch-gap: var(--header-control-gap, var(--control-capsule-gap));
   --control-switch-offset: 0px;
   position: relative;
@@ -262,7 +263,7 @@
   flex-direction: row;
   align-items: center;
   width: max-content;
-  height: var(--control-size);
+  height: var(--control-switch-cell-size);
   padding: 0;
   border: 0;
   border-radius: var(--control-radius);
@@ -274,11 +275,11 @@
 }
 :root .toolbar-view > .view-switch:has(> :nth-child(2)[aria-pressed="true"]),
 :root .map-switch:has(> :nth-child(2)[aria-current="true"]) {
-  --control-switch-offset: calc(var(--control-size) + var(--control-switch-gap));
+  --control-switch-offset: calc(var(--control-switch-cell-size) + var(--control-switch-gap));
 }
 :root .toolbar-view > .view-switch:has(> :nth-child(3)[aria-pressed="true"]),
 :root .map-switch:has(> :nth-child(3)[aria-current="true"]) {
-  --control-switch-offset: calc(var(--control-size) + var(--control-switch-gap) + var(--control-size) + var(--control-switch-gap));
+  --control-switch-offset: calc(var(--control-switch-cell-size) + var(--control-switch-gap) + var(--control-switch-cell-size) + var(--control-switch-gap));
 }
 :root .toolbar-view > .view-switch::before,
 :root .map-switch::before {
