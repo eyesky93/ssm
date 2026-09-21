@@ -8,7 +8,7 @@
   --control-radius: calc(var(--control-size) * .16);
   --control-inner-radius: max(0px, calc(var(--control-radius) - 1px));
   --control-capsule-gap: .5rem;
-  --directory-control-gap: var(--control-capsule-gap);
+  --directory-control-spacing: var(--control-capsule-gap);
   --control-inner-size: calc(var(--control-size) - 2px);
   --header-control-size: var(--control-size);
   --header-control-row-gap: var(--control-item-gap, var(--control-capsule-gap));
@@ -329,26 +329,25 @@
   transform-origin: center;
 }
 
-/* All Directory corner controls use the small gap above the mode capsule.
-   Keep top, bottom and side distances equal, independent of viewport gutters. */
-:root [data-directory] .map-stage {
-  --directory-control-inset: var(--control-capsule-gap);
-}
+/* One Directory spacing token owns every visible control distance:
+   top/right/bottom frame insets and each gap in the vertical toolbar. */
 :root [data-directory] .map-stage > .map-mode-controls,
 :root [data-directory] .map-toolbar {
   inset-inline-start: auto;
-  inset-inline-end: var(--directory-control-inset);
+  inset-inline-end: var(--directory-control-spacing);
 }
 /* Anchor the complete controls, never individual buttons or their hit areas. */
 :root [data-directory] .map-stage > .map-mode-controls {
-  inset-block-start: var(--directory-control-inset);
+  inset-block-start: var(--directory-control-spacing);
 }
 :root [data-directory] .map-toolbar {
-  inset-block-end: var(--directory-control-inset);
+  inset-block-end: var(--directory-control-spacing);
   margin-block-end: 0;
-  gap: var(--directory-control-gap);
+  gap: var(--directory-control-spacing);
 }
-:root [data-directory] .map-history-controls { gap: var(--directory-control-gap); }
+/* Remove the nested history flex box from layout so Zoom, Back and Forward
+   are three peers in one flex column. One parent gap therefore separates all. */
+:root [data-directory] .map-history-controls { display: contents; }
 
 /* Directory and reader navigation share the same neutral buttons and shadow.
    Keep fill and ink neutral; the shared interaction ring below supplies feedback. */
@@ -455,9 +454,9 @@
   caret-color: var(--inverse-ink);
 }
 :root [data-reader-article][data-directory] .map-stage > .map-filter-bar {
-  inset-block-start: calc(var(--directory-control-inset) + var(--control-size) + var(--control-capsule-gap));
-  inset-inline-start: var(--directory-control-inset);
-  inset-inline-end: var(--directory-control-inset);
+  inset-block-start: calc(var(--directory-control-spacing) + var(--control-size) + var(--directory-control-spacing));
+  inset-inline-start: var(--directory-control-spacing);
+  inset-inline-end: var(--directory-control-spacing);
   padding-block: 0;
 }
 /* Library subjects get the full row below Read/mode, in either direction. */
