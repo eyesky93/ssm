@@ -30,6 +30,7 @@
   --tag-capsule-size: var(--control-size);
   --post-tag-capsule-size: calc(var(--control-size) * .575);
   --post-tag-label-font-size: .8rem;
+  --post-tag-line-height: 1;
   --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
   --tag-capsule-radius: var(--control-radius);
   --tag-capsule-padding-block: 0;
@@ -1423,6 +1424,7 @@
 :root :is(.card-tag, .article-tag) {
   --tag-capsule-size: var(--post-tag-capsule-size);
   font-size: var(--post-tag-label-font-size);
+  line-height: var(--post-tag-line-height);
 }
 
 /* The count badge already uses --soft-accent. Restore that same fill to the
