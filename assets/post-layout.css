@@ -311,8 +311,8 @@ html { scrollbar-gutter: stable; }
    All controls inherit the shared reader size, inverse fill and shadow. */
 .reader-controls {
   position: fixed;
-  inset-inline-end: max(1rem, env(safe-area-inset-right));
-  inset-block-end: max(1rem, env(safe-area-inset-bottom));
+  inset-inline-end: var(--floating-control-inline-end);
+  inset-block-end: var(--floating-control-block-end);
   z-index: 10000;
   display: flex;
   flex-direction: column;
@@ -330,9 +330,6 @@ html { scrollbar-gutter: stable; }
   visibility: visible;
   transform: translateY(0);
   transition-delay: 0s;
-}
-[dir="rtl"] .reader-controls {
-  inset-inline-end: max(1rem, env(safe-area-inset-left));
 }
 .reader-controls .post-navigation {
   display: flex;

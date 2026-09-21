@@ -767,6 +767,14 @@
      card gutters in every homepage layout all consume this one shared token. */
   --interface-edge-gap: 0.5rem;
 
+  /* Fixed viewport controls share one logical edge contract. The safe-area
+     source switches with document direction, so RTL mirrors without per-control
+     left/right patches. */
+  --viewport-inline-end-safe-inset: env(safe-area-inset-right);
+  --floating-control-edge-offset: calc(2 * var(--interface-edge-gap));
+  --floating-control-inline-end: max(var(--floating-control-edge-offset), var(--viewport-inline-end-safe-inset));
+  --floating-control-block-end: max(var(--floating-control-edge-offset), env(safe-area-inset-bottom));
+
   /* Ordinary post rows need room for their detached engagement tabs. Tiled
      layouts keep that reserve on each ordinary post card so every visible
      edge gap, both between columns and below Directory, comes from the same
@@ -793,6 +801,10 @@
      distinction comes from the shared control frame, never an accent tint. */
   --neutral-control-surface: var(--surface);
   --neutral-control-frame: var(--line-dark);
+}
+
+:root[dir="rtl"] {
+  --viewport-inline-end-safe-inset: env(safe-area-inset-left);
 }
 
 /* Independent header controls and the cells inside the layout capsule use the
