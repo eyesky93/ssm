@@ -64,7 +64,7 @@ html[lang="he"] .map-filters { font-family: var(--font-interface-hebrew), var(--
 
 .map-switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: max-content; max-width: 100%; padding: 5px; margin-bottom: 1rem; border: 1px solid var(--line-dark); border-radius: 999px; background: var(--surface); }
 .article-body .map-switch a { position: relative; display: flex; justify-content: center; min-width: 3rem; min-height: var(--minimum-touch-target); align-items: center; padding: .5rem .75rem; border: 1px solid transparent; border-radius: 999px; background: transparent; color: var(--ink); text-decoration: none; font-family: var(--font-interface); }
-.article-body .map-switch [aria-current="true"] { color: var(--accent); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 15%, var(--paper)); }
+/* Mode-state colors are owned by control-sizing.css so this switch follows the shared top-control interaction model. */
 html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-hebrew), var(--font-content); }
 
 /* One stable frame for every Directory view, including empty results. */

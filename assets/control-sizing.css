@@ -1391,10 +1391,12 @@
 }
 
 /* The count badge already uses --soft-accent. Restore that same fill to the
-   hovered/focused tag surface without changing selected or excluded states.
-   Split filter tags paint on their outer frame; standalone chips paint directly. */
+   hovered/focused topic surface without changing selected or excluded states.
+   Split filter tags paint on their outer frame; standalone topic chips paint
+   directly. Directory mode links reuse tag-chip geometry but are controls, not
+   topic chips, so their shared top-control hover stays neutral. */
 :root body .tag-option:not(.is-excluded):not(:has(> .tag-chip[data-selected="true"])):is(:hover, :has(:focus-visible)),
-:root body .tag-chip:not([data-selected="true"]):not(.tag-option > .tag-chip):is(:hover, :focus-visible) {
+:root body .tag-chip:not([data-selected="true"]):not([data-map-switch]):not(.tag-option > .tag-chip):is(:hover, :focus-visible) {
   background: var(--tag-state-fill);
 }
 
