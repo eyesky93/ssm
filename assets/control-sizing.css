@@ -926,7 +926,7 @@
 :root .header-actions {
   --settings-cell: var(--header-control-size);
   --settings-gap: var(--header-control-gap);
-  --settings-padding: var(--header-control-half-gap);
+  --settings-padding: var(--interface-edge-gap);
   --settings-color-width: var(--settings-cell);
   --settings-color-height: auto;
   --settings-layout-width: max-content;
@@ -1209,7 +1209,7 @@
   :root body .header-settings .header-actions {
     --settings-cell: var(--mobile-header-control-size);
     --settings-gap: var(--mobile-header-control-gap);
-    --settings-padding: calc(var(--mobile-header-control-gap) / 2);
+    --settings-padding: var(--interface-edge-gap);
     z-index: var(--mobile-settings-panel-z);
     inset-inline-end: calc(0px - var(--settings-padding));
     inset-block-start: calc(100% + var(--interface-edge-gap));

@@ -1358,7 +1358,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root body:has([data-reader-article]:not([hidden], [data-directory])) .header-controls > .article-actions {
   position: absolute;
   inset-inline-end: 0;
-  inset-block-start: calc(100% + var(--interface-edge-gap) + var(--header-control-half-gap));
+  inset-block-start: calc(100% + var(--interface-edge-gap));
   display: grid;
   grid-template-columns: repeat(var(--reader-header-action-columns), var(--header-control-size));
   grid-template-rows: var(--header-control-size);
