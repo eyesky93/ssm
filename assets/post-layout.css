@@ -308,9 +308,8 @@ html { scrollbar-gutter: stable; }
 
 /* One body-level viewport dock: top, previous, next, then position. It stays
    above scrolling page/graph content without inheriting article transforms.
-   All buttons retain the original Back to top size, inverse fill and shadow. */
+   All controls inherit the shared reader size, inverse fill and shadow. */
 .reader-controls {
-  --reader-control-size: var(--minimum-touch-target);
   position: fixed;
   inset-inline-end: max(1rem, env(safe-area-inset-right));
   inset-block-end: max(1rem, env(safe-area-inset-bottom));

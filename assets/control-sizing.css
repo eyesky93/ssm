@@ -193,7 +193,8 @@
 :root .share-menu summary:where(:not(.quiet-control)),
 :root .share-options a,
 :root .share-options button,
-:root .subscription-close {
+:root .subscription-close,
+:root .back-to-top {
   padding: var(--control-padding);
 }
 

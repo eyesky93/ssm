@@ -1358,14 +1358,10 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   bottom: max(1rem, env(safe-area-inset-bottom));
   display: grid;
   place-items: center;
-  width: var(--minimum-touch-target);
-  height: var(--minimum-touch-target);
   border: 1px solid var(--line-dark);
-  border-radius: 50%;
   background: var(--inverse-bg);
   color: var(--inverse-ink);
   box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
-  padding: 0.72rem;
   cursor: pointer;
   opacity: 0;
   visibility: hidden;
