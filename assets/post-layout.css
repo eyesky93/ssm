@@ -1082,11 +1082,8 @@ html[lang="he"] .reader-controls .reader-number-error {
   width: var(--quiet-control-icon-size);
   height: var(--quiet-control-icon-size);
 }
-/* A pinned card keeps the filled active pin at rest. Hover previews the
-   unpinned state: empty head and the normal quiet grey foreground. */
-:root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="true"]:hover {
-  color: var(--quiet-control-color);
-}
+/* A pinned card keeps the filled pin at rest, but hovering previews the
+   unpinned state by emptying only the pin head. Size and color stay unchanged. */
 :root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="true"]:hover .pin-head {
   fill: none;
 }
