@@ -88,6 +88,10 @@
   --tag-state-fill: var(--soft-accent);
   --tag-state-border: var(--accent);
   --tag-state-border-strong: var(--accent-strong);
+  --tag-exclude-fill: var(--soft-accent);
+  --tag-exclude-border: var(--line-dark);
+  --tag-exclude-border-strong: var(--muted);
+  --tag-exclude-text: var(--muted);
   /* Global font parameters. Change these four values to retheme typography
      without having to hunt through component selectors. */
   --font-content: Georgia, "Times New Roman", "Noto Serif Hebrew", serif;
@@ -404,6 +408,15 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
 .search-tag[data-selected="true"]:is(:hover, :focus-visible) {
   border-color: var(--tag-state-border-strong);
   color: var(--tag-text);
+}
+.search-tag[data-selected="true"][data-search-tag-mode="exclude"] {
+  border-color: var(--tag-exclude-border);
+  background: var(--tag-exclude-fill);
+  color: var(--tag-exclude-text);
+}
+.search-tag[data-selected="true"][data-search-tag-mode="exclude"]:is(:hover, :focus-visible) {
+  border-color: var(--tag-exclude-border-strong);
+  color: var(--tag-exclude-text);
 }
 .search-tag-remove { flex: 0 0 auto; font-size: 1rem; line-height: 1; }
 html[lang="he"] .search-tag { font-family: var(--font-interface-hebrew), var(--font-content); }
