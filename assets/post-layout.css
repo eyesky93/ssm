@@ -884,15 +884,10 @@ html[lang="he"] .reader-controls .reader-number-error {
 .comment-item > .comment-replies { padding-block-start: .75rem; }
 .comment-box .comment-byline { min-inline-size: 0; }
 
-/* Signup explanations are removed at build time. Keep actual consent and
-   actions legible in the normal foreground; the email example is untouched. */
-:root .subscribe-dialog :is(.consent-row, .subscription-actions, .subscribe-unavailable) {
+/* Signup explanations are removed at build time. Keep actual feedback
+   legible in the normal foreground; the email example is untouched. */
+:root .subscribe-dialog .subscribe-unavailable {
   color: var(--ink);
-}
-:root .subscribe-dialog .subscription-actions {
-  margin: .75rem 0 0;
-  font-size: .8125rem;
-  line-height: 1.5;
 }
 :root .subscribe-dialog .form-status:not([data-state="success"]) {
   color: var(--ink);
