@@ -1573,7 +1573,6 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* Search owns a z-index in the header. Raise the complete article action group
    while Share is open so Search/Pin can never paint on top of the destinations. */
 :root body .header-controls .article-actions:has(.share-menu[open]) {
-  position: relative;
   z-index: var(--reader-share-layer);
   overflow: visible;
 }
@@ -1621,21 +1620,13 @@ html[lang="he"] .reader-controls .reader-number-error {
   z-index: calc(var(--reader-share-layer) + 1);
 }
 
-/* Use physical sides deliberately. Share stays at its normal position; only
-   the out-of-flow destination strip extends away from it. */
-:root[dir="ltr"] body .header-controls .share-menu > .share-options,
-:root[dir="ltr"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
+/* Share stays at its normal position. The out-of-flow destination strip always
+   extends physically left, so opening never reorders or displaces header controls. */
+:root body .header-controls .share-menu > .share-options,
+:root body .header-controls .share-menu[data-share-side="above"] > .share-options {
   position: absolute !important;
   left: auto !important;
   right: calc(100% + var(--reader-share-gap)) !important;
-  top: 50% !important;
-  bottom: auto !important;
-}
-:root[dir="rtl"] body .header-controls .share-menu > .share-options,
-:root[dir="rtl"] body .header-controls .share-menu[data-share-side="above"] > .share-options {
-  position: absolute !important;
-  right: auto !important;
-  left: calc(100% + var(--reader-share-gap)) !important;
   top: 50% !important;
   bottom: auto !important;
 }
