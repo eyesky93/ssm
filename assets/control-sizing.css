@@ -1335,6 +1335,62 @@
 }
 
 /* framed-control-component-v2 */
+/* Borderless icon controls use one global interaction contract. Geometry is
+   token-driven so compact card controls and full-size reader controls can share
+   the same class without duplicating hover/focus styling. */
+:root .quiet-control {
+  box-sizing: border-box;
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 var(--quiet-control-target-size, var(--header-control-size, var(--control-size)));
+  width: var(--quiet-control-target-size, var(--header-control-size, var(--control-size)));
+  min-width: var(--quiet-control-target-size, var(--header-control-size, var(--control-size)));
+  max-width: var(--quiet-control-target-size, var(--header-control-size, var(--control-size)));
+  height: var(--quiet-control-target-size, var(--header-control-size, var(--control-size)));
+  min-height: var(--quiet-control-target-size, var(--header-control-size, var(--control-size)));
+  max-height: var(--quiet-control-target-size, var(--header-control-size, var(--control-size)));
+  inline-size: var(--quiet-control-target-size, var(--header-control-size, var(--control-size)));
+  min-inline-size: var(--quiet-control-target-size, var(--header-control-size, var(--control-size)));
+  max-inline-size: var(--quiet-control-target-size, var(--header-control-size, var(--control-size)));
+  block-size: var(--quiet-control-target-size, var(--header-control-size, var(--control-size)));
+  min-block-size: var(--quiet-control-target-size, var(--header-control-size, var(--control-size)));
+  max-block-size: var(--quiet-control-target-size, var(--header-control-size, var(--control-size)));
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--quiet-control-radius, var(--control-radius));
+  background: transparent;
+  color: var(--quiet-control-color, var(--ink));
+  box-shadow: none;
+  outline: none;
+  transform: none;
+  line-height: 0;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+:root .quiet-control > svg {
+  display: block;
+  width: var(--quiet-control-icon-size, var(--control-icon-size));
+  height: var(--quiet-control-icon-size, var(--control-icon-size));
+  margin: 0;
+  justify-self: center;
+  align-self: center;
+}
+:root .quiet-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active) {
+  border: 0;
+  background: transparent;
+  color: var(--quiet-control-active-color, var(--accent-strong));
+  box-shadow: none;
+  transform: none;
+}
+:root .quiet-control:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 0;
+}
+
 /* Every standalone framed control uses exactly class="framed-control".
    Functional identity is metadata, never an extra CSS class. The crossed grouped
    controls (layout selector and accent-color capsule) deliberately stay outside

@@ -1600,6 +1600,12 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root body .header-controls .share-menu {
   --reader-share-option-size: var(--header-control-size, var(--control-size));
   --reader-share-gap: var(--header-control-gap, var(--control-item-gap));
+  --quiet-control-target-size: var(--reader-share-option-size);
+  --quiet-control-icon-size: var(--reader-share-icon-size);
+  --quiet-control-gap: var(--reader-share-gap);
+  --quiet-control-color: var(--ink);
+  --quiet-control-active-color: var(--accent-strong);
+  --quiet-control-radius: var(--control-radius);
   position: relative;
   box-sizing: border-box;
   flex: 0 0 var(--reader-share-option-size);
@@ -1612,9 +1618,9 @@ html[lang="he"] .reader-controls .reader-number-error {
   overflow: visible;
 }
 
-/* Trigger and destinations consume one identical global control box. */
-:root body .header-controls .share-menu > summary,
-:root body .header-controls .share-menu > .share-options > :is(a, button) {
+/* Share keeps its full reader-header frame. Destination cells use the global
+   borderless .quiet-control component with the full-size tokens above. */
+:root body .header-controls .share-menu > summary {
   box-sizing: border-box;
   flex: 0 0 var(--reader-share-option-size);
   width: var(--reader-share-option-size);
@@ -1664,11 +1670,4 @@ html[lang="he"] .reader-controls .reader-number-error {
   transform: none !important;
   translate: none !important;
   overflow: visible;
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) {
-  padding: var(--control-padding);
-}
-:root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
-  width: var(--reader-share-icon-size);
-  height: var(--reader-share-icon-size);
 }
