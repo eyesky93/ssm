@@ -1011,7 +1011,7 @@ html[lang="he"] .reader-controls .reader-number-error {
    choices inherit this quiet family; article sharing keeps full-size controls. */
 :root {
   --quiet-control-icon-size: calc(var(--control-size) / 3);
-  --quiet-control-padding: calc(var(--control-capsule-gap) / 4);
+  --quiet-control-padding: calc(var(--control-capsule-gap) / 3);
   --quiet-control-target-size: calc(var(--quiet-control-icon-size) + 2 * var(--quiet-control-padding));
   --quiet-control-gap: var(--quiet-control-padding);
   --quiet-control-color: var(--line-dark);
