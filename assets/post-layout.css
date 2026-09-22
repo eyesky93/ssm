@@ -1011,8 +1011,9 @@ html[lang="he"] .reader-controls .reader-number-error {
    choices inherit this quiet family; article sharing keeps full-size controls. */
 :root {
   --quiet-control-icon-size: calc(var(--control-size) / 3);
-  --quiet-control-target-size: calc(var(--control-size) * .55);
-  --quiet-control-gap: calc(var(--control-capsule-gap) / 2);
+  --quiet-control-padding: calc(var(--control-capsule-gap) / 4);
+  --quiet-control-target-size: calc(var(--quiet-control-icon-size) + 2 * var(--quiet-control-padding));
+  --quiet-control-gap: var(--quiet-control-padding);
   --quiet-control-color: var(--line-dark);
   --quiet-control-active-color: var(--ink);
   --quiet-checkbox-color: var(--line);
@@ -1053,12 +1054,18 @@ html[lang="he"] .reader-controls .reader-number-error {
   box-shadow: none;
   outline: none;
   transform: none;
+  line-height: 0;
+  text-align: center;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
 }
 :root .post-stream[data-layout] [data-card-actions] .quiet-control > svg {
+  display: block;
   width: var(--quiet-control-icon-size);
   height: var(--quiet-control-icon-size);
+  margin: 0;
+  justify-self: center;
+  align-self: center;
 }
 /* Pin hover previews the opposite toggle state without changing geometry:
    pinned -> grey + hollow, unpinned -> active black + filled. */
@@ -1140,10 +1147,21 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 :root .post-stream[data-layout] [data-card-actions] > .card-share-menu {
   position: relative;
-  display: block;
-  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  flex: 0 0 var(--quiet-control-target-size);
+  width: var(--quiet-control-target-size);
+  min-width: var(--quiet-control-target-size);
+  max-width: var(--quiet-control-target-size);
+  height: var(--quiet-control-target-size);
+  min-height: var(--quiet-control-target-size);
+  max-height: var(--quiet-control-target-size);
+  inline-size: var(--quiet-control-target-size);
+  block-size: var(--quiet-control-target-size);
   inset: auto;
   margin: 0;
+  padding: 0;
+  line-height: 0;
 }
 
 /* Share destinations sit beside, and are vertically centered on, the Share
