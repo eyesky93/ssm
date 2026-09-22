@@ -1656,6 +1656,13 @@ html[lang="he"] .reader-controls .reader-number-error {
   top: 0 !important;
   bottom: auto !important;
   z-index: var(--reader-share-layer);
+  box-sizing: border-box;
+  height: var(--reader-share-option-size);
+  min-height: var(--reader-share-option-size);
+  max-height: var(--reader-share-option-size);
+  block-size: var(--reader-share-option-size);
+  min-block-size: var(--reader-share-option-size);
+  max-block-size: var(--reader-share-option-size);
   display: flex;
   flex-direction: row-reverse;
   flex-wrap: nowrap;
