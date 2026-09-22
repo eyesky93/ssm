@@ -83,15 +83,14 @@
      accent so counts stay visually distinct from tag names in every surface. */
   --tag-text: var(--ink);
   --tag-text-muted: var(--muted);
+  --tag-rest-fill: var(--surface);
+  --tag-rest-border: var(--line-dark);
+  --tag-rest-text: var(--tag-text);
   --tag-count-text: var(--accent);
   --tag-count-text-strong: var(--accent-strong);
   --tag-state-fill: var(--soft-accent);
   --tag-state-border: var(--accent);
   --tag-state-border-strong: var(--accent-strong);
-  --tag-exclude-fill: var(--soft-accent);
-  --tag-exclude-border: var(--line-dark);
-  --tag-exclude-border-strong: var(--muted);
-  --tag-exclude-text: var(--muted);
   /* Global font parameters. Change these four values to retheme typography
      without having to hunt through component selectors. */
   --font-content: Georgia, "Times New Roman", "Noto Serif Hebrew", serif;
@@ -410,13 +409,13 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
   color: var(--tag-text);
 }
 .search-tag[data-selected="true"][data-search-tag-mode="exclude"] {
-  border-color: var(--tag-exclude-border);
-  background: var(--tag-exclude-fill);
-  color: var(--tag-exclude-text);
+  border-color: var(--tag-rest-border);
+  background: var(--tag-rest-fill);
+  color: var(--tag-text-muted);
 }
 .search-tag[data-selected="true"][data-search-tag-mode="exclude"]:is(:hover, :focus-visible) {
-  border-color: var(--tag-exclude-border-strong);
-  color: var(--tag-exclude-text);
+  border-color: var(--tag-rest-border);
+  color: var(--tag-text-muted);
 }
 .search-tag-remove { flex: 0 0 auto; font-size: 1rem; line-height: 1; }
 html[lang="he"] .search-tag { font-family: var(--font-interface-hebrew), var(--font-content); }
@@ -709,11 +708,11 @@ h3 {
   align-items: center;
   gap: 0.75rem;
   min-height: var(--minimum-touch-target);
-  border: 1px solid var(--line-dark);
+  border: 1px solid var(--tag-rest-border);
   border-radius: 999px;
   padding: 0.45rem 0.9rem;
-  background: var(--surface);
-  color: var(--tag-text);
+  background: var(--tag-rest-fill);
+  color: var(--tag-rest-text);
   text-decoration: none;
   font: inherit;
   font-size: 0.875rem;
@@ -731,7 +730,7 @@ h3 {
 
 .tag-chip > span:first-child { min-width: 0; overflow-wrap: anywhere; }
 .tag-chip:has(.tag-count) { padding-inline-end: 0.5rem; }
-.tag-option { position: relative; display: inline-flex; align-items: center; max-width: 100%; border: 1px solid var(--line-dark); border-radius: 999px; background: var(--surface); }
+.tag-option { position: relative; display: inline-flex; align-items: center; max-width: 100%; border: 1px solid var(--tag-rest-border); border-radius: 999px; background: var(--tag-rest-fill); }
 .tag-option:has(> .tag-chip.is-ancestor) { border-color: var(--tag-state-border-strong); }
 .tag-option:has(> .tag-chip[data-selected="true"]) { background: var(--tag-state-fill); border-color: var(--tag-state-border); box-shadow: none; }
 .tag-option > .tag-chip, .tag-option > .tag-chip:is(:hover, :focus-visible) { min-width: 0; min-height: calc(var(--minimum-touch-target) - 2px); border: 0; background: transparent; box-shadow: none; transform: none; }
