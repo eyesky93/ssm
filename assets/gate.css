@@ -79,8 +79,10 @@ button:focus-visible {
 .theme-toggle svg circle,
 .theme-toggle svg path { vector-effect: non-scaling-stroke; }
 .theme-toggle [data-theme-icon="dark"] { fill: currentColor; stroke: currentColor; }
-:root[data-theme="light"] [data-theme-icon="dark"],
-:root[data-theme="dark"] [data-theme-icon="light"] { display: block; }
+.theme-toggle [data-theme-icon="auto"] .theme-auto-moon { fill: currentColor; stroke: none; }
+:root[data-theme-next="light"] [data-theme-icon="light"],
+:root[data-theme-next="dark"] [data-theme-icon="dark"],
+:root[data-theme-next="auto"] [data-theme-icon="auto"] { display: block; }
 .theme-toggle:is(:hover, :focus-visible) {
   border-color: var(--accent-strong);
   color: var(--accent-strong);

@@ -640,9 +640,11 @@ html[lang="he"] :is(.search-dialog-header h2, .search-submit) { font-family: var
 }
 
 .theme-toggle [data-theme-icon="dark"] { fill: currentColor; stroke: currentColor; }
+.theme-toggle [data-theme-icon="auto"] .theme-auto-moon { fill: currentColor; stroke: none; }
 
-:root[data-theme="light"] [data-theme-icon="dark"],
-:root[data-theme="dark"] [data-theme-icon="light"] {
+:root[data-theme-next="light"] [data-theme-icon="light"],
+:root[data-theme-next="dark"] [data-theme-icon="dark"],
+:root[data-theme-next="auto"] [data-theme-icon="auto"] {
   display: block;
 }
 
