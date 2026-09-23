@@ -52,6 +52,12 @@
   --tag-capsule-gap: calc(var(--control-capsule-gap) / 2);
   --tag-count-size: calc(var(--tag-capsule-inner-size) - 2 * var(--tag-capsule-count-inset));
   --tag-count-font-size: calc(var(--tag-count-size) * .65);
+  /* One optical baseline model for the count numeral and both remove-X forms. */
+  --tag-side-mark-lift: .05rem;
+  --tag-side-mark-translate: calc(0px - var(--tag-side-mark-lift));
+  --tag-count-baseline-padding: calc(var(--tag-side-mark-lift) + var(--tag-side-mark-lift));
+  --tag-remove-mark-font-size: 1rem;
+  --tag-remove-mark-line-height: 1;
 }
 
 /* Retain the component names as aliases, never independent size settings.
