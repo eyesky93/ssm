@@ -1016,12 +1016,10 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-control-gap: var(--quiet-control-padding);
   --quiet-control-color: var(--line-dark);
   --quiet-control-active-color: var(--ink);
-  --quiet-pin-slash-outer-color: var(--ink);
-  --quiet-pin-slash-inner-color: var(--surface);
+  --quiet-pin-slash-color: var(--white);
   --quiet-pin-slash-length: calc(var(--quiet-control-icon-size) * 1.55);
-  --quiet-pin-slash-outer-thickness: calc(var(--quiet-control-icon-size) / 4);
-  --quiet-pin-slash-inner-thickness: calc(var(--quiet-control-icon-size) / 8);
-  --quiet-pin-slash-angle: 45deg;
+  --quiet-pin-slash-thickness: calc(var(--quiet-control-icon-size) / 4);
+  --quiet-pin-slash-angle: -45deg;
   --quiet-checkbox-color: var(--line);
   --quiet-checkbox-hover-color: var(--line-dark);
   --quiet-checkbox-hover-background: var(--code-bg);
@@ -1073,30 +1071,20 @@ html[lang="he"] .reader-controls .reader-number-error {
   justify-self: center;
   align-self: center;
 }
-/* Pin hover previews removal without replacing the selected glyph.
-   The slash is perpendicular to the Pin axis, matching the reference icon:
-   a foreground outer stroke keeps it visible on the surface, while a surface
-   inner stroke stays visible where the slash crosses the filled Pin. */
-:root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="true"]:hover::before,
+/* Selected Pin keeps its current glyph and gets one white removal slash.
+   The slash uses the opposite diagonal from the previous hover treatment. */
 :root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="true"]:hover::after {
   content: "";
   position: absolute;
   inset: 0;
   inline-size: var(--quiet-pin-slash-length);
+  block-size: var(--quiet-pin-slash-thickness);
   margin: auto;
   border-radius: var(--quiet-control-radius);
+  background: var(--quiet-pin-slash-color);
   pointer-events: none;
   transform: rotate(var(--quiet-pin-slash-angle));
-}
-:root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="true"]:hover::before {
-  block-size: var(--quiet-pin-slash-outer-thickness);
-  background: var(--quiet-pin-slash-outer-color);
   z-index: 1;
-}
-:root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="true"]:hover::after {
-  block-size: var(--quiet-pin-slash-inner-thickness);
-  background: var(--quiet-pin-slash-inner-color);
-  z-index: 2;
 }
 :root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="false"]:hover .pin-head {
   fill: currentColor;
