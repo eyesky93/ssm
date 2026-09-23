@@ -80,9 +80,9 @@ button:focus-visible {
 .theme-toggle svg path { vector-effect: non-scaling-stroke; }
 .theme-toggle [data-theme-icon="dark"] { fill: currentColor; stroke: currentColor; }
 .theme-toggle [data-theme-icon="auto"] .theme-auto-moon { fill: currentColor; stroke: none; }
-:root[data-theme-next="light"] [data-theme-icon="light"],
-:root[data-theme-next="dark"] [data-theme-icon="dark"],
-:root[data-theme-next="auto"] [data-theme-icon="auto"] { display: block; }
+:root[data-theme-preference="light"] [data-theme-icon="light"],
+:root[data-theme-preference="dark"] [data-theme-icon="dark"],
+:root[data-theme-preference="auto"] [data-theme-icon="auto"] { display: block; }
 .theme-toggle:is(:hover, :focus-visible) {
   border-color: var(--accent-strong);
   color: var(--accent-strong);
