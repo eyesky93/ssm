@@ -1017,9 +1017,9 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-control-color: var(--line-dark);
   --quiet-control-active-color: var(--ink);
   --quiet-pin-slash-color: var(--white);
-  --quiet-pin-slash-length: calc(var(--quiet-control-icon-size) * 1.55);
-  --quiet-pin-slash-thickness: calc(var(--quiet-control-icon-size) / 4);
-  --quiet-pin-slash-angle: -45deg;
+  --quiet-pin-slash-length: calc(var(--quiet-control-icon-size) * .82);
+  --quiet-pin-slash-thickness: calc(var(--quiet-control-icon-size) / 12);
+  --quiet-pin-slash-angle: 35deg;
   --quiet-checkbox-color: var(--line);
   --quiet-checkbox-hover-color: var(--line-dark);
   --quiet-checkbox-hover-background: var(--code-bg);
@@ -1071,8 +1071,9 @@ html[lang="he"] .reader-controls .reader-number-error {
   justify-self: center;
   align-self: center;
 }
-/* Selected Pin keeps its current glyph and gets one white removal slash.
-   The slash uses the opposite diagonal from the previous hover treatment. */
+/* Selected Pin keeps its current glyph and gets one restrained white removal
+   slash. The Pin SVG itself is rotated 35deg from vertical, so a horizontal
+   overlay rotated by the same 35deg is exactly perpendicular to its shaft. */
 :root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="true"]:hover::after {
   content: "";
   position: absolute;
