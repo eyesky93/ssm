@@ -1535,7 +1535,10 @@
   fill: currentColor;
   stroke: currentColor;
 }
-:root .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="auto"] .theme-auto-moon {
+:root .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="auto"] [data-auto-screen] {
+  display: none;
+}
+:root .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="auto"] .theme-auto-screen-fill {
   fill: currentColor;
   stroke: none;
 }
@@ -1543,6 +1546,10 @@
 :root[data-theme-preference="dark"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="dark"],
 :root[data-theme-preference="auto"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="auto"] {
   display: block;
+}
+:root[data-theme-preference="auto"][data-theme="light"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="auto"] [data-auto-screen="light"],
+:root[data-theme-preference="auto"][data-theme="dark"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="auto"] [data-auto-screen="dark"] {
+  display: inline;
 }
 
 /* Article pin state. */

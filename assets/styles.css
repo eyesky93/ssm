@@ -644,12 +644,17 @@ html[lang="he"] :is(.search-dialog-header h2, .search-submit) { font-family: var
 }
 
 .theme-toggle [data-theme-icon="dark"] { fill: currentColor; stroke: currentColor; }
-.theme-toggle [data-theme-icon="auto"] .theme-auto-moon { fill: currentColor; stroke: none; }
+.theme-toggle [data-theme-icon="auto"] [data-auto-screen] { display: none; }
+.theme-toggle [data-theme-icon="auto"] .theme-auto-screen-fill { fill: currentColor; stroke: none; }
 
 :root[data-theme-preference="light"] [data-theme-icon="light"],
 :root[data-theme-preference="dark"] [data-theme-icon="dark"],
 :root[data-theme-preference="auto"] [data-theme-icon="auto"] {
   display: block;
+}
+:root[data-theme-preference="auto"][data-theme="light"] [data-theme-icon="auto"] [data-auto-screen="light"],
+:root[data-theme-preference="auto"][data-theme="dark"] [data-theme-icon="auto"] [data-auto-screen="dark"] {
+  display: inline;
 }
 
 .site-main {
@@ -1153,6 +1158,7 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 :root {
   --share-layout-stack-direction: column;
   --share-layout-stack-reverse-direction: column-reverse;
+  --share-layout-mobile-direction: var(--share-layout-stack-reverse-direction);
   --share-layout-inline-direction: row;
   --share-layout-inline-reverse-direction: row-reverse;
   --share-layout-gap: var(--control-item-gap, var(--control-capsule-gap));

@@ -1253,7 +1253,7 @@ html[lang="he"] .reader-controls .reader-number-error {
     inset-block-start: auto;
     inset-block-end: 100%;
     transform: none;
-    flex-direction: var(--share-layout-stack-reverse-direction);
+    flex-direction: var(--share-layout-mobile-direction);
   }
 
   :root .post-stream[data-layout] .post-card:not(.directory-card) > .post-heading {
@@ -1662,6 +1662,6 @@ html[lang="he"] .reader-controls .reader-number-error {
     block-size: auto;
     min-block-size: 0;
     max-block-size: none;
-    flex-direction: var(--share-layout-stack-direction);
+    flex-direction: var(--share-layout-mobile-direction);
   }
 }
