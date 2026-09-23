@@ -1536,18 +1536,13 @@
   fill: currentColor;
   stroke: currentColor;
 }
-:root .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="auto"] .theme-auto-cycle {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 3.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: none;
-}
-:root .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="auto"] .theme-auto-arrowhead,
-:root .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="auto"] .theme-auto-letter {
-  fill: currentColor;
-  stroke: none;
+:root .framed-control[data-framed-role~="theme-toggle"] > .theme-auto-icon {
+  display: none;
+  width: var(--control-icon-size);
+  height: var(--control-icon-size);
+  background-color: currentColor;
+  -webkit-mask: url("./auto-theme-icon.png") center / contain no-repeat;
+  mask: url("./auto-theme-icon.png") center / contain no-repeat;
 }
 :root[data-theme-preference="light"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="light"],
 :root[data-theme-preference="dark"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="dark"],

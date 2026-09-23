@@ -79,16 +79,14 @@ button:focus-visible {
 .theme-toggle svg circle,
 .theme-toggle svg path { vector-effect: non-scaling-stroke; }
 .theme-toggle [data-theme-icon="dark"] { fill: currentColor; stroke: currentColor; }
-.theme-toggle [data-theme-icon="auto"] .theme-auto-cycle {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 3.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: none;
+.theme-toggle .theme-auto-icon {
+  display: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  background-color: currentColor;
+  -webkit-mask: url("./auto-theme-icon.png") center / contain no-repeat;
+  mask: url("./auto-theme-icon.png") center / contain no-repeat;
 }
-.theme-toggle [data-theme-icon="auto"] .theme-auto-arrowhead,
-.theme-toggle [data-theme-icon="auto"] .theme-auto-letter { fill: currentColor; stroke: none; }
 :root[data-theme-preference="light"] [data-theme-icon="light"],
 :root[data-theme-preference="dark"] [data-theme-icon="dark"],
 :root[data-theme-preference="auto"] [data-theme-icon="auto"] { display: block; }
