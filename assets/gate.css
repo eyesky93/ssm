@@ -84,8 +84,8 @@ button:focus-visible {
   width: 1.15rem;
   height: 1.15rem;
   background-color: currentColor;
-  -webkit-mask: url("./auto-theme-icon.png?v=014c2695b80c") center / contain no-repeat;
-  mask: url("./auto-theme-icon.png?v=014c2695b80c") center / contain no-repeat;
+  -webkit-mask: url("./auto-theme-icon.svg") center / contain no-repeat;
+  mask: url("./auto-theme-icon.svg") center / contain no-repeat;
 }
 :root[data-theme-preference="light"] [data-theme-icon="light"],
 :root[data-theme-preference="dark"] [data-theme-icon="dark"],
