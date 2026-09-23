@@ -1527,8 +1527,13 @@
   fill: currentColor;
   stroke: currentColor;
 }
-:root[data-theme="light"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="dark"],
-:root[data-theme="dark"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="light"] {
+:root .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="auto"] .theme-auto-moon {
+  fill: currentColor;
+  stroke: none;
+}
+:root[data-theme-preference="light"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="light"],
+:root[data-theme-preference="dark"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="dark"],
+:root[data-theme-preference="auto"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="auto"] {
   display: block;
 }
 
