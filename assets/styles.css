@@ -929,16 +929,16 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   color: var(--ink);
   cursor: pointer;
 }
-.pin-toggle[data-selected="true"] {
+.pin-toggle.is-pinned {
   background: var(--inverse-bg);
   color: var(--inverse-ink);
   border-color: var(--inverse-bg);
 }
 .pin-toggle svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
-.pin-toggle[aria-pressed="false"] .pin-head { fill: none; }
-.pin-toggle[data-selected="true"] .pin-head { fill: currentColor; }
-.pin-toggle[aria-pressed="false"]:not(:disabled):is(:hover, :focus-visible) { box-shadow: 0 0 0 3px var(--soft-accent); }
-.pin-toggle[data-selected="true"]:hover { box-shadow: 0 0 0 3px var(--soft-accent); }
+.pin-toggle.is-unpinned .pin-head { fill: none; }
+.pin-toggle.is-pinned .pin-head { fill: currentColor; }
+.pin-toggle.is-unpinned:not(:disabled):is(:hover, :focus-visible) { box-shadow: 0 0 0 3px var(--soft-accent); }
+.pin-toggle.is-pinned:hover { box-shadow: 0 0 0 3px var(--soft-accent); }
 .pin-toggle:disabled { cursor: default; }
 .post-engagement {
   display: inline-grid;
@@ -1709,17 +1709,17 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   background: var(--surface-translucent);
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
 }
-.post-card:has([data-pin-toggle][data-selected="true"]) {
+.post-card:has(.pin-toggle.is-pinned) {
   box-shadow: -.32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
 }
-.unread-card:has([data-pin-toggle][data-selected="true"]) {
+.unread-card:has(.pin-toggle.is-pinned) {
   background: var(--unread-bg);
   box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
 }
-[dir="rtl"] .post-card:has([data-pin-toggle][data-selected="true"]) {
+[dir="rtl"] .post-card:has(.pin-toggle.is-pinned) {
   box-shadow: .32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
 }
-[dir="rtl"] .unread-card:has([data-pin-toggle][data-selected="true"]) {
+[dir="rtl"] .unread-card:has(.pin-toggle.is-pinned) {
   box-shadow: .32rem 0 0 var(--accent), var(--shadow);
 }
 
@@ -1730,7 +1730,7 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   --post-frame-color: var(--line-dark);
   border-color: var(--line-dark) !important;
 }
-.post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+.post-card:not(.unread-card):has(.pin-toggle.is-pinned):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   --post-frame-color: color-mix(in srgb, var(--line-dark) 72%, #000);
   border-color: color-mix(in srgb, var(--line-dark) 72%, #000) !important;
   box-shadow: -.32rem 0 0 color-mix(in srgb, var(--line-dark) 72%, #000), 0 1px 0 rgba(0, 0, 0, 0.03);
@@ -1739,13 +1739,13 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   --post-frame-color: var(--accent-strong);
   border-color: var(--accent-strong) !important;
 }
-.unread-card:has([data-pin-toggle][data-selected="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+.unread-card:has(.pin-toggle.is-pinned):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   box-shadow: -.32rem 0 0 var(--accent-strong), var(--shadow);
 }
-[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+[dir="rtl"] .post-card:not(.unread-card):has(.pin-toggle.is-pinned):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   box-shadow: .32rem 0 0 color-mix(in srgb, var(--line-dark) 72%, #000), 0 1px 0 rgba(0, 0, 0, 0.03);
 }
-[dir="rtl"] .unread-card:has([data-pin-toggle][data-selected="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+[dir="rtl"] .unread-card:has(.pin-toggle.is-pinned):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   box-shadow: .32rem 0 0 var(--accent-strong), var(--shadow);
 }
 /* Contain the lowered stats layer without creating a stacking context on
@@ -2003,20 +2003,20 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   --post-frame-color: var(--line);
   border-color: var(--line) !important;
 }
-.post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):has(.post-engagement:hover),
-.post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):has(.post-engagement:focus-within) {
+.post-card:not(.unread-card):has(.pin-toggle.is-pinned):has(.post-engagement:hover),
+.post-card:not(.unread-card):has(.pin-toggle.is-pinned):has(.post-engagement:focus-within) {
   box-shadow: -.32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
 }
-.unread-card:has([data-pin-toggle][data-selected="true"]):has(.post-engagement:hover),
-.unread-card:has([data-pin-toggle][data-selected="true"]):has(.post-engagement:focus-within) {
+.unread-card:has(.pin-toggle.is-pinned):has(.post-engagement:hover),
+.unread-card:has(.pin-toggle.is-pinned):has(.post-engagement:focus-within) {
   box-shadow: -.32rem 0 0 var(--accent), var(--shadow);
 }
-[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):has(.post-engagement:hover),
-[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):has(.post-engagement:focus-within) {
+[dir="rtl"] .post-card:not(.unread-card):has(.pin-toggle.is-pinned):has(.post-engagement:hover),
+[dir="rtl"] .post-card:not(.unread-card):has(.pin-toggle.is-pinned):has(.post-engagement:focus-within) {
   box-shadow: .32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03);
 }
-[dir="rtl"] .unread-card:has([data-pin-toggle][data-selected="true"]):has(.post-engagement:hover),
-[dir="rtl"] .unread-card:has([data-pin-toggle][data-selected="true"]):has(.post-engagement:focus-within) {
+[dir="rtl"] .unread-card:has(.pin-toggle.is-pinned):has(.post-engagement:hover),
+[dir="rtl"] .unread-card:has(.pin-toggle.is-pinned):has(.post-engagement:focus-within) {
   box-shadow: .32rem 0 0 var(--accent), var(--shadow);
 }
 

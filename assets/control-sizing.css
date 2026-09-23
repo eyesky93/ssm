@@ -1796,12 +1796,12 @@
 :root :is(.control-highlight, .pin-toggle, .share-menu > summary:not(.framed-control)):not(.quiet-control):is(:disabled, [aria-disabled="true"]) {
   box-shadow: none;
 }
-:root .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+:root .post-card:not(.unread-card):has(.pin-toggle.is-pinned):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   --post-frame-color: var(--line-strong);
   border-color: var(--line-strong) !important;
   box-shadow: -.32rem 0 0 var(--line-strong), 0 1px 0 rgba(0, 0, 0, 0.03);
 }
-:root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+:root[dir="rtl"] .post-card:not(.unread-card):has(.pin-toggle.is-pinned):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   box-shadow: .32rem 0 0 var(--line-strong), 0 1px 0 rgba(0, 0, 0, 0.03);
 }
 :root .post-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > .post-engagement::before {
@@ -1874,12 +1874,12 @@
   --post-frame-color: var(--line) !important;
   border-color: var(--line) !important;
 }
-:root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):has(> .post-engagement:hover),
-:root[dir="rtl"] .post-card:not(.unread-card):has([data-pin-toggle][data-selected="true"]):has(> .post-engagement:focus-within) {
+:root[dir="rtl"] .post-card:not(.unread-card):has(.pin-toggle.is-pinned):has(> .post-engagement:hover),
+:root[dir="rtl"] .post-card:not(.unread-card):has(.pin-toggle.is-pinned):has(> .post-engagement:focus-within) {
   box-shadow: .32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03) !important;
 }
-:root[dir="rtl"] .unread-card:has([data-pin-toggle][data-selected="true"]):has(> .post-engagement:hover),
-:root[dir="rtl"] .unread-card:has([data-pin-toggle][data-selected="true"]):has(> .post-engagement:focus-within) {
+:root[dir="rtl"] .unread-card:has(.pin-toggle.is-pinned):has(> .post-engagement:hover),
+:root[dir="rtl"] .unread-card:has(.pin-toggle.is-pinned):has(> .post-engagement:focus-within) {
   box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
 }
 
