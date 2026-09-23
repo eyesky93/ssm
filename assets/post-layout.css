@@ -1249,9 +1249,9 @@ html[lang="he"] .reader-controls .reader-number-error {
   :root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options,
   :root .post-stream[data-layout] [data-card-actions] .card-share-menu[data-share-side="above"] > .share-options {
     inset-inline-start: auto;
-    inset-inline-end: calc(0px - var(--quiet-control-gap));
-    inset-block-start: auto;
-    inset-block-end: 100%;
+    inset-inline-end: calc(100% + var(--quiet-control-gap));
+    inset-block-start: 0;
+    inset-block-end: auto;
     transform: none;
     flex-direction: var(--share-layout-mobile-direction);
   }

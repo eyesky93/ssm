@@ -1162,8 +1162,7 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { display: none; }
 :root {
   --share-layout-stack-direction: column;
-  --share-layout-stack-reverse-direction: column-reverse;
-  --share-layout-mobile-direction: var(--share-layout-stack-reverse-direction);
+  --share-layout-mobile-direction: var(--share-layout-stack-direction);
   --share-layout-inline-direction: row;
   --share-layout-inline-reverse-direction: row-reverse;
   --share-layout-gap: var(--control-item-gap, var(--control-capsule-gap));
