@@ -1103,8 +1103,8 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root .post-stream[data-layout] [data-card-actions] details[open] > .quiet-control {
   color: var(--quiet-control-active-color);
 }
-.pin-toggle.quiet-control.is-unpinned:is(:hover, :focus-visible, :active),
-.pin-toggle.quiet-control.is-pinned {
+.post-stream .card-actions .pin-toggle.quiet-control.is-unpinned:is(:hover, :focus-visible, :active),
+.post-stream .card-actions .pin-toggle.quiet-control.is-pinned {
   color: var(--quiet-pin-color);
 }
 /* Keyboard focus remains visible but neutral and rectangular; mouse hovering
