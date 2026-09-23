@@ -1016,10 +1016,10 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-control-gap: var(--quiet-control-padding);
   --quiet-control-color: var(--line-dark);
   --quiet-control-active-color: var(--ink);
-  --quiet-pin-underline-color: var(--quiet-control-active-color);
-  --quiet-pin-underline-width: calc(var(--quiet-control-icon-size) * .58);
+  --quiet-pin-color: var(--ink);
+  --quiet-pin-underline-width: calc(var(--quiet-control-icon-size) * .70);
   --quiet-pin-underline-thickness: calc(var(--quiet-control-icon-size) / 16);
-  --quiet-pin-underline-shift: calc(var(--quiet-control-icon-size) * .32);
+  --quiet-pin-underline-shift: calc(var(--quiet-control-icon-size) * .46);
   --quiet-checkbox-color: var(--line);
   --quiet-checkbox-hover-color: var(--line-dark);
   --quiet-checkbox-hover-background: var(--code-bg);
@@ -1027,6 +1027,9 @@ html[lang="he"] .reader-controls .reader-number-error {
   --card-content-gap: var(--control-capsule-gap);
   --card-action-inset: calc(var(--control-capsule-gap) / 2);
   --card-tags-action-offset: var(--control-capsule-gap);
+}
+:root[data-theme="dark"] {
+  --quiet-pin-color: var(--white);
 }
 
 /* The variant owns geometry and palette together. Selected Pin and unread
@@ -1088,18 +1091,21 @@ html[lang="he"] .reader-controls .reader-number-error {
   inline-size: var(--quiet-pin-underline-width);
   block-size: var(--quiet-pin-underline-thickness);
   border-radius: var(--quiet-control-radius);
-  background: var(--quiet-pin-underline-color);
+  background: var(--quiet-pin-color);
   pointer-events: none;
   transform: translate(-50%, -50%);
 }
 .pin-toggle.quiet-control:is(:hover, :focus-visible) {
   box-shadow: none;
 }
-:root .post-stream[data-layout] [data-card-actions] .quiet-control:not(:disabled):is(:hover, :focus-visible, :active),
-.pin-toggle.quiet-control.is-pinned,
+:root .post-stream[data-layout] [data-card-actions] .quiet-control:not(.pin-toggle):not(:disabled):is(:hover, :focus-visible, :active),
 :root .post-stream[data-layout] [data-card-actions] .read-toggle.quiet-control[aria-checked="false"],
 :root .post-stream[data-layout] [data-card-actions] details[open] > .quiet-control {
   color: var(--quiet-control-active-color);
+}
+.pin-toggle.quiet-control.is-unpinned:is(:hover, :focus-visible, :active),
+.pin-toggle.quiet-control.is-pinned {
+  color: var(--quiet-pin-color);
 }
 /* Keyboard focus remains visible but neutral and rectangular; mouse hovering
    changes the glyph only. No focus-within ring on the stack or menu host. */
