@@ -1845,7 +1845,7 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   line-height: 1;
   text-decoration: none;
 }
-.read-toggle[aria-checked="true"]::before {
+.read-toggle.is-read::before {
   content: "✓";
   color: var(--line-dark);
   border-color: var(--line-dark);
@@ -1853,7 +1853,7 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 .read-toggle:is(:hover, :focus-visible)::before {
   border-color: var(--accent-strong);
 }
-.read-toggle[aria-checked="true"]:is(:hover, :focus-visible)::before {
+.read-toggle.is-read:is(:hover, :focus-visible)::before {
   color: var(--line-dark);
   border-color: var(--line-dark);
 }
@@ -2116,4 +2116,4 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 /* Framed and quiet read controls share the same read-state semantics. */
 .read-toggle.round-control { border: 1px solid var(--line-dark); background: var(--surface); color: var(--ink); }
 .read-toggle.round-control:is(:hover, :focus-visible) { border-color: var(--accent-strong); }
-.read-toggle.round-control[aria-checked="true"]::before { color: var(--ink); }
+.read-toggle.round-control.is-read::before { color: var(--ink); }
