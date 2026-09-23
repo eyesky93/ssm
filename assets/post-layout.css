@@ -1016,6 +1016,10 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-control-gap: var(--quiet-control-padding);
   --quiet-control-color: var(--line-dark);
   --quiet-control-active-color: var(--ink);
+  --quiet-pin-slash-color: var(--surface);
+  --quiet-pin-slash-length: calc(var(--quiet-control-icon-size) * 1.45);
+  --quiet-pin-slash-thickness: calc(var(--quiet-control-icon-size) / 7);
+  --quiet-pin-slash-angle: 45deg;
   --quiet-checkbox-color: var(--line);
   --quiet-checkbox-hover-color: var(--line-dark);
   --quiet-checkbox-hover-background: var(--code-bg);
@@ -1067,13 +1071,20 @@ html[lang="he"] .reader-controls .reader-number-error {
   justify-self: center;
   align-self: center;
 }
-/* Pin hover previews the opposite toggle state without changing geometry:
-   pinned -> grey + hollow, unpinned -> active black + filled. */
-:root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="true"]:hover {
-  color: var(--quiet-control-color);
-}
-:root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="true"]:hover .pin-head {
-  fill: none;
+/* Pin hover previews the next action without replacing the current glyph.
+   An unpinned Pin still fills on hover. A selected Pin keeps its selected
+   foreground and gains one contrasting slash centered over the existing Pin. */
+:root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="true"]:hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  inline-size: var(--quiet-pin-slash-length);
+  block-size: var(--quiet-pin-slash-thickness);
+  margin: auto;
+  border-radius: var(--quiet-control-radius);
+  background: var(--quiet-pin-slash-color);
+  pointer-events: none;
+  transform: rotate(var(--quiet-pin-slash-angle));
 }
 :root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="false"]:hover .pin-head {
   fill: currentColor;
