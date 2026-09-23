@@ -56,7 +56,7 @@
      their own internal optical correction without moving the badge/frame. */
   --tag-content-alignment: center;
   --tag-inline-optical-offset: 0px;
-  --tag-count-numeral-optical-offset: -0.015625rem;
+  --tag-count-numeral-optical-offset: .03125rem;
   --tag-remove-icon-size: 1em;
   --tag-exclude-remove-icon-size: 100%;
   --tag-remove-icon-stroke-width: 1.8;
