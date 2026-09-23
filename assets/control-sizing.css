@@ -52,13 +52,13 @@
   --tag-capsule-gap: calc(var(--control-capsule-gap) / 2);
   --tag-count-size: calc(var(--tag-capsule-inner-size) - 2 * var(--tag-capsule-count-inset));
   --tag-count-font-size: calc(var(--tag-count-size) * .65);
-  /* One baseline model for every inline element inside a tag capsule.
-     The label, count numeral and removable × align typographically rather than
-     being independently centered and nudged. */
-  --tag-content-alignment: baseline;
-  --tag-count-line-height: 1;
-  --tag-remove-mark-font-size: 1em;
-  --tag-remove-mark-line-height: inherit;
+  /* One centered content axis for every tag capsule. Text and badges keep
+     their own internal optical correction without moving the badge/frame. */
+  --tag-content-alignment: center;
+  --tag-inline-optical-offset: 0px;
+  --tag-remove-icon-size: 1em;
+  --tag-exclude-remove-icon-size: 100%;
+  --tag-remove-icon-stroke-width: 1.8;
 }
 
 /* Retain the component names as aliases, never independent size settings.
@@ -1592,6 +1592,7 @@
   --tag-capsule-content-gap: var(--post-tag-capsule-content-gap);
   --tag-count-size: var(--post-tag-count-size);
   --tag-count-font-size: var(--post-tag-count-font-size);
+  --tag-inline-optical-offset: var(--post-tag-label-optical-offset);
   font-size: var(--post-tag-label-font-size);
   line-height: var(--post-tag-line-height);
 }
@@ -1600,9 +1601,10 @@
    ascent/descent box is not visually centered even when the flex line box is.
    The offset is owned by the global post-tag geometry above; icon tags stay
    untouched. */
-:root :is(.card-tag, .article-tag) .compact-post-tag:not(:has(.post-tag-icon)) {
+:root :is(.card-tag, .article-tag) .compact-post-tag:not(:has(.post-tag-icon)),
+:root :is(.card-tag, .article-tag) .tag-count-label {
   display: inline-block;
-  transform: translateY(var(--post-tag-label-optical-offset));
+  transform: translateY(var(--tag-inline-optical-offset));
 }
 
 /* The count badge already uses --soft-accent. Restore that same fill to the
