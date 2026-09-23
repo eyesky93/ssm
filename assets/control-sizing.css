@@ -1388,6 +1388,11 @@
   justify-self: center;
   align-self: center;
 }
+:root .share-options .quiet-control > svg,
+:root .share-options .quiet-control > svg > use {
+  color: inherit;
+  fill: currentColor;
+}
 :root .quiet-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active) {
   border: 0;
   background: transparent;
