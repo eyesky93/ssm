@@ -1539,9 +1539,10 @@
 :root .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="auto"] .theme-auto-cycle {
   fill: none;
   stroke: currentColor;
-  stroke-width: 2.8;
+  stroke-width: 3.8;
   stroke-linecap: round;
   stroke-linejoin: round;
+  vector-effect: none;
 }
 :root .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="auto"] .theme-auto-arrowhead,
 :root .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="auto"] .theme-auto-letter {

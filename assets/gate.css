@@ -82,9 +82,10 @@ button:focus-visible {
 .theme-toggle [data-theme-icon="auto"] .theme-auto-cycle {
   fill: none;
   stroke: currentColor;
-  stroke-width: 2.8;
+  stroke-width: 3.8;
   stroke-linecap: round;
   stroke-linejoin: round;
+  vector-effect: none;
 }
 .theme-toggle [data-theme-icon="auto"] .theme-auto-arrowhead,
 .theme-toggle [data-theme-icon="auto"] .theme-auto-letter { fill: currentColor; stroke: none; }
