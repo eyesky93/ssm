@@ -1168,12 +1168,12 @@ html[lang="he"] .reader-controls .reader-number-error {
    trigger. The popover uses the global neutral-grey surface token; individual
    icons stay unframed and use the quiet family foreground emphasis on hover. */
 :root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
-  inset-inline-end: calc(100% + var(--quiet-control-gap));
-  inset-block-start: 50%;
-  inset-block-end: auto;
-  transform: translateY(-50%);
+  inset-inline-end: var(--share-options-inset-inline-end, calc(100% + var(--quiet-control-gap)));
+  inset-block-start: var(--share-options-inset-block-start, 50%);
+  inset-block-end: var(--share-options-inset-block-end, auto);
+  transform: var(--share-options-transform, translateY(-50%));
   display: flex;
-  flex-direction: row;
+  flex-direction: var(--share-options-direction, var(--share-layout-inline-direction));
   flex-wrap: nowrap;
   align-items: center;
   width: max-content;
@@ -1186,52 +1186,14 @@ html[lang="he"] .reader-controls .reader-number-error {
   box-shadow: none;
   overflow: visible;
 }
-:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) {
-  box-sizing: border-box;
-  display: inline-grid;
-  place-items: center;
-  flex: 0 0 var(--quiet-control-target-size);
-  width: var(--quiet-control-target-size);
-  min-width: var(--quiet-control-target-size);
-  max-width: var(--quiet-control-target-size);
-  height: var(--quiet-control-target-size);
-  min-height: var(--quiet-control-target-size);
-  max-height: var(--quiet-control-target-size);
-  inline-size: var(--quiet-control-target-size);
-  min-inline-size: var(--quiet-control-target-size);
-  max-inline-size: var(--quiet-control-target-size);
-  block-size: var(--quiet-control-target-size);
-  min-block-size: var(--quiet-control-target-size);
-  max-block-size: var(--quiet-control-target-size);
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: var(--quiet-control-radius);
-  outline: 0;
-  background: transparent;
-  color: var(--ink);
-  opacity: 1;
-  box-shadow: none;
-  transform: none;
-}
-:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) > svg {
-  width: var(--quiet-control-icon-size);
-  height: var(--quiet-control-icon-size);
-}
-:root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) {
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--quiet-control-active-color);
-  box-shadow: none;
-}
-/* Placement is horizontal regardless of the generic share-side hint; that hint
-   exists for vertical popovers elsewhere and must not move card sharing. */
+/* Desktop remains inline. On mobile the shared adaptive variables switch this
+   same component to a vertical stack and let the generic above/below hint move
+   the stack without changing any card-specific geometry. */
 :root .post-stream[data-layout] [data-card-actions] .card-share-menu[data-share-side="above"] > .share-options {
-  inset-inline-end: calc(100% + var(--quiet-control-gap));
-  inset-block-start: 50%;
-  inset-block-end: auto;
-  transform: translateY(-50%);
+  inset-inline-end: var(--share-options-inset-inline-end, calc(100% + var(--quiet-control-gap)));
+  inset-block-start: var(--share-options-inset-block-start, 50%);
+  inset-block-end: var(--share-options-inset-block-end, auto);
+  transform: var(--share-options-transform, translateY(-50%));
 }
 
 :root .post-stream[data-layout] .post-card:has([data-card-actions]) > p {
@@ -1577,9 +1539,9 @@ html[lang="he"] .reader-controls .reader-number-error {
   margin-inline-start: 0;
 }
 
-/* Reader share menu geometry.
-   Destinations use the exact same rendered header-control box as Share and
-   always expand physically left. No runtime translation and no layout reflow. */
+/* Reader Share geometry.
+   Desktop expands toward logical inline-start (left in LTR, right in RTL);
+   mobile uses the shared vertical stack. No runtime translation or reflow. */
 :root {
   --reader-share-option-size: var(--control-size);
   --reader-share-icon-size: var(--control-icon-size);
@@ -1646,35 +1608,33 @@ html[lang="he"] .reader-controls .reader-number-error {
   z-index: calc(var(--reader-share-layer) + 1);
 }
 
-/* Share stays in its header cell. The destination strip is attached to the
-   trigger's physical left edge and uses the same responsive control-size token.
-   The first destination remains adjacent to Share as the strip grows leftward. */
+/* Share stays in its header cell. The destination strip is attached on the
+   logical inline-start side, so direction mirrors automatically in RTL. */
 :root body .header-controls .share-menu > .share-options {
   position: absolute !important;
-  left: auto !important;
-  right: calc(100% + var(--reader-share-gap)) !important;
-  top: 0 !important;
-  bottom: auto !important;
+  inset-inline-start: var(--share-options-inset-inline-start, auto) !important;
+  inset-inline-end: var(--share-options-inset-inline-end, calc(100% + var(--reader-share-gap))) !important;
+  inset-block-start: var(--share-options-inset-block-start, 0) !important;
+  inset-block-end: var(--share-options-inset-block-end, auto) !important;
   z-index: var(--reader-share-layer);
   box-sizing: border-box;
-  height: var(--reader-share-option-size);
-  min-height: var(--reader-share-option-size);
-  max-height: var(--reader-share-option-size);
-  block-size: var(--reader-share-option-size);
-  min-block-size: var(--reader-share-option-size);
-  max-block-size: var(--reader-share-option-size);
+  height: var(--share-options-panel-height, var(--reader-share-option-size));
+  min-height: var(--share-options-panel-min-height, var(--reader-share-option-size));
+  max-height: var(--share-options-panel-max-height, var(--reader-share-option-size));
+  block-size: var(--share-options-panel-height, var(--reader-share-option-size));
+  min-block-size: var(--share-options-panel-min-height, var(--reader-share-option-size));
+  max-block-size: var(--share-options-panel-max-height, var(--reader-share-option-size));
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: var(--share-options-direction, var(--share-layout-inline-reverse-direction));
   flex-wrap: nowrap;
   align-items: center;
-  direction: ltr;
   width: max-content;
   max-width: none;
   gap: var(--reader-share-gap);
   padding: var(--reader-share-padding);
   margin: 0;
   border-radius: var(--control-radius);
-  transform: none !important;
+  transform: var(--share-options-transform, none) !important;
   translate: none !important;
   overflow: visible;
 }

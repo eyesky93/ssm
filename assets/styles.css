@@ -809,6 +809,21 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 .toolbar-view .view-switch button:is([data-selected="true"], :hover, :focus-visible) { position: relative; z-index: 3; }
 @media (max-width: 700px) {
   .toolbar-view { display: none; }
+  :root .share-menu.share-layout-adaptive {
+    --share-options-direction: var(--share-layout-stack-direction);
+    --share-options-transform: none;
+    --share-options-inset-inline-start: auto;
+    --share-options-inset-inline-end: 0;
+    --share-options-inset-block-start: calc(100% + var(--share-layout-gap));
+    --share-options-inset-block-end: auto;
+    --share-options-panel-height: auto;
+    --share-options-panel-min-height: 0;
+    --share-options-panel-max-height: none;
+  }
+  :root .share-menu.share-layout-adaptive[data-share-side="above"] {
+    --share-options-inset-block-start: auto;
+    --share-options-inset-block-end: calc(100% + var(--share-layout-gap));
+  }
 }
 .filter-controls { min-width: 0; }
 .filter-reset-slot { display: block; flex: 0 0 var(--minimum-touch-target); width: var(--minimum-touch-target); height: var(--minimum-touch-target); }
@@ -1144,12 +1159,22 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 
 .article-actions { display: flex; flex: 0 0 auto; flex-direction: row; align-items: center; gap: var(--control-capsule-gap); }
 body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { display: none; }
+:root {
+  --share-layout-stack-direction: column;
+  --share-layout-inline-direction: row;
+  --share-layout-inline-reverse-direction: row-reverse;
+  --share-layout-gap: var(--control-item-gap, var(--control-capsule-gap));
+  --share-trigger-icon-scale-x: 1;
+}
+:root[dir="rtl"] {
+  --share-trigger-icon-scale-x: -1;
+}
 .share-menu { position: relative; display: inline-block; font-family: var(--font-interface); font-size: 0.95rem; }
 .share-menu summary { display: grid; place-items: center; width: var(--minimum-touch-target); height: var(--minimum-touch-target); border: 1px solid var(--line-dark); border-radius: 50%; background: var(--surface); color: var(--ink); padding: 0.65rem; cursor: pointer; list-style: none; }
 .share-menu summary:is(:hover, :focus-visible) { box-shadow: 0 0 0 3px var(--soft-accent); }
 .share-menu[open] { z-index: 20; }
 .share-menu summary::-webkit-details-marker { display: none; }
-.share-menu summary svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.7; }
+.share-menu summary svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.7; transform: scaleX(var(--share-trigger-icon-scale-x)); transform-origin: center; }
 .share-options { position: absolute; overflow: visible; max-block-size: none; z-index: 5; inset-inline-end: calc(-0.5rem - 1px); inset-block-start: calc(100% + 0.5rem); display: flex; flex-direction: column; flex-wrap: nowrap; align-items: flex-end; width: max-content; gap: 0.5rem; padding: 0.65rem 0.5rem; border: 1px solid var(--line-dark); border-radius: 1rem; background: var(--surface); box-shadow: var(--shadow); }
 /* Progressive enhancement: without JavaScript, native details still works.
    With JavaScript, never paint the menu before its final opening side is ready. */
