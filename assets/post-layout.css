@@ -1635,7 +1635,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   min-block-size: var(--share-options-panel-min-height, var(--reader-share-option-size));
   max-block-size: var(--share-options-panel-max-height, var(--reader-share-option-size));
   display: flex;
-  flex-direction: var(--share-options-direction, var(--share-layout-inline-reverse-direction));
+  flex-direction: var(--share-options-direction, var(--share-layout-inline-direction));
   flex-wrap: nowrap;
   align-items: center;
   width: max-content;
