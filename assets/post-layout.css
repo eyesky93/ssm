@@ -1016,10 +1016,10 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-control-gap: var(--quiet-control-padding);
   --quiet-control-color: var(--line-dark);
   --quiet-control-active-color: var(--ink);
-  --quiet-pin-slash-color: var(--white);
-  --quiet-pin-slash-length: calc(var(--quiet-control-icon-size) * .82);
-  --quiet-pin-slash-thickness: calc(var(--quiet-control-icon-size) / 12);
-  --quiet-pin-slash-angle: 35deg;
+  --quiet-pin-underline-color: var(--quiet-control-active-color);
+  --quiet-pin-underline-width: calc(var(--quiet-control-icon-size) * 1.2);
+  --quiet-pin-underline-thickness: calc(var(--quiet-control-icon-size) / 10);
+  --quiet-pin-underline-offset: calc(var(--quiet-control-padding) / 3);
   --quiet-checkbox-color: var(--line);
   --quiet-checkbox-hover-color: var(--line-dark);
   --quiet-checkbox-hover-background: var(--code-bg);
@@ -1071,24 +1071,29 @@ html[lang="he"] .reader-controls .reader-number-error {
   justify-self: center;
   align-self: center;
 }
-/* Selected Pin keeps its current glyph and gets one restrained white removal
-   slash. The Pin SVG itself is rotated 35deg from vertical, so a horizontal
-   overlay rotated by the same 35deg is exactly perpendicular to its shaft. */
+/* Unpinned Pin hover changes only the SVG stroke through currentColor; the
+   head stays transparent. Once pinned, the head fills with the same foreground
+   and hover adds a small underline beneath the glyph. */
+:root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="false"] .pin-head {
+  fill: none;
+}
+:root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="true"] .pin-head {
+  fill: currentColor;
+}
 :root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="true"]:hover::after {
   content: "";
   position: absolute;
-  inset: 0;
-  inline-size: var(--quiet-pin-slash-length);
-  block-size: var(--quiet-pin-slash-thickness);
-  margin: auto;
+  left: 50%;
+  bottom: var(--quiet-pin-underline-offset);
+  inline-size: var(--quiet-pin-underline-width);
+  block-size: var(--quiet-pin-underline-thickness);
   border-radius: var(--quiet-control-radius);
-  background: var(--quiet-pin-slash-color);
+  background: var(--quiet-pin-underline-color);
   pointer-events: none;
-  transform: rotate(var(--quiet-pin-slash-angle));
-  z-index: 1;
+  transform: translateX(-50%);
 }
-:root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control[aria-pressed="false"]:hover .pin-head {
-  fill: currentColor;
+:root .post-stream[data-layout] [data-card-actions] .pin-toggle.quiet-control:is(:hover, :focus-visible) {
+  box-shadow: none;
 }
 :root .post-stream[data-layout] [data-card-actions] .quiet-control:not(:disabled):is(:hover, :focus-visible, :active),
 :root .post-stream[data-layout] [data-card-actions] .quiet-control[aria-pressed="true"],
