@@ -811,9 +811,8 @@
   --list-post-card-padding-block: var(--standard-post-card-padding-block);
   --list-post-card-padding-inline-start: var(--control-capsule-gap);
 
-  /* List cards are content-sized. PSR keeps its original equal edge inset;
-     the card grid shortens only the content column by the part of the target
-     that actually intrudes past the normal content edge, plus the shared gap. */
+  /* Preserve the pre-grid PSR visual geometry exactly. Structure may change,
+     but the rail keeps one equal edge inset on its logical side, top and bottom. */
   --list-post-card-content-gap: var(--control-item-gap);
   --list-post-action-inset: var(--card-action-inset);
 
@@ -919,7 +918,9 @@
    normal content box; its remaining width sits in the existing side padding.
    This changes the text-box length without moving Pin, Share or Read. */
 :root body .post-stream[data-layout] .post-card:not(.directory-card):has(> [data-card-actions]) {
-  --post-card-action-overhang: calc(var(--post-card-padding-inline) - var(--card-action-inset));
+  --post-card-action-inline-inset: var(--card-action-inset);
+  --post-card-action-block-inset: var(--card-action-inset);
+  --post-card-action-overhang: calc(var(--post-card-padding-inline) - var(--post-card-action-inline-inset));
   --post-card-action-column-size: max(0px, calc(var(--quiet-control-target-size) - var(--post-card-action-overhang)));
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--post-card-action-column-size);
@@ -937,6 +938,8 @@
    monograph metadata and footer remain normal content rows beside the rail. */
 @media (min-width: 701px) {
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card):has(> [data-card-actions]) {
+    --post-card-action-inline-inset: var(--list-post-action-inset);
+    --post-card-action-block-inset: var(--list-post-action-inset);
     grid-template-areas:
       "heading actions"
       "summary actions"

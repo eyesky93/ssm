@@ -1080,14 +1080,19 @@ html[lang="he"] .reader-controls .reader-number-error {
   outline-offset: 0;
 }
 :root .post-stream[data-layout] [data-card-actions] .quiet-control--checkbox::before {
+  position: absolute;
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
   inline-size: var(--quiet-control-icon-size);
   block-size: var(--quiet-control-icon-size);
+  margin: 0;
   font-size: calc(var(--quiet-control-icon-size) * .82);
   border-radius: var(--quiet-control-radius);
   border-color: var(--quiet-control-color);
   background: transparent;
   color: var(--quiet-checkbox-color);
   box-shadow: none;
+  transform: translate(-50%, -50%);
 }
 :root .post-stream[data-layout] [data-card-actions] .quiet-control--checkbox:not(.read-toggle):not(:disabled):is(:hover, :focus-visible, :active)::before {
   border-color: var(--quiet-checkbox-hover-color);
@@ -1126,11 +1131,23 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 :root .post-stream[data-layout] .post-card:not(.directory-card) > [data-card-actions] {
   grid-area: actions;
-  align-self: stretch;
+  align-self: end;
   justify-self: end;
-  justify-content: space-between;
-  margin-inline-end: calc(var(--card-action-inset) - var(--post-card-padding-inline));
-  margin-block: calc(var(--card-action-inset) - var(--standard-post-card-padding-block));
+  justify-content: flex-end;
+  margin-inline-end: calc(var(--post-card-action-inline-inset) - var(--post-card-padding-inline));
+  margin-block-end: calc(var(--post-card-action-block-inset) - var(--standard-post-card-padding-block));
+}
+
+/* List keeps the exact pre-structure rail appearance: Pin at the top edge,
+   Share centered, Read at the bottom edge. Only ownership changed—from footer
+   child to direct card grid sibling. */
+@media (min-width: 701px) {
+  :root .post-stream[data-layout="list"] .post-card:not(.directory-card) > [data-card-actions] {
+    align-self: stretch;
+    justify-content: space-between;
+    margin-block-start: calc(var(--post-card-action-block-inset) - var(--list-post-card-padding-block));
+    margin-block-end: calc(var(--post-card-action-block-inset) - var(--list-post-card-padding-block));
+  }
 }
 :root .post-stream[data-layout] [data-card-actions] > .card-share-menu {
   position: relative;
