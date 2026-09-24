@@ -1019,9 +1019,11 @@
   text-align-last: center;
 }
 
-/* Card sharing owns only the shared neutral surface and frame. The trigger and
-   destination buttons inherit color and interaction states from .quiet-control. */
+/* Card sharing owns only the shared neutral surface and frame. The Share
+   trigger inherits the global quiet-control palette; destination icons keep
+   their existing accent hover through the same global active-color variable. */
 :root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
+  --quiet-control-active-color: var(--accent);
   border: var(--control-frame-width) solid var(--neutral-control-frame);
   background: var(--neutral-control-surface);
   box-shadow: none;
