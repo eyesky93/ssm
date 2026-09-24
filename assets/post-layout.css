@@ -1010,7 +1010,7 @@ html[lang="he"] .reader-controls .reader-number-error {
    homepage layout uses the same geometry and neutral palette. Card sharing
    choices inherit this quiet family; article sharing keeps full-size controls. */
 :root {
-  --quiet-control-scale: .5;
+  --quiet-control-scale: .4;
   --quiet-control-icon-size: calc(var(--control-size) * var(--quiet-control-scale));
   --quiet-control-padding: calc(var(--control-capsule-gap) * var(--quiet-control-scale));
   --quiet-control-target-size: calc(var(--quiet-control-icon-size) + 2 * var(--quiet-control-padding));
@@ -1272,11 +1272,14 @@ html[lang="he"] .reader-controls .reader-number-error {
   order: 3;
 }
 
-/* Phones keep the same compact quiet-control target defined by the global
-   quiet-control tokens. Do not enlarge the action rail independently: that
-   forces Pin/Share/Read to set the card height and creates large empty gaps. */
+/* Phones use the same global quiet-control component with a larger scale
+   token only. Geometry remains derived from the shared variables; there are no
+   per-control size overrides. */
 
 @media (max-width: 700px) {
+  :root {
+    --quiet-control-scale: .5;
+  }
   :root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options,
   :root .post-stream[data-layout] [data-card-actions] .card-share-menu[data-share-side="above"] > .share-options {
     inset-inline-start: auto;
