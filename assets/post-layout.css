@@ -995,6 +995,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   --card-content-gap: var(--control-capsule-gap);
   --card-action-inset: calc(var(--control-capsule-gap) / 2);
   --card-action-rail-inset: calc(var(--control-capsule-gap));
+  --card-action-rail-block-visual-compensation: 0px;
 }
 :root[data-theme="dark"] {
   --quiet-pin-color: var(--white);
@@ -1136,7 +1137,11 @@ html[lang="he"] .reader-controls .reader-number-error {
   justify-self: end;
   justify-content: flex-end;
   margin-inline-end: calc(var(--post-card-action-inline-inset) - var(--post-card-action-padding-inline));
-  margin-block-end: calc(var(--post-card-action-block-inset) - var(--post-card-action-padding-block));
+  margin-block-end: calc(
+    var(--post-card-action-block-inset)
+    - var(--post-card-action-padding-block)
+    - var(--card-action-rail-block-visual-compensation)
+  );
 }
 
 /* List keeps the same compact bottom-corner PSR stack as before the DOM
@@ -1226,6 +1231,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 @media (max-width: 700px) {
   :root {
     --quiet-control-icon-scale: .5;
+    --card-action-rail-block-visual-compensation: var(--quiet-control-padding);
   }
   :root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options,
   :root .post-stream[data-layout] [data-card-actions] .card-share-menu[data-share-side="above"] > .share-options {
