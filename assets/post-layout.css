@@ -994,6 +994,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   --card-content-gap: var(--control-capsule-gap);
   --card-action-inset: calc(var(--control-capsule-gap) / 2);
   --card-action-rail-inset: var(--control-capsule-gap);
+  --card-action-rail-block-offset: var(--control-capsule-gap);
 }
 :root[data-theme="dark"] {
   --quiet-pin-color: var(--white);
@@ -1135,7 +1136,11 @@ html[lang="he"] .reader-controls .reader-number-error {
   justify-self: end;
   justify-content: flex-end;
   margin-inline-end: calc(var(--post-card-action-inline-inset) - var(--post-card-padding-inline));
-  margin-block-end: calc(var(--post-card-action-block-inset) - var(--post-card-action-padding-block));
+  margin-block-end: calc(
+    var(--post-card-action-block-inset)
+    - var(--post-card-action-padding-block)
+    - var(--card-action-rail-block-offset)
+  );
 }
 
 /* List keeps the same compact bottom-corner PSR stack as before the DOM
