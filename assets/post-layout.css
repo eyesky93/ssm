@@ -236,10 +236,6 @@ html { scrollbar-gutter: stable; }
   white-space: nowrap;
 }
 
-/* The containing block excludes the card's 1px border. Put the tabs immediately
-   BELOW that border, just like the reader dock, never one pixel inside it. */
-.post-card > .post-engagement { inset-block-start: calc(100% + 1px); }
-
 /* Cards and reader pages share the same real top border and fixed tab height.
    Hover/selection changes its color, not its thickness or position. */
 :is(.post-card, .article-engagement-dock) > .post-engagement > :is(.post-vote, .post-comments, .post-views) {
@@ -542,14 +538,13 @@ html[lang="he"] .reader-controls .reader-number-error {
   font-family: var(--font-interface-hebrew), var(--font-interface);
 }
 
-/* Directory has no engagement strip. Reclaim only its unused row clearance;
-   regular post rows keep the existing space for their attached statistics. */
+/* Post statistics are contained by the card grid, so Directory and
+   ordinary cards share the same global catalogue row gap. */
 .post-stream[data-layout] {
-  --post-row-gap: 2.45rem;
-  --directory-row-gap: 1rem;
+  --post-row-gap: var(--interface-edge-gap);
+  --directory-row-gap: var(--interface-edge-gap);
   row-gap: var(--post-row-gap);
 }
-.post-stream[data-layout="compact"] { --directory-row-gap: .75rem; }
 .post-stream[data-layout] > .directory-card:has([data-pin-toggle][aria-pressed="true"]),
 .post-stream[data-layout="list"] > .directory-card {
   margin-block-end: calc(var(--directory-row-gap) - var(--post-row-gap));
@@ -931,7 +926,7 @@ html[lang="he"] .reader-controls .reader-number-error {
    occupies the same row as the host frame's bottom border, so the attachment
    reads as one continuous border rather than two separated lines. Keep the
    existing physical end anchor because post-engagement itself deliberately uses LTR. */
-:root :is(.post-card > .post-engagement, .comment-box > .comment-engagement-dock) {
+:root .comment-box > .comment-engagement-dock {
   position: absolute;
   right: var(--post-card-padding-inline);
   left: auto;
@@ -941,7 +936,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   padding: 0;
   transform: none;
 }
-:root[dir="rtl"] :is(.post-card > .post-engagement, .comment-box > .comment-engagement-dock) {
+:root[dir="rtl"] .comment-box > .comment-engagement-dock {
   left: var(--post-card-padding-inline);
   right: auto;
 }
@@ -957,7 +952,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 /* Lower only this card's strip while its body owns the frame. Hover/focus on
    a tab restores its own layer; nested replies never highlight an ancestor. */
-:root :is(.post-card, .comment-box):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > :is(.post-engagement, .comment-engagement-dock) {
+:root .comment-box:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > .comment-engagement-dock {
   z-index: -1;
 }
 .comment-engagement { min-inline-size: calc(2 * var(--stat-segment-width)); }
@@ -993,6 +988,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-control-radius: calc(var(--quiet-control-icon-size) / 6);
   --card-content-gap: var(--control-capsule-gap);
   --card-action-inset: calc(var(--control-capsule-gap) / 2);
+  --card-action-rail-inset: var(--control-capsule-gap);
 }
 :root[data-theme="dark"] {
   --quiet-pin-color: var(--white);
@@ -1081,18 +1077,17 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 :root .post-stream[data-layout] [data-card-actions] .quiet-control--checkbox::before {
   position: absolute;
-  inset-inline-start: 50%;
-  inset-block-start: 50%;
+  inset: 0;
   inline-size: var(--quiet-control-icon-size);
   block-size: var(--quiet-control-icon-size);
-  margin: 0;
+  margin: auto;
   font-size: calc(var(--quiet-control-icon-size) * .82);
   border-radius: var(--quiet-control-radius);
   border-color: var(--quiet-control-color);
   background: transparent;
   color: var(--quiet-checkbox-color);
   box-shadow: none;
-  transform: translate(-50%, -50%);
+  transform: none;
 }
 :root .post-stream[data-layout] [data-card-actions] .quiet-control--checkbox:not(.read-toggle):not(:disabled):is(:hover, :focus-visible, :active)::before {
   border-color: var(--quiet-checkbox-hover-color);

@@ -1747,14 +1747,14 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 [dir="rtl"] .unread-card:has(.pin-toggle.is-pinned):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   box-shadow: .32rem 0 0 var(--accent-strong), var(--shadow);
 }
-/* Contain the lowered stats layer without creating a stacking context on
-   the card itself: its real background and border must paint above it. */
+/* Post statistics are contained inside each card. The stream only owns
+   isolation and the shared catalogue gap; no external tab clearance remains. */
 .post-stream[data-layout] {
   isolation: isolate;
-  row-gap: 2.45rem;
+  row-gap: var(--interface-edge-gap);
 }
 .post-stream[data-layout]:has(> .post-card:not([hidden])) {
-  padding-block-end: 2.5rem;
+  padding-block-end: 0;
 }
 
 /* Date and read checkbox share one baseline; the checkbox occupies the
@@ -1967,32 +1967,6 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   grid-column: 1;
 }
 
-/* The engagement control itself is forced LTR so icon/count order stays
-   stable. Therefore use physical horizontal edges here: in English its
-   right edge follows the checkbox; in RTL its left edge follows the
-   corresponding footer edge. */
-.post-card > .post-engagement {
-  position: absolute;
-  right: var(--post-card-padding-inline);
-  left: auto;
-  inset-block-start: 100%;
-  inset-block-end: auto;
-  margin: 0;
-  transform: none;
-}
-[dir="rtl"] .post-card > .post-engagement {
-  left: var(--post-card-padding-inline);
-  right: auto;
-}
-
-/* When the post body is hovered, its real frame covers the whole stats
-   strip, including divider ends and a selected upvote's top edge. Lower
-   the strip as one layer rather than redrawing or moving either border.
-   Leaving the post body restores the upvote's own hover/selected frame. */
-.post-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > .post-engagement {
-  z-index: -1;
-}
-
 /* Hovering/focusing the detached stats control must not count as hovering
    the post itself. Restore the post frame and any pin ribbon to their
    resting colors while the engagement strip is active. Descendant :has()
@@ -2087,7 +2061,7 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   padding-block: .25rem .5rem;
 }
 @media (max-width: 520px) {
-  .post-stream[data-layout] { row-gap: 2.45rem; }
+  .post-stream[data-layout] { row-gap: var(--interface-edge-gap); }
 }
 
 /* Language preferences reuse the topic pills without checkmarks or icon slots. */

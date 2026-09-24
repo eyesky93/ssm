@@ -788,11 +788,9 @@
   --floating-control-inline-end: max(var(--floating-control-edge-offset), var(--viewport-inline-end-safe-inset));
   --floating-control-block-end: max(var(--floating-control-edge-offset), env(safe-area-inset-bottom));
 
-  /* Ordinary post rows need room for their detached engagement tabs. Tiled
-     layouts keep that reserve on each ordinary post card so every visible
-     edge gap, both between columns and below Directory, comes from the same
-     global interface-edge spacing token. */
-  --post-stream-row-gap: calc(var(--engagement-tab-height, 2rem) + var(--interface-edge-gap));
+  /* Post engagement now participates in the card grid, so row spacing only
+     needs the shared catalogue edge gap. */
+  --post-stream-row-gap: var(--interface-edge-gap);
   --post-stream-column-gap: var(--interface-edge-gap);
   --post-stream-compact-column-gap: var(--interface-edge-gap);
 
@@ -814,7 +812,7 @@
   /* Preserve the pre-grid PSR visual geometry exactly. Structure may change,
      but the rail keeps one equal edge inset on its logical side, top and bottom. */
   --list-post-card-content-gap: var(--control-item-gap);
-  --list-post-action-inset: var(--card-action-inset);
+  --list-post-action-inset: var(--card-action-rail-inset);
 
   /* Floating neutral controls use the same surface as their surrounding card;
      distinction comes from the shared control frame, never an accent tint. */
@@ -866,9 +864,8 @@
   margin-block-end: var(--interface-edge-gap);
 }
 
-/* List keeps its total row clearance. Both tiled axes use the same compact
-   interface edge gap. The detached engagement reserve stays on ordinary post
-   cards, so matching the column gutters never crowds the tabs below a row. */
+/* All catalogue layouts use the same visible row gap. Post engagement is
+   contained by the card grid instead of reserving space outside the border. */
 :root body .post-stream {
   --active-post-stream-column-gap: var(--post-stream-column-gap);
   row-gap: var(--post-stream-row-gap);
@@ -884,8 +881,8 @@
   margin-block-end: calc(var(--post-stream-row-gap) - var(--interface-edge-gap));
 }
 
-/* Directory has no detached engagement strip. List view still reclaims the
-   unused reserve; tiled Directory cards need no margin correction at all. */
+/* Directory and ordinary cards now use the same row gap because ordinary
+   engagement controls no longer extend below the card border. */
 :root body .post-stream[data-layout="list"] > .directory-card:not([hidden]) {
   margin-block-end: calc(var(--interface-edge-gap) - var(--post-stream-row-gap));
 }
@@ -918,8 +915,8 @@
    normal content box; its remaining width sits in the existing side padding.
    This changes the text-box length without moving Pin, Share or Read. */
 :root body .post-stream[data-layout] .post-card:not(.directory-card):has(> [data-card-actions]) {
-  --post-card-action-inline-inset: var(--card-action-inset);
-  --post-card-action-block-inset: var(--card-action-inset);
+  --post-card-action-inline-inset: var(--card-action-rail-inset);
+  --post-card-action-block-inset: var(--card-action-rail-inset);
   --post-card-action-overhang: calc(var(--post-card-padding-inline) - var(--post-card-action-inline-inset));
   --post-card-action-column-size: max(0px, calc(var(--quiet-control-target-size) - var(--post-card-action-overhang)));
   display: grid;
@@ -933,6 +930,15 @@
 :root body .post-stream[data-layout] .post-card:not(.directory-card) > [data-card-actions] {
   grid-column: 2;
 }
+:root body .post-stream[data-layout] .post-card:not(.directory-card) > .post-engagement {
+  position: static;
+  grid-area: engagement;
+  justify-self: end;
+  align-self: end;
+  margin-block-start: var(--interface-edge-gap);
+  margin-inline: 0;
+  transform: none;
+}
 
 /* Desktop List keeps heading/title/tags as one content row; summary,
    monograph metadata and footer remain normal content rows beside the rail. */
@@ -944,8 +950,9 @@
       "heading actions"
       "summary actions"
       "monograph actions"
-      "footer actions";
-    grid-template-rows: auto auto auto auto;
+      "footer actions"
+      "engagement actions";
+    grid-template-rows: auto auto auto auto auto;
     padding-block: var(--list-post-card-padding-block);
     padding-inline-start: var(--list-post-card-padding-inline-start);
   }
@@ -975,8 +982,9 @@
     "summary actions"
     "tags actions"
     "monograph actions"
-    "footer actions";
-  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+    "footer actions"
+    "engagement actions";
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto auto;
 }
 :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card) .post-heading > h2 {
   grid-area: title;
@@ -1003,8 +1011,9 @@
       "summary actions"
       "tags actions"
       "monograph actions"
-      "footer actions";
-    grid-template-rows: auto auto auto auto auto;
+      "footer actions"
+      "engagement actions";
+    grid-template-rows: auto auto auto auto auto auto;
   }
   :root body .post-stream[data-layout] .post-card:not(.directory-card) .post-heading > h2 {
     grid-area: title;
