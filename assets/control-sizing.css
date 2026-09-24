@@ -788,9 +788,11 @@
   --floating-control-inline-end: max(var(--floating-control-edge-offset), var(--viewport-inline-end-safe-inset));
   --floating-control-block-end: max(var(--floating-control-edge-offset), env(safe-area-inset-bottom));
 
-  /* Post engagement now participates in the card grid, so row spacing only
-     needs the shared catalogue edge gap. */
-  --post-stream-row-gap: var(--interface-edge-gap);
+  /* Ordinary post rows need room for their detached engagement tabs. Tiled
+     layouts keep that reserve on each ordinary post card so every visible
+     edge gap, both between columns and below Directory, comes from the same
+     global interface-edge spacing token. */
+  --post-stream-row-gap: calc(var(--engagement-tab-height, 2rem) + var(--interface-edge-gap));
   --post-stream-column-gap: var(--interface-edge-gap);
   --post-stream-compact-column-gap: var(--interface-edge-gap);
 
@@ -930,16 +932,6 @@
 :root body .post-stream[data-layout] .post-card:not(.directory-card) > [data-card-actions] {
   grid-column: 2;
 }
-:root body .post-stream[data-layout] .post-card:not(.directory-card) > .post-engagement {
-  position: static;
-  grid-area: engagement;
-  justify-self: end;
-  align-self: end;
-  margin-block-start: var(--interface-edge-gap);
-  margin-inline: 0;
-  transform: none;
-}
-
 /* Desktop List keeps heading/title/tags as one content row; summary,
    monograph metadata and footer remain normal content rows beside the rail. */
 @media (min-width: 701px) {
@@ -950,9 +942,8 @@
       "heading actions"
       "summary actions"
       "monograph actions"
-      "footer actions"
-      "engagement actions";
-    grid-template-rows: auto auto auto auto auto;
+      "footer actions";
+    grid-template-rows: auto auto auto auto;
     padding-block: var(--list-post-card-padding-block);
     padding-inline-start: var(--list-post-card-padding-inline-start);
   }
@@ -982,9 +973,8 @@
     "summary actions"
     "tags actions"
     "monograph actions"
-    "footer actions"
-    "engagement actions";
-  grid-template-rows: auto auto auto minmax(0, 1fr) auto auto;
+    "footer actions";
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
 }
 :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card) .post-heading > h2 {
   grid-area: title;
@@ -1011,9 +1001,8 @@
       "summary actions"
       "tags actions"
       "monograph actions"
-      "footer actions"
-      "engagement actions";
-    grid-template-rows: auto auto auto auto auto auto;
+      "footer actions";
+    grid-template-rows: auto auto auto auto auto;
   }
   :root body .post-stream[data-layout] .post-card:not(.directory-card) .post-heading > h2 {
     grid-area: title;
