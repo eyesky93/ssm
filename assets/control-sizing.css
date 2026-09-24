@@ -1019,27 +1019,11 @@
   text-align-last: center;
 }
 
-/* Card sharing consumes the global neutral surface and frame. */
-:root body .post-stream[data-layout] [data-card-actions] .card-share-menu {
-  --quiet-control-active-color: var(--accent);
-}
+/* Card sharing owns only the shared neutral surface and frame. The trigger and
+   destination buttons inherit color and interaction states from .quiet-control. */
 :root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
   border: var(--control-frame-width) solid var(--neutral-control-frame);
   background: var(--neutral-control-surface);
-  box-shadow: none;
-}
-:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button) {
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--ink);
-  box-shadow: none;
-}
-:root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options > :is(a, button):is(:hover, :focus-visible, :active) {
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--quiet-control-active-color);
   box-shadow: none;
 }
 
