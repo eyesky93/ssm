@@ -564,13 +564,6 @@ html[lang="he"] .reader-controls .reader-number-error {
      visible card. Keep both dimensions and alignment behind shared variables. */
   --post-stream-row-size: 1fr;
   --post-stream-card-align: stretch;
-  /* The action rail is visually inside the card but must not contribute its
-     full vertical stack to the largest card's intrinsic height. */
-  --post-card-action-rail-reserve: calc(var(--quiet-control-target-size) + var(--quiet-control-gap));
-  --post-card-footer-gap: var(--card-content-gap, var(--control-capsule-gap));
-  /* Desktop list tags sit beside the quiet Pin/Share/Read rail. This shared
-     logical offset is intentionally visible and mirrors automatically in RTL. */
-  --post-card-tags-action-nudge: var(--surface-padding);
 }
 
 :root .tag-chip,
@@ -600,38 +593,8 @@ html[lang="he"] .reader-controls .reader-number-error {
   align-self: var(--post-stream-card-align);
 }
 
-/* In tiled desktop cards, Pin/Share/Read occupies a narrow absolute rail at the
-   logical end. The rail therefore reuses otherwise empty right-side space
-   instead of adding its full three-control height below the text/tags. The date
-   remains in normal flow and the largest content card still sets every tile's
-   common height. */
-@media (min-width: 701px) {
-  :root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .card-footer {
-    grid-template-columns: minmax(0, 1fr) !important;
-    padding-block-start: var(--post-card-footer-gap) !important;
-    padding-inline-end: var(--post-card-action-rail-reserve);
-  }
-  :root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .card-footer > [data-card-actions] {
-    position: absolute !important;
-    inset-inline-end: var(--card-action-inset);
-    inset-block-end: var(--card-action-inset);
-    grid-area: auto !important;
-    margin: 0 !important;
-    z-index: 1;
-  }
-  :root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .post-tools {
-    box-sizing: border-box;
-    padding-inline-end: var(--post-card-action-rail-reserve);
-  }
-
-  /* In desktop list view the tags live in the heading while Pin/Share/Read live
-     in the footer rail. Increasing the tag row's width did not change its painted
-     position; move the row itself toward the same logical edge instead. */
-  :root .post-stream[data-layout="list"] .post-card:not(.directory-card):has(.card-footer > [data-card-actions]) .post-tools {
-    position: relative;
-    inset-inline-end: calc(0px - var(--post-card-tags-action-nudge));
-  }
-}
+/* PSR is a direct sibling grid rail owned by control-spacing.css. Typography
+   never offsets tags, reserves footer width, or repositions the controls. */
 
 /* Standalone comment buttons share the pin's neutral states and highlight.
    Sorting keeps the existing page-layout capsule. Ordinary formatting tools
@@ -1030,7 +993,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-control-radius: calc(var(--quiet-control-icon-size) / 6);
   --card-content-gap: var(--control-capsule-gap);
   --card-action-inset: calc(var(--control-capsule-gap) / 2);
-  --card-tags-action-offset: var(--control-capsule-gap);
 }
 :root[data-theme="dark"] {
   --quiet-pin-color: var(--white);
@@ -1149,37 +1111,26 @@ html[lang="he"] .reader-controls .reader-number-error {
   color: var(--quiet-read-hover-color);
 }
 
-/* One vertical stack and one footer grid in every layout. DOM/keyboard order
-   is Pin, Share, Read; the checkbox and date share the bottom alignment. */
+/* PSR is a card-level rail, never footer content. DOM/keyboard order is
+   Pin, Share, Read; layout CSS gives this single object its own grid column. */
 :root .post-stream[data-layout] [data-card-actions] {
   position: static;
   display: inline-flex;
   flex: 0 0 auto;
   flex-flow: column nowrap;
   align-items: center;
-  align-self: end;
-  justify-content: flex-end;
   gap: var(--quiet-control-gap);
   width: var(--quiet-control-target-size);
   max-width: 100%;
   margin: 0;
 }
-:root .post-stream[data-layout] .card-footer:has(> [data-card-actions]) {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) var(--quiet-control-target-size);
-  align-items: end;
-  column-gap: var(--control-capsule-gap);
-}
-:root .post-stream[data-layout] .card-footer:has(> [data-card-actions]) > time {
-  grid-area: 1 / 1;
-  align-self: end;
-  padding-block-end: calc((var(--quiet-control-target-size) - 1lh) / 2);
-}
-:root .post-stream[data-layout] .card-footer > [data-card-actions] {
-  grid-area: 1 / 2;
+:root .post-stream[data-layout] .post-card:not(.directory-card) > [data-card-actions] {
+  grid-area: actions;
+  align-self: stretch;
   justify-self: end;
+  justify-content: space-between;
   margin-inline-end: calc(var(--card-action-inset) - var(--post-card-padding-inline));
-  margin-block-end: calc(var(--card-action-inset) - var(--post-card-padding-block));
+  margin-block: calc(var(--card-action-inset) - var(--standard-post-card-padding-block));
 }
 :root .post-stream[data-layout] [data-card-actions] > .card-share-menu {
   position: relative;
@@ -1230,18 +1181,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   inset-block-start: var(--share-options-inset-block-start, 50%);
   inset-block-end: var(--share-options-inset-block-end, auto);
   transform: var(--share-options-transform, translateY(-50%));
-}
-
-:root .post-stream[data-layout] .post-card:has([data-card-actions]) > p {
-  padding-inline-end: 0;
-}
-
-/* Preserve the established tag-row position beside the action rail. */
-:root .post-stream[data-layout] .post-card:not(.directory-card):has([data-card-actions]) .post-tools {
-  width: calc(100% + var(--card-tags-action-offset));
-  max-width: calc(100% + var(--card-tags-action-offset));
-  inline-size: calc(100% + var(--card-tags-action-offset));
-  max-inline-size: calc(100% + var(--card-tags-action-offset));
 }
 
 /* Tiled cards inherit one content flow: title, subtitle (when shown), tags,

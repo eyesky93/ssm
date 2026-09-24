@@ -809,21 +809,13 @@
   --grid-post-card-padding-block: var(--standard-post-card-padding-block);
   --compact-post-card-padding-block: var(--standard-post-card-padding-block);
   --list-post-card-padding-block: var(--standard-post-card-padding-block);
+  --list-post-card-padding-inline-start: var(--control-capsule-gap);
 
-  /* List cards are content-sized. Their controls live on one dedicated rail,
-     with equal top/bottom corner insets and a reserved content lane. */
+  /* List cards are content-sized. PSR keeps its original equal edge inset;
+     the card grid shortens only the content column by the part of the target
+     that actually intrudes past the normal content edge, plus the shared gap. */
   --list-post-card-content-gap: var(--control-item-gap);
-  --list-post-action-block-inset: var(--card-action-inset);
-  /* Put the PSR target against the card's logical outer edge when the target is
-     wider than the side padding; otherwise center it inside that padding. The
-     glyph remains inside the padding and the existing action lane still keeps
-     tags/text clear of the complete hit target. */
-  --list-post-action-inline-inset: max(0px, calc((var(--surface-padding) - var(--quiet-control-target-size)) / 2));
-  --list-post-action-lane: calc(var(--quiet-control-target-size) + var(--quiet-control-gap));
-  /* The tag row is intentionally widened by --card-tags-action-offset. Reserve
-     that same amount again inside the widened row so the pills keep their
-     established alignment without spilling into the PSR side-padding band. */
-  --list-post-tag-action-lane: calc(var(--list-post-action-lane) + var(--card-tags-action-offset));
+  --list-post-action-inset: var(--card-action-inset);
 
   /* Floating neutral controls use the same surface as their surrounding card;
      distinction comes from the shared control frame, never an accent tint. */
@@ -902,55 +894,13 @@
   margin-block-end: 0;
 }
 
-/* Card actions are one compact vertical stack in every homepage layout.
-   DOM order is Pin, Share, Read and remains top-to-bottom in both directions.
-   The stack width and spacing are entirely owned by the shared quiet-control
-   geometry, so changing those global tokens updates every layout together. */
-:root body .post-stream[data-layout] [data-card-actions] {
-  position: static;
-  display: inline-flex;
-  flex: 0 0 auto;
-  flex-flow: column nowrap;
-  align-items: center;
-  align-self: end;
-  justify-content: flex-end;
-  gap: var(--quiet-control-gap);
-  width: var(--quiet-control-target-size);
-  max-width: 100%;
-  margin: 0;
-}
-
-:root body .post-stream[data-layout] .card-footer:has(> [data-card-actions]) {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) var(--quiet-control-target-size);
-  align-items: end;
-  column-gap: var(--control-capsule-gap);
-}
-:root body .post-stream[data-layout] .card-footer:has(> [data-card-actions]) > time {
-  grid-area: 1 / 1;
-  align-self: end;
-  padding-block-end: calc((var(--quiet-control-target-size) - 1lh) / 2);
-}
-:root body .post-stream[data-layout] .card-footer > [data-card-actions] {
-  grid-area: 1 / 2;
-  justify-self: end;
-  margin-inline-end: calc(var(--card-action-inset) - var(--post-card-padding-inline));
-  margin-block-end: calc(var(--card-action-inset) - var(--post-card-padding-block));
-}
-
-/* Grid and Compact use the same vertical card inset as List. Keeping the block
-   padding symmetric also places the date on the same bottom rhythm as Read. */
+/* Grid, Compact and List share the same vertical card inset. PSR is a sibling
+   grid rail, so footer/date geometry is independent of the controls. */
 :root body .post-stream[data-layout="grid"] .post-card:not(.directory-card) {
   padding-block: var(--grid-post-card-padding-block);
 }
 :root body .post-stream[data-layout="compact"] .post-card:not(.directory-card) {
   padding-block: var(--compact-post-card-padding-block);
-}
-:root body .post-stream[data-layout="grid"] .post-card:not(.directory-card) .card-footer > [data-card-actions] {
-  inset-block-end: var(--grid-post-card-padding-block);
-}
-:root body .post-stream[data-layout="compact"] .post-card:not(.directory-card) .card-footer > [data-card-actions] {
-  inset-block-end: var(--compact-post-card-padding-block);
 }
 
 /* Grid and list share one typography contract. This makes the list genuinely
@@ -964,39 +914,110 @@
   line-height: var(--grid-post-summary-line-height);
 }
 
-/* List cards use three non-overlapping regions: title/text, a tag strip that
-   reserves the action rail, and the action rail itself. Pin and Read occupy
-   symmetric top/bottom corners; Share stays centered between them. */
-:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) {
-  position: relative;
-  padding-block: var(--list-post-card-padding-block);
+/* Ordinary cards have two structural columns: content and the independent PSR
+   rail. The rail column reserves only the target portion that intrudes into the
+   normal content box; its remaining width sits in the existing side padding.
+   This changes the text-box length without moving Pin, Share or Read. */
+:root body .post-stream[data-layout] .post-card:not(.directory-card):has(> [data-card-actions]) {
+  --post-card-action-overhang: calc(var(--post-card-padding-inline) - var(--card-action-inset));
+  --post-card-action-column-size: max(0px, calc(var(--quiet-control-target-size) - var(--post-card-action-overhang)));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--post-card-action-column-size);
+  column-gap: var(--quiet-control-gap);
 }
-:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) .post-heading {
-  margin-block-end: var(--list-post-card-content-gap);
+:root body .post-stream[data-layout] .post-card:not(.directory-card):has(> [data-card-actions]) > :not([data-card-actions], .post-engagement) {
+  min-width: 0;
+  grid-column: 1;
 }
-:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) .post-tools {
-  box-sizing: border-box;
-  padding-inline-end: var(--list-post-tag-action-lane);
+:root body .post-stream[data-layout] .post-card:not(.directory-card) > [data-card-actions] {
+  grid-column: 2;
 }
-:root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > p {
-  padding-inline-end: var(--list-post-action-lane);
+
+/* Desktop List keeps heading/title/tags as one content row; summary,
+   monograph metadata and footer remain normal content rows beside the rail. */
+@media (min-width: 701px) {
+  :root body .post-stream[data-layout="list"] .post-card:not(.directory-card):has(> [data-card-actions]) {
+    grid-template-areas:
+      "heading actions"
+      "summary actions"
+      "monograph actions"
+      "footer actions";
+    grid-template-rows: auto auto auto auto;
+    padding-block: var(--list-post-card-padding-block);
+    padding-inline-start: var(--list-post-card-padding-inline-start);
+  }
+  :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > .post-heading {
+    grid-area: heading;
+    margin-block-end: var(--list-post-card-content-gap);
+  }
+  :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > p:not(.post-monograph) {
+    grid-area: summary;
+    padding-inline-end: 0;
+  }
+  :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > .post-monograph {
+    grid-area: monograph;
+  }
+  :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > .card-footer {
+    grid-area: footer;
+    margin-block-start: var(--list-post-card-content-gap);
+    padding-block-start: 0;
+  }
 }
-:root body .post-stream[data-layout="list"] .card-footer:has(> [data-card-actions]) {
-  display: block;
-  margin-block-start: var(--list-post-card-content-gap);
-  padding-block-start: 0;
+
+/* Tiled cards already flatten .post-heading; place those promoted children
+   explicitly while keeping the existing footer-at-bottom behavior. */
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(> [data-card-actions]) {
+  grid-template-areas:
+    "title actions"
+    "summary actions"
+    "tags actions"
+    "monograph actions"
+    "footer actions";
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
 }
-:root body .post-stream[data-layout="list"] .card-footer:has(> [data-card-actions]) > time {
-  display: block;
-  padding-block-end: 0;
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card) .post-heading > h2 {
+  grid-area: title;
 }
-:root body .post-stream[data-layout="list"] .card-footer > [data-card-actions] {
-  position: absolute;
-  inset-inline-end: var(--list-post-action-inline-inset);
-  inset-block-start: var(--list-post-action-block-inset);
-  inset-block-end: var(--list-post-action-block-inset);
-  justify-content: space-between;
-  margin: 0;
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card) > p:not(.post-monograph) {
+  grid-area: summary;
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card) .post-tools {
+  grid-area: tags;
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card) > .post-monograph {
+  grid-area: monograph;
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card) > .card-footer {
+  grid-area: footer;
+}
+
+/* On phones .post-heading is also flattened, so use the same structural
+   title/summary/tags/footer sequence regardless of the selected view token. */
+@media (max-width: 700px) {
+  :root body .post-stream[data-layout] .post-card:not(.directory-card):has(> [data-card-actions]) {
+    grid-template-areas:
+      "title actions"
+      "summary actions"
+      "tags actions"
+      "monograph actions"
+      "footer actions";
+    grid-template-rows: auto auto auto auto auto;
+  }
+  :root body .post-stream[data-layout] .post-card:not(.directory-card) .post-heading > h2 {
+    grid-area: title;
+  }
+  :root body .post-stream[data-layout] .post-card:not(.directory-card) > p:not(.post-monograph) {
+    grid-area: summary;
+  }
+  :root body .post-stream[data-layout] .post-card:not(.directory-card) .post-tools {
+    grid-area: tags;
+  }
+  :root body .post-stream[data-layout] .post-card:not(.directory-card) > .post-monograph {
+    grid-area: monograph;
+  }
+  :root body .post-stream[data-layout] .post-card:not(.directory-card) > .card-footer {
+    grid-area: footer;
+  }
 }
 
 /* Directory uses only its pin, centered on the heading cross-axis. */
