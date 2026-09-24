@@ -814,7 +814,7 @@
      with equal top/bottom corner insets and a reserved content lane. */
   --list-post-card-content-gap: var(--control-item-gap);
   --list-post-action-inset: var(--card-action-inset);
-  --list-post-action-lane: calc(var(--quiet-control-target-size) + var(--control-capsule-gap));
+  --list-post-action-lane: calc(var(--quiet-control-target-size) + var(--quiet-control-gap));
 
   /* Floating neutral controls use the same surface as their surrounding card;
      distinction comes from the shared control frame, never an accent tint. */
