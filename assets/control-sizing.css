@@ -820,6 +820,10 @@
      tags/text clear of the complete hit target. */
   --list-post-action-inline-inset: max(0px, calc((var(--surface-padding) - var(--quiet-control-target-size)) / 2));
   --list-post-action-lane: calc(var(--quiet-control-target-size) + var(--quiet-control-gap));
+  /* The tag row is intentionally widened by --card-tags-action-offset. Reserve
+     that same amount again inside the widened row so the pills keep their
+     established alignment without spilling into the PSR side-padding band. */
+  --list-post-tag-action-lane: calc(var(--list-post-action-lane) + var(--card-tags-action-offset));
 
   /* Floating neutral controls use the same surface as their surrounding card;
      distinction comes from the shared control frame, never an accent tint. */
@@ -972,7 +976,7 @@
 }
 :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) .post-tools {
   box-sizing: border-box;
-  padding-inline-end: var(--list-post-action-lane);
+  padding-inline-end: var(--list-post-tag-action-lane);
 }
 :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > p {
   padding-inline-end: var(--list-post-action-lane);
