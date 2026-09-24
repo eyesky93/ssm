@@ -818,6 +818,7 @@
   /* Preserve the pre-grid PSR visual geometry exactly. Structure may change,
      but the rail keeps one equal edge inset on its logical side, top and bottom. */
   --list-post-card-content-gap: var(--control-item-gap);
+  --list-post-title-summary-gap: calc(var(--list-post-card-content-gap) / 2);
   --list-post-action-inset: var(--card-action-rail-inset);
 
   /* Floating neutral controls use the same surface as their surrounding card;
@@ -963,7 +964,7 @@
   }
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > .post-heading {
     grid-area: heading;
-    margin-block-end: var(--list-post-card-content-gap);
+    margin-block-end: var(--list-post-title-summary-gap);
   }
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > p:not(.post-monograph) {
     grid-area: summary;
