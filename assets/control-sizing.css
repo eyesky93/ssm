@@ -1555,8 +1555,8 @@
   width: var(--control-icon-size);
   height: var(--control-icon-size);
   background-color: currentColor;
-  -webkit-mask: url("./auto-theme-icon.svg") center / contain no-repeat;
-  mask: url("./auto-theme-icon.svg") center / contain no-repeat;
+  -webkit-mask: url("./auto-theme-icon.png?v=014c2695b80c") center / contain no-repeat;
+  mask: url("./auto-theme-icon.png?v=014c2695b80c") center / contain no-repeat;
 }
 :root[data-theme-preference="light"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="light"],
 :root[data-theme-preference="dark"] .framed-control[data-framed-role~="theme-toggle"] > [data-theme-icon="dark"],
