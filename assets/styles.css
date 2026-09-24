@@ -1187,7 +1187,6 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 .share-options a, .share-options button { flex: 0 0 auto; display: grid; place-items: center; width: var(--minimum-touch-target); height: var(--minimum-touch-target); border: 1px solid var(--line-dark); border-radius: 50%; background: var(--surface); color: var(--ink); padding: 0.7rem; font: inherit; text-decoration: none; cursor: pointer; }
 .share-options a:hover, .share-options button:hover { background: var(--soft-accent); border-color: var(--accent-strong); }
 .share-options svg { width: 100%; height: 100%; fill: currentColor; }
-.share-options .share-line-icon { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .share-options [hidden] { display: none; }
 /* Feedback is a sibling popover, never part of the icon column's width. */
 .share-feedback {

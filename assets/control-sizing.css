@@ -19,6 +19,9 @@
   --reader-control-size: var(--control-size);
   --surface-padding: calc(var(--control-capsule-gap) * 2);
   --control-icon-size: 1.35rem;
+  --control-icon-stroke-width: 1.8;
+  --control-icon-stroke-linecap: round;
+  --control-icon-stroke-linejoin: round;
   --control-padding: max(0px, calc((var(--control-size) - var(--control-icon-size) - 2px) / 2));
   /* Navigation glyphs share global variables without changing any current
      component geometry. Variant sizes remain proportional to this one base. */
@@ -1388,10 +1391,16 @@
   justify-self: center;
   align-self: center;
 }
-:root .share-options .quiet-control > svg,
-:root .share-options .quiet-control > svg > use {
+:root .quiet-control > svg > use {
   color: inherit;
   fill: currentColor;
+}
+:root .control-line-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--control-icon-stroke-width);
+  stroke-linecap: var(--control-icon-stroke-linecap);
+  stroke-linejoin: var(--control-icon-stroke-linejoin);
 }
 :root .quiet-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active) {
   border: 0;
