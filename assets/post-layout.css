@@ -1134,7 +1134,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   align-self: end;
   justify-self: end;
   justify-content: flex-end;
-  margin-inline-end: calc(var(--post-card-action-inline-inset) - var(--post-card-padding-inline));
+  margin-inline-end: calc(var(--post-card-action-inline-inset) - var(--post-card-action-padding-inline));
   margin-block-end: calc(var(--post-card-action-block-inset) - var(--post-card-action-padding-block));
 }
 

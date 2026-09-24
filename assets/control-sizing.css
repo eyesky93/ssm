@@ -803,13 +803,17 @@
   --grid-post-summary-size: 1rem;
   --grid-post-summary-line-height: 1.5;
 
-  /* Standard Grid/Compact/List cards share one vertical edge inset. Each
-     layout keeps an alias so its geometry stays explicit without literals. */
-  --standard-post-card-padding-block: var(--control-capsule-gap);
+  /* Standard Grid/Compact/List cards share one edge inset on both axes. Each
+     layout keeps aliases so the card and its PSR rail consume the same token. */
+  --standard-post-card-edge-inset: var(--control-capsule-gap);
+  --standard-post-card-padding-block: var(--standard-post-card-edge-inset);
+  --standard-post-card-padding-inline: var(--standard-post-card-edge-inset);
   --grid-post-card-padding-block: var(--standard-post-card-padding-block);
+  --grid-post-card-padding-inline: var(--standard-post-card-padding-inline);
   --compact-post-card-padding-block: var(--standard-post-card-padding-block);
+  --compact-post-card-padding-inline: var(--standard-post-card-padding-inline);
   --list-post-card-padding-block: var(--standard-post-card-padding-block);
-  --list-post-card-padding-inline-start: var(--control-capsule-gap);
+  --list-post-card-padding-inline: var(--standard-post-card-padding-inline);
 
   /* Preserve the pre-grid PSR visual geometry exactly. Structure may change,
      but the rail keeps one equal edge inset on its logical side, top and bottom. */
@@ -896,11 +900,15 @@
    grid rail, so footer/date geometry is independent of the controls. */
 :root body .post-stream[data-layout="grid"] .post-card:not(.directory-card) {
   --post-card-effective-padding-block: var(--grid-post-card-padding-block);
+  --post-card-effective-padding-inline: var(--grid-post-card-padding-inline);
   padding-block: var(--grid-post-card-padding-block);
+  padding-inline: var(--grid-post-card-padding-inline);
 }
 :root body .post-stream[data-layout="compact"] .post-card:not(.directory-card) {
   --post-card-effective-padding-block: var(--compact-post-card-padding-block);
+  --post-card-effective-padding-inline: var(--compact-post-card-padding-inline);
   padding-block: var(--compact-post-card-padding-block);
+  padding-inline: var(--compact-post-card-padding-inline);
 }
 
 /* Grid and list share one typography contract. This makes the list genuinely
@@ -921,8 +929,9 @@
 :root body .post-stream[data-layout] .post-card:not(.directory-card):has(> [data-card-actions]) {
   --post-card-action-inline-inset: var(--card-action-rail-inset);
   --post-card-action-block-inset: var(--card-action-rail-inset);
+  --post-card-action-padding-inline: var(--post-card-effective-padding-inline, var(--post-card-padding-inline));
   --post-card-action-padding-block: var(--post-card-effective-padding-block, var(--post-card-padding-block));
-  --post-card-action-overhang: calc(var(--post-card-padding-inline) - var(--post-card-action-inline-inset));
+  --post-card-action-overhang: calc(var(--post-card-action-padding-inline) - var(--post-card-action-inline-inset));
   --post-card-action-column-size: max(0px, calc(var(--quiet-control-target-size) - var(--post-card-action-overhang)));
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--post-card-action-column-size);
@@ -941,6 +950,7 @@
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card):has(> [data-card-actions]) {
     --post-card-action-inline-inset: var(--list-post-action-inset);
     --post-card-action-block-inset: var(--list-post-action-inset);
+    --post-card-effective-padding-inline: var(--list-post-card-padding-inline);
     --post-card-effective-padding-block: var(--list-post-card-padding-block);
     grid-template-areas:
       "heading actions"
@@ -949,7 +959,7 @@
       "footer actions";
     grid-template-rows: auto auto auto auto;
     padding-block: var(--list-post-card-padding-block);
-    padding-inline-start: var(--list-post-card-padding-inline-start);
+    padding-inline: var(--list-post-card-padding-inline);
   }
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > .post-heading {
     grid-area: heading;
