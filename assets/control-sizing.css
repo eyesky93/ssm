@@ -819,6 +819,7 @@
      but the rail keeps one equal edge inset on its logical side, top and bottom. */
   --list-post-card-content-gap: var(--control-item-gap);
   --list-post-title-summary-gap: calc(var(--list-post-card-content-gap) / 2);
+  --list-post-summary-date-gap: calc(2 * var(--list-post-card-content-gap));
   --list-post-action-inset: var(--card-action-rail-inset);
 
   /* Floating neutral controls use the same surface as their surrounding card;
@@ -975,7 +976,7 @@
   }
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > .card-footer {
     grid-area: footer;
-    margin-block-start: var(--list-post-card-content-gap);
+    margin-block-start: var(--list-post-summary-date-gap);
     padding-block-start: 0;
   }
 }
