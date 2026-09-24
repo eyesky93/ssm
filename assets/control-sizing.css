@@ -1020,6 +1020,9 @@
 }
 
 /* Card sharing consumes the global neutral surface and frame. */
+:root body .post-stream[data-layout] [data-card-actions] .card-share-menu {
+  --quiet-control-active-color: var(--accent);
+}
 :root body .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options {
   border: var(--control-frame-width) solid var(--neutral-control-frame);
   background: var(--neutral-control-surface);
@@ -1036,7 +1039,7 @@
   border: 0;
   outline: 0;
   background: transparent;
-  color: var(--accent);
+  color: var(--quiet-control-active-color);
   box-shadow: none;
 }
 
