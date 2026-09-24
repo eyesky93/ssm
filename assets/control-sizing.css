@@ -7,7 +7,7 @@
   --control-size: 1.9575rem;
   --control-radius: calc(var(--control-size) * .16);
   --control-inner-radius: max(0px, calc(var(--control-radius) - 1px));
-  --control-capsule-gap: .5rem;
+  --control-capsule-gap: .3rem;
   --control-switch-duration: .18s;
   --control-switch-easing: cubic-bezier(.2, .8, .2, 1);
   --control-switch-icon-size: 1.25rem;
