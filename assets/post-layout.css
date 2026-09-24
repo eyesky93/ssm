@@ -1138,17 +1138,9 @@ html[lang="he"] .reader-controls .reader-number-error {
   margin-block-end: calc(var(--post-card-action-block-inset) - var(--standard-post-card-padding-block));
 }
 
-/* List keeps the exact pre-structure rail appearance: Pin at the top edge,
-   Share centered, Read at the bottom edge. Only ownership changed—from footer
-   child to direct card grid sibling. */
-@media (min-width: 701px) {
-  :root .post-stream[data-layout="list"] .post-card:not(.directory-card) > [data-card-actions] {
-    align-self: stretch;
-    justify-content: space-between;
-    margin-block-start: calc(var(--post-card-action-block-inset) - var(--list-post-card-padding-block));
-    margin-block-end: calc(var(--post-card-action-block-inset) - var(--list-post-card-padding-block));
-  }
-}
+/* List keeps the same compact bottom-corner PSR stack as before the DOM
+   refactor. The rail is now a direct grid sibling, but its visual rhythm stays
+   Pin / Share / Read with the shared quiet gap instead of stretching vertically. */
 :root .post-stream[data-layout] [data-card-actions] > .card-share-menu {
   position: relative;
   display: grid;
