@@ -813,7 +813,12 @@
   /* List cards are content-sized. Their controls live on one dedicated rail,
      with equal top/bottom corner insets and a reserved content lane. */
   --list-post-card-content-gap: var(--control-item-gap);
-  --list-post-action-inset: var(--card-action-inset);
+  --list-post-action-block-inset: var(--card-action-inset);
+  /* Put the PSR target against the card's logical outer edge when the target is
+     wider than the side padding; otherwise center it inside that padding. The
+     glyph remains inside the padding and the existing action lane still keeps
+     tags/text clear of the complete hit target. */
+  --list-post-action-inline-inset: max(0px, calc((var(--surface-padding) - var(--quiet-control-target-size)) / 2));
   --list-post-action-lane: calc(var(--quiet-control-target-size) + var(--quiet-control-gap));
 
   /* Floating neutral controls use the same surface as their surrounding card;
@@ -983,9 +988,9 @@
 }
 :root body .post-stream[data-layout="list"] .card-footer > [data-card-actions] {
   position: absolute;
-  inset-inline-end: var(--list-post-action-inset);
-  inset-block-start: var(--list-post-action-inset);
-  inset-block-end: var(--list-post-action-inset);
+  inset-inline-end: var(--list-post-action-inline-inset);
+  inset-block-start: var(--list-post-action-block-inset);
+  inset-block-end: var(--list-post-action-block-inset);
   justify-content: space-between;
   margin: 0;
 }
