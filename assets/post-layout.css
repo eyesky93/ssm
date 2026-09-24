@@ -1231,6 +1231,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 @media (max-width: 700px) {
   :root {
     --quiet-control-icon-scale: .5;
+    --card-action-rail-inset: calc(var(--control-capsule-gap) + var(--quiet-control-padding) / 2);
     --card-action-rail-block-visual-compensation: var(--quiet-control-padding);
   }
   :root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options,
