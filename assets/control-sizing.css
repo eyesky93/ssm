@@ -1215,8 +1215,14 @@
     gap: var(--mobile-header-group-gap);
     overflow: visible;
   }
+  /* Reader Pin/Share/Read are normal mobile header content, immediately after
+     Search in source order. This removes the detached row that could overlap the
+     article title. The complete header may wrap as groups on very narrow phones,
+     and the control group itself may wrap rather than overflow the viewport. */
   :root body:has([data-reader-article]:not([hidden], [data-directory])) .site-header {
-    --header-control-extra-row-offset: calc(var(--mobile-header-control-size) + var(--header-control-half-gap));
+    --header-control-extra-row-offset: 0px;
+    flex-wrap: wrap;
+    margin-block-end: var(--header-control-extra-row-offset);
   }
   :root body .primary-nav {
     flex: 1 1 auto;
@@ -1239,6 +1245,16 @@
     align-items: center;
     gap: var(--header-control-gap) !important;
     margin-inline-start: 0;
+  }
+
+  :root body:has([data-reader-article]:not([hidden], [data-directory])) .header-controls {
+    width: auto;
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+  :root body:has([data-reader-article]:not([hidden], [data-directory])) .header-controls > .article-actions {
+    position: static;
+    inset: auto;
   }
 
   /* Search, language, settings, layout/navigation hosts and the settings panel
