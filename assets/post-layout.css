@@ -1030,7 +1030,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-control-radius: calc(var(--quiet-control-icon-size) / 6);
   --card-content-gap: var(--control-capsule-gap);
   --card-action-inset: calc(var(--control-capsule-gap) / 2);
-  --card-tags-action-offset: var(--control-capsule-gap);
 }
 :root[data-theme="dark"] {
   --quiet-pin-color: var(--white);
@@ -1234,16 +1233,6 @@ html[lang="he"] .reader-controls .reader-number-error {
 
 :root .post-stream[data-layout] .post-card:has([data-card-actions]) > p {
   padding-inline-end: 0;
-}
-
-/* Let the tag/tool row use a small amount of the otherwise empty inset between
-   card content and the Pin/Share/Read rail. The shared token keeps the spacing
-   consistent in every layout and mirrors naturally in RTL. */
-:root .post-stream[data-layout] .post-card:not(.directory-card):has([data-card-actions]) .post-tools {
-  width: calc(100% + var(--card-tags-action-offset));
-  max-width: calc(100% + var(--card-tags-action-offset));
-  inline-size: calc(100% + var(--card-tags-action-offset));
-  max-inline-size: calc(100% + var(--card-tags-action-offset));
 }
 
 /* Tiled cards inherit one content flow: title, subtitle (when shown), tags,
