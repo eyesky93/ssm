@@ -1271,14 +1271,9 @@ html[lang="he"] .reader-controls .reader-number-error {
   order: 3;
 }
 
-/* Phones always use the semantic stacked card flow, even though the persisted
-   desktop layout value may still be list/grid/compact. Tags therefore follow
-   the subtitle instead of inheriting list view's desktop title-side placement. */
-@media (max-width: 700px) and (pointer: coarse) {
-  :root .post-stream[data-layout] .post-card {
-    --quiet-control-target-size: var(--minimum-touch-target);
-  }
-}
+/* Phones keep the same compact quiet-control target defined by the global
+   quiet-control tokens. Do not enlarge the action rail independently: that
+   forces Pin/Share/Read to set the card height and creates large empty gaps. */
 
 @media (max-width: 700px) {
   :root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options,

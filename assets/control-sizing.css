@@ -1207,11 +1207,11 @@
 :root .header-actions .accent-picker::-moz-color-swatch { border-radius: var(--control-inner-radius); }
 
 /* Mobile-only header control sizing.
-   Desktop keeps the compact header family. Phones restore the full global
-   control size and all dependent header/settings geometry follows the same
-   aliases instead of introducing per-button dimensions. */
+   Phones use the same global control geometry as desktop. All dependent
+   header/settings dimensions continue through aliases instead of introducing
+   a second mobile visual size. */
 :root {
-  --mobile-header-control-size: max(var(--minimum-touch-target), var(--control-size));
+  --mobile-header-control-size: var(--control-size);
   --mobile-header-control-gap: var(--control-item-gap, var(--control-capsule-gap));
   --mobile-header-group-gap: var(--mobile-header-control-gap);
   --mobile-wordmark-size: var(--mobile-header-control-size);
@@ -1313,8 +1313,8 @@
     flex: 0 0 var(--control-icon-size);
   }
 
-  /* The mobile brand frame belongs to the same geometry family as the enlarged
-     header controls. Desktop keeps the compact wordmark unchanged. */
+  /* The mobile brand frame belongs to the same global geometry family as the
+     header controls. Desktop and mobile therefore keep one compact rhythm. */
   :root body .wordmark {
     flex: 0 0 auto;
     min-height: var(--mobile-wordmark-size) !important;
