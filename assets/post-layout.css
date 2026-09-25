@@ -555,10 +555,9 @@ html[lang="he"] .reader-controls .reader-number-error {
   margin-block-end: calc(var(--directory-row-gap) - var(--post-row-gap));
 }
 
-/* List and Grid share one typography contract. Compact remains intentionally smaller. */
+/* List and Grid consume the global linear post-card typography contract.
+   Compact keeps its smaller title ratio from the same canonical unit. */
 :root {
-  --post-card-title-font-size: 1.5rem;
-  --post-card-summary-font-size: 1rem;
   --tag-label-font-size: 0.8rem;
   /* All tiled post cards remain the same height, determined by the largest
      visible card. Keep both dimensions and alignment behind shared variables. */

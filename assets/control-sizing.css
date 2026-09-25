@@ -796,14 +796,12 @@
   --post-stream-column-gap: var(--interface-edge-gap);
   --post-stream-compact-column-gap: var(--interface-edge-gap);
 
-  /* Grid typography is a shared post-card scale. List view deliberately consumes
-     these exact same tokens; compact view keeps its smaller dedicated scale. */
-  --grid-post-title-size: 1.5rem;
+  /* Layout aliases consume the global linear post-card typography scale. */
+  --grid-post-title-size: var(--post-card-title-font-size);
   --grid-post-title-line-height: 1.2;
-  --grid-post-summary-size: 1rem;
+  --grid-post-summary-size: var(--post-card-summary-font-size);
   --grid-post-summary-line-height: 1.5;
-  --post-card-date-scale: .75;
-  --post-card-date-size: calc(var(--grid-post-summary-size) * var(--post-card-date-scale));
+  --post-card-date-size: var(--post-card-date-font-size);
 
   /* Standard Grid/Compact/List cards share one edge inset on both axes. Each
      layout keeps aliases so the card and its PSR rail consume the same token. */
