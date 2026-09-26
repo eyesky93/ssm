@@ -4,9 +4,6 @@ html { scrollbar-gutter: stable; }
 .post-heading,
 .post-tools { min-width: 0; }
 
-:root {
-  --list-card-tags-max-width: 40%;
-}
 
 /* The whole post card is clickable; its title needs no extra hover underline.
    Other links and keyboard-focus outlines keep their existing styling. */
@@ -111,9 +108,9 @@ html { scrollbar-gutter: stable; }
 }
 
 @media (min-width: 701px) {
-  /* List tags are a bounded wrapping block, not a horizontal scroller. They
-     consume at most 40% at the logical end; the title flows beside the whole
-     block and then reclaims the full width below it. */
+  /* List tags hug the logical end at their natural width. They may consume all
+     available heading space, wrapping only when the card itself requires it;
+     title text flows beside the block and then reclaims full width below it. */
   .post-stream[data-layout="list"] .card-tags {
     flex-wrap: wrap;
     align-content: flex-start;
@@ -129,7 +126,7 @@ html { scrollbar-gutter: stable; }
   .post-stream[data-layout="list"] .post-tools {
     float: inline-end;
     width: fit-content;
-    max-width: var(--list-card-tags-max-width);
+    max-width: 100%;
     margin-inline-start: 1.5rem;
     margin-block-end: var(--card-content-gap);
   }
