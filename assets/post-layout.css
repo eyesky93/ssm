@@ -113,7 +113,7 @@ html { scrollbar-gutter: stable; }
      The subtitle remains outside this heading and therefore keeps full width. */
   .post-stream[data-layout="list"] .post-heading {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) max-content;
+    grid-template-columns: minmax(0, 1fr) var(--list-card-tags-width, min-content);
     align-items: start;
     column-gap: 1.5rem;
   }
@@ -126,8 +126,8 @@ html { scrollbar-gutter: stable; }
     grid-column: 2;
     grid-row: 1;
     justify-self: end;
-    width: fit-content;
-    max-width: min(60vw, 100%);
+    width: var(--list-card-tags-width, min-content);
+    max-width: 100%;
     margin: 0;
   }
   .post-stream[data-layout="list"] .card-tags {
