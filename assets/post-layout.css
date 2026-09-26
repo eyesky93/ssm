@@ -107,18 +107,20 @@ html { scrollbar-gutter: stable; }
 }
 
 @media (min-width: 701px) {
-  /* Let short titles leave all remaining space to the tags. Long titles keep
-     up to 60%, and the two regions always retain a 1.5rem (24px) gap. */
+  /* Tags own only their intrinsic end-side width. The title receives every
+     remaining pixel up to the tag gutter instead of stopping at an arbitrary
+     percentage, so long list-view headings wrap only when they actually reach
+     the tags. */
   .post-stream[data-layout="list"] .post-heading {
     display: grid;
-    grid-template-columns: fit-content(60%) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) max-content;
     align-items: start;
     column-gap: 1.5rem;
   }
-  .post-stream[data-layout="list"] .post-heading > h2 { flex: none; }
+  .post-stream[data-layout="list"] .post-heading > h2 { flex: none; min-width: 0; }
   .post-stream[data-layout="list"] .post-tools {
-    width: 100%;
-    max-width: none;
+    width: auto;
+    max-width: min(50%, 100%);
   }
 }
 
