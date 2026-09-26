@@ -111,9 +111,18 @@ html { scrollbar-gutter: stable; }
 }
 
 @media (min-width: 701px) {
-  /* List tags float at the logical end and may occupy at most 40% of the
-     heading. Title text wraps beside that float, then automatically reclaims
-     the full row underneath it when the tag rail ends. */
+  /* List tags are a bounded wrapping block, not a horizontal scroller. They
+     consume at most 40% at the logical end; the title flows beside the whole
+     block and then reclaims the full width below it. */
+  .post-stream[data-layout="list"] .card-tags {
+    flex-wrap: wrap;
+    align-content: flex-start;
+    overflow: visible;
+  }
+  .post-stream[data-layout="list"] .card-tags > :nth-child(1 of :not([hidden])) {
+    margin-inline-start: 0;
+  }
+
   .post-stream[data-layout="list"] .post-heading {
     display: flow-root;
   }
