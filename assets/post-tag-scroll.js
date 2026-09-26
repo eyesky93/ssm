@@ -18,48 +18,37 @@ export function initializePostTagScrolling(document, window) {
       const tools = this.row.closest?.(".post-tools");
       const heading = tools?.closest?.(".post-heading");
       const title = heading?.querySelector?.(":scope > h2");
-      if (!heading?.style || !title?.getBoundingClientRect || !this.row.children || !window.getComputedStyle) return;
+      if (!heading?.style || !title?.getBoundingClientRect || !this.row.children) return;
       if (!this.isDesktopList()) {
-        heading.style.removeProperty("--list-card-tags-width");
+        heading.style.removeProperty("--list-card-tag-rows");
         return;
       }
 
-      heading.style.removeProperty("--list-card-tags-width");
-      const headingWidth = heading.getBoundingClientRect().width;
-      const headingStyle = window.getComputedStyle(heading);
-      const rowStyle = window.getComputedStyle(this.row);
-      const headingGap = parseFloat(headingStyle.columnGap) || 0;
-      const tagGap = parseFloat(rowStyle.columnGap || rowStyle.gap) || 0;
-      const padding = (parseFloat(rowStyle.paddingInlineStart) || 0) + (parseFloat(rowStyle.paddingInlineEnd) || 0);
       const tags = [...this.row.children].filter(tag => !tag.hidden && tag.getBoundingClientRect);
-      if (!tags.length || headingWidth <= headingGap + 1) return;
-
-      const widths = tags.map(tag => tag.getBoundingClientRect().width);
-      const maxAvailable = Math.max(1, headingWidth - headingGap);
-      const candidates = new Set([Math.min(maxAvailable, Math.max(...widths) + padding)]);
-      for (let start = 0; start < widths.length; start += 1) {
-        let width = padding;
-        for (let end = start; end < widths.length; end += 1) {
-          width += widths[end] + (end === start ? 0 : tagGap);
-          if (width <= maxAvailable + .5) candidates.add(Math.min(maxAvailable, width));
-          else break;
-        }
+      if (!tags.length) {
+        heading.style.removeProperty("--list-card-tag-rows");
+        return;
       }
-      candidates.add(maxAvailable);
 
-      let bestWidth = maxAvailable;
+      let bestRows = 1;
       let bestHeight = Infinity;
-      for (const width of [...candidates].sort((a, b) => a - b)) {
-        heading.style.setProperty("--list-card-tags-width", `${width}px`);
+      let bestTitleHeight = Infinity;
+      for (let rows = 1; rows <= tags.length; rows += 1) {
+        heading.style.setProperty("--list-card-tag-rows", String(rows));
         const titleHeight = title.getBoundingClientRect().height;
         const tagsHeight = this.row.getBoundingClientRect().height;
-        const height = Math.max(titleHeight, tagsHeight);
-        if (height < bestHeight - .5 || (Math.abs(height - bestHeight) <= .5 && width < bestWidth)) {
-          bestHeight = height;
-          bestWidth = width;
+        const headingHeight = Math.max(titleHeight, tagsHeight);
+        if (
+          headingHeight < bestHeight - .5 ||
+          (Math.abs(headingHeight - bestHeight) <= .5 && titleHeight < bestTitleHeight - .5) ||
+          (Math.abs(headingHeight - bestHeight) <= .5 && Math.abs(titleHeight - bestTitleHeight) <= .5 && rows > bestRows)
+        ) {
+          bestRows = rows;
+          bestHeight = headingHeight;
+          bestTitleHeight = titleHeight;
         }
       }
-      heading.style.setProperty("--list-card-tags-width", `${bestWidth}px`);
+      heading.style.setProperty("--list-card-tag-rows", String(bestRows));
     }
   }
 
