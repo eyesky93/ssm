@@ -7,6 +7,54 @@
     <language>he-IL</language>
     <atom:link href="https://eyesky93.github.io/ssm/he/tags/physics/conformal-field-theory/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>כותרת ארוכה במיוחד שנועדה לבדוק מה קורה כאשר כרטיס בקטלוג חייב להכיל שורות רבות של טקסט בלי לשבור את הפעולות, התגיות, המונים, המרווחים או את קצב הקריאה הכללי</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/layout-stress-long-title-one/</link>
+      <guid isPermaLink="false">urn:ssm:layout-stress-long-title-01:he</guid>
+      <pubDate>Sat, 26 Sep 2026 17:00:00 GMT</pubDate>
+      <description>כותרת המשנה הארוכה במכוון ממשיכה מספיק כדי לבדוק גלישה בין שורות, גובה משתנה, יישור, רוחבים רספונסיביים, תצוגות קומפקטיות ורשת, ואת הגבול בין המטא־נתונים לבין הפקדים.</description>
+      <category>רשימות</category>
+      <category>פיזיקה</category>
+      <category>פיזיקה / תורת שדות קונפורמית</category>
+      <category>פיזיקה / מכניקה אנליטית</category>
+      <category>מתמטיקה</category>
+      <category>מתמטיקה / רקע מתמטי</category>
+      <category>מוזיקה</category>
+      <category>מוזיקה / מטאל</category>
+      <category>תרבות</category>
+    </item>
+    <item>
+      <title>רשימות על מאמר היפותטי שכותרתו מסרבת להיות קצרה: סוגריים (כולל הקשר מקונן), מקפים — כמה מהם — מספרים 1234567890, ראשי תיבות, סימני פיסוק ומספיק מילים רגילות כדי לאלץ גלישה יציבה בכל מקום</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/layout-stress-long-title-two/</link>
+      <guid isPermaLink="false">urn:ssm:layout-stress-long-title-02:he</guid>
+      <pubDate>Sat, 26 Sep 2026 17:00:00 GMT</pubDate>
+      <description>כותרת משנה נוספת וארוכה במיוחד לבדיקת מצב שבו מטא־נתונים תיאוריים ומפורטים מתקיימים לצד תאריך, תגיות, מדדי מעורבות, פעולות נעיצה ושיתוף, היפוך RTL, ערימה במובייל וטיפוגרפיה של עמוד המאמר בלי חיתוך או גלישה אופקית.</description>
+      <category>תרבות</category>
+      <category>מוזיקה</category>
+      <category>מוזיקה / מטאל</category>
+      <category>רשימות</category>
+      <category>מתמטיקה</category>
+      <category>מתמטיקה / רקע מתמטי</category>
+      <category>פיזיקה</category>
+      <category>פיזיקה / מכניקה אנליטית</category>
+      <category>פיזיקה / תורת שדות קונפורמית</category>
+    </item>
+    <item>
+      <title>איפה בדיוק הכותרת הארוכה מאוד הזאת נשברת כאשר היא כוללת צירופים־ארוכים־במיוחד־עם־מקפים, מילים קצרות, מילים ארוכות, שמות מתמטיים ולבסוף פסוקית שממשיכה הרבה מעבר לאורך עריכתי סביר?</title>
+      <link>https://eyesky93.github.io/ssm/he/posts/layout-stress-long-title-three/</link>
+      <guid isPermaLink="false">urn:ssm:layout-stress-long-title-03:he</guid>
+      <pubDate>Sat, 26 Sep 2026 17:00:00 GMT</pubDate>
+      <description>כותרת המשנה הזאת משלבת טקסט רגיל עם רצף־ארוך־מאוד־ולא־ידידותי־לפריסה־שנועד־בכוונה־לבדוק־שבירת־מילים כדי לחשוף הנחות על overflow, רוחב מינימלי, flexbox, grid, קיצוץ ושבירת מילים שאולי לעולם לא יופיעו בתוכן רגיל.</description>
+      <category>מתמטיקה</category>
+      <category>מתמטיקה / רקע מתמטי</category>
+      <category>פיזיקה</category>
+      <category>פיזיקה / תורת שדות קונפורמית</category>
+      <category>פיזיקה / מכניקה אנליטית</category>
+      <category>תרבות</category>
+      <category>מוזיקה</category>
+      <category>מוזיקה / מטאל</category>
+      <category>רשימות</category>
+    </item>
+    <item>
       <title>מבט ראשון על סימטריה קונפורמית</title>
       <link>https://eyesky93.github.io/ssm/he/posts/conformal-symmetry-example/</link>
       <guid isPermaLink="false">urn:ssm:conformal-symmetry-example:he</guid>

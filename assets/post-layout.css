@@ -4,6 +4,10 @@ html { scrollbar-gutter: stable; }
 .post-heading,
 .post-tools { min-width: 0; }
 
+:root {
+  --list-card-tags-max-width: 40%;
+}
+
 /* The whole post card is clickable; its title needs no extra hover underline.
    Other links and keyboard-focus outlines keep their existing styling. */
 .post-card h2 a:hover { text-decoration: none; }
@@ -107,20 +111,21 @@ html { scrollbar-gutter: stable; }
 }
 
 @media (min-width: 701px) {
-  /* Tags own only their intrinsic end-side width. The title receives every
-     remaining pixel up to the tag gutter instead of stopping at an arbitrary
-     percentage, so long list-view headings wrap only when they actually reach
-     the tags. */
+  /* List tags float at the logical end and may occupy at most 40% of the
+     heading. Title text wraps beside that float, then automatically reclaims
+     the full row underneath it when the tag rail ends. */
   .post-stream[data-layout="list"] .post-heading {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) max-content;
-    align-items: start;
-    column-gap: 1.5rem;
+    display: flow-root;
   }
-  .post-stream[data-layout="list"] .post-heading > h2 { flex: none; min-width: 0; }
   .post-stream[data-layout="list"] .post-tools {
-    width: auto;
-    max-width: min(50%, 100%);
+    float: inline-end;
+    width: fit-content;
+    max-width: var(--list-card-tags-max-width);
+    margin-inline-start: 1.5rem;
+    margin-block-end: var(--card-content-gap);
+  }
+  .post-stream[data-layout="list"] .post-heading > h2 {
+    min-width: 0;
   }
 }
 

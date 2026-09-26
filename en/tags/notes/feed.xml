@@ -13,6 +13,14 @@
       <pubDate>Sat, 26 Sep 2026 17:00:00 GMT</pubDate>
       <description>This deliberately oversized subtitle keeps going long enough to exercise wrapping, vertical growth, alignment, responsive widths, compact and grid layouts, and the boundary between metadata and controls without relying on artificial browser resizing.</description>
       <category>Notes</category>
+      <category>Physics</category>
+      <category>Physics / Conformal Field Theory</category>
+      <category>Physics / Analytical Mechanics</category>
+      <category>Mathematics</category>
+      <category>Mathematics / Mathematical background</category>
+      <category>Music</category>
+      <category>Music / Metal</category>
+      <category>Culture</category>
     </item>
     <item>
       <title>Notes on a Hypothetical Article Whose Title Refuses to Be Concise: Parentheses (Including Nested Context), Em Dashes — Several of Them — Numbers 1234567890, Acronyms, Punctuation, and Enough Ordinary Words to Force Robust Wrapping Everywhere</title>
@@ -20,7 +28,15 @@
       <guid isPermaLink="false">urn:ssm:layout-stress-long-title-02:en</guid>
       <pubDate>Sat, 26 Sep 2026 17:00:00 GMT</pubDate>
       <description>A second oversized subtitle for checking whether unusually verbose descriptive metadata can coexist with dates, tags, engagement controls, pin and share actions, RTL mirroring, mobile stacking, and reader-page typography without clipping or horizontal overflow.</description>
+      <category>Culture</category>
+      <category>Music</category>
+      <category>Music / Metal</category>
       <category>Notes</category>
+      <category>Mathematics</category>
+      <category>Mathematics / Mathematical background</category>
+      <category>Physics</category>
+      <category>Physics / Analytical Mechanics</category>
+      <category>Physics / Conformal Field Theory</category>
     </item>
     <item>
       <title>Where Does This Very Long Headline Finally Wrap When It Contains Supercalifragilisticexpialidocious-Like-Hyphenated-Constructs, Short Words, Long Words, Mathematical Names, and a Final Clause That Keeps Extending Far Beyond a Sensible Editorial Limit?</title>
@@ -28,6 +44,14 @@
       <guid isPermaLink="false">urn:ssm:layout-stress-long-title-03:en</guid>
       <pubDate>Sat, 26 Sep 2026 17:00:00 GMT</pubDate>
       <description>This subtitle mixes normal prose with a deliberately-unfriendly-token-like-this-one-that-is-far-longer-than-usual so the rendered site can reveal overflow, min-width, flexbox, grid, ellipsis, and word-breaking assumptions that ordinary editorial copy may never expose.</description>
+      <category>Mathematics</category>
+      <category>Mathematics / Mathematical background</category>
+      <category>Physics</category>
+      <category>Physics / Conformal Field Theory</category>
+      <category>Physics / Analytical Mechanics</category>
+      <category>Culture</category>
+      <category>Music</category>
+      <category>Music / Metal</category>
       <category>Notes</category>
     </item>
     <item>
