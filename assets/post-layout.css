@@ -107,42 +107,8 @@ html { scrollbar-gutter: stable; }
   max-width: 100%;
 }
 
-@media (min-width: 701px) {
-  /* List heading is two independent columns: title at the content start and
-     tags at the content end. Neither participates in the other's line boxes.
-     The subtitle remains outside this heading and therefore keeps full width. */
-  .post-stream[data-layout="list"] .post-heading {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) max-content;
-    align-items: start;
-    column-gap: 1.5rem;
-  }
-  .post-stream[data-layout="list"] .post-heading > h2 {
-    grid-column: 1;
-    grid-row: 1;
-    min-width: 0;
-  }
-  .post-stream[data-layout="list"] .post-tools {
-    grid-column: 2;
-    grid-row: 1;
-    justify-self: end;
-    width: max-content;
-    max-width: 100%;
-    margin: 0;
-  }
-  .post-stream[data-layout="list"] .card-tags {
-    display: grid;
-    grid-auto-flow: column;
-    grid-template-rows: repeat(var(--list-card-tag-rows, 1), max-content);
-    grid-auto-columns: max-content;
-    justify-content: end;
-    align-content: start;
-    overflow: visible;
-  }
-  .post-stream[data-layout="list"] .card-tags > :nth-child(1 of :not([hidden])) {
-    margin-inline-start: 0;
-  }
-}
+/* Catalogue cards use one global title → summary → tags flow.
+   List view must not create a second, intrinsic-width tag column. */
 
 /* Only a pinned Directory spans a tiled layout; unpinned it is the last tile. */
 .post-stream[data-layout="list"]:has(> .directory-card:not([hidden])) { grid-auto-rows: auto; }
@@ -1219,30 +1185,41 @@ html[lang="he"] .reader-controls .reader-number-error {
   transform: var(--share-options-transform, translateY(-50%));
 }
 
-/* Tiled cards inherit one content flow: title, subtitle (when shown), tags,
-   footer. Flatten only the layout wrapper, not the semantic links/controls.
-   List view keeps its existing title-side tag placement on desktop. */
-:root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card) > .post-heading {
+/* Every ordinary catalogue card uses one global content flow: title,
+   subtitle, wrapped tags, then footer. The existing semantic classes own the
+   geometry in every view; no tag, post, viewport or layout gets a private size. */
+:root .post-card:not(.directory-card) > .post-heading {
   display: contents;
 }
-:root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-heading > h2 {
-  order: 0;
+:root .post-card:not(.directory-card) .post-heading > h2 {
   margin-block: 0 var(--card-content-gap);
 }
-:root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card > p {
-  order: 1;
+:root .post-card:not(.directory-card) > p:not(.post-monograph) {
   margin-block: 0;
 }
-:root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-tools {
-  order: 2;
-  justify-content: flex-start;
+:root .post-card:not(.directory-card) .post-tools {
+  width: 100%;
+  max-width: 100%;
+  justify-content: flex-end;
   margin-block-start: var(--card-content-gap);
 }
-:root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags > :nth-child(1 of :not([hidden])) {
-  margin-inline-start: 0;
+:root .post-card:not(.directory-card) .card-tags {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-content: flex-start;
+  overflow: visible;
 }
-:root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-footer {
-  order: 3;
+:root .post-card:not(.directory-card) .card-tag {
+  max-width: 100%;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+:root .post-card:not(.directory-card) .card-tags > :nth-child(1 of :not([hidden])) {
+  margin-inline-start: 0;
 }
 
 /* Phones use the same global quiet-control component with a larger scale
@@ -1265,28 +1242,6 @@ html[lang="he"] .reader-controls .reader-number-error {
     flex-direction: var(--share-layout-mobile-direction);
   }
 
-  :root .post-stream[data-layout] .post-card:not(.directory-card) > .post-heading {
-    display: contents;
-  }
-  :root .post-stream[data-layout] .post-heading > h2 {
-    order: 0;
-    margin-block: 0 var(--card-content-gap);
-  }
-  :root .post-stream[data-layout] .post-card:not(.directory-card) > p {
-    order: 1;
-    margin-block: 0;
-  }
-  :root .post-stream[data-layout] .post-tools {
-    order: 2;
-    justify-content: flex-start;
-    margin-block-start: var(--card-content-gap);
-  }
-  :root .post-stream[data-layout] .card-tags > :nth-child(1 of :not([hidden])) {
-    margin-inline-start: 0;
-  }
-  :root .post-stream[data-layout] .card-footer {
-    order: 3;
-  }
 }
 
 /* Directory uses the same action wrapper as every other card. Its single pin
