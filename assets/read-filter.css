@@ -50,54 +50,21 @@ html[lang="he"] [data-directory] .map-stage > :is(.map-filter-bar, .map-mode-con
 
 /* List/reader tags keep their horizontal drag row. Tiled cards use all available
    width and move complete tag capsules onto additional rows. */
-:root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags {
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
   align-content: flex-start;
-  gap: var(--interface-gap);
   overflow: visible;
 }
-:root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tag {
-  box-sizing: border-box;
-  width: auto;
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tag {
   max-width: 100%;
   min-width: 0;
   flex: 0 1 auto;
 }
-:root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags > :nth-child(1 of :not([hidden])) {
+.post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags > :nth-child(1 of :not([hidden])) {
   margin-inline-start: 0;
-}
-
-/* At the shared mobile breakpoint every saved layout uses the same stacked card
-   structure, so the same natural-width tag row must align to the logical end.
-   This includes a saved List view; restricting the rule to Grid was the reason
-   narrow/zoomed List cards kept left-aligned wrapped rows. */
-@media (max-width: 700px) {
-  :root .post-stream[data-layout] .card-tags {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    align-content: flex-start;
-    gap: var(--interface-gap);
-    overflow: visible;
-  }
-  :root .post-stream[data-layout] .card-tag {
-    box-sizing: border-box;
-    width: auto;
-    max-width: 100%;
-    min-width: 0;
-    flex: 0 1 auto;
-  }
-  :root .post-stream[data-layout] .card-tags > :nth-child(1 of :not([hidden])) {
-    margin-inline-start: 0;
-  }
 }
 
 /* One global spacing token owns the compact interface chrome: header-to-rule,
