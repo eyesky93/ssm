@@ -940,13 +940,6 @@
   --post-card-action-column-size: max(0px, calc(var(--quiet-control-target-size) - var(--post-card-action-overhang)));
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--post-card-action-column-size);
-  grid-template-areas:
-    "title actions"
-    "summary actions"
-    "tags actions"
-    "monograph actions"
-    "footer actions";
-  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
   column-gap: var(--quiet-control-gap);
 }
 :root body .post-stream[data-layout] .post-card:not(.directory-card):has(> [data-card-actions]) > :not([data-card-actions], .post-engagement) {
@@ -956,42 +949,94 @@
 :root body .post-stream[data-layout] .post-card:not(.directory-card) > [data-card-actions] {
   grid-column: 2;
 }
-:root body .post-card:not(.directory-card) .post-heading > h2 { grid-area: title; }
-:root body .post-card:not(.directory-card) > p:not(.post-monograph) { grid-area: summary; }
-:root body .post-card:not(.directory-card) .post-tools { grid-area: tags; }
-:root body .post-card:not(.directory-card) > .post-monograph { grid-area: monograph; }
-:root body .post-card:not(.directory-card) > .card-footer { grid-area: footer; }
-/* List changes only its shared padding/row density. Its content order is the
-   same global class-driven flow used by every catalogue card. */
+/* Desktop List keeps heading/title/tags as one content row; summary,
+   monograph metadata and footer remain normal content rows beside the rail. */
 @media (min-width: 701px) {
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card):has(> [data-card-actions]) {
     --post-card-action-inline-inset: var(--list-post-action-inset);
     --post-card-action-block-inset: var(--list-post-action-inset);
     --post-card-effective-padding-inline: var(--list-post-card-padding-inline);
     --post-card-effective-padding-block: var(--list-post-card-padding-block);
-    grid-template-rows: auto auto auto auto auto;
+    grid-template-areas:
+      "heading actions"
+      "summary actions"
+      "monograph actions"
+      "footer actions";
+    grid-template-rows: auto auto auto auto;
     padding-block: var(--list-post-card-padding-block);
     padding-inline: var(--list-post-card-padding-inline);
   }
+  :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > .post-heading {
+    grid-area: heading;
+    margin-block-end: var(--list-post-title-summary-gap);
+  }
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > p:not(.post-monograph) {
+    grid-area: summary;
     padding-inline-end: 0;
   }
+  :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > .post-monograph {
+    grid-area: monograph;
+  }
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > .card-footer {
+    grid-area: footer;
     margin-block-start: var(--list-post-card-content-gap);
     padding-block-start: 0;
   }
 }
 
-/* Grid and Compact retain the shared footer-filling row only; semantic areas
-   are defined once above for every ordinary catalogue card. */
+/* Tiled cards already flatten .post-heading; place those promoted children
+   explicitly while keeping the existing footer-at-bottom behavior. */
 :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card):has(> [data-card-actions]) {
+  grid-template-areas:
+    "title actions"
+    "summary actions"
+    "tags actions"
+    "monograph actions"
+    "footer actions";
   grid-template-rows: auto auto auto minmax(0, 1fr) auto;
 }
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card) .post-heading > h2 {
+  grid-area: title;
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card) > p:not(.post-monograph) {
+  grid-area: summary;
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card) .post-tools {
+  grid-area: tags;
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card) > .post-monograph {
+  grid-area: monograph;
+}
+:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card:not(.directory-card) > .card-footer {
+  grid-area: footer;
+}
 
-/* Narrow cards use the same semantic areas and only collapse the filler row. */
+/* On phones .post-heading is also flattened, so use the same structural
+   title/summary/tags/footer sequence regardless of the selected view token. */
 @media (max-width: 700px) {
   :root body .post-stream[data-layout] .post-card:not(.directory-card):has(> [data-card-actions]) {
+    grid-template-areas:
+      "title actions"
+      "summary actions"
+      "tags actions"
+      "monograph actions"
+      "footer actions";
     grid-template-rows: auto auto auto auto auto;
+  }
+  :root body .post-stream[data-layout] .post-card:not(.directory-card) .post-heading > h2 {
+    grid-area: title;
+  }
+  :root body .post-stream[data-layout] .post-card:not(.directory-card) > p:not(.post-monograph) {
+    grid-area: summary;
+  }
+  :root body .post-stream[data-layout] .post-card:not(.directory-card) .post-tools {
+    grid-area: tags;
+  }
+  :root body .post-stream[data-layout] .post-card:not(.directory-card) > .post-monograph {
+    grid-area: monograph;
+  }
+  :root body .post-stream[data-layout] .post-card:not(.directory-card) > .card-footer {
+    grid-area: footer;
   }
 }
 

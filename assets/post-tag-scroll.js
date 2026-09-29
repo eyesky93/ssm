@@ -3,17 +3,69 @@
 export function initializePostTagScrolling(document, window) {
   const rows = [...document.querySelectorAll(".card-tags, .article-tags")];
   if (!rows.length) return;
+  class TagRowController {
+    constructor(row) { this.row = row; }
+    stream() { return this.row.closest?.("[data-post-stream]") || null; }
+    isDesktopList() {
+      return this.row.matches?.(".card-tags") &&
+        this.stream()?.dataset?.layout === "list" &&
+        (window.innerWidth ?? 701) > 700;
+    }
+  }
+
+  class ListTagLayoutOptimizer extends TagRowController {
+    optimize() {
+      const tools = this.row.closest?.(".post-tools");
+      const heading = tools?.closest?.(".post-heading");
+      const title = heading?.querySelector?.(":scope > h2");
+      if (!heading?.style || !title?.getBoundingClientRect || !this.row.children) return;
+      if (!this.isDesktopList()) {
+        heading.style.removeProperty("--list-card-tag-rows");
+        return;
+      }
+
+      const tags = [...this.row.children].filter(tag => !tag.hidden && tag.getBoundingClientRect);
+      if (!tags.length) {
+        heading.style.removeProperty("--list-card-tag-rows");
+        return;
+      }
+
+      let bestRows = 1;
+      let bestHeight = Infinity;
+      let bestTitleHeight = Infinity;
+      for (let rows = 1; rows <= tags.length; rows += 1) {
+        heading.style.setProperty("--list-card-tag-rows", String(rows));
+        const titleHeight = title.getBoundingClientRect().height;
+        const tagsHeight = this.row.getBoundingClientRect().height;
+        const headingHeight = Math.max(titleHeight, tagsHeight);
+        if (
+          headingHeight < bestHeight - .5 ||
+          (Math.abs(headingHeight - bestHeight) <= .5 && titleHeight < bestTitleHeight - .5) ||
+          (Math.abs(headingHeight - bestHeight) <= .5 && Math.abs(titleHeight - bestTitleHeight) <= .5 && rows > bestRows)
+        ) {
+          bestRows = rows;
+          bestHeight = headingHeight;
+          bestTitleHeight = titleHeight;
+        }
+      }
+      heading.style.setProperty("--list-card-tag-rows", String(bestRows));
+    }
+  }
+
   let active = null;
   let suppressClickRow = null;
   let frame = null;
   const streams = [...document.querySelectorAll("[data-post-stream]")];
   const layouts = new Map(streams.map(stream => [stream, stream.dataset.layout]));
   const rowFor = target => target?.closest?.(".card-tags, .article-tags");
-  const overflow = row => row.scrollWidth > row.clientWidth + 1;
+  const controllers = rows.map(row => new ListTagLayoutOptimizer(row));
+  const wrappingListRow = row => controllers.find(controller => controller.row === row)?.isDesktopList() || false;
+  const overflow = row => !wrappingListRow(row) && row.scrollWidth > row.clientWidth + 1;
   const modified = event => event.ctrlKey || event.metaKey || event.shiftKey || event.altKey;
 
   const refresh = () => {
     frame = null;
+    controllers.forEach(controller => controller.optimize());
     for (const row of rows) row.classList.toggle("is-scrollable", overflow(row));
   };
   const schedule = () => {
