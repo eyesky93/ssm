@@ -2051,35 +2051,49 @@
   display: none;
 }
 
-/* Only hue is adjustable. All chooser geometry inherits the shared controls. */
+/* Hue is the only adjustable axis; chooser geometry follows global controls. */
 :root {
-  --accent-hue-panel-ratio: 7;
+  --accent-hue-panel-ratio: 10;
   --accent-hue-panel-size: calc(var(--control-size) * var(--accent-hue-panel-ratio));
-  --accent-hue-track-ratio: .3;
+  --accent-hue-track-ratio: .75;
   --accent-hue-track-size: calc(var(--control-size) * var(--accent-hue-track-ratio));
-  --accent-hue-thumb-size: var(--control-icon-size);
+  --accent-hue-thumb-size: var(--accent-hue-track-size);
+  --accent-hue-thumb-radius: calc(var(--accent-hue-thumb-size) / 2);
+  --accent-hue-track-radius: calc(var(--accent-hue-track-size) / 16);
+  --accent-hue-panel-padding: var(--control-capsule-gap);
+  --accent-hue-panel-gap: var(--control-capsule-gap);
+  --accent-hue-available-inline-size: 100dvi;
+  --accent-hue-position-x: 0px;
+  --accent-hue-position-y: 0px;
+  --accent-hue-value: 0;
+  --accent-hue-saturation: 100%;
+  --accent-hue-lightness: 50%;
+  --accent-hue-preview: hsl(var(--accent-hue-value) var(--accent-hue-saturation) var(--accent-hue-lightness));
   --accent-hue-spectrum: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
 }
 :root .accent-picker[data-accent-picker] { background: var(--accent); }
 :root .accent-hue-popover {
   box-sizing: border-box;
   position: fixed;
-  inset: 0;
-  margin: auto;
-  inline-size: min(var(--accent-hue-panel-size), calc(100% - 2 * var(--interface-edge-gap)));
+  inset: auto;
+  position-area: block-end span-inline-start;
+  position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;
+  position-visibility: anchors-visible;
+  justify-self: end;
+  margin: 0;
+  margin-block-start: var(--accent-hue-panel-gap);
+  inline-size: min(var(--accent-hue-panel-size), calc(var(--accent-hue-available-inline-size) - 2 * var(--interface-edge-gap)));
   max-inline-size: none;
   block-size: max-content;
-  padding: var(--surface-padding);
+  padding: var(--accent-hue-panel-padding);
   border: var(--control-frame-width) solid var(--line-dark);
   border-radius: var(--control-radius);
   background: var(--surface);
   color: var(--ink);
-  font-family: var(--font-interface);
-  font-size: var(--post-tag-label-font-size);
   box-shadow: var(--shadow);
 }
-:root .accent-hue-popover label { display: grid; gap: var(--control-capsule-gap); }
 :root .accent-hue-range {
+  display: block;
   appearance: none;
   -webkit-appearance: none;
   box-sizing: border-box;
@@ -2095,12 +2109,12 @@
 }
 :root .accent-hue-range::-webkit-slider-runnable-track {
   block-size: var(--accent-hue-track-size);
-  border-radius: var(--control-radius);
+  border-radius: var(--accent-hue-track-radius);
   background: var(--accent-hue-spectrum);
 }
 :root .accent-hue-range::-moz-range-track {
   block-size: var(--accent-hue-track-size);
-  border-radius: var(--control-radius);
+  border-radius: var(--accent-hue-track-radius);
   background: var(--accent-hue-spectrum);
 }
 :root .accent-hue-range::-webkit-slider-thumb {
@@ -2111,16 +2125,16 @@
   block-size: var(--accent-hue-thumb-size);
   margin-block-start: calc((var(--accent-hue-track-size) - var(--accent-hue-thumb-size)) / 2);
   border: var(--control-frame-width) solid var(--ink);
-  border-radius: var(--control-radius);
-  background: var(--accent);
+  border-radius: var(--accent-hue-thumb-radius);
+  background: var(--accent-hue-preview);
 }
 :root .accent-hue-range::-moz-range-thumb {
   box-sizing: border-box;
   inline-size: var(--accent-hue-thumb-size);
   block-size: var(--accent-hue-thumb-size);
   border: var(--control-frame-width) solid var(--ink);
-  border-radius: var(--control-radius);
-  background: var(--accent);
+  border-radius: var(--accent-hue-thumb-radius);
+  background: var(--accent-hue-preview);
 }
 :root .accent-hue-range:focus-visible {
   outline: var(--control-highlight-width) solid var(--ink);
@@ -2129,3 +2143,12 @@
 /* Unsupported popover browsers must not reveal hidden chooser panels. */
 :root .accent-hue-popover { display: none; }
 :root .accent-hue-popover:popover-open { display: block; }
+/* Older anchor-positioning engines use the same measured, root-owned geometry. */
+:root .accent-hue-popover[data-manual-position] {
+  position-area: none;
+  top: var(--accent-hue-position-y);
+  left: var(--accent-hue-position-x);
+  margin: 0;
+  visibility: hidden;
+}
+:root .accent-hue-popover[data-manual-position][data-positioned] { visibility: visible; }

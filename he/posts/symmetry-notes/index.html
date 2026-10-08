@@ -84,7 +84,7 @@
 <link rel="modulepreload" href="/ssm/assets/read-status.js?v=e421e776588d">
 <link rel="modulepreload" href="/ssm/assets/post-votes.js?v=babf44d37416">
 <link rel="modulepreload" href="/ssm/assets/post-tag-scroll.js?v=7cbe770bb1a4">
-<script data-home-appearance-src="/ssm/assets/appearance.js?v=3b803fc7692b">(() => {
+<script data-home-appearance-src="/ssm/assets/appearance.js?v=5da2cc78580b">(() => {
   const root = document.documentElement;
   const themeMedia = window.matchMedia?.("(prefers-color-scheme: dark)");
   const themeSequence = ["light", "dark", "auto"];
@@ -195,6 +195,7 @@
   }
 
   function syncHueInputs() {
+    root.style.setProperty("--accent-hue-value", String(hue()));
     document.querySelectorAll?.("[data-accent-hue]").forEach(input => {
       input.value = String(Math.round(hue()));
       input.setAttribute("aria-valuetext", `${input.value}°`);
@@ -270,16 +271,90 @@
   document.addEventListener?.("input", event => {
     if (event.target?.matches?.("[data-accent-hue]")) window.SSMAppearance.setHue(root.dataset.theme, event.target.valueAsNumber);
   });
-  document.addEventListener?.("DOMContentLoaded", syncHueInputs, { once: true });
+  // Keep one chooser with its invoking control, including Settings dismissal.
+  class AccentHuePopover {
+    static instances = new WeakMap();
+    static initialize() {
+      document.querySelectorAll?.('.accent-hue-popover').forEach(panel => {
+        if (!this.instances.has(panel)) this.instances.set(panel, new this(panel));
+      });
+    }
+    constructor(panel) {
+      this.panel = panel;
+      this.trigger = document.querySelector(`[popovertarget="${panel.id}"]`);
+      this.settings = this.trigger?.closest('[data-header-settings]');
+      this.manual = !window.CSS?.supports?.('position-area', 'block-end span-inline-start');
+      if (this.manual) panel.dataset.manualPosition = 'true';
+      panel.addEventListener('keydown', event => {
+        if (event.key !== 'Escape') return;
+        event.preventDefault();
+        event.stopPropagation();
+        this.close(true);
+      });
+      panel.addEventListener('toggle', event => {
+        if (event.newState === 'open') {
+          syncHueInputs();
+          if (this.manual) this.position();
+        } else delete panel.dataset.positioned;
+      });
+      if (this.settings && window.MutationObserver) {
+        this.observer = new window.MutationObserver(() => {
+          if (this.settings.dataset.open !== 'true') this.close();
+        });
+        this.observer.observe(this.settings, { attributes: true, attributeFilter: ['data-open'] });
+      }
+      if (this.manual) {
+        const reposition = () => this.position();
+        window.addEventListener('resize', reposition, { passive: true });
+        window.addEventListener('scroll', reposition, { capture: true, passive: true });
+        window.visualViewport?.addEventListener('resize', reposition, { passive: true });
+        window.visualViewport?.addEventListener('scroll', reposition, { passive: true });
+      }
+    }
+    close(restoreFocus = false) {
+      if (!this.panel.matches(':popover-open')) return;
+      this.panel.hidePopover();
+      if (restoreFocus) this.trigger?.focus();
+    }
+    position() {
+      if (!this.panel.matches(':popover-open') || !this.trigger) return;
+      const anchor = this.trigger.getBoundingClientRect();
+      if (!anchor.width || !anchor.height) { this.close(); return; }
+      const css = window.getComputedStyle(this.panel);
+      const scale = this.panel.getBoundingClientRect().width / parseFloat(css.width) || 1;
+      const viewport = window.visualViewport;
+      const width = viewport?.width || root.clientWidth;
+      const height = viewport?.height || root.clientHeight;
+      const left = viewport?.offsetLeft || 0, top = viewport?.offsetTop || 0;
+      root.style.setProperty('--accent-hue-available-inline-size', `${width / scale}px`);
+      const box = this.panel.getBoundingClientRect();
+      const gap = parseFloat(css.paddingBlockStart) * scale;
+      const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
+      const start = window.getComputedStyle(this.trigger).direction === 'rtl' ? anchor.left : anchor.right - box.width;
+      const x = clamp(start, left + gap, left + width - box.width - gap);
+      const below = anchor.bottom + gap;
+      const y = clamp(below + box.height <= top + height - gap ? below : anchor.top - gap - box.height,
+        top + gap, top + height - box.height - gap);
+      root.style.setProperty('--accent-hue-position-x', `${x / scale}px`);
+      root.style.setProperty('--accent-hue-position-y', `${y / scale}px`);
+      this.panel.dataset.positioned = 'true';
+    }
+  }
+  function initializeHueControls() {
+    syncHueInputs();
+    AccentHuePopover.initialize();
+  }
+  if (document.readyState === 'loading') document.addEventListener?.('DOMContentLoaded', initializeHueControls, { once: true });
+  else initializeHueControls();
   applyPreference(themePreference);
 })();
 </script>
 <!-- ssm-home-first-paint:end -->
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=f91bcd66bf6f">
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=1d941505d9e1">
   <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=7306eee7ebbe" data-post-layout-styles>
   <link rel="stylesheet" href="/ssm/assets/read-filter.css?v=912b57890ac3">
   
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=1cd65a9c83e5" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=4cf1e46a0801" data-control-sizing-styles>
 </head>
 <body data-engagement-snapshot="/ssm/engagement.json" data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="https://ssm-pin-stats.eyesky93.workers.dev/pins" data-read-storage="ssm-read:/ssm">
   <header class="site-header">
@@ -366,7 +441,7 @@
     </svg>
   </summary>
   <div class="accent-panel">
-    <button class="accent-picker" type="button" data-accent-picker popovertarget="ssm-accent-hue-1" aria-label="צבע הדגשה" title="צבע הדגשה"></button>
+    <button class="accent-picker" type="button" data-accent-picker popovertarget="ssm-accent-hue-1" aria-label="צבע הדגשה"></button><div id="ssm-accent-hue-1" class="accent-hue-popover" popover aria-label="צבע הדגשה"><input class="accent-hue-range" type="range" min="0" max="359" step="1" value="203" data-accent-hue aria-label="צבע הדגשה" autofocus></div>
     <button class="accent-reset" type="button" data-reset-colors aria-label="איפוס צבע ההדגשה" title="איפוס צבע ההדגשה">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg>
     </button>
@@ -1037,6 +1112,5 @@
   <script data-home-state-script="post-votes" type="module" src="/ssm/assets/post-votes.js?v=babf44d37416"></script>
   <script type="module" src="/ssm/assets/statistics-tracker.js?v=4ec4f52e33d6"></script>
 <script data-home-state-script="post-tag-scroll" type="module" src="/ssm/assets/post-tag-scroll.js?v=7cbe770bb1a4" data-post-tag-scroll></script>
-<div id="ssm-accent-hue-1" class="accent-hue-popover" popover aria-label="צבע הדגשה"><label><span>צבע הדגשה</span><input class="accent-hue-range" type="range" min="0" max="359" step="1" value="203" data-accent-hue aria-label="צבע הדגשה"></label></div>
 </body>
 </html>
