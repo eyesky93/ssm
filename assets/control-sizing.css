@@ -765,13 +765,24 @@
   block-size: var(--header-control-inner-size);
 }
 
-/* Menu frames, badges, padding and type still use the universal tag tokens.
-   Center the label's cap-height/baseline box, not its font's unequal leading.
-   Font metrics supply the proportions; no pixel shift or per-tag correction. */
+/* Menu text and numerals share the same font and metric-centered text box.
+   The badge retains its frame size; align its direct text as a block so live
+   count updates need no wrapper, observer, or pixel-based optical correction. */
 :root {
   --main-tag-label-text-box: trim-both cap alphabetic;
+  --main-tag-font-size: var(--post-tag-label-font-size);
+}
+:root .subject-nav .tag-chip {
+  font-size: var(--main-tag-font-size);
 }
 :root .subject-nav .tag-chip > span:first-child:not(.tag-count) {
+  text-box: var(--main-tag-label-text-box);
+}
+:root .subject-nav .tag-chip > .tag-count {
+  display: block;
+  font-size: inherit;
+  text-align: var(--tag-content-alignment);
+  align-content: var(--tag-content-alignment);
   text-box: var(--main-tag-label-text-box);
 }
 
@@ -2039,3 +2050,82 @@
   content: none;
   display: none;
 }
+
+/* Only hue is adjustable. All chooser geometry inherits the shared controls. */
+:root {
+  --accent-hue-panel-ratio: 7;
+  --accent-hue-panel-size: calc(var(--control-size) * var(--accent-hue-panel-ratio));
+  --accent-hue-track-ratio: .3;
+  --accent-hue-track-size: calc(var(--control-size) * var(--accent-hue-track-ratio));
+  --accent-hue-thumb-size: var(--control-icon-size);
+  --accent-hue-spectrum: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+}
+:root .accent-picker[data-accent-picker] { background: var(--accent); }
+:root .accent-hue-popover {
+  box-sizing: border-box;
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  inline-size: min(var(--accent-hue-panel-size), calc(100% - 2 * var(--interface-edge-gap)));
+  max-inline-size: none;
+  block-size: max-content;
+  padding: var(--surface-padding);
+  border: var(--control-frame-width) solid var(--line-dark);
+  border-radius: var(--control-radius);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-interface);
+  font-size: var(--post-tag-label-font-size);
+  box-shadow: var(--shadow);
+}
+:root .accent-hue-popover label { display: grid; gap: var(--control-capsule-gap); }
+:root .accent-hue-range {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  direction: ltr;
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: var(--control-size);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+:root .accent-hue-range::-webkit-slider-runnable-track {
+  block-size: var(--accent-hue-track-size);
+  border-radius: var(--control-radius);
+  background: var(--accent-hue-spectrum);
+}
+:root .accent-hue-range::-moz-range-track {
+  block-size: var(--accent-hue-track-size);
+  border-radius: var(--control-radius);
+  background: var(--accent-hue-spectrum);
+}
+:root .accent-hue-range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  inline-size: var(--accent-hue-thumb-size);
+  block-size: var(--accent-hue-thumb-size);
+  margin-block-start: calc((var(--accent-hue-track-size) - var(--accent-hue-thumb-size)) / 2);
+  border: var(--control-frame-width) solid var(--ink);
+  border-radius: var(--control-radius);
+  background: var(--accent);
+}
+:root .accent-hue-range::-moz-range-thumb {
+  box-sizing: border-box;
+  inline-size: var(--accent-hue-thumb-size);
+  block-size: var(--accent-hue-thumb-size);
+  border: var(--control-frame-width) solid var(--ink);
+  border-radius: var(--control-radius);
+  background: var(--accent);
+}
+:root .accent-hue-range:focus-visible {
+  outline: var(--control-highlight-width) solid var(--ink);
+  outline-offset: var(--control-capsule-gap);
+}
+/* Unsupported popover browsers must not reveal hidden chooser panels. */
+:root .accent-hue-popover { display: none; }
+:root .accent-hue-popover:popover-open { display: block; }

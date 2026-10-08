@@ -79,7 +79,7 @@
 })();
 </script>
 <link rel="preload" as="script" href="/ssm/assets/site.js?v=72156a4f46af">
-<script data-home-appearance-src="/ssm/assets/appearance.js?v=629ba358d8d2">(() => {
+<script data-home-appearance-src="/ssm/assets/appearance.js?v=3b803fc7692b">(() => {
   const root = document.documentElement;
   const themeMedia = window.matchMedia?.("(prefers-color-scheme: dark)");
   const themeSequence = ["light", "dark", "auto"];
@@ -114,9 +114,52 @@
     }
   } catch { /* Browser storage is optional. */ }
 
+  // Users own only hue. Saturation and lightness originate in the existing
+  // brand color; the theme adjusts lightness until every accent-text surface
+  // clears the shared contrast threshold. Legacy hex choices also take this path.
+  class AccentPalette {
+    static settings = Object.freeze({
+      contrast: 4.5, shadeSteps: 128, surfaceMix: .025, codeMix: .055,
+      softMix: .12, lightHoverMix: .2, darkHoverMix: .3,
+    });
+    static hsl(hex) {
+      const [r, g, b] = [1, 3, 5].map(offset => parseInt(hex.slice(offset, offset + 2), 16) / 255);
+      const high = Math.max(r, g, b), low = Math.min(r, g, b), delta = high - low;
+      const lightness = (high + low) / 2;
+      if (!delta) return { hue: null, saturation: 0, lightness };
+      const hue = 60 * (high === r ? ((g - b) / delta + 6) % 6 : high === g ? (b - r) / delta + 2 : (r - g) / delta + 4);
+      return { hue, saturation: delta / (1 - Math.abs(2 * lightness - 1)), lightness };
+    }
+    static base = this.hsl(defaults.light.accent);
+    static hue(hex) { return this.hsl(hex).hue ?? this.base.hue; }
+    static hex(hue, lightness = this.base.lightness) {
+      const h = ((hue % 360) + 360) % 360 / 60;
+      const c = (1 - Math.abs(2 * lightness - 1)) * this.base.saturation;
+      const x = c * (1 - Math.abs(h % 2 - 1)), m = lightness - c / 2;
+      const rgb = [[c,x,0],[x,c,0],[0,c,x],[0,x,c],[x,0,c],[c,0,x]][Math.floor(h)];
+      return `#${rgb.map(value => Math.round((value + m) * 255).toString(16).padStart(2, "0")).join("")}`;
+    }
+    static contrast(a, b) {
+      const first = luminance(a), second = luminance(b);
+      return (Math.max(first, second) + .05) / (Math.min(first, second) + .05);
+    }
+    static color(hue, mode) {
+      const { background, text } = defaults[mode], settings = this.settings;
+      const surfaces = [background, mix(background, text, settings.surfaceMix), mix(background, text, settings.codeMix)];
+      const end = mode === "dark" ? 1 : 0;
+      for (let step = 0; step <= settings.shadeSteps; step++) {
+        const lightness = this.base.lightness + (end - this.base.lightness) * step / settings.shadeSteps;
+        const candidate = this.hex(hue, lightness);
+        if ([...surfaces, mix(background, candidate, settings.softMix)].every(surface => this.contrast(candidate, surface) >= settings.contrast)) return candidate;
+      }
+      return text;
+    }
+  }
+
+  function hue() { return AccentPalette.hue(valid(preferences.accent) ? preferences.accent : defaults.light.accent); }
   function colors(mode) {
     const result = { ...defaults[mode] };
-    if (valid(preferences.accent)) result.accent = preferences.accent;
+    result.accent = AccentPalette.color(hue(), mode);
     return result;
   }
 
@@ -137,43 +180,44 @@
   }
 
   function readableAccent(accent, text, backgrounds, mode) {
-    // Readability alone can accept the unchanged accent on a dark background.
-    // Start with a distinct hover shade, then retain the existing contrast check.
-    // Near-white accents need darkening instead because they have no lightening headroom.
-    const hoverAccent = mode === "dark"
-      ? mix(accent, luminance(accent) > 0.75 ? backgrounds[0] : text, 0.3)
-      : accent;
-    for (let step = 0; step <= 20; step++) {
-      const candidate = mix(hoverAccent, text, step / 20);
-      const foreground = luminance(candidate);
-      if (backgrounds.every((background) => {
-        const backdrop = luminance(background);
-        return (Math.max(foreground, backdrop) + 0.05) / (Math.min(foreground, backdrop) + 0.05) >= 4.5;
-      })) return candidate;
+    const settings = AccentPalette.settings;
+    const hoverAccent = mix(accent, text, mode === "dark" ? settings.darkHoverMix : settings.lightHoverMix);
+    for (let step = 0; step <= settings.shadeSteps; step++) {
+      const candidate = mix(hoverAccent, text, step / settings.shadeSteps);
+      if (backgrounds.every(background => AccentPalette.contrast(candidate, background) >= settings.contrast)) return candidate;
     }
     return text;
   }
 
+  function syncHueInputs() {
+    document.querySelectorAll?.("[data-accent-hue]").forEach(input => {
+      input.value = String(Math.round(hue()));
+      input.setAttribute("aria-valuetext", `${input.value}°`);
+    });
+  }
+
   function apply(mode) {
     const { background, text, accent } = colors(mode);
+    const settings = AccentPalette.settings;
     root.dataset.theme = mode;
     root.style.colorScheme = mode;
     const tokens = {
       paper: background, ink: text, accent,
-      "accent-strong": readableAccent(accent, text, [background, mix(background, text, 0.055), mix(background, accent, 0.12)], mode),
-      surface: mix(background, text, 0.025),
-      "surface-translucent": mix(background, text, 0.025),
+      "accent-strong": readableAccent(accent, text, [background, mix(background, text, settings.codeMix), mix(background, accent, settings.softMix)], mode),
+      surface: mix(background, text, settings.surfaceMix),
+      "surface-translucent": mix(background, text, settings.surfaceMix),
       muted: mix(background, text, 0.68),
       line: mix(background, text, 0.2), "line-dark": mix(background, text, 0.4),
       "inverse-bg": text, "inverse-ink": background,
-      "soft-accent": mix(background, accent, 0.12),
-      "code-bg": mix(background, text, 0.055),
-      "notice-bg": mix(background, text, 0.055),
+      "soft-accent": mix(background, accent, settings.softMix),
+      "code-bg": mix(background, text, settings.codeMix),
+      "notice-bg": mix(background, text, settings.codeMix),
       "notice-border": mix(background, text, 0.4), "notice-ink": text,
-      "unread-bg": mix(background, text, 0.055),
+      "unread-bg": mix(background, text, settings.codeMix),
     };
     for (const [name, value] of Object.entries(tokens)) root.style.setProperty(`--${name}`, value);
     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", background);
+    syncHueInputs();
     return colors(mode);
   }
 
@@ -192,6 +236,7 @@
     apply,
     applyPreference,
     colors,
+    hue,
     nextThemePreference,
     readThemePreference,
     resolveThemePreference,
@@ -208,8 +253,19 @@
       save();
       apply(mode);
     },
+    setHue(mode, value) {
+      if (!Object.hasOwn(defaults, mode) || typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > 360) return;
+      preferences = { accent: AccentPalette.hex(value) };
+      save();
+      apply(mode);
+    },
   };
 
+  // The native range owns keyboard/touch input; it has no shade or alpha axis.
+  document.addEventListener?.("input", event => {
+    if (event.target?.matches?.("[data-accent-hue]")) window.SSMAppearance.setHue(root.dataset.theme, event.target.valueAsNumber);
+  });
+  document.addEventListener?.("DOMContentLoaded", syncHueInputs, { once: true });
   applyPreference(themePreference);
 })();
 </script>
@@ -217,7 +273,7 @@
   <link rel="stylesheet" href="/ssm/assets/styles.css?v=f91bcd66bf6f">
   
   
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=4f2bbc6325ad" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=1cd65a9c83e5" data-control-sizing-styles>
 </head>
 <body>
   <header class="site-header">
@@ -266,7 +322,7 @@
     </svg>
   </summary>
   <div class="accent-panel">
-    <input class="accent-picker" type="color" data-color="accent" value="#1c9ae9" aria-label="Accent color" title="Accent color">
+    <button class="accent-picker" type="button" data-accent-picker popovertarget="ssm-accent-hue-1" aria-label="Accent color" title="Accent color"></button>
     <button class="accent-reset" type="button" data-reset-colors aria-label="Reset accent color" title="Reset accent color">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg>
     </button>
@@ -377,5 +433,6 @@
   
   <script src="/ssm/assets/random-post.js?v=e7dd2c9a71d0" defer></script>
   
+<div id="ssm-accent-hue-1" class="accent-hue-popover" popover aria-label="Accent color"><label><span>Accent color</span><input class="accent-hue-range" type="range" min="0" max="359" step="1" value="203" data-accent-hue aria-label="Accent color"></label></div>
 </body>
 </html>
