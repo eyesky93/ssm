@@ -765,8 +765,15 @@
   block-size: var(--header-control-inner-size);
 }
 
-/* Main-menu tags use the universal tag settings in control-sizing.css.
-   No menu-specific padding, badge size or hover geometry. */
+/* Menu frames, badges, padding and type still use the universal tag tokens.
+   Center the label's cap-height/baseline box, not its font's unequal leading.
+   Font metrics supply the proportions; no pixel shift or per-tag correction. */
+:root {
+  --main-tag-label-text-box: trim-both cap alphabetic;
+}
+:root .subject-nav .tag-chip > span:first-child:not(.tag-count) {
+  text-box: var(--main-tag-label-text-box);
+}
 
 /* Shared spacing contract for navigation and compact controls.
    Keep geometry here token-driven: changing one value updates every peer surface. */
