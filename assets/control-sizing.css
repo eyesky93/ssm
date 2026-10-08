@@ -821,6 +821,16 @@
   --list-post-title-summary-gap: calc(var(--list-post-card-content-gap) / 2);
   --list-post-action-inset: var(--card-action-rail-inset);
 
+  /* Desktop List gives the title the main share of a crowded heading. The
+     tags keep their intrinsic width up to this proportional budget; a short
+     group returns all unused room to the title. Long labels retain their
+     min-content floor and rows remain unrestricted. */
+  --list-post-title-share: 3;
+  --list-post-heading-gap: var(--interface-edge-gap);
+  --list-post-title-wrap: wrap;
+  --list-post-tags-share: 1;
+  --list-post-tags-max-inline-size: calc((100% - var(--list-post-heading-gap)) * var(--list-post-tags-share) / (var(--list-post-title-share) + var(--list-post-tags-share)));
+
   /* Floating neutral controls use the same surface as their surrounding card;
      distinction comes from the shared control frame, never an accent tint. */
   --neutral-control-surface: var(--surface);
@@ -949,11 +959,11 @@
 :root body .post-stream[data-layout] .post-card:not(.directory-card) > [data-card-actions] {
   grid-column: 2;
 }
-/* Desktop List shares the heading between title and tags according to their
-   intrinsic content widths. Neither side owns a fixed percentage or row count.
-   A short tag group stays compact; dense groups wrap without taking a fixed
-   slice out of every title. The subtitle spans the full content width below
-   the complete heading, and the independent PSR rail keeps its geometry. */
+/* Desktop List budgets crowded headings with the shared title/tag ratio.
+   The title receives all remaining space; tags stay intrinsic up to their
+   proportional maximum, never a fixed-width column or a capped row count.
+   The subtitle spans the full content width below the complete heading,
+   and the independent PSR rail keeps its geometry. */
 @media (min-width: 701px) {
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card):has(> [data-card-actions]) {
     --post-card-action-inline-inset: var(--list-post-action-inset);
@@ -973,13 +983,14 @@
     grid-area: heading;
     display: flex;
     align-items: flex-start;
-    gap: var(--interface-edge-gap);
+    gap: var(--list-post-heading-gap);
     margin: 0;
   }
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) .post-heading > h2 {
     order: 0;
     flex: 1 1 auto;
     width: auto;
+    text-wrap: var(--list-post-title-wrap);
     margin-block: 0;
   }
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > p:not(.post-monograph) {
@@ -993,7 +1004,7 @@
     flex: 0 1 auto;
     min-width: min-content;
     width: auto;
-    max-width: none;
+    max-width: var(--list-post-tags-max-inline-size);
     align-self: start;
     margin-block-start: 0;
   }
@@ -1112,6 +1123,7 @@
   background: var(--neutral-control-surface);
   box-shadow: none;
 }
+
 /* Settings panel geometry is derived only from the shared header-control tokens.
    No settings-specific button size, radius, icon size or spacing constants. */
 :root .header-actions {
