@@ -861,23 +861,27 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root {
   --engagement-tab-height-ratio: .75;
   --engagement-tab-height: calc(var(--control-size) * var(--engagement-tab-height-ratio));
+  /* Restore the former .5rem corners at the canonical 1.9575rem control
+     size, while preserving proportional scaling with the shared controls. */
+  --engagement-tab-radius-ratio: calc(.5 / 1.9575);
+  --engagement-tab-radius: calc(var(--control-size) * var(--engagement-tab-radius-ratio));
   --post-frame-radius-ratio: .375;
   --post-frame-radius: calc(var(--control-size) * var(--post-frame-radius-ratio));
 }
-/* The card and its attached tab corners share one radius. Direction is
-   deliberately physical here because engagement segments retain LTR inside RTL. */
+/* Stats keep their own smaller shared corners without changing card frames.
+   Physical corners mirror because engagement segments retain LTR inside RTL. */
 :root :is(.post-card, .comment-box) { border-radius: var(--post-frame-radius); }
 :root .post-engagement { --stat-segment-height: var(--engagement-tab-height); }
 :root .post-engagement > :is(.post-vote, .post-comments, .post-views) { border-radius: 0; }
-:root .post-engagement > :first-child { border-bottom-left-radius: var(--post-frame-radius); }
-:root .post-engagement > :last-child { border-bottom-right-radius: var(--post-frame-radius); }
+:root .post-engagement > :first-child { border-bottom-left-radius: var(--engagement-tab-radius); }
+:root .post-engagement > :last-child { border-bottom-right-radius: var(--engagement-tab-radius); }
 :root[dir="rtl"] .post-engagement > :first-child {
   border-bottom-left-radius: 0;
-  border-bottom-right-radius: var(--post-frame-radius);
+  border-bottom-right-radius: var(--engagement-tab-radius);
 }
 :root[dir="rtl"] .post-engagement > :last-child {
   border-bottom-right-radius: 0;
-  border-bottom-left-radius: var(--post-frame-radius);
+  border-bottom-left-radius: var(--engagement-tab-radius);
 }
 :root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments) {
   font: inherit;
