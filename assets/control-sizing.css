@@ -949,9 +949,11 @@
 :root body .post-stream[data-layout] .post-card:not(.directory-card) > [data-card-actions] {
   grid-column: 2;
 }
-/* Desktop List uses the shared semantic rows in the same content column:
-   title, subtitle, wrapped tags, monograph metadata, footer. Grid/Compact keep
-   their separate tiled rules below. */
+/* Desktop List shares the heading between title and tags according to their
+   intrinsic content widths. Neither side owns a fixed percentage or row count.
+   A short tag group stays compact; dense groups wrap without taking a fixed
+   slice out of every title. The subtitle spans the full content width below
+   the complete heading, and the independent PSR rail keeps its geometry. */
 @media (min-width: 701px) {
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card):has(> [data-card-actions]) {
     --post-card-action-inline-inset: var(--list-post-action-inset);
@@ -959,29 +961,57 @@
     --post-card-effective-padding-inline: var(--list-post-card-padding-inline);
     --post-card-effective-padding-block: var(--list-post-card-padding-block);
     grid-template-areas:
-      "title actions"
+      "heading actions"
       "summary actions"
-      "tags actions"
       "monograph actions"
       "footer actions";
-    grid-template-rows: auto auto auto auto auto;
+    grid-template-rows: auto auto auto auto;
     padding-block: var(--list-post-card-padding-block);
     padding-inline: var(--list-post-card-padding-inline);
   }
+  :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > .post-heading {
+    grid-area: heading;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--interface-edge-gap);
+    margin: 0;
+  }
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) .post-heading > h2 {
-    grid-area: title;
+    order: 0;
+    flex: 1 1 auto;
+    width: auto;
+    margin-block: 0;
   }
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > p:not(.post-monograph) {
     grid-area: summary;
+    max-width: none;
+    margin-block-start: var(--list-post-title-summary-gap);
     padding-inline-end: 0;
   }
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) .post-tools {
-    grid-area: tags;
+    order: 1;
+    flex: 0 1 auto;
+    min-width: min-content;
+    width: auto;
+    max-width: none;
+    align-self: start;
+    margin-block-start: 0;
+  }
+  /* These are naturally wrapping pills, not a capped scroller or equal-width
+     cells. Clear only the scroller gutters; shared tag styling stays intact. */
+  :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) .card-tags {
+    box-sizing: border-box;
+    width: auto;
+    margin: 0;
+    padding: 0;
+  }
+  :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) .post-tools:not(:has(.card-tags > :not([hidden]))) {
+    display: none;
   }
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > .post-monograph {
     grid-area: monograph;
   }
-  :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > .card-footer {
+  :root body .post-stream[data-layout="list"] .post-card:not(.directory-card):has(> [data-card-actions]) > .card-footer {
     grid-area: footer;
     margin-block-start: var(--list-post-card-content-gap);
     padding-block-start: 0;
@@ -1082,7 +1112,6 @@
   background: var(--neutral-control-surface);
   box-shadow: none;
 }
-
 /* Settings panel geometry is derived only from the shared header-control tokens.
    No settings-specific button size, radius, icon size or spacing constants. */
 :root .header-actions {
@@ -1648,9 +1677,16 @@
    maps post/reader tag classes to the shared post-tag tokens and keeps Compact
    card content behavior separate from tag geometry. */
 :root {
+  --post-card-tag-gap: calc(var(--tag-capsule-gap) / 2);
   --compact-card-summary-font-size: .9rem;
   --compact-card-summary-line-height: 1.4;
   --compact-card-summary-lines: 2;
+}
+
+/* All catalogue cards share tighter inter-tag spacing on both axes. Keep the
+   capsule itself, natural wrapping and other interface spacing unchanged. */
+:root .post-stream[data-layout] .card-tags {
+  gap: var(--post-card-tag-gap);
 }
 
 /* Post-card and reader tags share one compact global geometry. The classes
