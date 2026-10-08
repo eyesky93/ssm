@@ -859,7 +859,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* One root-owned ratio shortens every stats strip without shrinking its
    numerals or icons. Card gaps and comment reserves inherit the same height. */
 :root {
-  --engagement-tab-height-ratio: .8;
+  --engagement-tab-height-ratio: .65;
   --engagement-tab-height: calc(var(--control-size) * var(--engagement-tab-height-ratio));
 }
 :root .post-engagement { --stat-segment-height: var(--engagement-tab-height); }
