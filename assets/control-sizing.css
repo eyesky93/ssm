@@ -1690,6 +1690,9 @@
    card content behavior separate from tag geometry. */
 :root {
   --post-card-tag-gap: calc(var(--tag-capsule-gap) / 2);
+  --post-card-tag-font-ratio: .95;
+  --post-card-tag-font-size: calc(var(--post-tag-label-font-size) * var(--post-card-tag-font-ratio));
+  --post-card-tag-count-font-size: calc(var(--post-tag-count-font-size) * var(--post-card-tag-font-ratio));
   --compact-card-summary-font-size: .9rem;
   --compact-card-summary-line-height: 1.4;
   --compact-card-summary-lines: 2;
@@ -1714,6 +1717,13 @@
   --tag-inline-optical-offset: var(--post-tag-label-optical-offset);
   font-size: var(--post-tag-label-font-size);
   line-height: var(--post-tag-line-height);
+}
+
+/* Catalogue text is slightly smaller, while reader/filter tags and all
+   capsule frames, gaps and wrapping retain their shared geometry. */
+:root .post-card .card-tag {
+  --tag-count-font-size: var(--post-card-tag-count-font-size);
+  font-size: var(--post-card-tag-font-size);
 }
 
 /* Text-only compact post tags need an optical correction because the font's
