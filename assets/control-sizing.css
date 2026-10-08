@@ -803,9 +803,10 @@
   --grid-post-summary-line-height: 1.5;
   --post-card-date-size: var(--post-card-date-font-size);
 
-  /* Standard Grid/Compact/List cards share one edge inset on both axes. Each
-     layout keeps aliases so the card and its PSR rail consume the same token. */
-  --standard-post-card-edge-inset: var(--control-capsule-gap);
+  /* One visible inset owns card text, all action glyphs and attached stats.
+     Quiet targets include symmetric invisible padding; their rail subtracts
+     that padding, identically on both axes and at every viewport size. */
+  --standard-post-card-edge-inset: calc(var(--control-capsule-gap) + var(--quiet-control-padding));
   --standard-post-card-padding-block: var(--standard-post-card-edge-inset);
   --standard-post-card-padding-inline: var(--standard-post-card-edge-inset);
   --grid-post-card-padding-block: var(--standard-post-card-padding-block);
@@ -814,9 +815,11 @@
   --compact-post-card-padding-inline: var(--standard-post-card-padding-inline);
   --list-post-card-padding-block: var(--standard-post-card-padding-block);
   --list-post-card-padding-inline: var(--standard-post-card-padding-inline);
+  --post-card-footer-line-size: var(--quiet-control-target-size);
+  --post-card-footer-edge-offset: calc(var(--card-action-rail-inset) - var(--standard-post-card-edge-inset));
 
-  /* Preserve the pre-grid PSR visual geometry exactly. Structure may change,
-     but the rail keeps one equal edge inset on its logical side, top and bottom. */
+  /* The footer's last line and the Read target share the same bottom anchor.
+     Pin and Share remain peers in that same aligned rail. */
   --list-post-card-content-gap: var(--control-item-gap);
   --list-post-title-summary-gap: calc(var(--list-post-card-content-gap) / 2);
   --list-post-action-inset: var(--card-action-rail-inset);
@@ -933,8 +936,12 @@
   line-height: var(--grid-post-summary-line-height);
 }
 
+:root body .post-stream[data-layout] .post-card:not(.directory-card) > .card-footer {
+  margin-block-end: var(--post-card-footer-edge-offset);
+}
 :root body .post-stream[data-layout] .post-card:not(.directory-card) > .card-footer > time {
   font-size: var(--post-card-date-size);
+  line-height: var(--post-card-footer-line-size);
 }
 
 /* Ordinary cards have two structural columns: content and the independent PSR
@@ -942,6 +949,8 @@
    normal content box; its remaining width sits in the existing side padding.
    This changes the text-box length without moving Pin, Share or Read. */
 :root body .post-stream[data-layout] .post-card:not(.directory-card):has(> [data-card-actions]) {
+  --post-card-padding-inline: var(--standard-post-card-edge-inset);
+  --post-card-padding-block: var(--standard-post-card-edge-inset);
   --post-card-action-inline-inset: var(--card-action-rail-inset);
   --post-card-action-block-inset: var(--card-action-rail-inset);
   --post-card-action-padding-inline: var(--post-card-effective-padding-inline, var(--post-card-padding-inline));
@@ -1085,7 +1094,12 @@
   }
 }
 
-/* Directory uses only its pin, centered on the heading cross-axis. */
+/* Directory shares the text and pin inset; its vertical heading alignment
+   remains unchanged. The pin uses the same rail model as ordinary cards. */
+:root body .post-stream[data-layout] .directory-card {
+  --post-card-padding-inline: var(--standard-post-card-edge-inset);
+  padding-inline: var(--post-card-padding-inline);
+}
 :root body .post-stream[data-layout] .directory-heading > [data-card-actions] {
   align-self: center;
   justify-content: center;
@@ -1953,19 +1967,14 @@
 :root[dir="rtl"] .post-engagement .post-views {
   border-left: 1px solid var(--line);
   border-right: 1px solid transparent;
-  border-radius: 0;
-  border-bottom-left-radius: .5rem;
 }
 :root[dir="rtl"] .post-engagement .post-comments {
   border-left: 1px solid var(--line);
   border-right: 1px solid transparent;
-  border-radius: 0;
 }
 :root[dir="rtl"] .post-engagement .post-vote {
   border-left: 1px solid var(--line);
   border-right: 1px solid var(--line);
-  border-radius: 0;
-  border-bottom-right-radius: .5rem;
 }
 :root[dir="rtl"] .post-engagement :is(.post-vote, .post-comments, .post-views) > svg {
   grid-column: 2;

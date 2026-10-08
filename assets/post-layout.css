@@ -859,10 +859,26 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* One root-owned ratio shortens every stats strip without shrinking its
    numerals or icons. Card gaps and comment reserves inherit the same height. */
 :root {
-  --engagement-tab-height-ratio: .65;
+  --engagement-tab-height-ratio: .75;
   --engagement-tab-height: calc(var(--control-size) * var(--engagement-tab-height-ratio));
+  --post-frame-radius-ratio: .375;
+  --post-frame-radius: calc(var(--control-size) * var(--post-frame-radius-ratio));
 }
+/* The card and its attached tab corners share one radius. Direction is
+   deliberately physical here because engagement segments retain LTR inside RTL. */
+:root :is(.post-card, .comment-box) { border-radius: var(--post-frame-radius); }
 :root .post-engagement { --stat-segment-height: var(--engagement-tab-height); }
+:root .post-engagement > :is(.post-vote, .post-comments, .post-views) { border-radius: 0; }
+:root .post-engagement > :first-child { border-bottom-left-radius: var(--post-frame-radius); }
+:root .post-engagement > :last-child { border-bottom-right-radius: var(--post-frame-radius); }
+:root[dir="rtl"] .post-engagement > :first-child {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: var(--post-frame-radius);
+}
+:root[dir="rtl"] .post-engagement > :last-child {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: var(--post-frame-radius);
+}
 :root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments) {
   font: inherit;
   color: var(--ink);
@@ -962,11 +978,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   z-index: -1;
 }
 .comment-engagement { min-inline-size: calc(2 * var(--stat-segment-width)); }
-:root .comment-engagement > .post-comments:last-child { border-bottom-right-radius: .5rem; }
-:root[dir="rtl"] .comment-engagement > .post-comments:last-child {
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: .5rem;
-}
 /* Hash destinations stay native: no simulated navigation or click interception. */
 .comments-shell { scroll-margin-block-start: 1rem; }
 
@@ -994,9 +1005,10 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-read-hover-background: transparent;
   --quiet-control-radius: calc(var(--quiet-control-icon-size) / 6);
   --card-content-gap: var(--control-capsule-gap);
-  --card-action-inset: calc(var(--control-capsule-gap) / 2);
-  --card-action-rail-inset: calc(var(--control-capsule-gap));
-  --card-action-rail-block-visual-compensation: 0px;
+  /* Subtract the symmetric invisible target padding once, on both axes.
+     Pin, Share and Read therefore share the card's visible content inset. */
+  --card-action-inset: var(--card-action-rail-inset);
+  --card-action-rail-inset: calc(var(--standard-post-card-edge-inset) - var(--quiet-control-padding));
 }
 :root[data-theme="dark"] {
   --quiet-pin-color: var(--white);
@@ -1129,7 +1141,8 @@ html[lang="he"] .reader-controls .reader-number-error {
   align-items: center;
   gap: var(--quiet-control-gap);
   width: var(--quiet-control-target-size);
-  max-width: 100%;
+  min-width: var(--quiet-control-target-size);
+  max-width: var(--quiet-control-target-size);
   margin: 0;
 }
 :root .post-stream[data-layout] .post-card:not(.directory-card) > [data-card-actions] {
@@ -1141,7 +1154,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   margin-block-end: calc(
     var(--post-card-action-block-inset)
     - var(--post-card-action-padding-block)
-    - var(--card-action-rail-block-visual-compensation)
   );
 }
 
@@ -1270,8 +1282,6 @@ html[lang="he"] .reader-controls .reader-number-error {
 @media (max-width: 700px) {
   :root {
     --quiet-control-icon-scale: .5;
-    --card-action-rail-inset: calc(var(--control-capsule-gap) + var(--quiet-control-padding) / 2);
-    --card-action-rail-block-visual-compensation: var(--quiet-control-padding);
   }
   :root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options,
   :root .post-stream[data-layout] [data-card-actions] .card-share-menu[data-share-side="above"] > .share-options {
