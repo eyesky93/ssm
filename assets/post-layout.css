@@ -59,14 +59,26 @@ html { scrollbar-gutter: stable; }
 .card-tags::-webkit-scrollbar,
 .article-tags::-webkit-scrollbar { display: none; }
 
+/* Icons follow the surrounding tag typography through one root-owned ratio.
+   Their wrapper centers the drawing without a text-baseline offset. */
+:root {
+  --post-tag-icon-size-ratio: 1;
+  --post-tag-icon-size: calc(1em * var(--post-tag-icon-size-ratio));
+}
 .compact-post-tag {
   white-space: nowrap;
 }
+.compact-post-tag:has(.post-tag-icon) {
+  display: inline-flex;
+  align-items: var(--tag-content-alignment);
+}
 .post-tag-icon {
-  width: 1em;
-  height: 1em;
+  display: block;
+  flex: none;
+  width: var(--post-tag-icon-size);
+  height: var(--post-tag-icon-size);
   object-fit: contain;
-  vertical-align: -.125em;
+  object-position: var(--tag-content-alignment);
   fill: currentColor;
   stroke: none;
 }
