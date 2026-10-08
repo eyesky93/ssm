@@ -859,6 +859,8 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* One root-owned ratio shortens every stats strip without shrinking its
    numerals or icons. Card gaps and comment reserves inherit the same height. */
 :root {
+  --engagement-layer-active: 7;
+  --engagement-layer-covered: -1;
   --engagement-tab-height-ratio: .75;
   --engagement-tab-height: calc(var(--control-size) * var(--engagement-tab-height-ratio));
   /* Restore the former .5rem corners at the canonical 1.9575rem control
@@ -898,7 +900,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   pointer-events: auto;
 }
 :root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments)[aria-pressed="true"] {
-  z-index: 7;
+  z-index: var(--engagement-layer-active);
   background: var(--soft-accent);
   color: var(--accent);
   border-color: var(--accent);
@@ -909,7 +911,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   border-color: var(--accent);
 }
 :root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments):is(:hover, :focus-visible, [data-engagement-highlight="true"]):not(:disabled) {
-  z-index: 7;
+  z-index: var(--engagement-layer-active);
   color: var(--accent-strong);
   border-color: var(--accent-strong);
   box-shadow: none;
@@ -976,10 +978,14 @@ html[lang="he"] .reader-controls .reader-number-error {
   --post-frame-color: var(--line);
   border-color: var(--line);
 }
-/* Lower only this card's strip while its body owns the frame. Hover/focus on
-   a tab restores its own layer; nested replies never highlight an ancestor. */
+/* Keep the container out of a negative stacking context: a selected like
+   must remain above the host frame even while its body is hovered. Only
+   inactive segments go behind that frame; their geometry stays unchanged. */
 :root :is(.post-card, .comment-box):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > :is(.post-engagement, .comment-engagement-dock) {
-  z-index: -1;
+  z-index: auto;
+}
+:root :is(.post-card, .comment-box):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > :is(.post-engagement, .comment-engagement-dock) :is(.post-vote, .post-comments, .post-views):not(:is([aria-pressed="true"], [data-selected="true"], [data-engagement-highlight="true"])) {
+  z-index: var(--engagement-layer-covered);
 }
 .comment-engagement { min-inline-size: calc(2 * var(--stat-segment-width)); }
 /* Hash destinations stay native: no simulated navigation or click interception. */
