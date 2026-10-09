@@ -2053,9 +2053,9 @@
 
 /* Hue is the only adjustable axis; chooser geometry follows global controls. */
 :root {
-  --accent-hue-panel-ratio: 10;
+  --accent-hue-panel-ratio: 5;
   --accent-hue-panel-size: calc(var(--control-size) * var(--accent-hue-panel-ratio));
-  --accent-hue-track-ratio: .75;
+  --accent-hue-track-ratio: .5;
   --accent-hue-track-size: calc(var(--control-size) * var(--accent-hue-track-ratio));
   --accent-hue-thumb-size: var(--accent-hue-track-size);
   --accent-hue-thumb-radius: calc(var(--accent-hue-thumb-size) / 2);
@@ -2072,25 +2072,41 @@
   --accent-hue-spectrum: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
 }
 :root .accent-picker[data-accent-picker] { background: var(--accent); }
-:root .accent-hue-popover {
+:root .accent-hue-popover[popover] {
   box-sizing: border-box;
   position: fixed;
   inset: auto;
-  position-area: block-end span-inline-start;
-  position-try-fallbacks: flip-inline, flip-block, flip-inline flip-block;
+  position-area: inline-start center;
+  position-try-fallbacks: flip-inline, --accent-hue-below, --accent-hue-above;
   position-visibility: anchors-visible;
+  align-self: center;
   justify-self: end;
   margin: 0;
-  margin-block-start: var(--accent-hue-panel-gap);
+  margin-inline: var(--accent-hue-panel-gap);
   inline-size: min(var(--accent-hue-panel-size), calc(var(--accent-hue-available-inline-size) - 2 * var(--interface-edge-gap)));
   max-inline-size: none;
-  block-size: max-content;
+  block-size: var(--control-size);
   padding: var(--accent-hue-panel-padding);
   border: var(--control-frame-width) solid var(--line-dark);
   border-radius: var(--control-radius);
   background: var(--surface);
   color: var(--ink);
-  box-shadow: var(--shadow);
+  box-shadow: none;
+}
+/* Narrow viewports keep the same compact frame, attached below or above. */
+@position-try --accent-hue-below {
+  position-area: block-end span-inline-start;
+  align-self: start;
+  justify-self: end;
+  margin: 0;
+  margin-block-start: var(--accent-hue-panel-gap);
+}
+@position-try --accent-hue-above {
+  position-area: block-start span-inline-start;
+  align-self: end;
+  justify-self: end;
+  margin: 0;
+  margin-block-end: var(--accent-hue-panel-gap);
 }
 :root .accent-hue-range {
   display: block;
@@ -2100,7 +2116,7 @@
   direction: ltr;
   inline-size: 100%;
   min-inline-size: 0;
-  block-size: var(--control-size);
+  block-size: 100%;
   margin: 0;
   padding: 0;
   border: 0;
@@ -2137,8 +2153,9 @@
   background: var(--accent-hue-preview);
 }
 :root .accent-hue-range:focus-visible {
-  outline: var(--control-highlight-width) solid var(--ink);
-  outline-offset: var(--control-capsule-gap);
+  outline: var(--control-frame-width) solid var(--ink);
+  outline-offset: 0;
+  border-radius: var(--control-inner-radius);
 }
 /* Unsupported popover browsers must not reveal hidden chooser panels. */
 :root .accent-hue-popover { display: none; }

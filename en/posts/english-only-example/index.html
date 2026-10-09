@@ -83,7 +83,7 @@
 <link rel="modulepreload" href="/ssm/assets/read-status.js?v=e421e776588d">
 <link rel="modulepreload" href="/ssm/assets/post-votes.js?v=babf44d37416">
 <link rel="modulepreload" href="/ssm/assets/post-tag-scroll.js?v=7cbe770bb1a4">
-<script data-home-appearance-src="/ssm/assets/appearance.js?v=5da2cc78580b">(() => {
+<script data-home-appearance-src="/ssm/assets/appearance.js?v=8dfe17594b12">(() => {
   const root = document.documentElement;
   const themeMedia = window.matchMedia?.("(prefers-color-scheme: dark)");
   const themeSequence = ["light", "dark", "auto"];
@@ -282,7 +282,7 @@
       this.panel = panel;
       this.trigger = document.querySelector(`[popovertarget="${panel.id}"]`);
       this.settings = this.trigger?.closest('[data-header-settings]');
-      this.manual = !window.CSS?.supports?.('position-area', 'block-end span-inline-start');
+      this.manual = !window.CSS?.supports?.('position-area', 'inline-start center');
       if (this.manual) panel.dataset.manualPosition = 'true';
       panel.addEventListener('keydown', event => {
         if (event.key !== 'Escape') return;
@@ -308,6 +308,11 @@
         window.addEventListener('scroll', reposition, { capture: true, passive: true });
         window.visualViewport?.addEventListener('resize', reposition, { passive: true });
         window.visualViewport?.addEventListener('scroll', reposition, { passive: true });
+        if (window.ResizeObserver) {
+          this.resizeObserver = new window.ResizeObserver(reposition);
+          this.resizeObserver.observe(panel);
+          if (this.trigger) this.resizeObserver.observe(this.trigger);
+        }
       }
     }
     close(restoreFocus = false) {
@@ -329,10 +334,16 @@
       const box = this.panel.getBoundingClientRect();
       const gap = parseFloat(css.paddingBlockStart) * scale;
       const clamp = (value, min, max) => Math.max(min, Math.min(value, max));
-      const start = window.getComputedStyle(this.trigger).direction === 'rtl' ? anchor.left : anchor.right - box.width;
-      const x = clamp(start, left + gap, left + width - box.width - gap);
+      // Match the CSS anchor's inline-start, flipped-side, then block fallbacks.
+      const rtl = window.getComputedStyle(root).direction === 'rtl';
+      const before = anchor.left - gap - box.width, after = anchor.right + gap;
+      const sides = rtl ? [after, before] : [before, after];
+      const side = sides.find(x => x >= left + gap && x + box.width <= left + width - gap);
+      const x = clamp(side ?? (rtl ? anchor.left : anchor.right - box.width),
+        left + gap, left + width - box.width - gap);
       const below = anchor.bottom + gap;
-      const y = clamp(below + box.height <= top + height - gap ? below : anchor.top - gap - box.height,
+      const vertical = below + box.height <= top + height - gap ? below : anchor.top - gap - box.height;
+      const y = clamp(side === undefined ? vertical : anchor.top + (anchor.height - box.height) / 2,
         top + gap, top + height - box.height - gap);
       root.style.setProperty('--accent-hue-position-x', `${x / scale}px`);
       root.style.setProperty('--accent-hue-position-y', `${y / scale}px`);
@@ -349,11 +360,11 @@
 })();
 </script>
 <!-- ssm-home-first-paint:end -->
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=1d941505d9e1">
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=f91bcd66bf6f">
   <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=7306eee7ebbe" data-post-layout-styles>
   <link rel="stylesheet" href="/ssm/assets/read-filter.css?v=912b57890ac3">
   
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=4cf1e46a0801" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=0bfbbdfe50f5" data-control-sizing-styles>
 </head>
 <body data-engagement-snapshot="/ssm/engagement.json" data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="https://ssm-pin-stats.eyesky93.workers.dev/pins" data-read-storage="ssm-read:/ssm">
   <header class="site-header">
