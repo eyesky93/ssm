@@ -1003,6 +1003,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-control-gap: var(--quiet-control-padding);
   --quiet-control-color: var(--line-dark);
   --quiet-control-active-color: var(--ink);
+  --quiet-share-color: var(--ink);
   --quiet-pin-color: var(--ink);
   --quiet-pin-underline-width: calc(var(--quiet-control-icon-size) * .70);
   --quiet-pin-underline-thickness: calc(var(--quiet-control-icon-size) / 16);
@@ -1012,7 +1013,9 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-checkbox-hover-background: var(--code-bg);
   --quiet-read-color: var(--quiet-control-color);
   --quiet-read-hover-color: var(--quiet-control-active-color);
-  --quiet-read-hover-background: transparent;
+  --quiet-read-hover-background: var(--quiet-checkbox-hover-background);
+  --quiet-read-hover-shadow: inset 0 0 0 var(--control-frame-width) var(--quiet-read-hover-color),
+    0 0 0 var(--control-highlight-width) var(--quiet-read-hover-background);
   --quiet-control-radius: calc(var(--quiet-control-icon-size) / 6);
   --card-content-gap: var(--control-capsule-gap);
   /* Subtract the symmetric invisible target padding once, on both axes.
@@ -1139,6 +1142,9 @@ html[lang="he"] .reader-controls .reader-number-error {
   border-color: var(--quiet-read-hover-color);
   background: var(--quiet-read-hover-background);
   color: var(--quiet-read-hover-color);
+  /* Thicken the checkbox itself and restore its neutral highlight without
+     changing its border box, hit target or the surrounding action rail. */
+  box-shadow: var(--quiet-read-hover-shadow);
 }
 
 /* PSR is a card-level rail, never footer content. DOM/keyboard order is
