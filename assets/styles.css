@@ -155,6 +155,7 @@ html[lang="he"] {
   font-family: var(--font-interface-hebrew), var(--font-interface);
 }
 
+html[lang="he"] .eyebrow,
 html[lang="he"] button,
 html[lang="he"] input,
 html[lang="he"] select,
@@ -686,10 +687,19 @@ html[lang="he"] :is(.search-dialog-header h2, .search-submit) { font-family: var
 .eyebrow {
   margin: 0 0 0.9rem;
   color: var(--accent-strong);
+  font-family: var(--font-interface);
+  line-height: normal;
   font-size: 0.875rem;
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+}
+
+/* Inline eyebrows retain their shared typography and wrap as a phrase. */
+:is(h1, h2, h3) > .eyebrow {
+  display: inline-block;
+  max-inline-size: 100%;
+  margin: 0;
 }
 
 [dir="rtl"] .eyebrow {
