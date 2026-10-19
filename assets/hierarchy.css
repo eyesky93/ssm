@@ -12,9 +12,7 @@
 .map-stage { position: relative; border: 1px solid var(--line-dark); border-radius: .8rem; background: var(--paper); overflow: hidden; }
 .map-toolbar { position: absolute; z-index: 3; inset-inline-start: .75rem; bottom: .75rem; display: flex; flex-direction: column; align-items: stretch; gap: var(--directory-control-spacing); width: var(--control-size); margin: 0; }
 .map-history-controls { display: flex; justify-content: space-between; gap: var(--directory-control-spacing); }
-.map-toolbar button, .map-toolbar > a { display: inline-flex; justify-content: center; align-items: center; min-width: var(--control-size); min-height: var(--control-size); height: var(--control-size); padding: 4px 8px; border: 1px solid var(--line-dark); border-radius: 1.5rem; color: var(--ink); background: var(--paper); font: inherit; font-size: 13px; line-height: 1.2; text-decoration: none; cursor: pointer; }
-.map-toolbar button:not(:disabled):is(:hover, :focus-visible), .map-toolbar > a:hover { color: var(--accent-strong); border-color: var(--accent-strong); }
-.map-toolbar button:disabled { opacity: .45; cursor: default; }
+.map-toolbar button, .map-toolbar > a { display: inline-flex; justify-content: center; align-items: center; min-width: var(--control-size); min-height: var(--control-size); height: var(--control-size); padding: 4px 8px; font: inherit; font-size: 13px; line-height: 1.2; text-decoration: none; cursor: pointer; }
 .map-toolbar output { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
 .map-viewport { max-width: 100%; min-height: 12rem; max-height: clamp(22rem, 60vh, 38rem); overflow: auto; overscroll-behavior: auto; touch-action: pan-x pan-y; direction: ltr; background: var(--paper); cursor: grab; }
 .map-viewport.is-panning, .map-viewport.is-panning * { cursor: grabbing; user-select: none; }
