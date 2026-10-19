@@ -25,6 +25,8 @@
   --control-padding: max(0px, calc((var(--control-size) - var(--control-icon-size) - 2px) / 2));
   /* Navigation glyphs share global variables without changing any current
      component geometry. Variant sizes remain proportional to this one base. */
+  /* Navigation alone feathers the shared accent highlight to transparency. */
+  --navigation-highlight-blur: calc(2 * var(--control-highlight-width));
   --navigation-icon-size: var(--control-icon-size);
   --navigation-icon-stroke-width: 1.8;
   --navigation-post-icon-size: calc(var(--navigation-icon-size) * .962962963);
@@ -431,11 +433,11 @@
   font-variant-numeric: tabular-nums;
 }
 /* Navigation shares Pin/Share's global highlight width and theme/accent color.
-   Paint outside the shared frame and retain its floating shadow. Hover is
+   Blur the outer highlight to transparency; retain the resting shadow. Hover is
    local to the actual control, never its dock; a mouse click does not latch it.
    The input replacing the page number uses the same .post-position contract. */
 :root .navigation-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible) {
-  box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color), var(--control-rest-shadow);
+  box-shadow: 0 0 var(--navigation-highlight-blur) var(--control-highlight-width) var(--control-highlight-color), var(--control-rest-shadow);
   outline: none;
 }
 /* Forced-colors mode suppresses shadows; retain a real keyboard-focus outline. */

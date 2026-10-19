@@ -1016,8 +1016,8 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-checkbox-hover-background: var(--code-bg);
   --quiet-read-color: var(--quiet-control-color);
   --quiet-read-hover-color: var(--quiet-control-active-color);
-  --quiet-read-hover-background: var(--quiet-checkbox-hover-background);
-  --quiet-read-hover-shadow: 0 0 0 var(--control-highlight-width) var(--quiet-read-hover-background);
+  --quiet-read-hover-background: transparent;
+  --quiet-read-hover-shadow: none;
   --quiet-control-radius: calc(var(--quiet-control-icon-size) / 6);
   --card-content-gap: var(--control-capsule-gap);
   /* Subtract the symmetric invisible target padding once, on both axes.
@@ -1027,7 +1027,6 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 :root[data-theme="dark"] {
   --quiet-pin-color: var(--white);
-  --quiet-read-hover-color: var(--white);
 }
 
 /* The variant owns geometry and palette together. Pin and Read state are
@@ -1144,8 +1143,8 @@ html[lang="he"] .reader-controls .reader-number-error {
   border-color: var(--quiet-read-hover-color);
   background: var(--quiet-read-hover-background);
   color: var(--quiet-read-hover-color);
-  /* Keep the neutral fill and outer highlight, not an extra inset stroke.
-     The visible border, glyph, hit target and action rail retain their size. */
+  /* Ink-only emphasis: no fill, halo or extra stroke. The visible border,
+     glyph, hit target and action rail retain their size in every state. */
   box-shadow: var(--quiet-read-hover-shadow);
 }
 
@@ -1343,6 +1342,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   justify-content: center;
   margin-inline-end: calc(var(--card-action-inset) - var(--post-card-padding-inline));
 }
+
 /* Reader-header rules own reader-specific content and layout. The common
    Pin/Share/Read/language/Settings frame and interaction model lives in
    framed-control.css. */
