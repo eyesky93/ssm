@@ -441,7 +441,6 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.search-tag-remove { display: block; }
 html[lang="he"] .search-tag { font-family: var(--font-interface-hebrew), var(--font-content); }
 .search-result-status {
   margin: 0 0 1rem;
