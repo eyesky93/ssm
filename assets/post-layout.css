@@ -840,7 +840,9 @@ html[lang="he"] .reader-controls .reader-number-error {
    numerals or icons. Card gaps and comment reserves inherit the same height. */
 :root {
   --engagement-layer-active: 7;
+  --engagement-layer-hover: calc(var(--engagement-layer-active) + 1);
   --engagement-layer-covered: -1;
+  --engagement-border-width: 1px;
   --engagement-tab-height-ratio: .75;
   --engagement-tab-height: calc(var(--control-size) * var(--engagement-tab-height-ratio));
   /* Restore the former .5rem corners at the canonical 1.9575rem control
@@ -853,8 +855,25 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* Stats keep their own smaller shared corners without changing card frames.
    Physical corners mirror because engagement segments retain LTR inside RTL. */
 :root :is(.post-card, .comment-box) { border-radius: var(--post-frame-radius); }
-:root .post-engagement { --stat-segment-height: var(--engagement-tab-height); }
-:root .post-engagement > :is(.post-vote, .post-comments, .post-views) { border-radius: 0; }
+:root .post-engagement {
+  --stat-segment-height: var(--engagement-tab-height);
+  min-inline-size: calc(3 * var(--stat-segment-width) - 2 * var(--engagement-border-width));
+}
+:root .post-engagement > :is(.post-vote, .post-comments, .post-views) {
+  border-radius: 0;
+  border-inline: var(--engagement-border-width) solid var(--line);
+  border-block-end-width: var(--engagement-border-width);
+}
+/* Adjacent edges occupy the SAME pixel column. Never hide one neighbor's
+   border: the selected/hovered layer must own both of its shared seams. */
+:root .post-engagement > :is(.post-vote, .post-comments, .post-views) + :is(.post-vote, .post-comments, .post-views) {
+  margin-left: calc(-1 * var(--engagement-border-width));
+  margin-right: 0;
+}
+:root[dir="rtl"] .post-engagement > :is(.post-vote, .post-comments, .post-views) + :is(.post-vote, .post-comments, .post-views) {
+  margin-left: 0;
+  margin-right: calc(-1 * var(--engagement-border-width));
+}
 :root .post-engagement > :first-child { border-bottom-left-radius: var(--engagement-tab-radius); }
 :root .post-engagement > :last-child { border-bottom-right-radius: var(--engagement-tab-radius); }
 :root[dir="rtl"] .post-engagement > :first-child {
@@ -870,7 +889,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   color: var(--ink);
   min-block-size: 0;
   max-block-size: var(--stat-segment-height);
-  border-block-start: 1px solid var(--line);
+  border-block-start: var(--engagement-border-width) solid var(--line);
   background: var(--surface);
   background-clip: padding-box;
   text-decoration: none;
@@ -879,19 +898,23 @@ html[lang="he"] .reader-controls .reader-number-error {
   cursor: pointer;
   pointer-events: auto;
 }
-:root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments)[aria-pressed="true"] {
+:root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments):is([aria-pressed="true"], [data-replies-unread="true"]) {
   z-index: var(--engagement-layer-active);
   background: var(--soft-accent);
   color: var(--accent);
   border-color: var(--accent);
   box-shadow: none;
 }
-:root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments)[aria-pressed="true"] :is(svg, .post-vote-count, .post-comment-count) {
+/* A reply notice does not cover a selected vote. Deliberate hover/focus does. */
+:root .post-engagement > :is(a.post-comments, button.post-comments)[data-replies-unread="true"] {
+  z-index: calc(var(--engagement-layer-active) - 1);
+}
+:root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments):is([aria-pressed="true"], [data-replies-unread="true"]) :is(svg, .post-vote-count, .post-comment-count) {
   color: var(--accent);
   border-color: var(--accent);
 }
 :root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments):is(:hover, :focus-visible, [data-engagement-highlight="true"]):not(:disabled) {
-  z-index: var(--engagement-layer-active);
+  z-index: var(--engagement-layer-hover);
   color: var(--accent-strong);
   border-color: var(--accent-strong);
   box-shadow: none;
@@ -964,10 +987,10 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root :is(.post-card, .comment-box):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > :is(.post-engagement, .comment-engagement-dock) {
   z-index: auto;
 }
-:root :is(.post-card, .comment-box):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > :is(.post-engagement, .comment-engagement-dock) :is(.post-vote, .post-comments, .post-views):not(:is([aria-pressed="true"], [data-selected="true"], [data-engagement-highlight="true"])) {
+:root :is(.post-card, .comment-box):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > :is(.post-engagement, .comment-engagement-dock) :is(.post-vote, .post-comments, .post-views):not(:is([aria-pressed="true"], [data-selected="true"], [data-engagement-highlight="true"], [data-replies-unread="true"])) {
   z-index: var(--engagement-layer-covered);
 }
-.comment-engagement { min-inline-size: calc(2 * var(--stat-segment-width)); }
+:root .comment-engagement { min-inline-size: calc(2 * var(--stat-segment-width) - var(--engagement-border-width)); }
 /* Hash destinations stay native: no simulated navigation or click interception. */
 .comments-shell { scroll-margin-block-start: 1rem; }
 
