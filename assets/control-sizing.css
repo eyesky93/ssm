@@ -414,7 +414,8 @@
 /* One global navigation frame for the homepage, reader, Directory and owner
    edition. Semantic hooks below own layout/typography only, never paint. */
 :root .navigation-control {
-  border: 1px solid var(--line-dark);
+  /* Keep the existing inset without painting a grey or accent stroke. */
+  border: 1px solid transparent;
   border-radius: var(--control-radius);
   background: var(--inverse-bg);
   color: var(--inverse-ink);
@@ -434,7 +435,6 @@
    local to the actual control, never its dock; a mouse click does not latch it.
    The input replacing the page number uses the same .post-position contract. */
 :root .navigation-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible) {
-  border-color: var(--accent-strong);
   box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color), var(--control-rest-shadow);
   outline: none;
 }
