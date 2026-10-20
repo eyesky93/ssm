@@ -78,7 +78,7 @@
   root.setAttribute("data-home-starting", "");
 })();
 </script>
-<link rel="preload" as="script" href="/ssm/assets/site.js?v=e3d84d6723d6">
+<link rel="preload" as="script" href="/ssm/assets/site.js?v=355d416d0c4d">
 <script data-home-appearance-src="/ssm/assets/appearance.js?v=8dfe17594b12">(() => {
   const root = document.documentElement;
   const themeMedia = window.matchMedia?.("(prefers-color-scheme: dark)");
@@ -356,10 +356,11 @@
 })();
 </script>
 <!-- ssm-home-first-paint:end -->
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=f748db93faa8">
+  <script src="/ssm/assets/tooltips.js?v=d1c12dc6b871" defer></script>
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=c36ad07c8df9">
   
   
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=81ed19086f3b" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=ce235abafe95" data-control-sizing-styles>
 </head>
 <body>
   <header class="site-header">
@@ -377,13 +378,11 @@
         <div class="header-actions" id="site-settings" aria-label="Settings">
           <div class="settings-lower">
             <div class="updates-controls" aria-label="RSS and email updates">
-    <a class="framed-control" href="/ssm/en/feed.xml" type="application/rss+xml" aria-label="RSS feed" aria-describedby="rss-description-en" data-framed-role="settings-action rss-action">
+    <a class="framed-control" href="/ssm/en/feed.xml" type="application/rss+xml" aria-label="RSS feed" data-tooltip="RSS feed" data-framed-role="settings-action rss-action">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="18.5" r="1.5"/><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/></svg>
-      <span class="settings-tooltip" id="rss-description-en" role="tooltip">Open this section’s RSS feed in a feed reader.</span>
     </a>
-    <button class="framed-control" type="button" data-subscribe-open aria-haspopup="dialog" aria-controls="subscription-dialog" aria-label="Subscribe" aria-describedby="subscribe-description-en" data-framed-role="settings-action subscribe-action">
+    <button class="framed-control" type="button" data-subscribe-open aria-haspopup="dialog" aria-controls="subscription-dialog" aria-label="Subscribe" data-tooltip="subscribe" data-framed-role="settings-action subscribe-action">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11a2.8 2.8 0 0 0-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4M3 22h18"/></svg>
-      <span class="settings-tooltip" id="subscribe-description-en" role="tooltip">Choose subjects and get email notifications when matching notes are published.</span>
     </button>
   </div>
             <button class="framed-control" type="button" data-random-posts="[&quot;/ssm/en/posts/directory/&quot;,&quot;/ssm/en/posts/welcome/&quot;,&quot;/ssm/en/posts/symmetry-notes/&quot;,&quot;/ssm/en/posts/layout-stress-long-title-one/&quot;,&quot;/ssm/en/posts/layout-stress-long-title-two/&quot;,&quot;/ssm/en/posts/layout-stress-long-title-three/&quot;,&quot;/ssm/en/posts/mathematical-background-1/&quot;,&quot;/ssm/en/posts/mathematical-background-2/&quot;,&quot;/ssm/en/posts/metal-example/&quot;,&quot;/ssm/en/posts/analytical-mechanics-example/&quot;,&quot;/ssm/en/posts/conformal-symmetry-example/&quot;,&quot;/ssm/en/posts/listening-for-patterns/&quot;,&quot;/ssm/en/posts/english-only-example/&quot;]" aria-label="Random post" title="Random post" data-framed-role="random-post"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 8a8 8 0 0 1 6-5.5M2 3v5h5"/><g transform="rotate(-12 14 14)"><rect x="7" y="7" width="14" height="14" rx="3"/><circle cx="11" cy="11" r="1"/><circle cx="17" cy="11" r="1"/><circle cx="14" cy="14" r="1"/><circle cx="11" cy="17" r="1"/><circle cx="17" cy="17" r="1"/></g></svg></button>
@@ -513,7 +512,7 @@
       </div>
     </div>
   </dialog>
-  <script data-home-state-script="site" src="/ssm/assets/site.js?v=e3d84d6723d6" defer></script>
+  <script data-home-state-script="site" src="/ssm/assets/site.js?v=355d416d0c4d" defer></script>
   
   
   <script src="/ssm/assets/random-post.js?v=e7dd2c9a71d0" defer></script>

@@ -484,16 +484,7 @@ html { scrollbar-gutter: stable; }
   border-right-color: var(--accent-strong);
 }
 
-/* Small feedback and custom hover hints share the existing tag-tooltip palette.
-   Native browser title tooltips remain native; no new tooltip UI is introduced. */
-:root { --message-bg: #f0f0f0; --message-ink: #222; }
-:root[data-theme="dark"] { --message-bg: #2b2b2b; --message-ink: #f0f0f0; }
-:root .settings-tooltip,
-:root .tag-exclude::after,
-:root[data-theme="dark"] .tag-exclude::after {
-  background: var(--message-bg);
-  color: var(--message-ink);
-}
+/* Feedback shares the palette owned by the global tooltip component. */
 
 /* Invalid Enter restores the number circle; only this small, unframed line
    appears beside it. Absolute positioning keeps every control in place.

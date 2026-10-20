@@ -160,3 +160,48 @@ button:focus-visible {
     --shadow: 0 8px 24px rgba(0, 0, 0, .1);
   }
 }
+
+/* All hover hints share this class, independently of their control's font,
+   frame, layout, or location. These are the only tooltip paint/size tokens. */
+:root {
+  --message-bg: #f0f0f0;
+  --message-ink: #222;
+  --tooltip-font-size: .75rem;
+  --tooltip-font-weight: 400;
+  --tooltip-line-height: 1.2;
+  --tooltip-padding-block: 2px;
+  --tooltip-padding-inline: 4px;
+  --tooltip-border-width: 1px;
+  --tooltip-border-radius: 0;
+  --tooltip-gap: 4px;
+  --tooltip-viewport-inset: 8px;
+  --tooltip-delay: 650ms;
+  --tooltip-tag-delay: 1200ms;
+}
+:root[data-theme="dark"] { --message-bg: #2b2b2b; --message-ink: #f0f0f0; }
+.tooltip {
+  position: fixed;
+  inset: auto;
+  z-index: 2147483647;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: calc(100vw - 2 * var(--tooltip-viewport-inset));
+  margin: 0;
+  padding: var(--tooltip-padding-block) var(--tooltip-padding-inline);
+  border: var(--tooltip-border-width) solid var(--line-dark);
+  border-radius: var(--tooltip-border-radius);
+  background: var(--message-bg);
+  color: var(--message-ink);
+  box-shadow: none;
+  font-family: var(--font-interface);
+  font-size: var(--tooltip-font-size);
+  font-weight: var(--tooltip-font-weight);
+  line-height: var(--tooltip-line-height);
+  text-align: start;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+html[lang="he"] .tooltip { font-family: var(--font-interface-hebrew, var(--font-interface)), var(--font-interface); }
+.tooltip[hidden] { display: none; }

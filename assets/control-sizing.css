@@ -1622,18 +1622,6 @@
   fill: currentColor;
   stroke: none;
 }
-:root .header-actions .framed-control[data-framed-role~="settings-action"]:hover .settings-tooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-  transition-delay: .65s;
-}
-:root .header-actions .framed-control[data-framed-role~="settings-action"]:focus-visible .settings-tooltip {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-  transition-delay: 0s;
-}
 
 /* Preserve the settings grid positions without giving these buttons unique classes. */
 :root .settings-lower > .framed-control[data-framed-role~="random-post"] {

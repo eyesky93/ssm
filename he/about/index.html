@@ -78,7 +78,7 @@
   root.setAttribute("data-home-starting", "");
 })();
 </script>
-<link rel="preload" as="script" href="/ssm/assets/site.js?v=e3d84d6723d6">
+<link rel="preload" as="script" href="/ssm/assets/site.js?v=355d416d0c4d">
 <script data-home-appearance-src="/ssm/assets/appearance.js?v=8dfe17594b12">(() => {
   const root = document.documentElement;
   const themeMedia = window.matchMedia?.("(prefers-color-scheme: dark)");
@@ -356,10 +356,11 @@
 })();
 </script>
 <!-- ssm-home-first-paint:end -->
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=f748db93faa8">
+  <script src="/ssm/assets/tooltips.js?v=d1c12dc6b871" defer></script>
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=c36ad07c8df9">
   
   
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=81ed19086f3b" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=ce235abafe95" data-control-sizing-styles>
 </head>
 <body>
   <header class="site-header">
@@ -377,13 +378,11 @@
         <div class="header-actions" id="site-settings" aria-label="הגדרות">
           <div class="settings-lower">
             <div class="updates-controls" aria-label="עדכונים ב־RSS ובדוא״ל">
-    <a class="framed-control" href="/ssm/he/feed.xml" type="application/rss+xml" aria-label="ערוץ RSS" aria-describedby="rss-description-he" data-framed-role="settings-action rss-action">
+    <a class="framed-control" href="/ssm/he/feed.xml" type="application/rss+xml" aria-label="ערוץ RSS" data-tooltip="ערוץ RSS" data-framed-role="settings-action rss-action">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="18.5" r="1.5"/><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/></svg>
-      <span class="settings-tooltip" id="rss-description-he" role="tooltip">פתיחת ערוץ ה־RSS של המדור הזה ביישום לקריאת עדכונים.</span>
     </a>
-    <button class="framed-control" type="button" data-subscribe-open aria-haspopup="dialog" aria-controls="subscription-dialog" aria-label="הרשמה" aria-describedby="subscribe-description-he" data-framed-role="settings-action subscribe-action">
+    <button class="framed-control" type="button" data-subscribe-open aria-haspopup="dialog" aria-controls="subscription-dialog" aria-label="הרשמה" data-tooltip="הרשמה" data-framed-role="settings-action subscribe-action">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11a2.8 2.8 0 0 0-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4M3 22h18"/></svg>
-      <span class="settings-tooltip" id="subscribe-description-he" role="tooltip">בחירת נושאים וקבלת הודעה בדוא״ל כשרשימות מתאימות מתפרסמות.</span>
     </button>
   </div>
             <button class="framed-control" type="button" data-random-posts="[&quot;/ssm/he/posts/directory/&quot;,&quot;/ssm/he/posts/welcome/&quot;,&quot;/ssm/he/posts/symmetry-notes/&quot;,&quot;/ssm/he/posts/layout-stress-long-title-one/&quot;,&quot;/ssm/he/posts/layout-stress-long-title-two/&quot;,&quot;/ssm/he/posts/layout-stress-long-title-three/&quot;,&quot;/ssm/he/posts/mathematical-background-1/&quot;,&quot;/ssm/he/posts/mathematical-background-2/&quot;,&quot;/ssm/he/posts/metal-example/&quot;,&quot;/ssm/he/posts/analytical-mechanics-example/&quot;,&quot;/ssm/he/posts/conformal-symmetry-example/&quot;,&quot;/ssm/he/posts/listening-for-patterns/&quot;,&quot;/ssm/he/posts/hebrew-only-example/&quot;]" aria-label="פוסט אקראי" title="פוסט אקראי" data-framed-role="random-post"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 8a8 8 0 0 1 6-5.5M2 3v5h5"/><g transform="rotate(-12 14 14)"><rect x="7" y="7" width="14" height="14" rx="3"/><circle cx="11" cy="11" r="1"/><circle cx="17" cy="11" r="1"/><circle cx="14" cy="14" r="1"/><circle cx="11" cy="17" r="1"/><circle cx="17" cy="17" r="1"/></g></svg></button>
@@ -409,7 +408,7 @@
   </summary>
   <div class="accent-panel">
     <button class="accent-picker" type="button" data-accent-picker popovertarget="ssm-accent-hue-1" aria-label="צבע הדגשה"></button><div id="ssm-accent-hue-1" class="accent-hue-popover" popover aria-label="צבע הדגשה"><input class="accent-hue-range" type="range" min="0" max="359" step="1" value="203" data-accent-hue aria-label="צבע הדגשה" autofocus></div>
-    <button class="accent-reset" type="button" data-reset-colors aria-label="איפוס צבע ההדגשה" title="איפוס צבע ההדגשה">
+    <button class="accent-reset" type="button" data-reset-colors aria-label="איפוס" title="איפוס">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg>
     </button>
   </div>
@@ -513,7 +512,7 @@
       </div>
     </div>
   </dialog>
-  <script data-home-state-script="site" src="/ssm/assets/site.js?v=e3d84d6723d6" defer></script>
+  <script data-home-state-script="site" src="/ssm/assets/site.js?v=355d416d0c4d" defer></script>
   
   
   <script src="/ssm/assets/random-post.js?v=e7dd2c9a71d0" defer></script>

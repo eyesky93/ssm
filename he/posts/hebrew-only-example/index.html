@@ -77,7 +77,7 @@
   root.setAttribute("data-home-starting", "");
 })();
 </script>
-<link rel="preload" as="script" href="/ssm/assets/site.js?v=e3d84d6723d6">
+<link rel="preload" as="script" href="/ssm/assets/site.js?v=355d416d0c4d">
 <link rel="modulepreload" href="/ssm/assets/pins.js?v=52a54ded8dda">
 <link rel="modulepreload" href="/ssm/assets/post-browser.js?v=d5679690ee90">
 <link rel="modulepreload" href="/ssm/assets/read-status.js?v=2e2a6e6f3010">
@@ -360,11 +360,12 @@
 })();
 </script>
 <!-- ssm-home-first-paint:end -->
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=f748db93faa8">
-  <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=66bba377a207" data-post-layout-styles>
+  <script src="/ssm/assets/tooltips.js?v=d1c12dc6b871" defer></script>
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=c36ad07c8df9">
+  <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=7709f124318f" data-post-layout-styles>
   <link rel="stylesheet" href="/ssm/assets/read-filter.css?v=912b57890ac3">
   
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=81ed19086f3b" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=ce235abafe95" data-control-sizing-styles>
 </head>
 <body data-engagement-snapshot="/ssm/engagement.json" data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="https://ssm-pin-stats.eyesky93.workers.dev/pins" data-read-storage="ssm-read:/ssm">
   <header class="site-header">
@@ -420,13 +421,11 @@
         <div class="header-actions" id="site-settings" aria-label="הגדרות">
           <div class="settings-lower">
             <div class="updates-controls" aria-label="עדכונים ב־RSS ובדוא״ל">
-    <a class="framed-control" href="/ssm/he/feed.xml" type="application/rss+xml" aria-label="ערוץ RSS" aria-describedby="rss-description-he" data-framed-role="settings-action rss-action">
+    <a class="framed-control" href="/ssm/he/feed.xml" type="application/rss+xml" aria-label="ערוץ RSS" data-tooltip="ערוץ RSS" data-framed-role="settings-action rss-action">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="18.5" r="1.5"/><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/></svg>
-      <span class="settings-tooltip" id="rss-description-he" role="tooltip">פתיחת ערוץ ה־RSS של המדור הזה ביישום לקריאת עדכונים.</span>
     </a>
-    <button class="framed-control" type="button" data-subscribe-open aria-haspopup="dialog" aria-controls="subscription-dialog" aria-label="הרשמה" aria-describedby="subscribe-description-he" data-framed-role="settings-action subscribe-action">
+    <button class="framed-control" type="button" data-subscribe-open aria-haspopup="dialog" aria-controls="subscription-dialog" aria-label="הרשמה" data-tooltip="הרשמה" data-framed-role="settings-action subscribe-action">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11a2.8 2.8 0 0 0-4-4L4 16v4Z"/><path d="m13.5 6.5 4 4M3 22h18"/></svg>
-      <span class="settings-tooltip" id="subscribe-description-he" role="tooltip">בחירת נושאים וקבלת הודעה בדוא״ל כשרשימות מתאימות מתפרסמות.</span>
     </button>
   </div>
             <button class="framed-control" type="button" data-random-posts="[&quot;/ssm/he/posts/directory/&quot;,&quot;/ssm/he/posts/welcome/&quot;,&quot;/ssm/he/posts/symmetry-notes/&quot;,&quot;/ssm/he/posts/layout-stress-long-title-one/&quot;,&quot;/ssm/he/posts/layout-stress-long-title-two/&quot;,&quot;/ssm/he/posts/layout-stress-long-title-three/&quot;,&quot;/ssm/he/posts/mathematical-background-1/&quot;,&quot;/ssm/he/posts/mathematical-background-2/&quot;,&quot;/ssm/he/posts/metal-example/&quot;,&quot;/ssm/he/posts/analytical-mechanics-example/&quot;,&quot;/ssm/he/posts/conformal-symmetry-example/&quot;,&quot;/ssm/he/posts/listening-for-patterns/&quot;,&quot;/ssm/he/posts/hebrew-only-example/&quot;]" aria-label="פוסט אקראי" title="פוסט אקראי" data-framed-role="random-post"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 8a8 8 0 0 1 6-5.5M2 3v5h5"/><g transform="rotate(-12 14 14)"><rect x="7" y="7" width="14" height="14" rx="3"/><circle cx="11" cy="11" r="1"/><circle cx="17" cy="11" r="1"/><circle cx="14" cy="14" r="1"/><circle cx="11" cy="17" r="1"/><circle cx="17" cy="17" r="1"/></g></svg></button>
@@ -452,7 +451,7 @@
   </summary>
   <div class="accent-panel">
     <button class="accent-picker" type="button" data-accent-picker popovertarget="ssm-accent-hue-1" aria-label="צבע הדגשה"></button><div id="ssm-accent-hue-1" class="accent-hue-popover" popover aria-label="צבע הדגשה"><input class="accent-hue-range" type="range" min="0" max="359" step="1" value="203" data-accent-hue aria-label="צבע הדגשה" autofocus></div>
-    <button class="accent-reset" type="button" data-reset-colors aria-label="איפוס צבע ההדגשה" title="איפוס צבע ההדגשה">
+    <button class="accent-reset" type="button" data-reset-colors aria-label="איפוס" title="איפוס">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg>
     </button>
   </div>
@@ -466,7 +465,7 @@
     
     <div class="browser-toolbar">
       <div class="filter-controls">
-        <nav class="subject-nav" aria-label="לפי נושא"><div class="tag-list" data-tag-parent=""><span class="filter-reset-slot"><button class="clear-filter" type="button" data-clear-filter disabled title="ניקוי כל מסנני התגיות" aria-label="ניקוי כל מסנני התגיות"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span><span class="tag-option" data-tag-option="@read" data-personal-read-filter><button type="button" class="tag-chip" data-tag-filter="@read" aria-pressed="false" disabled><span>נקרא</span><span class="tag-count" data-read-count>—</span></button><button class="tag-exclude" type="button" data-exclude-tag="@read" aria-pressed="false" aria-label="הסתרת פוסטים שנקראו" data-label-exclude="הסתרת פוסטים שנקראו" data-label-restore="הצגת פוסטים שנקראו שוב" disabled><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span><span class="tag-option" data-tag-option="culture"><a class="tag-chip" href="/ssm/he/?tag=culture&amp;filters=temporary" data-tag-filter="culture" data-selected="false"><span>תרבות</span><span class="tag-count">5</span></a><button class="tag-exclude" type="button" data-exclude-tag="culture" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span><span class="tag-option" data-tag-option="mathematics"><a class="tag-chip" href="/ssm/he/?tag=mathematics&amp;filters=temporary" data-tag-filter="mathematics" data-selected="false"><span>מתמטיקה</span><span class="tag-count">5</span></a><button class="tag-exclude" type="button" data-exclude-tag="mathematics" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span><span class="tag-option" data-tag-option="music"><a class="tag-chip" href="/ssm/he/?tag=music&amp;filters=temporary" data-tag-filter="music" data-selected="false"><span>מוזיקה</span><span class="tag-count">6</span></a><button class="tag-exclude" type="button" data-exclude-tag="music" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span><span class="tag-option" data-tag-option="notes"><a class="tag-chip" href="/ssm/he/?tag=notes&amp;filters=temporary" data-tag-filter="notes" data-selected="false"><span>רשימות</span><span class="tag-count">5</span></a><button class="tag-exclude" type="button" data-exclude-tag="notes" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span><span class="tag-option" data-tag-option="physics"><a class="tag-chip" href="/ssm/he/?tag=physics&amp;filters=temporary" data-tag-filter="physics" data-selected="false"><span>פיזיקה</span><span class="tag-count">7</span></a><button class="tag-exclude" type="button" data-exclude-tag="physics" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span></div><div class="tag-list tag-descendant-list" data-tag-descendant-list><div class="tag-list tag-subgroup" data-tag-parent="music" hidden role="group" aria-label="נושאי משנה: מוזיקה"><span class="tag-option" data-tag-option="music:metal"><a class="tag-chip" href="/ssm/he/?tag=music%3Ametal&amp;filters=temporary" data-tag-filter="music:metal" data-selected="false"><span>מטאל</span><span class="tag-count">4</span></a><button class="tag-exclude" type="button" data-exclude-tag="music:metal" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span></div><div class="tag-list tag-subgroup" data-tag-parent="physics" hidden role="group" aria-label="נושאי משנה: פיזיקה"><span class="tag-option" data-tag-option="physics:analytical-mechanics"><a class="tag-chip" href="/ssm/he/?tag=physics%3Aanalytical-mechanics&amp;filters=temporary" data-tag-filter="physics:analytical-mechanics" data-selected="false"><span>מכניקה אנליטית</span><span class="tag-count">4</span></a><button class="tag-exclude" type="button" data-exclude-tag="physics:analytical-mechanics" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span><span class="tag-option" data-tag-option="physics:conformal-field-theory"><a class="tag-chip" href="/ssm/he/?tag=physics%3Aconformal-field-theory&amp;filters=temporary" data-tag-filter="physics:conformal-field-theory" data-selected="false"><span>תורת שדות קונפורמית</span><span class="tag-count">4</span></a><button class="tag-exclude" type="button" data-exclude-tag="physics:conformal-field-theory" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span></div></div></nav>
+        <nav class="subject-nav" aria-label="לפי נושא"><div class="tag-list" data-tag-parent=""><span class="filter-reset-slot"><button class="clear-filter" type="button" data-clear-filter disabled title="ניקוי מסנני התגיות" aria-label="ניקוי מסנני התגיות"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span><span class="tag-option" data-tag-option="@read" data-personal-read-filter><button type="button" class="tag-chip" data-tag-filter="@read" aria-pressed="false" disabled><span>נקרא</span><span class="tag-count" data-read-count>—</span></button><button class="tag-exclude" type="button" data-exclude-tag="@read" aria-pressed="false" aria-label="הסתרת פוסטים שנקראו" data-label-exclude="הסתרת פוסטים שנקראו" data-label-restore="הצגת פוסטים שנקראו" disabled><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span><span class="tag-option" data-tag-option="culture"><a class="tag-chip" href="/ssm/he/?tag=culture&amp;filters=temporary" data-tag-filter="culture" data-selected="false"><span>תרבות</span><span class="tag-count">5</span></a><button class="tag-exclude" type="button" data-exclude-tag="culture" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span><span class="tag-option" data-tag-option="mathematics"><a class="tag-chip" href="/ssm/he/?tag=mathematics&amp;filters=temporary" data-tag-filter="mathematics" data-selected="false"><span>מתמטיקה</span><span class="tag-count">5</span></a><button class="tag-exclude" type="button" data-exclude-tag="mathematics" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span><span class="tag-option" data-tag-option="music"><a class="tag-chip" href="/ssm/he/?tag=music&amp;filters=temporary" data-tag-filter="music" data-selected="false"><span>מוזיקה</span><span class="tag-count">6</span></a><button class="tag-exclude" type="button" data-exclude-tag="music" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span><span class="tag-option" data-tag-option="notes"><a class="tag-chip" href="/ssm/he/?tag=notes&amp;filters=temporary" data-tag-filter="notes" data-selected="false"><span>רשימות</span><span class="tag-count">5</span></a><button class="tag-exclude" type="button" data-exclude-tag="notes" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span><span class="tag-option" data-tag-option="physics"><a class="tag-chip" href="/ssm/he/?tag=physics&amp;filters=temporary" data-tag-filter="physics" data-selected="false"><span>פיזיקה</span><span class="tag-count">7</span></a><button class="tag-exclude" type="button" data-exclude-tag="physics" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span></div><div class="tag-list tag-descendant-list" data-tag-descendant-list><div class="tag-list tag-subgroup" data-tag-parent="music" hidden role="group" aria-label="נושאי משנה: מוזיקה"><span class="tag-option" data-tag-option="music:metal"><a class="tag-chip" href="/ssm/he/?tag=music%3Ametal&amp;filters=temporary" data-tag-filter="music:metal" data-selected="false"><span>מטאל</span><span class="tag-count">4</span></a><button class="tag-exclude" type="button" data-exclude-tag="music:metal" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span></div><div class="tag-list tag-subgroup" data-tag-parent="physics" hidden role="group" aria-label="נושאי משנה: פיזיקה"><span class="tag-option" data-tag-option="physics:analytical-mechanics"><a class="tag-chip" href="/ssm/he/?tag=physics%3Aanalytical-mechanics&amp;filters=temporary" data-tag-filter="physics:analytical-mechanics" data-selected="false"><span>מכניקה אנליטית</span><span class="tag-count">4</span></a><button class="tag-exclude" type="button" data-exclude-tag="physics:analytical-mechanics" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span><span class="tag-option" data-tag-option="physics:conformal-field-theory"><a class="tag-chip" href="/ssm/he/?tag=physics%3Aconformal-field-theory&amp;filters=temporary" data-tag-filter="physics:conformal-field-theory" data-selected="false"><span>תורת שדות קונפורמית</span><span class="tag-count">4</span></a><button class="tag-exclude" type="button" data-exclude-tag="physics:conformal-field-theory" aria-pressed="false" aria-label="הסתרת פוסטים" data-label-exclude="הסתרת פוסטים" data-label-restore="ביטול הסתרת פוסטים"><svg class="tag-remove-icon" viewBox="0 0 24 24" data-exclude-icon="remove" aria-hidden="true"><path d="m7 7 10 10M7 17 17 7"/></svg><svg viewBox="0 0 24 24" data-exclude-icon="restore" aria-hidden="true"><path d="M3 10a9 9 0 1 1 2.7 8.4M3 4v6h6"/></svg></button></span></div></div></nav>
       </div>
     </div>
     <p class="search-result-status" data-search-result-status role="status" aria-live="polite" hidden></p>
@@ -486,7 +485,7 @@
       
     </div>
     <div class="post-engagement" data-post-engagement>
-  <button class="post-vote" type="button" data-post-vote data-post-id="welcome" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות כרגע.">
+  <button class="post-vote" type="button" data-post-vote data-post-id="welcome" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
     <span class="post-vote-count" data-post-vote-count dir="ltr">—</span>
     <span class="visually-hidden" data-post-vote-label>הצבעה בעד הפוסט</span>
@@ -495,7 +494,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2ZM7 9h10M7 13h7"/></svg>
     <span class="post-comment-count" data-post-comment-count dir="ltr">—</span>
   </a>
-  <span class="post-views" data-post-views role="img" aria-label="מספר הצפיות אינו זמין" title="מספר הצפיות אינו זמין" data-label-count="צפיות: {count}" data-label-unavailable="מספר הצפיות אינו זמין">
+  <span class="post-views" data-post-views role="img" aria-label="הצפיות אינן זמינות" title="הצפיות אינן זמינות" data-label-count="צפיות: {count}" data-label-unavailable="הצפיות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     <span class="post-view-count" data-post-view-count dir="ltr">—</span>
   </span>
@@ -526,7 +525,7 @@
       
     </div>
     <div class="post-engagement" data-post-engagement>
-  <button class="post-vote" type="button" data-post-vote data-post-id="symmetry-notes" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות כרגע.">
+  <button class="post-vote" type="button" data-post-vote data-post-id="symmetry-notes" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
     <span class="post-vote-count" data-post-vote-count dir="ltr">—</span>
     <span class="visually-hidden" data-post-vote-label>הצבעה בעד הפוסט</span>
@@ -535,7 +534,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2ZM7 9h10M7 13h7"/></svg>
     <span class="post-comment-count" data-post-comment-count dir="ltr">—</span>
   </a>
-  <span class="post-views" data-post-views role="img" aria-label="מספר הצפיות אינו זמין" title="מספר הצפיות אינו זמין" data-label-count="צפיות: {count}" data-label-unavailable="מספר הצפיות אינו זמין">
+  <span class="post-views" data-post-views role="img" aria-label="הצפיות אינן זמינות" title="הצפיות אינן זמינות" data-label-count="צפיות: {count}" data-label-unavailable="הצפיות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     <span class="post-view-count" data-post-view-count dir="ltr">—</span>
   </span>
@@ -566,7 +565,7 @@
       
     </div>
     <div class="post-engagement" data-post-engagement>
-  <button class="post-vote" type="button" data-post-vote data-post-id="layout-stress-long-title-01" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות כרגע.">
+  <button class="post-vote" type="button" data-post-vote data-post-id="layout-stress-long-title-01" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
     <span class="post-vote-count" data-post-vote-count dir="ltr">—</span>
     <span class="visually-hidden" data-post-vote-label>הצבעה בעד הפוסט</span>
@@ -575,7 +574,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2ZM7 9h10M7 13h7"/></svg>
     <span class="post-comment-count" data-post-comment-count dir="ltr">—</span>
   </a>
-  <span class="post-views" data-post-views role="img" aria-label="מספר הצפיות אינו זמין" title="מספר הצפיות אינו זמין" data-label-count="צפיות: {count}" data-label-unavailable="מספר הצפיות אינו זמין">
+  <span class="post-views" data-post-views role="img" aria-label="הצפיות אינן זמינות" title="הצפיות אינן זמינות" data-label-count="צפיות: {count}" data-label-unavailable="הצפיות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     <span class="post-view-count" data-post-view-count dir="ltr">—</span>
   </span>
@@ -606,7 +605,7 @@
       
     </div>
     <div class="post-engagement" data-post-engagement>
-  <button class="post-vote" type="button" data-post-vote data-post-id="layout-stress-long-title-02" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות כרגע.">
+  <button class="post-vote" type="button" data-post-vote data-post-id="layout-stress-long-title-02" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
     <span class="post-vote-count" data-post-vote-count dir="ltr">—</span>
     <span class="visually-hidden" data-post-vote-label>הצבעה בעד הפוסט</span>
@@ -615,7 +614,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2ZM7 9h10M7 13h7"/></svg>
     <span class="post-comment-count" data-post-comment-count dir="ltr">—</span>
   </a>
-  <span class="post-views" data-post-views role="img" aria-label="מספר הצפיות אינו זמין" title="מספר הצפיות אינו זמין" data-label-count="צפיות: {count}" data-label-unavailable="מספר הצפיות אינו זמין">
+  <span class="post-views" data-post-views role="img" aria-label="הצפיות אינן זמינות" title="הצפיות אינן זמינות" data-label-count="צפיות: {count}" data-label-unavailable="הצפיות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     <span class="post-view-count" data-post-view-count dir="ltr">—</span>
   </span>
@@ -646,7 +645,7 @@
       
     </div>
     <div class="post-engagement" data-post-engagement>
-  <button class="post-vote" type="button" data-post-vote data-post-id="layout-stress-long-title-03" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות כרגע.">
+  <button class="post-vote" type="button" data-post-vote data-post-id="layout-stress-long-title-03" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
     <span class="post-vote-count" data-post-vote-count dir="ltr">—</span>
     <span class="visually-hidden" data-post-vote-label>הצבעה בעד הפוסט</span>
@@ -655,7 +654,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2ZM7 9h10M7 13h7"/></svg>
     <span class="post-comment-count" data-post-comment-count dir="ltr">—</span>
   </a>
-  <span class="post-views" data-post-views role="img" aria-label="מספר הצפיות אינו זמין" title="מספר הצפיות אינו זמין" data-label-count="צפיות: {count}" data-label-unavailable="מספר הצפיות אינו זמין">
+  <span class="post-views" data-post-views role="img" aria-label="הצפיות אינן זמינות" title="הצפיות אינן זמינות" data-label-count="צפיות: {count}" data-label-unavailable="הצפיות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     <span class="post-view-count" data-post-view-count dir="ltr">—</span>
   </span>
@@ -686,7 +685,7 @@
       
     </div>
     <div class="post-engagement" data-post-engagement>
-  <button class="post-vote" type="button" data-post-vote data-post-id="mathematical-background-1" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות כרגע.">
+  <button class="post-vote" type="button" data-post-vote data-post-id="mathematical-background-1" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
     <span class="post-vote-count" data-post-vote-count dir="ltr">—</span>
     <span class="visually-hidden" data-post-vote-label>הצבעה בעד הפוסט</span>
@@ -695,7 +694,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2ZM7 9h10M7 13h7"/></svg>
     <span class="post-comment-count" data-post-comment-count dir="ltr">—</span>
   </a>
-  <span class="post-views" data-post-views role="img" aria-label="מספר הצפיות אינו זמין" title="מספר הצפיות אינו זמין" data-label-count="צפיות: {count}" data-label-unavailable="מספר הצפיות אינו זמין">
+  <span class="post-views" data-post-views role="img" aria-label="הצפיות אינן זמינות" title="הצפיות אינן זמינות" data-label-count="צפיות: {count}" data-label-unavailable="הצפיות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     <span class="post-view-count" data-post-view-count dir="ltr">—</span>
   </span>
@@ -726,7 +725,7 @@
       
     </div>
     <div class="post-engagement" data-post-engagement>
-  <button class="post-vote" type="button" data-post-vote data-post-id="mathematical-background-2" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות כרגע.">
+  <button class="post-vote" type="button" data-post-vote data-post-id="mathematical-background-2" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
     <span class="post-vote-count" data-post-vote-count dir="ltr">—</span>
     <span class="visually-hidden" data-post-vote-label>הצבעה בעד הפוסט</span>
@@ -735,7 +734,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2ZM7 9h10M7 13h7"/></svg>
     <span class="post-comment-count" data-post-comment-count dir="ltr">—</span>
   </a>
-  <span class="post-views" data-post-views role="img" aria-label="מספר הצפיות אינו זמין" title="מספר הצפיות אינו זמין" data-label-count="צפיות: {count}" data-label-unavailable="מספר הצפיות אינו זמין">
+  <span class="post-views" data-post-views role="img" aria-label="הצפיות אינן זמינות" title="הצפיות אינן זמינות" data-label-count="צפיות: {count}" data-label-unavailable="הצפיות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     <span class="post-view-count" data-post-view-count dir="ltr">—</span>
   </span>
@@ -766,7 +765,7 @@
       
     </div>
     <div class="post-engagement" data-post-engagement>
-  <button class="post-vote" type="button" data-post-vote data-post-id="metal-example" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות כרגע.">
+  <button class="post-vote" type="button" data-post-vote data-post-id="metal-example" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
     <span class="post-vote-count" data-post-vote-count dir="ltr">—</span>
     <span class="visually-hidden" data-post-vote-label>הצבעה בעד הפוסט</span>
@@ -775,7 +774,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2ZM7 9h10M7 13h7"/></svg>
     <span class="post-comment-count" data-post-comment-count dir="ltr">—</span>
   </a>
-  <span class="post-views" data-post-views role="img" aria-label="מספר הצפיות אינו זמין" title="מספר הצפיות אינו זמין" data-label-count="צפיות: {count}" data-label-unavailable="מספר הצפיות אינו זמין">
+  <span class="post-views" data-post-views role="img" aria-label="הצפיות אינן זמינות" title="הצפיות אינן זמינות" data-label-count="צפיות: {count}" data-label-unavailable="הצפיות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     <span class="post-view-count" data-post-view-count dir="ltr">—</span>
   </span>
@@ -806,7 +805,7 @@
       
     </div>
     <div class="post-engagement" data-post-engagement>
-  <button class="post-vote" type="button" data-post-vote data-post-id="analytical-mechanics-example" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות כרגע.">
+  <button class="post-vote" type="button" data-post-vote data-post-id="analytical-mechanics-example" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
     <span class="post-vote-count" data-post-vote-count dir="ltr">—</span>
     <span class="visually-hidden" data-post-vote-label>הצבעה בעד הפוסט</span>
@@ -815,7 +814,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2ZM7 9h10M7 13h7"/></svg>
     <span class="post-comment-count" data-post-comment-count dir="ltr">—</span>
   </a>
-  <span class="post-views" data-post-views role="img" aria-label="מספר הצפיות אינו זמין" title="מספר הצפיות אינו זמין" data-label-count="צפיות: {count}" data-label-unavailable="מספר הצפיות אינו זמין">
+  <span class="post-views" data-post-views role="img" aria-label="הצפיות אינן זמינות" title="הצפיות אינן זמינות" data-label-count="צפיות: {count}" data-label-unavailable="הצפיות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     <span class="post-view-count" data-post-view-count dir="ltr">—</span>
   </span>
@@ -846,7 +845,7 @@
       
     </div>
     <div class="post-engagement" data-post-engagement>
-  <button class="post-vote" type="button" data-post-vote data-post-id="conformal-symmetry-example" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות כרגע.">
+  <button class="post-vote" type="button" data-post-vote data-post-id="conformal-symmetry-example" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
     <span class="post-vote-count" data-post-vote-count dir="ltr">—</span>
     <span class="visually-hidden" data-post-vote-label>הצבעה בעד הפוסט</span>
@@ -855,7 +854,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2ZM7 9h10M7 13h7"/></svg>
     <span class="post-comment-count" data-post-comment-count dir="ltr">—</span>
   </a>
-  <span class="post-views" data-post-views role="img" aria-label="מספר הצפיות אינו זמין" title="מספר הצפיות אינו זמין" data-label-count="צפיות: {count}" data-label-unavailable="מספר הצפיות אינו זמין">
+  <span class="post-views" data-post-views role="img" aria-label="הצפיות אינן זמינות" title="הצפיות אינן זמינות" data-label-count="צפיות: {count}" data-label-unavailable="הצפיות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     <span class="post-view-count" data-post-view-count dir="ltr">—</span>
   </span>
@@ -886,7 +885,7 @@
       
     </div>
     <div class="post-engagement" data-post-engagement>
-  <button class="post-vote" type="button" data-post-vote data-post-id="listening-for-patterns" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות כרגע.">
+  <button class="post-vote" type="button" data-post-vote data-post-id="listening-for-patterns" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
     <span class="post-vote-count" data-post-vote-count dir="ltr">—</span>
     <span class="visually-hidden" data-post-vote-label>הצבעה בעד הפוסט</span>
@@ -895,7 +894,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2ZM7 9h10M7 13h7"/></svg>
     <span class="post-comment-count" data-post-comment-count dir="ltr">—</span>
   </a>
-  <span class="post-views" data-post-views role="img" aria-label="מספר הצפיות אינו זמין" title="מספר הצפיות אינו זמין" data-label-count="צפיות: {count}" data-label-unavailable="מספר הצפיות אינו זמין">
+  <span class="post-views" data-post-views role="img" aria-label="הצפיות אינן זמינות" title="הצפיות אינן זמינות" data-label-count="צפיות: {count}" data-label-unavailable="הצפיות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     <span class="post-view-count" data-post-view-count dir="ltr">—</span>
   </span>
@@ -926,7 +925,7 @@
       
     </div>
     <div class="post-engagement" data-post-engagement>
-  <button class="post-vote" type="button" data-post-vote data-post-id="hebrew-only-example" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות כרגע.">
+  <button class="post-vote" type="button" data-post-vote data-post-id="hebrew-only-example" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
     <span class="post-vote-count" data-post-vote-count dir="ltr">—</span>
     <span class="visually-hidden" data-post-vote-label>הצבעה בעד הפוסט</span>
@@ -935,7 +934,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2ZM7 9h10M7 13h7"/></svg>
     <span class="post-comment-count" data-post-comment-count dir="ltr">—</span>
   </a>
-  <span class="post-views" data-post-views role="img" aria-label="מספר הצפיות אינו זמין" title="מספר הצפיות אינו זמין" data-label-count="צפיות: {count}" data-label-unavailable="מספר הצפיות אינו זמין">
+  <span class="post-views" data-post-views role="img" aria-label="הצפיות אינן זמינות" title="הצפיות אינן זמינות" data-label-count="צפיות: {count}" data-label-unavailable="הצפיות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     <span class="post-view-count" data-post-view-count dir="ltr">—</span>
   </span>
@@ -974,7 +973,7 @@
       <p class="article-summary">אין צורך לעכב פרסום של פוסט עד שהתרגום יהיה מוכן.</p>
       
     <div class="article-engagement-dock"><div class="post-engagement" data-post-engagement>
-  <button class="post-vote" type="button" data-post-vote data-post-id="hebrew-only-example" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות כרגע.">
+  <button class="post-vote" type="button" data-post-vote data-post-id="hebrew-only-example" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
     <span class="post-vote-count" data-post-vote-count dir="ltr">—</span>
     <span class="visually-hidden" data-post-vote-label>הצבעה בעד הפוסט</span>
@@ -983,13 +982,13 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2ZM7 9h10M7 13h7"/></svg>
     <span class="post-comment-count" data-post-comment-count dir="ltr">—</span>
   </a>
-  <span class="post-views" data-post-views role="img" aria-label="מספר הצפיות אינו זמין" title="מספר הצפיות אינו זמין" data-label-count="צפיות: {count}" data-label-unavailable="מספר הצפיות אינו זמין">
+  <span class="post-views" data-post-views role="img" aria-label="הצפיות אינן זמינות" title="הצפיות אינן זמינות" data-label-count="צפיות: {count}" data-label-unavailable="הצפיות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     <span class="post-view-count" data-post-view-count dir="ltr">—</span>
   </span>
   </div></div></header>
     <div class="article-body"><p>הדוגמה הזאת קיימת בעברית בלבד. מעבר השפה מוביל לעמוד הראשי באנגלית ומסביר שאין תרגום זמין, במקום להציג תוכן עברי כאילו היה פוסט באנגלית.</p><div class="article-tags" data-post-tags-expanded="true"><a class="tag-chip article-tag" data-tag-filter="culture" data-post-tag-topic="culture" href="/ssm/he/?tag=culture&amp;filters=temporary" aria-label="תרבות"><span class="compact-post-tag" aria-hidden="true"><bdi dir="auto">תרבות</bdi></span></a><a class="tag-chip article-tag" data-tag-filter="notes" data-post-tag-topic="notes" href="/ssm/he/?tag=notes&amp;filters=temporary" aria-label="רשימות"><span class="compact-post-tag" aria-hidden="true"><bdi dir="auto">רשימות</bdi></span></a></div><div class="article-engagement-dock article-end-engagement-dock"><div class="post-engagement" data-post-engagement>
-  <button class="post-vote" type="button" data-post-vote data-post-id="hebrew-only-example" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות כרגע.">
+  <button class="post-vote" type="button" data-post-vote data-post-id="hebrew-only-example" disabled aria-pressed="false" aria-label="הצבעה בעד הפוסט" aria-describedby="post-vote-privacy" title="הצבעה בעד הפוסט" data-label-upvote="הצבעה בעד הפוסט" data-label-remove="ביטול ההצבעה בעד" data-label-count="הצבעות בעד: {count}" data-label-unavailable="ההצבעות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
     <span class="post-vote-count" data-post-vote-count dir="ltr">—</span>
     <span class="visually-hidden" data-post-vote-label>הצבעה בעד הפוסט</span>
@@ -998,7 +997,7 @@
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-6 4V6a2 2 0 0 1 2-2ZM7 9h10M7 13h7"/></svg>
     <span class="post-comment-count" data-post-comment-count dir="ltr">—</span>
   </a>
-  <span class="post-views" data-post-views role="img" aria-label="מספר הצפיות אינו זמין" title="מספר הצפיות אינו זמין" data-label-count="צפיות: {count}" data-label-unavailable="מספר הצפיות אינו זמין">
+  <span class="post-views" data-post-views role="img" aria-label="הצפיות אינן זמינות" title="הצפיות אינן זמינות" data-label-count="צפיות: {count}" data-label-unavailable="הצפיות אינן זמינות">
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     <span class="post-view-count" data-post-view-count dir="ltr">—</span>
   </span>
@@ -1104,7 +1103,7 @@
       </div>
     </div>
   </dialog>
-  <script data-home-state-script="site" src="/ssm/assets/site.js?v=e3d84d6723d6" defer></script>
+  <script data-home-state-script="site" src="/ssm/assets/site.js?v=355d416d0c4d" defer></script>
   
   <p class="visually-hidden" id="post-vote-privacy">אין צורך בחשבון. מזהה הדפדפן, כתובת ה־IP, המדינה, הזמן והפעולה נשמרים באופן פרטי וללא הגבלת זמן לצורכי סטטיסטיקה ומניעת שימוש לרעה.</p>
   <p class="visually-hidden" role="status" data-pin-status data-saved="הפוסט הוצמד." data-removed="הצמדת הפוסט בוטלה." data-temporary="הדפדפן אינו מאפשר לשמור את הבחירה. היא תישמר רק בעמוד הזה."></p>
@@ -1112,7 +1111,7 @@
   <script data-home-state-script="post-browser" type="module" src="/ssm/assets/post-browser.js?v=d5679690ee90"></script>
   <p class="visually-hidden" role="status" data-read-status data-read="הפוסט סומן כנקרא." data-unread="הפוסט סומן כלא נקרא." data-temporary="הדפדפן אינו מאפשר לשמור את הבחירה. היא תישמר רק בעמוד הזה."></p>
   <script data-home-state-script="read-status" type="module" src="/ssm/assets/read-status.js?v=2e2a6e6f3010"></script>
-  <p class="visually-hidden" role="status" aria-live="polite" data-post-vote-status data-saved="ההצבעה בעד נוספה." data-removed="ההצבעה בעד בוטלה." data-unavailable="ההצבעות אינן זמינות כרגע."></p>
+  <p class="visually-hidden" role="status" aria-live="polite" data-post-vote-status data-saved="ההצבעה בעד נוספה." data-removed="ההצבעה בעד בוטלה." data-unavailable="ההצבעות אינן זמינות"></p>
   <script data-home-state-script="post-votes" type="module" src="/ssm/assets/post-votes.js?v=babf44d37416"></script>
   <script type="module" src="/ssm/assets/statistics-tracker.js?v=4ec4f52e33d6"></script>
 <script data-home-state-script="post-tag-scroll" type="module" src="/ssm/assets/post-tag-scroll.js?v=7cbe770bb1a4" data-post-tag-scroll></script>
