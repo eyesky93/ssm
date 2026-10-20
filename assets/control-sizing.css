@@ -171,7 +171,7 @@
 :root .share-options a,
 :root .share-options button,
 :root .search-dialog-close,
-:root .subscription-close,
+:root .dialog-close,
 :root .back-to-top,
 :root .post-navigation > a,
 :root .reader-controls .post-position,
@@ -215,7 +215,7 @@
 :root .share-menu summary:where(:not(.quiet-control)),
 :root .share-options a,
 :root .share-options button,
-:root .subscription-close,
+:root .dialog-close,
 :root .back-to-top {
   padding: var(--control-padding);
 }
@@ -1169,7 +1169,8 @@
   block-size: auto;
   align-items: stretch;
   justify-items: stretch;
-  direction: ltr;
+  /* Column one is inline-start; the same grid mirrors naturally in RTL. */
+  direction: inherit;
 }
 :root .settings-lower > .user-action,
 :root .settings-lower > [data-user-open] { grid-column: 1; grid-row: 1; }
@@ -1302,7 +1303,7 @@
   max-inline-size: calc(100vw - 1rem);
   max-block-size: min(85vh, 40rem);
   overflow: auto;
-  padding: var(--header-control-size) var(--control-capsule-gap);
+  padding: calc(var(--dialog-close-offset) + var(--control-size) + var(--control-capsule-gap)) var(--control-capsule-gap) var(--control-capsule-gap);
   border: 1px solid var(--line-dark);
   border-radius: var(--control-radius);
   background: var(--paper);
@@ -1310,23 +1311,6 @@
   box-shadow: var(--shadow);
 }
 .user-dialog::backdrop { background: rgb(0 0 0 / .56); }
-.user-dialog h2 { margin: 0 0 var(--control-capsule-gap); font-size: 1.25rem; }
-.user-dialog-close {
-  position: absolute;
-  inset-inline-end: var(--control-capsule-gap);
-  inset-block-start: var(--control-capsule-gap);
-  display: grid;
-  place-items: center;
-  inline-size: var(--control-icon-size);
-  block-size: var(--control-icon-size);
-  padding: 0;
-  border: 0;
-  border-radius: var(--control-inner-radius);
-  background: transparent;
-  color: var(--ink);
-  cursor: pointer;
-}
-.user-dialog-close > svg { inline-size: 100%; block-size: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
 .user-dialog-content { display: flex; flex-direction: column; gap: var(--control-capsule-gap); }
 .user-dialog-content > p { margin: 0; }
 .user-dialog .user-name { font-weight: 700; overflow-wrap: anywhere; }
@@ -1343,7 +1327,8 @@
   cursor: pointer;
 }
 .user-logout-button:disabled { opacity: .45; cursor: default; }
-.user-dialog-status { margin: var(--control-capsule-gap) 0 0; min-block-size: 1em; color: var(--muted); }
+.user-dialog-status { margin: var(--control-capsule-gap) 0 0; color: var(--muted); }
+.user-dialog-status:empty { display: none; }
 .user-dialog-status[data-error="true"] { color: var(--accent-strong); }
 
 /* Shared by Comments, profile linking, and User on every page, including About.
