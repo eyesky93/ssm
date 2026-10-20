@@ -598,7 +598,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* Low-specificity geometry cannot override the provider's own icon inset.
    Longer text actions remain capsules; the layout capsule sizes its own cells.
    Refresh is a standalone framed-control and is deliberately not duplicated here. */
-:root :is([data-ssm-comments], .comment-section-heading) :where(.comment-provider-button, .comment-actions > button[aria-pressed]) {
+:root :is([data-ssm-comments], .comment-section-heading) :where(.comment-actions > button[aria-pressed]) {
   inline-size: var(--control-size);
   min-inline-size: var(--control-size);
   max-inline-size: var(--control-size);
@@ -610,19 +610,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   place-items: center;
   padding: 0;
   border-radius: var(--control-radius);
-}
-/* Provider logos only own their inset and artwork; .surface-control owns
-   the same palette, border and every interaction state as other buttons. */
-:root :is([data-ssm-comments], .comment-section-heading) button.comment-provider-button {
-  padding: var(--control-padding);
-}
-:root :is([data-ssm-comments], .comment-section-heading) .comment-provider-button > svg {
-  display: block;
-  width: var(--control-icon-size);
-  height: var(--control-icon-size);
-  max-inline-size: 100%;
-  max-block-size: 100%;
-  fill: currentColor;
 }
 /* The existing loader disables Refresh until its request settles, including
    errors. Animate only the arrows; the shared button and capsule stay still.
@@ -745,9 +732,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   align-items: center;
   justify-content: center;
   text-align: center;
-}
-:root [data-ssm-comments] .comment-identity[data-signed-in="false"] > .comment-providers {
-  justify-content: center;
 }
 :root [data-ssm-comments] .comment-signin-label { margin: 0; }
 /* Session actions share the toolbar; Logout is after Help, nearest its corner. */

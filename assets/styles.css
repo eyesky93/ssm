@@ -1629,14 +1629,11 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 /* Native SSM discussion: uses the same live accent and light/dark tokens. */
 .comment-identity { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem; margin-block: 1.4rem 1rem; }
 .comment-signin-label { font-size: .875rem; color: var(--muted); }
-.comment-providers { display: flex; flex-wrap: wrap; gap: .4rem; }
 [data-ssm-comments] button, [data-ssm-comments] select, .comment-account-dialog input, .comment-editor-dialog input { font: inherit; font-size: .875rem; padding: .48rem .7rem; }
 [data-ssm-comments] button:where(:not(.surface-control)), [data-ssm-comments] select, .comment-account-dialog input, .comment-editor-dialog input { font: inherit; font-size: .875rem; border: 1px solid var(--line); border-radius: .45rem; padding: .48rem .7rem; background: var(--paper); color: var(--ink); }
 [data-ssm-comments] button { cursor: pointer; }
 [data-ssm-comments] button:where(:not(.surface-control)):hover:not(:disabled), [data-ssm-comments] button:where(:not(.surface-control))[data-selected="true"] { border-color: var(--accent-strong); color: var(--accent-strong); background: var(--surface); }
 [data-ssm-comments] button:where(:not(.surface-control)):disabled { opacity: .48; cursor: not-allowed; }
-[data-ssm-comments] .comment-provider-button { display: grid; place-items: center; flex: 0 0 var(--minimum-touch-target); inline-size: var(--minimum-touch-target); block-size: var(--minimum-touch-target); padding: .7rem; }
-.comment-provider-button svg { display: block; inline-size: 100%; block-size: 100%; fill: currentColor; }
 .comment-composer { border: 1px solid var(--line-dark); border-radius: .7rem; overflow: hidden; background: var(--paper); }
 .comment-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: .2rem; padding: .5rem; background: var(--surface); border-block-end: 1px solid var(--line); }
 .comment-toolbar > button { display: grid; place-items: center; border: 0; min-inline-size: 2.5rem; min-block-size: 2.5rem; padding: .4rem; font-weight: 600; }

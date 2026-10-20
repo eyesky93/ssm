@@ -175,7 +175,6 @@
 :root .back-to-top,
 :root .post-navigation > a,
 :root .reader-controls .post-position,
-:root [data-ssm-comments] .comment-provider-button,
 :root [data-ssm-comments] .comment-toolbar [data-format="help"],
 :root [data-directory] .map-switch > a,
 :root .map-toolbar .map-history-button,
@@ -1331,7 +1330,7 @@
 .user-dialog-content { display: flex; flex-direction: column; gap: var(--control-capsule-gap); }
 .user-dialog-content > p { margin: 0; }
 .user-dialog .user-name { font-weight: 700; overflow-wrap: anywhere; }
-.user-provider-button {
+.user-logout-button {
   display: block;
   inline-size: 100%;
   min-block-size: var(--header-control-size);
@@ -1343,9 +1342,42 @@
   font: inherit;
   cursor: pointer;
 }
-.user-provider-button:disabled { opacity: .45; cursor: default; }
+.user-logout-button:disabled { opacity: .45; cursor: default; }
 .user-dialog-status { margin: var(--control-capsule-gap) 0 0; min-block-size: 1em; color: var(--muted); }
 .user-dialog-status[data-error="true"] { color: var(--accent-strong); }
+
+/* Shared by Comments, profile linking, and User on every page, including About.
+   Only this component owns provider-row/button geometry. SurfaceControl owns
+   the existing navigation/provider palette, hover, focus and disabled paint. */
+:root { --login-provider-gap: .4rem; }
+.comment-providers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--login-provider-gap);
+}
+:root .comment-provider-button {
+  box-sizing: border-box;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 var(--control-size);
+  inline-size: var(--control-size);
+  min-inline-size: var(--control-size);
+  max-inline-size: var(--control-size);
+  block-size: var(--control-size);
+  min-block-size: var(--control-size);
+  max-block-size: var(--control-size);
+  padding: var(--control-padding);
+  border-radius: var(--control-radius);
+}
+:root .comment-provider-button > svg {
+  display: block;
+  width: var(--control-icon-size);
+  height: var(--control-icon-size);
+  max-inline-size: 100%;
+  max-block-size: 100%;
+  fill: currentColor;
+}
 
 /* Mobile-only header control sizing.
    Phones use the same global control geometry as desktop. All dependent
