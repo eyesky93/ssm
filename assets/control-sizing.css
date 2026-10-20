@@ -1506,7 +1506,7 @@
   outline-offset: 0;
 }
 
-/* Header geometry uses .framed-control; .surface-control owns all paint.
+/* Every standalone framed control uses exactly class="framed-control".
    Functional identity is metadata, never an extra CSS class. The crossed grouped
    controls (layout selector and accent-color capsule) deliberately stay outside
    this component. */
@@ -1531,11 +1531,29 @@
   min-block-size: var(--header-control-size);
   max-block-size: var(--header-control-size);
   padding: var(--header-control-padding, var(--control-padding));
+  border: 1px solid var(--line-dark);
   border-radius: var(--control-radius);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: none;
   transform: none;
   text-decoration: none;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+}
+
+:root .framed-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active),
+:root .framed-control[aria-expanded="true"] {
+  border-color: var(--accent-strong);
+  background: var(--surface);
+  color: var(--accent-strong);
+  box-shadow: none;
+  outline: none;
+  transform: none;
+}
+
+:root .framed-control:is(:disabled, [aria-disabled="true"]) {
+  cursor: default;
 }
 
 :root .framed-control > svg {
@@ -1555,7 +1573,7 @@
 }
 :root .framed-control[data-framed-role~="settings-toggle"] > svg path { fill: currentColor; }
 :root .framed-control[data-framed-role~="settings-toggle"] > svg circle {
-  fill: var(--surface-control-background);
+  fill: var(--surface);
   stroke: none;
 }
 
@@ -1939,6 +1957,12 @@
 :root[data-theme="dark"] {
   --control-highlight-color: color-mix(in srgb, var(--paper), var(--accent) 40%);
 }
+:root :is(.control-highlight, .pin-toggle, .share-menu > summary:not(.framed-control)):not(.quiet-control):not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible) {
+  box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
+}
+:root :is(.control-highlight, .pin-toggle, .share-menu > summary:not(.framed-control)):not(.quiet-control):is(:disabled, [aria-disabled="true"]) {
+  box-shadow: none;
+}
 :root .post-card:not(.unread-card):has(.pin-toggle.is-pinned):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   --post-frame-color: var(--line-strong);
   border-color: var(--line-strong) !important;
@@ -2150,8 +2174,8 @@
 }
 :root .accent-hue-popover[data-manual-position][data-positioned] { visibility: visible; }
 
-/* Standalone button paint has one owner. Geometry, glyphs and actions remain
-   in their existing components; no page/provider gets a separate hover rule. */
+/* Only navigation and sign-in providers opt into this shadow component.
+   Menus, resets, forms and other button families keep their existing styles. */
 :root {
   --surface-control-background: var(--inverse-bg);
   --surface-control-ink: var(--inverse-ink);

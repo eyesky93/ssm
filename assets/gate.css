@@ -60,6 +60,10 @@ button:focus-visible {
   width: var(--minimum-touch-target);
   min-height: var(--minimum-touch-target);
   padding: 0;
+  border: 1px solid var(--line-dark);
+  border-radius: 999px;
+  background: var(--surface-translucent);
+  color: var(--ink);
   cursor: pointer;
 }
 .theme-toggle svg {
@@ -86,6 +90,10 @@ button:focus-visible {
 :root[data-theme-preference="light"] [data-theme-icon="light"],
 :root[data-theme-preference="dark"] [data-theme-icon="dark"],
 :root[data-theme-preference="auto"] [data-theme-icon="auto"] { display: block; }
+.theme-toggle:is(:hover, :focus-visible) {
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
+}
 .gate-card {
   width: min(42rem, 100%);
   border: 1px solid var(--line);
@@ -122,9 +130,16 @@ button:focus-visible {
   place-items: center;
   min-width: 8rem;
   min-height: 3rem;
+  border-radius: 999px;
+  background: var(--inverse-bg);
+  color: var(--inverse-ink);
   padding-inline: 1.3rem;
   font-weight: 800;
   text-decoration: none;
+}
+.primary-button:hover {
+  background: var(--accent-strong);
+  color: var(--paper);
 }
 @media (max-width: 420px) {
   .gate-actions { flex-direction: column; }
