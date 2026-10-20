@@ -78,10 +78,10 @@
   root.setAttribute("data-home-starting", "");
 })();
 </script>
-<link rel="preload" as="script" href="/ssm/assets/site.js?v=c1b963d481a4">
-<link rel="modulepreload" href="/ssm/assets/pins.js?v=52a54ded8dda">
-<link rel="modulepreload" href="/ssm/assets/post-browser.js?v=d5679690ee90">
-<link rel="modulepreload" href="/ssm/assets/read-status.js?v=2e2a6e6f3010">
+<link rel="preload" as="script" href="/ssm/assets/site.js?v=e5c95a7e04bf">
+<link rel="modulepreload" href="/ssm/assets/pins.js?v=87fbf5a13b08">
+<link rel="modulepreload" href="/ssm/assets/post-browser.js?v=ce87c0c89068">
+<link rel="modulepreload" href="/ssm/assets/read-status.js?v=e0ae2e9b5721">
 <link rel="modulepreload" href="/ssm/assets/post-votes.js?v=babf44d37416">
 <link rel="modulepreload" href="/ssm/assets/post-tag-scroll.js?v=8af3738348c3">
 <script data-home-appearance-src="/ssm/assets/appearance.js?v=8dfe17594b12">(() => {
@@ -366,7 +366,7 @@
   <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=831c17d3968e" data-post-layout-styles>
   <link rel="stylesheet" href="/ssm/assets/read-filter.css?v=8a25aa5b9ce3">
   
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=a911a1fa9682" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=c96b6716ae9d" data-control-sizing-styles>
 </head>
 <body data-engagement-snapshot="/ssm/engagement.json" data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="https://ssm-pin-stats.eyesky93.workers.dev/pins" data-read-storage="ssm-read:/ssm">
   <header class="site-header">
@@ -421,6 +421,9 @@
         <button class="framed-control" type="button" data-settings-toggle aria-expanded="false" aria-controls="site-settings" aria-label="הגדרות" title="הגדרות" data-framed-role="settings-toggle"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 2-.6 2.5-2 1.2-2.5-.7L2 9.2l1.9 1.8v2L2 14.8 4.4 19l2.5-.7 2 1.2.6 2.5h5l.6-2.5 2-1.2 2.5.7 2.4-4.2-1.9-1.8v-2L22 9.2 19.6 5l-2.5.7-2-1.2L14.5 2Z"/><circle cx="12" cy="12" r="3.5"/></svg></button>
         <div class="header-actions" id="site-settings" aria-label="הגדרות">
           <div class="settings-lower">
+            <button class="framed-control" type="button" data-user-open aria-haspopup="dialog" aria-controls="user-dialog" aria-label="User" data-tooltip="User" data-framed-role="settings-action user-action">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg>
+            </button>
             <div class="updates-controls" aria-label="עדכונים ב־RSS ובדוא״ל">
     <a class="framed-control" href="/ssm/he/feed.xml" type="application/rss+xml" aria-label="ערוץ RSS" data-tooltip="ערוץ RSS" data-framed-role="settings-action rss-action">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="18.5" r="1.5"/><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/></svg>
@@ -457,6 +460,8 @@
     </button>
   </div>
   </details>
+            <span class="settings-placeholder" aria-hidden="true"></span>
+            <span class="settings-placeholder" aria-hidden="true"></span>
           </div>
         </div>
       </div>
@@ -1012,11 +1017,11 @@
     
     <section class="comments-shell" id="comments" aria-labelledby="comments-title">
     <h2 id="comments-title">תגובות</h2>
-    <div data-ssm-comments data-comments-module="/ssm/assets/comments.js?v=5e3944df1244" data-comments-style="/ssm/assets/katex.min.css?v=0289a02cf451" data-post-id="conformal-symmetry-example" data-endpoint="https://ssm-comments.eyesky93.workers.dev" data-lang="he">
+    <div data-ssm-comments data-comments-module="/ssm/assets/comments.js?v=cf9ba3f53f24" data-comments-style="/ssm/assets/katex.min.css?v=0289a02cf451" data-post-id="conformal-symmetry-example" data-endpoint="https://ssm-comments.eyesky93.workers.dev" data-lang="he">
       <p class="comments-intro">התגובות תומכות ב־Markdown וב־LaTeX. כל התרגומים חולקים דיון אחד.</p>
     </div>
     <noscript><p>יש להפעיל JavaScript כדי לטעון את התגובות.</p></noscript>
-    <script type="module" src="/ssm/assets/comments-loader.js?v=465aa87ec102"></script>
+    <script type="module" src="/ssm/assets/comments-loader.js?v=16d0d2ed40e8"></script>
   </section>
   </article></main>
   <footer class="site-footer">
@@ -1109,14 +1114,21 @@
       </div>
     </div>
   </dialog>
-  <script data-home-state-script="site" src="/ssm/assets/site.js?v=c1b963d481a4" data-clipboard-copied="הועתק" defer></script>
+  <dialog class="user-dialog" id="user-dialog" data-user-dialog data-endpoint="https://ssm-comments.eyesky93.workers.dev" data-storage-scope="/ssm" aria-labelledby="user-dialog-title">
+    <button class="user-dialog-close surface-control" type="button" data-user-close aria-label="סגירה"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19"/></svg></button>
+    <h2 id="user-dialog-title">User</h2>
+    <div class="user-dialog-content" data-user-content></div>
+    <p class="user-dialog-status" data-user-status role="status" aria-live="polite"></p>
+  </dialog>
+  <script data-home-state-script="site" src="/ssm/assets/site.js?v=e5c95a7e04bf" data-clipboard-copied="הועתק" defer></script>
+  <script src="/ssm/assets/user-account.js?v=286a4194b979" defer></script>
   
   <p class="visually-hidden" id="post-vote-privacy">אין צורך בחשבון. מזהה הדפדפן, כתובת ה־IP, המדינה, הזמן והפעולה נשמרים באופן פרטי וללא הגבלת זמן לצורכי סטטיסטיקה ומניעת שימוש לרעה.</p>
   <p class="visually-hidden" role="status" data-pin-status data-saved="הפוסט הוצמד." data-removed="הצמדת הפוסט בוטלה." data-temporary="הדפדפן אינו מאפשר לשמור את הבחירה. היא תישמר רק בעמוד הזה."></p>
-  <script data-home-state-script="pins" type="module" src="/ssm/assets/pins.js?v=52a54ded8dda"></script>
-  <script data-home-state-script="post-browser" type="module" src="/ssm/assets/post-browser.js?v=d5679690ee90"></script>
+  <script data-home-state-script="pins" type="module" src="/ssm/assets/pins.js?v=87fbf5a13b08"></script>
+  <script data-home-state-script="post-browser" type="module" src="/ssm/assets/post-browser.js?v=ce87c0c89068"></script>
   <p class="visually-hidden" role="status" data-read-status data-read="הפוסט סומן כנקרא." data-unread="הפוסט סומן כלא נקרא." data-temporary="הדפדפן אינו מאפשר לשמור את הבחירה. היא תישמר רק בעמוד הזה."></p>
-  <script data-home-state-script="read-status" type="module" src="/ssm/assets/read-status.js?v=2e2a6e6f3010"></script>
+  <script data-home-state-script="read-status" type="module" src="/ssm/assets/read-status.js?v=e0ae2e9b5721"></script>
   <p class="visually-hidden" role="status" aria-live="polite" data-post-vote-status data-saved="ההצבעה בעד נוספה." data-removed="ההצבעה בעד בוטלה." data-unavailable="ההצבעות אינן זמינות"></p>
   <script data-home-state-script="post-votes" type="module" src="/ssm/assets/post-votes.js?v=babf44d37416"></script>
   <script type="module" src="/ssm/assets/statistics-tracker.js?v=4ec4f52e33d6"></script>

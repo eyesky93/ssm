@@ -1163,7 +1163,7 @@
 :root .settings-lower {
   display: grid;
   grid-template-columns: repeat(3, var(--settings-cell));
-  grid-template-rows: repeat(2, var(--settings-cell));
+  grid-template-rows: repeat(3, var(--settings-cell));
   gap: var(--settings-gap);
   inline-size: max-content;
   block-size: auto;
@@ -1171,8 +1171,10 @@
   justify-items: stretch;
   direction: ltr;
 }
+:root .settings-lower > .user-action,
+:root .settings-lower > [data-user-open] { grid-column: 1; grid-row: 1; }
 :root .settings-lower > .updates-controls { display: contents; }
-:root .settings-lower > .updates-controls > :first-child { grid-column: 1; grid-row: 1; }
+:root .settings-lower > .updates-controls > :first-child { grid-column: 3; grid-row: 3; }
 :root .settings-lower > .updates-controls > :nth-child(2) { grid-column: 2; grid-row: 1; }
 :root .settings-lower > .random-post { grid-column: 1; grid-row: 2; }
 :root .settings-lower > .theme-toggle { grid-column: 2; grid-row: 2; }
@@ -1187,6 +1189,18 @@
   min-height: 0;
   max-height: none;
 }
+
+:root .settings-lower > .settings-placeholder {
+  box-sizing: border-box;
+  inline-size: var(--settings-cell);
+  block-size: var(--settings-cell);
+  border: 1px solid var(--line-dark);
+  border-radius: var(--control-radius);
+  background: var(--surface);
+  pointer-events: none;
+}
+:root .settings-lower > .settings-placeholder:nth-last-child(2) { grid-column: 1; grid-row: 3; }
+:root .settings-lower > .settings-placeholder:last-child { grid-column: 2; grid-row: 3; }
 
 /* Every settings button consumes the exact same geometry contract as the
    Search/Layout/Language/Settings controls in the header. */
@@ -1278,6 +1292,59 @@
 :root .header-actions .accent-panel > * { border-color: transparent; }
 :root .header-actions .accent-picker::-webkit-color-swatch { border-radius: var(--control-inner-radius); }
 :root .header-actions .accent-picker::-moz-color-swatch { border-radius: var(--control-inner-radius); }
+
+/* User uses the same header/control palette and geometry, not a parallel theme. */
+.user-dialog {
+  position: fixed;
+  box-sizing: border-box;
+  margin: auto;
+  inline-size: min(24rem, calc(100vw - 2 * var(--header-control-size)));
+  max-inline-size: calc(100vw - 1rem);
+  max-block-size: min(85vh, 40rem);
+  overflow: auto;
+  padding: var(--header-control-size) var(--control-capsule-gap);
+  border: 1px solid var(--line-dark);
+  border-radius: var(--control-radius);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+.user-dialog::backdrop { background: rgb(0 0 0 / .56); }
+.user-dialog h2 { margin: 0 0 var(--control-capsule-gap); font-size: 1.25rem; }
+.user-dialog-close {
+  position: absolute;
+  inset-inline-end: var(--control-capsule-gap);
+  inset-block-start: var(--control-capsule-gap);
+  display: grid;
+  place-items: center;
+  inline-size: var(--control-icon-size);
+  block-size: var(--control-icon-size);
+  padding: 0;
+  border: 0;
+  border-radius: var(--control-inner-radius);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+.user-dialog-close > svg { inline-size: 100%; block-size: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.user-dialog-content { display: flex; flex-direction: column; gap: var(--control-capsule-gap); }
+.user-dialog-content > p { margin: 0; }
+.user-dialog .user-name { font-weight: 700; overflow-wrap: anywhere; }
+.user-provider-button {
+  display: block;
+  inline-size: 100%;
+  min-block-size: var(--header-control-size);
+  padding: var(--header-control-padding);
+  border: 1px solid var(--line-dark);
+  border-radius: var(--control-radius);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.user-provider-button:disabled { opacity: .45; cursor: default; }
+.user-dialog-status { margin: var(--control-capsule-gap) 0 0; min-block-size: 1em; color: var(--muted); }
+.user-dialog-status[data-error="true"] { color: var(--accent-strong); }
 
 /* Mobile-only header control sizing.
    Phones use the same global control geometry as desktop. All dependent
