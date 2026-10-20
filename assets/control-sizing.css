@@ -924,8 +924,10 @@
 /* Ordinary cards have two structural columns: content and the independent PSR
    rail. The rail column reserves only the target portion that intrudes into the
    normal content box; its remaining width sits in the existing side padding.
-   This changes the text-box length without moving Pin, Share or Read. */
-:root body .post-stream[data-layout] .post-card:not(.directory-card):has(> [data-card-actions]) {
+   This changes the text-box length without moving Pin, Share or Read.
+   Hidden cards must not enter this layout: its display declaration would
+   otherwise override the filter controller's shared .post-card[hidden] rule. */
+:root body .post-stream[data-layout] .post-card:not(.directory-card, [hidden]):has(> [data-card-actions]) {
   --post-card-padding-inline: var(--standard-post-card-edge-inset);
   --post-card-padding-block: var(--standard-post-card-edge-inset);
   --post-card-action-inline-inset: var(--card-action-rail-inset);
@@ -1115,7 +1117,6 @@
   background: var(--neutral-control-surface);
   box-shadow: none;
 }
-
 /* Settings panel geometry is derived only from the shared header-control tokens.
    No settings-specific button size, radius, icon size or spacing constants. */
 :root .header-actions {
