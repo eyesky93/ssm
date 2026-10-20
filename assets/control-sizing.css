@@ -1786,6 +1786,40 @@
 
 /* Shared interaction states.
    Static CSS keeps first paint deterministic; appearance.js owns only theme-token calculation. */
+/* Hover paint shares one timing model. Like INSPIRE's eased highlights, it
+   starts gently rather than waiting on a JavaScript timer. Only paint changes
+   transition: geometry, visibility, hit targets and selected-state logic do not.
+   Tag-count/X reveals and tooltips retain their separate intentional delays. */
+:root {
+  --hover-highlight-duration: .3s;
+  --hover-highlight-easing: cubic-bezier(.645, .045, .355, 1);
+  --hover-highlight-properties: color, background-color, border-color, box-shadow, text-decoration-color;
+  --hover-highlight-instant: 0s;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  :root :is(a, button, summary, select, textarea, input):not(:where(.tag-exclude, .search-field)),
+  :root :is(.post-card, .comment-box, .tag-option, .search-bar, .topic-option > span),
+  :root .post-engagement :is(.post-vote-count, .post-comment-count, .post-view-count, svg),
+  :root .post-engagement::before,
+  :root .read-toggle::before,
+  :root .quiet-control--checkbox::before,
+  :root .toolbar-view .view-switch > button,
+  :root [data-directory] .map-switch > a,
+  :root .reader-controls :is(.back-to-top, .post-navigation > a, .post-position),
+  :root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]) {
+    transition-property: var(--hover-highlight-properties);
+    transition-duration: var(--hover-highlight-duration);
+    transition-timing-function: var(--hover-highlight-easing);
+    transition-delay: var(--hover-highlight-instant);
+  }
+  /* Native focus/press feedback is immediate, including inherited icon/count
+     colors and checkbox pseudo-elements. This never delays the actual action. */
+  :root :is(:focus-visible, :active, :disabled, [aria-disabled="true"]),
+  :root :is(.tag-option, .search-bar, .topic-option):has(:focus-visible) {
+    --hover-highlight-duration: var(--hover-highlight-instant);
+  }
+}
+
 /* Very compact cards use the same complete localized date as the other views. */
 :root .post-stream[data-layout="compact"] .post-date-full {
   display: inline;
