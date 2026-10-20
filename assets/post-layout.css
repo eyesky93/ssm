@@ -527,9 +527,10 @@ html[lang="he"] .reader-controls .reader-number-error {
    Compact keeps its smaller title ratio from the same canonical unit. */
 :root {
   --tag-label-font-size: 0.8rem;
-  /* All tiled post cards remain the same height, determined by the largest
-     visible card. Keep both dimensions and alignment behind shared variables. */
+  /* Grid fits each row's content; peers in that row still stretch equally.
+     Compact retains its existing catalogue-wide equal-height tracks. */
   --post-stream-row-size: 1fr;
+  --grid-post-stream-row-size: auto;
   --post-stream-card-align: stretch;
 }
 
@@ -546,14 +547,18 @@ html[lang="he"] .reader-controls .reader-number-error {
   font-size: var(--post-card-summary-font-size);
 }
 
-/* Fractional implicit rows belong only to tiled catalogues. List cards stay
-   content-sized, including Directory, so tiled equal-height geometry can never
-   create blank vertical space in list view. */
+/* Row sizing belongs to each layout. A tall card in a later Grid row must
+   never stretch earlier rows, including after filters, pins or viewport changes. */
 :root .post-stream[data-layout="list"] {
   grid-auto-rows: auto;
 }
-:root .post-stream:is([data-layout="grid"], [data-layout="compact"]) {
+:root .post-stream[data-layout="grid"] {
+  grid-auto-rows: var(--grid-post-stream-row-size);
+}
+:root .post-stream[data-layout="compact"] {
   grid-auto-rows: var(--post-stream-row-size);
+}
+:root .post-stream:is([data-layout="grid"], [data-layout="compact"]) {
   align-items: var(--post-stream-card-align);
 }
 :root .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .post-card:not(.directory-card) {

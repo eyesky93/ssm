@@ -1,3 +1,18 @@
+/* Generated from the shared site settings schema; do not edit. */
+:root {
+  --site-font-content: Georgia, "Times New Roman", "Noto Serif Hebrew", serif;
+  --site-font-interface: Inter, "Segoe UI", Arial, "Noto Sans Hebrew", sans-serif;
+  --site-font-hebrew: "Frank Ruhl Libre";
+  --site-font-code: ui-monospace, SFMono-Regular, Consolas, monospace;
+  --site-text-scale: 100%;
+  --site-control-size: 1.9575rem;
+  --site-control-gap: 0.3rem;
+  --site-corner-ratio: 0.16;
+  --site-article-scale: 1;
+  --site-line-height: 1.85;
+  --site-card-title-ratio: 1.5;
+  --site-card-summary-ratio: 1;
+}
 @font-face {
   font-family: "Frank Ruhl Libre";
   font-style: normal;
@@ -94,16 +109,16 @@
   --tag-state-border-strong: var(--accent-strong);
   /* Global font parameters. Change these four values to retheme typography
      without having to hunt through component selectors. */
-  --font-content: Georgia, "Times New Roman", "Noto Serif Hebrew", serif;
-  --font-interface: Inter, "Segoe UI", Arial, "Noto Sans Hebrew", sans-serif;
-  --font-interface-hebrew: "Frank Ruhl Libre";
-  --font-code: ui-monospace, SFMono-Regular, Consolas, monospace;
+  --font-content: var(--site-font-content);
+  --font-interface: var(--site-font-interface);
+  --font-interface-hebrew: var(--site-font-hebrew);
+  --font-code: var(--site-font-code);
 
   /* One canonical post-card type unit; every card text size is a linear
      multiple of this value. */
   --post-card-type-unit: 1rem;
-  --post-card-title-ratio: 1.5;
-  --post-card-summary-ratio: 1;
+  --post-card-title-ratio: var(--site-card-title-ratio);
+  --post-card-summary-ratio: var(--site-card-summary-ratio);
   --post-card-date-ratio: .75;
   --post-card-compact-title-ratio: 1.3;
   --post-card-title-font-size: calc(var(--post-card-type-unit) * var(--post-card-title-ratio));
@@ -145,7 +160,7 @@ html {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-interface);
-  font-size: 100%;
+  font-size: var(--site-text-scale);
   scroll-behavior: smooth;
 }
 
@@ -1223,8 +1238,8 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   min-width: 0;
   padding-block: clamp(1.5rem, 3vw, 2.5rem);
   font-family: var(--font-content);
-  font-size: clamp(1.08rem, 1.6vw, 1.22rem);
-  line-height: 1.85;
+  font-size: clamp(calc(1.08rem * var(--site-article-scale)), calc(1.6vw * var(--site-article-scale)), calc(1.22rem * var(--site-article-scale)));
+  line-height: var(--site-line-height);
   overflow-wrap: anywhere;
 }
 

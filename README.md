@@ -1,6 +1,6 @@
 # SSM
 
-SSM is a multilingual blog about physics, music, and connected ideas.
+Essays and working notes on physics, music, and the patterns between them.
 
 Read the website at https://eyesky93.github.io/ssm/.
 
