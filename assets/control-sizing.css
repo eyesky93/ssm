@@ -25,8 +25,6 @@
   --control-padding: max(0px, calc((var(--control-size) - var(--control-icon-size) - 2px) / 2));
   /* Navigation glyphs share global variables without changing any current
      component geometry. Variant sizes remain proportional to this one base. */
-  /* Navigation alone feathers the shared accent highlight to transparency. */
-  --navigation-highlight-blur: calc(2 * var(--control-highlight-width));
   --navigation-icon-size: var(--control-icon-size);
   --navigation-icon-stroke-width: 1.8;
   --navigation-post-icon-size: calc(var(--navigation-icon-size) * .962962963);
@@ -413,39 +411,12 @@
    are three peers in one flex column. One parent gap therefore separates all. */
 :root [data-directory] .map-history-controls { display: contents; }
 
-/* One global navigation frame for the homepage, reader, Directory and owner
-   edition. Semantic hooks below own layout/typography only, never paint. */
-:root .navigation-control {
-  /* Keep the existing inset without painting a grey or accent stroke. */
-  border: 1px solid transparent;
-  border-radius: var(--control-radius);
-  background: var(--inverse-bg);
-  color: var(--inverse-ink);
-  --control-rest-shadow: 0 8px 24px rgb(0 0 0 / .18);
-  box-shadow: var(--control-rest-shadow);
-  -webkit-tap-highlight-color: transparent;
-}
 /* Reader number/input typography has its own responsive overrides. */
 :root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]) {
   font-family: var(--font-interface);
   font-size: .75rem;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-}
-/* Navigation shares Pin/Share's global highlight width and theme/accent color.
-   Blur the outer highlight to transparency; retain the resting shadow. Hover is
-   local to the actual control, never its dock; a mouse click does not latch it.
-   The input replacing the page number uses the same .post-position contract. */
-:root .navigation-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible) {
-  box-shadow: 0 0 var(--navigation-highlight-blur) var(--control-highlight-width) var(--control-highlight-color), var(--control-rest-shadow);
-  outline: none;
-}
-/* Forced-colors mode suppresses shadows; retain a real keyboard-focus outline. */
-@media (forced-colors: active) {
-  :root .navigation-control:not(:disabled):not([aria-disabled="true"]):focus-visible {
-    outline: 2px solid Highlight;
-    outline-offset: 2px;
-  }
 }
 :root [data-directory] .map-toolbar .map-history-button { padding: var(--control-padding); }
 :root [data-directory] .map-toolbar [data-map-zoom-toggle] {
@@ -458,7 +429,6 @@
   height: var(--navigation-icon-size);
   stroke-width: var(--navigation-icon-stroke-width);
 }
-:root .navigation-control:is(:disabled, [aria-disabled="true"]) { opacity: .45; cursor: default; }
 :root .map-toolbar,
 :root .map-zoom-control { width: var(--control-size); }
 :root .map-zoom-control { height: var(--control-size); }
@@ -1536,7 +1506,7 @@
   outline-offset: 0;
 }
 
-/* Every standalone framed control uses exactly class="framed-control".
+/* Header geometry uses .framed-control; .surface-control owns all paint.
    Functional identity is metadata, never an extra CSS class. The crossed grouped
    controls (layout selector and accent-color capsule) deliberately stay outside
    this component. */
@@ -1561,29 +1531,11 @@
   min-block-size: var(--header-control-size);
   max-block-size: var(--header-control-size);
   padding: var(--header-control-padding, var(--control-padding));
-  border: 1px solid var(--line-dark);
   border-radius: var(--control-radius);
-  background: var(--surface);
-  color: var(--ink);
-  box-shadow: none;
   transform: none;
   text-decoration: none;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-}
-
-:root .framed-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active),
-:root .framed-control[aria-expanded="true"] {
-  border-color: var(--accent-strong);
-  background: var(--surface);
-  color: var(--accent-strong);
-  box-shadow: none;
-  outline: none;
-  transform: none;
-}
-
-:root .framed-control:is(:disabled, [aria-disabled="true"]) {
-  cursor: default;
 }
 
 :root .framed-control > svg {
@@ -1603,7 +1555,7 @@
 }
 :root .framed-control[data-framed-role~="settings-toggle"] > svg path { fill: currentColor; }
 :root .framed-control[data-framed-role~="settings-toggle"] > svg circle {
-  fill: var(--surface);
+  fill: var(--surface-control-background);
   stroke: none;
 }
 
@@ -1707,6 +1659,18 @@
   --compact-card-summary-line-height: 1.4;
   --compact-card-summary-lines: 2;
   --tag-restore-icon-scale: calc(10 / 18);
+}
+
+/* Center direct-text numerals by their font metrics, not the inherited
+   line box. This shared count class covers Directory links and filter badges;
+   compact post counts retain their existing wrapped-label optical correction.
+   The circle, hit target and tag frame keep their original dimensions. */
+:root .tag-count:not(:has(.tag-count-label)) {
+  display: block;
+  align-content: var(--tag-content-alignment);
+  text-align: var(--tag-content-alignment);
+  text-box: trim-both cap alphabetic;
+  line-height: 1;
 }
 
 /* Both tag actions use a 24-unit viewBox, but the restore drawing spans 18
@@ -1975,12 +1939,6 @@
 :root[data-theme="dark"] {
   --control-highlight-color: color-mix(in srgb, var(--paper), var(--accent) 40%);
 }
-:root :is(.control-highlight, .pin-toggle, .share-menu > summary:not(.framed-control)):not(.quiet-control):not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible) {
-  box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
-}
-:root :is(.control-highlight, .pin-toggle, .share-menu > summary:not(.framed-control)):not(.quiet-control):is(:disabled, [aria-disabled="true"]) {
-  box-shadow: none;
-}
 :root .post-card:not(.unread-card):has(.pin-toggle.is-pinned):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
   --post-frame-color: var(--line-strong);
   border-color: var(--line-strong) !important;
@@ -2191,3 +2149,59 @@
   visibility: hidden;
 }
 :root .accent-hue-popover[data-manual-position][data-positioned] { visibility: visible; }
+
+/* Standalone button paint has one owner. Geometry, glyphs and actions remain
+   in their existing components; no page/provider gets a separate hover rule. */
+:root {
+  --surface-control-background: var(--inverse-bg);
+  --surface-control-ink: var(--inverse-ink);
+  --surface-control-radius: var(--control-radius, calc(var(--minimum-touch-target) * .16));
+  --surface-control-disabled-opacity: .45;
+  --control-rest-shadow: 0 8px 24px rgb(0 0 0 / .18);
+  --control-shadow-color: var(--accent-strong);
+  --control-shadow-width: calc(2 * var(--control-highlight-width, 3px));
+  /* Nested alpha 1/n yields an evenly falling COMPOSITE opacity: 100% at
+     the inner edge to 0% outside the last sample. Half-pixel default steps
+     follow the actual rounded rectangle, including native input/select boxes.
+     No low-opacity soft-accent base, opaque background blend or hard outer ring. */
+  --control-shadow-gradient:
+    0 0 0 calc(var(--control-shadow-width) * 0.08333333) var(--control-shadow-color),
+    0 0 0 calc(var(--control-shadow-width) * 0.16666667) color-mix(in srgb, var(--control-shadow-color) 50.00000000%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.25000000) color-mix(in srgb, var(--control-shadow-color) 33.33333333%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.33333333) color-mix(in srgb, var(--control-shadow-color) 25.00000000%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.41666667) color-mix(in srgb, var(--control-shadow-color) 20.00000000%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.50000000) color-mix(in srgb, var(--control-shadow-color) 16.66666667%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.58333333) color-mix(in srgb, var(--control-shadow-color) 14.28571429%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.66666667) color-mix(in srgb, var(--control-shadow-color) 12.50000000%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.75000000) color-mix(in srgb, var(--control-shadow-color) 11.11111111%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.83333333) color-mix(in srgb, var(--control-shadow-color) 10.00000000%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.91666667) color-mix(in srgb, var(--control-shadow-color) 9.09090909%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 1.00000000) color-mix(in srgb, var(--control-shadow-color) 8.33333333%, transparent);
+}
+:root .surface-control {
+  box-sizing: border-box;
+  min-block-size: var(--control-size, var(--minimum-touch-target));
+  border: 1px solid transparent;
+  border-radius: var(--surface-control-radius);
+  background: var(--surface-control-background);
+  color: var(--surface-control-ink);
+  box-shadow: var(--control-rest-shadow);
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+:root .surface-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active) {
+  box-shadow: var(--control-shadow-gradient), var(--control-rest-shadow);
+  outline: none;
+}
+:root .surface-control:is(:disabled, [aria-disabled="true"]) {
+  opacity: var(--surface-control-disabled-opacity);
+  cursor: default;
+}
+/* System high-contrast modes suppress shadows. Keep a visible focus fallback. */
+@media (forced-colors: active) {
+  :root .surface-control:not(:disabled):not([aria-disabled="true"]):focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}

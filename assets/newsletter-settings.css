@@ -81,29 +81,12 @@
 .newsletter-settings .topic-option:hover { border-color: var(--accent); color: var(--accent); }
 .newsletter-settings .topic-option:has(input:checked):hover { color: var(--accent-strong); border-color: var(--accent-strong); }
 .newsletter-settings button {
-  border: 1px solid var(--line-dark);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--ink);
   padding: 10px 16px;
   font-family: inherit;
   font-weight: 600;
   font-size: 15px;
   line-height: 1.4;
   cursor: pointer;
-}
-.newsletter-settings button:hover { color: var(--accent); border-color: var(--accent); }
-.newsletter-settings button:disabled { opacity: .55; cursor: wait; }
-/* Primary actions follow the website's neutral Subscribe button, not an email CTA. */
-.newsletter-settings button.settings-primary {
-  background: var(--inverse-bg);
-  color: var(--inverse-ink);
-  border-color: var(--inverse-bg);
-}
-.newsletter-settings button.settings-primary:is(:hover, :focus-visible) {
-  background: var(--accent-strong);
-  color: var(--paper);
-  border-color: var(--accent-strong);
 }
 .newsletter-settings .settings-actions { margin-top: 24px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .settings-actions .settings-unsubscribe { margin-inline-start: auto; }

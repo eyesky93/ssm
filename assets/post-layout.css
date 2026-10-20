@@ -141,10 +141,10 @@ html { scrollbar-gutter: stable; }
 [data-reader-article][data-directory] > .article-body { padding-block-end: 0; }
 .site-main:has(> [data-reader-article][data-directory]:not([hidden])) { padding-block-end: 1rem; }
 
-/* Keep the shared count badge without a permanent outline. Restore the
-   count link's previous colour change and halo on hover and keyboard focus. */
+/* Keep the count's existing inner circle. Its highlight stays inside the
+   badge; no outer halo may paint over the tag's own border. */
 [data-directory] .map-node > a[data-map-count]:is(:hover, :focus-visible) {
-  box-shadow: inset 0 0 0 2px var(--accent), 0 0 0 3px var(--soft-accent);
+  box-shadow: inset 0 0 0 2px var(--accent);
   background: var(--soft-accent);
   color: var(--accent-strong);
 }
@@ -568,33 +568,6 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* PSR is a direct sibling grid rail owned by control-spacing.css. Typography
    never offsets tags, reserves footer width, or repositions the controls. */
 
-/* Standalone comment buttons share the pin's neutral states and highlight.
-   Sorting keeps the existing page-layout capsule. Ordinary formatting tools
-   keep their original base styles; only Help is a standalone framed button.
-   Component palette tokens are consumed here and on hover/focus, so a
-   variant never loses its colors to these higher-specificity base rules. */
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control) {
-  box-sizing: border-box;
-  min-block-size: var(--control-size);
-  border: 1px solid var(--line-dark);
-  border-radius: var(--control-radius);
-  background: var(--comment-control-bg, var(--surface));
-  color: var(--comment-control-ink, var(--ink));
-  box-shadow: none;
-  transform: none;
-}
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):not(:disabled):is(:hover, :focus-visible) {
-  background: var(--comment-control-bg, var(--surface));
-  color: var(--comment-control-ink, var(--ink));
-  border-color: var(--line-dark);
-  box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
-}
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
-  background: var(--inverse-bg);
-  color: var(--inverse-ink);
-  border-color: var(--inverse-bg);
-}
 /* Low-specificity geometry cannot override the provider's own icon inset.
    Longer text actions remain capsules; the layout capsule sizes its own cells.
    Refresh is a standalone framed-control and is deliberately not duplicated here. */
@@ -611,22 +584,15 @@ html[lang="he"] .reader-controls .reader-number-error {
   padding: 0;
   border-radius: var(--control-radius);
 }
-/* Match navigation's inverse palette: light frames and dark artwork in dark
-   mode, with the corresponding inverse in light mode. Preserve the shared
-   size, icon inset, disabled state and existing hover/focus highlight.
-   Set the shared component palette instead of competing with the base
-   selector: all providers keep these colors at rest, hover and focus. */
+/* Provider logos only own their inset and artwork; .surface-control owns
+   the same palette, border and every interaction state as other buttons. */
 :root :is([data-ssm-comments], .comment-section-heading) button.comment-provider-button {
-  --comment-control-bg: var(--inverse-bg);
-  --comment-control-ink: var(--inverse-ink);
-  padding: max(0px, calc((var(--control-size) - 1.35rem - 2px) / 2));
-  border-radius: var(--control-radius);
-  overflow: hidden;
+  padding: var(--control-padding);
 }
 :root :is([data-ssm-comments], .comment-section-heading) .comment-provider-button > svg {
   display: block;
-  width: 1.35rem;
-  height: 1.35rem;
+  width: var(--control-icon-size);
+  height: var(--control-icon-size);
   max-inline-size: 100%;
   max-block-size: 100%;
   fill: currentColor;
@@ -1360,7 +1326,7 @@ html[lang="he"] .reader-controls .reader-number-error {
      outline and filled states. Only the line color changes with read state. */
   --reader-book-page-lines-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.15 8.161C7.568 8.098 8.905 8.371 10.15 8.954M6.15 11.161C7.568 11.098 8.905 11.371 10.15 11.954M6.15 14.161C7.568 14.098 8.905 14.371 10.15 14.954M17.85 8.161C16.432 8.098 15.095 8.371 13.85 8.954M17.85 11.161C16.432 11.098 15.095 11.371 13.85 11.954M17.85 14.161C16.432 14.098 15.095 14.371 13.85 14.954' fill='none' stroke='black' stroke-width='1.15' stroke-linecap='round'/%3E%3C/svg%3E");
   --reader-book-page-lines-color: currentColor;
-  --reader-book-selected-page-lines-color: var(--surface);
+  --reader-book-selected-page-lines-color: var(--surface-control-background);
 }
 
 

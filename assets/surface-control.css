@@ -1,0 +1,327 @@
+/* Shared interaction states.
+   Static CSS keeps first paint deterministic; appearance.js owns only theme-token calculation. */
+/* Hover paint shares one timing model. Like INSPIRE's eased highlights, it
+   starts gently rather than waiting on a JavaScript timer. Only paint changes
+   transition: geometry, visibility, hit targets and selected-state logic do not.
+   Tag-count/X reveals and tooltips retain their separate intentional delays. */
+:root {
+  --hover-highlight-duration: .3s;
+  --hover-highlight-easing: cubic-bezier(.645, .045, .355, 1);
+  --hover-highlight-properties: color, background-color, border-color, box-shadow, text-decoration-color;
+  --hover-highlight-instant: 0s;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  :root :is(a, button, summary, select, textarea, input):not(:where(.tag-exclude, .search-field)),
+  :root :is(.post-card, .comment-box, .tag-option, .search-bar, .topic-option > span),
+  :root .post-engagement :is(.post-vote-count, .post-comment-count, .post-view-count, svg),
+  :root .post-engagement::before,
+  :root .read-toggle::before,
+  :root .quiet-control--checkbox::before,
+  :root .toolbar-view .view-switch > button,
+  :root [data-directory] .map-switch > a,
+  :root .reader-controls :is(.back-to-top, .post-navigation > a, .post-position),
+  :root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]) {
+    transition-property: var(--hover-highlight-properties);
+    transition-duration: var(--hover-highlight-duration);
+    transition-timing-function: var(--hover-highlight-easing);
+    transition-delay: var(--hover-highlight-instant);
+  }
+  /* Native focus/press feedback is immediate, including inherited icon/count
+     colors and checkbox pseudo-elements. This never delays the actual action. */
+  :root :is(:focus-visible, :active, :disabled, [aria-disabled="true"]),
+  :root :is(.tag-option, .search-bar, .topic-option):has(:focus-visible) {
+    --hover-highlight-duration: var(--hover-highlight-instant);
+  }
+}
+
+/* Very compact cards use the same complete localized date as the other views. */
+:root .post-stream[data-layout="compact"] .post-date-full {
+  display: inline;
+}
+:root .post-stream[data-layout="compact"] .post-date-compact {
+  display: none;
+}
+
+:root .tag-option:not(.is-excluded):not(:has(> .tag-chip[data-selected="true"])):hover {
+  border-color: var(--tag-state-border);
+}
+/* The legacy combined post-tag anchor remains in the DOM only as the
+   behavior source for split hierarchy chips. Its hidden state must win
+   over the base .tag-chip display rule. */
+:root .card-tags > .tag-chip[hidden],
+:root .article-tags > .tag-chip[hidden] {
+  display: none !important;
+}
+/* Counts remain accent-colored independently of the neutral tag label. */
+:root .tag-option:not(.is-excluded) > .tag-chip:not([data-selected="true"]) .tag-count {
+  color: var(--tag-count-text);
+}
+:root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip:not([data-selected="true"]) {
+  color: var(--tag-text);
+}
+/* Selected tags keep the soft fill and accent frame while labels remain
+   neutral and their numeric count keeps its accent affordance. */
+:root .tag-option:not(.is-excluded):has(> .tag-chip[data-selected="true"]) {
+  background: var(--tag-state-fill);
+  border-color: var(--tag-state-border);
+}
+:root .tag-option:not(.is-excluded) > .tag-chip[data-selected="true"] {
+  color: var(--tag-text);
+}
+:root .tag-option:not(.is-excluded) > .tag-chip[data-selected="true"] .tag-count {
+  color: var(--tag-count-text);
+}
+:root .tag-option:not(.is-excluded):has(> .tag-chip[data-selected="true"]):is(:hover, :has(:focus-visible)) {
+  border-color: var(--tag-state-border-strong);
+}
+:root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[data-selected="true"] {
+  color: var(--tag-text);
+}
+:root .tag-option:not(.is-excluded):is(:hover, :has(:focus-visible)) > .tag-chip[data-selected="true"] .tag-count {
+  color: var(--tag-count-text-strong);
+}
+/* Article-page tags mirror the filter-chip palette. Their selected state
+   is exposed by post-browser through aria-pressed, without changing tag
+   navigation behavior or geometry. */
+:root .article-tag[data-selected="true"] {
+  background: var(--tag-state-fill);
+  color: var(--tag-text);
+  border-color: var(--tag-state-border);
+}
+:root .article-tag[data-selected="true"]:is(:hover, :focus-visible) {
+  color: var(--tag-text);
+  border-color: var(--tag-state-border-strong);
+}
+:root .article-tag:not([data-selected="true"]):is(:hover, :focus-visible) {
+  color: var(--tag-text);
+  border-color: var(--tag-state-border);
+}
+/* Hovering or keyboard-focusing one tag highlights every visible copy of
+   that exact topic across the menu, post cards and article page. Keep
+   selected fills intact; synchronize only text/count and frame color. */
+:root .tag-option:not(.is-excluded):has(> .tag-chip.is-topic-hovered) {
+  border-color: var(--tag-state-border) !important;
+}
+:root .tag-option:not(.is-excluded) > .tag-chip.is-topic-hovered,
+:root .card-tag.is-topic-hovered,
+:root .article-tag.is-topic-hovered {
+  color: var(--tag-text) !important;
+  border-color: var(--tag-state-border) !important;
+}
+:root .tag-option:not(.is-excluded) > .tag-chip.is-topic-hovered .tag-count {
+  color: var(--tag-count-text-strong) !important;
+}
+
+/* Every unread post owns the outside accent ribbon, independent of pin
+   state. Keep it as an outside shadow so toggling read state never changes
+   card dimensions. RTL mirrors the ribbon to the right. */
+:root .unread-card {
+  box-shadow: -.32rem 0 0 var(--accent), var(--shadow) !important;
+}
+:root[dir="rtl"] .unread-card {
+  box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
+}
+:root .unread-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+  box-shadow: -.32rem 0 0 var(--accent-strong), var(--shadow) !important;
+}
+:root[dir="rtl"] .unread-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+  box-shadow: .32rem 0 0 var(--accent-strong), var(--shadow) !important;
+}
+:root .unread-card:has(.post-engagement:hover),
+:root .unread-card:has(.post-engagement:focus-within) {
+  box-shadow: -.32rem 0 0 var(--accent), var(--shadow) !important;
+}
+:root[dir="rtl"] .unread-card:has(.post-engagement:hover),
+:root[dir="rtl"] .unread-card:has(.post-engagement:focus-within) {
+  box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
+}
+
+:root .post-engagement .post-vote[data-selected="true"] {
+  background: var(--tag-state-fill);
+}
+:root .post-engagement .post-vote[data-selected="true"] svg,
+:root .post-engagement .post-vote[data-selected="true"] .post-vote-count {
+  color: var(--accent);
+}
+:root .post-engagement .post-vote:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
+  color: var(--accent-strong);
+  border-inline-start-color: var(--accent-strong);
+}
+:root .post-engagement .post-vote[data-selected="true"]:is(:hover, :focus-visible):not(:disabled) svg,
+:root .post-engagement .post-vote[data-selected="true"]:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
+  color: var(--accent-strong);
+}
+:root .post-engagement .post-vote[data-selected="true"] .post-vote-count {
+  border-inline-start-color: var(--accent);
+}
+:root .post-engagement .post-vote[data-selected="true"]:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
+  border-inline-start-color: var(--accent-strong);
+}
+/* Neutral hover shades strengthen toward the foreground, not toward
+   black in both themes. Keep the existing light-mode grey unchanged. */
+:root {
+  --line-strong: color-mix(in srgb, var(--line-dark) 72%, #000);
+}
+:root[data-theme="dark"] {
+  --line-strong: color-mix(in srgb, var(--line-dark) 72%, var(--ink));
+}
+
+/* One interaction-ring contract for existing and new controls. The
+   reusable class opts a control into this highlight without changing
+   its geometry, resting/selected colors, icon, or native behavior.
+   Only the shared color token changes in dark mode; never specialize
+   the highlight for individual controls or pin/open states. */
+:root {
+  --control-highlight-width: 3px;
+  --control-highlight-color: var(--soft-accent);
+}
+:root[data-theme="dark"] {
+  --control-highlight-color: color-mix(in srgb, var(--paper), var(--accent) 40%);
+}
+:root .post-card:not(.unread-card):has(.pin-toggle.is-pinned):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+  --post-frame-color: var(--line-strong);
+  border-color: var(--line-strong) !important;
+  box-shadow: -.32rem 0 0 var(--line-strong), 0 1px 0 rgba(0, 0, 0, 0.03);
+}
+:root[dir="rtl"] .post-card:not(.unread-card):has(.pin-toggle.is-pinned):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
+  box-shadow: .32rem 0 0 var(--line-strong), 0 1px 0 rgba(0, 0, 0, 0.03);
+}
+:root .post-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > .post-engagement::before {
+  z-index: 8;
+}
+
+/* Mirror the English geometry, including border ownership. The upvote
+   owns both of its side borders; the neighboring stats keep a transparent
+   border on that side instead of painting a second highlighted line.
+   Reserve the same border widths at rest and on hover so nothing shifts. */
+:root[dir="rtl"] .post-engagement {
+  direction: ltr;
+  flex-direction: row-reverse;
+}
+:root[dir="rtl"] .post-engagement :is(.post-vote, .post-comments, .post-views) {
+  direction: ltr;
+}
+:root[dir="rtl"] .post-engagement .post-views {
+  border-left: 1px solid var(--line);
+  border-right: 1px solid transparent;
+}
+:root[dir="rtl"] .post-engagement .post-comments {
+  border-left: 1px solid var(--line);
+  border-right: 1px solid transparent;
+}
+:root[dir="rtl"] .post-engagement .post-vote {
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+:root[dir="rtl"] .post-engagement :is(.post-vote, .post-comments, .post-views) > svg {
+  grid-column: 2;
+  grid-row: 1;
+}
+:root[dir="rtl"] .post-engagement :is(.post-vote-count, .post-comment-count, .post-view-count) {
+  grid-column: 1;
+  grid-row: 1;
+  border-left: 0;
+  border-right: 1px solid var(--line);
+}
+:root[dir="rtl"] .post-engagement .post-vote[data-selected="true"] {
+  border-left-color: var(--accent);
+  border-right-color: var(--accent);
+}
+:root[dir="rtl"] .post-engagement .post-vote[data-selected="true"] .post-vote-count {
+  border-left: 0;
+  border-right: 1px solid var(--accent);
+}
+
+/* Change colors only, for selected and unselected upvotes alike. The
+   divider is on the count's right in RTL, and on its left in LTR. */
+:root[dir="rtl"] .post-engagement .post-vote:is(:hover, :focus-visible):not(:disabled) {
+  border-left-color: var(--accent-strong);
+  border-right-color: var(--accent-strong);
+  border-block-end-color: var(--accent-strong);
+}
+:root[dir="rtl"] .post-engagement .post-vote:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
+  color: var(--accent-strong);
+  border-right-color: var(--accent-strong);
+}
+
+/* Hovering the detached engagement strip must never highlight its card in
+   RTL. Keep the card frame and any pin ribbon at their resting colors. */
+:root[dir="rtl"] .post-card:has(> .post-engagement:hover),
+:root[dir="rtl"] .post-card:has(> .post-engagement:focus-within) {
+  --post-frame-color: var(--line) !important;
+  border-color: var(--line) !important;
+}
+:root[dir="rtl"] .post-card:not(.unread-card):has(.pin-toggle.is-pinned):has(> .post-engagement:hover),
+:root[dir="rtl"] .post-card:not(.unread-card):has(.pin-toggle.is-pinned):has(> .post-engagement:focus-within) {
+  box-shadow: .32rem 0 0 var(--line-dark), 0 1px 0 rgba(0, 0, 0, 0.03) !important;
+}
+:root[dir="rtl"] .unread-card:has(.pin-toggle.is-pinned):has(> .post-engagement:hover),
+:root[dir="rtl"] .unread-card:has(.pin-toggle.is-pinned):has(> .post-engagement:focus-within) {
+  box-shadow: .32rem 0 0 var(--accent), var(--shadow) !important;
+}
+
+/* Subscription topic pills indicate selection only through their existing
+   border/text styling. Do not reserve an icon slot for a hidden checkmark. */
+:root .subscribe-dialog .topic-option span {
+  gap: 0;
+}
+:root .subscribe-dialog .topic-option span::before {
+  content: none;
+  display: none;
+}
+
+/* Standalone button paint has one owner. Geometry, glyphs and actions remain
+   in their existing components; no page/provider gets a separate hover rule. */
+:root {
+  --surface-control-background: var(--inverse-bg);
+  --surface-control-ink: var(--inverse-ink);
+  --surface-control-radius: var(--control-radius, calc(var(--minimum-touch-target) * .16));
+  --surface-control-disabled-opacity: .45;
+  --control-rest-shadow: 0 8px 24px rgb(0 0 0 / .18);
+  --control-shadow-color: var(--accent-strong);
+  --control-shadow-width: calc(2 * var(--control-highlight-width, 3px));
+  /* Nested alpha 1/n yields an evenly falling COMPOSITE opacity: 100% at
+     the inner edge to 0% outside the last sample. Half-pixel default steps
+     follow the actual rounded rectangle, including native input/select boxes.
+     No low-opacity soft-accent base, opaque background blend or hard outer ring. */
+  --control-shadow-gradient:
+    0 0 0 calc(var(--control-shadow-width) * 0.08333333) var(--control-shadow-color),
+    0 0 0 calc(var(--control-shadow-width) * 0.16666667) color-mix(in srgb, var(--control-shadow-color) 50.00000000%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.25000000) color-mix(in srgb, var(--control-shadow-color) 33.33333333%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.33333333) color-mix(in srgb, var(--control-shadow-color) 25.00000000%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.41666667) color-mix(in srgb, var(--control-shadow-color) 20.00000000%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.50000000) color-mix(in srgb, var(--control-shadow-color) 16.66666667%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.58333333) color-mix(in srgb, var(--control-shadow-color) 14.28571429%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.66666667) color-mix(in srgb, var(--control-shadow-color) 12.50000000%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.75000000) color-mix(in srgb, var(--control-shadow-color) 11.11111111%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.83333333) color-mix(in srgb, var(--control-shadow-color) 10.00000000%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 0.91666667) color-mix(in srgb, var(--control-shadow-color) 9.09090909%, transparent),
+    0 0 0 calc(var(--control-shadow-width) * 1.00000000) color-mix(in srgb, var(--control-shadow-color) 8.33333333%, transparent);
+}
+:root .surface-control {
+  box-sizing: border-box;
+  min-block-size: var(--control-size, var(--minimum-touch-target));
+  border: 1px solid transparent;
+  border-radius: var(--surface-control-radius);
+  background: var(--surface-control-background);
+  color: var(--surface-control-ink);
+  box-shadow: var(--control-rest-shadow);
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+:root .surface-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active) {
+  box-shadow: var(--control-shadow-gradient), var(--control-rest-shadow);
+  outline: none;
+}
+:root .surface-control:is(:disabled, [aria-disabled="true"]) {
+  opacity: var(--surface-control-disabled-opacity);
+  cursor: default;
+}
+/* System high-contrast modes suppress shadows. Keep a visible focus fallback. */
+@media (forced-colors: active) {
+  :root .surface-control:not(:disabled):not([aria-disabled="true"]):focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}
