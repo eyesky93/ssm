@@ -1706,6 +1706,17 @@
   --compact-card-summary-font-size: .9rem;
   --compact-card-summary-line-height: 1.4;
   --compact-card-summary-lines: 2;
+  --tag-restore-icon-scale: calc(10 / 18);
+}
+
+/* Both tag actions use a 24-unit viewBox, but the restore drawing spans 18
+   units while the X spans 10. Match the glyphs without shrinking the shared
+   badge/hit target or changing the X. Keep their visible stroke weight equal.
+   The same tag-exclude component covers main, descendant and Directory rows. */
+:root .tag-exclude [data-exclude-icon="restore"] {
+  transform: scale(var(--tag-restore-icon-scale));
+  transform-origin: center;
+  stroke-width: calc(var(--tag-remove-icon-stroke-width) * 1px / var(--tag-restore-icon-scale));
 }
 
 /* All catalogue cards share tighter inter-tag spacing on both axes. Keep the
