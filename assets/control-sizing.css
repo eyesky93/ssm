@@ -1294,16 +1294,16 @@
 :root .header-actions .accent-picker::-webkit-color-swatch { border-radius: var(--control-inner-radius); }
 :root .header-actions .accent-picker::-moz-color-swatch { border-radius: var(--control-inner-radius); }
 
-/* User uses the same header/control palette and geometry, not a parallel theme. */
+/* Panel geometry only. LoginControl and DialogCloseControl own their controls. */
 .user-dialog {
   position: fixed;
   box-sizing: border-box;
   margin: auto;
-  inline-size: min(24rem, calc(100vw - 2 * var(--header-control-size)));
-  max-inline-size: calc(100vw - 1rem);
+  inline-size: max-content;
+  max-inline-size: calc(100vw - 2 * var(--control-capsule-gap));
   max-block-size: min(85vh, 40rem);
   overflow: auto;
-  padding: calc(var(--dialog-close-offset) + var(--control-size) + var(--control-capsule-gap)) var(--control-capsule-gap) var(--control-capsule-gap);
+  padding: var(--control-capsule-gap);
   border: 1px solid var(--line-dark);
   border-radius: var(--control-radius);
   background: var(--paper);
@@ -1311,22 +1311,13 @@
   box-shadow: var(--shadow);
 }
 .user-dialog::backdrop { background: rgb(0 0 0 / .56); }
-.user-dialog-content { display: flex; flex-direction: column; gap: var(--control-capsule-gap); }
-.user-dialog-content > p { margin: 0; }
-.user-dialog .user-name { font-weight: 700; overflow-wrap: anywhere; }
-.user-logout-button {
-  display: block;
-  inline-size: 100%;
-  min-block-size: var(--header-control-size);
-  padding: var(--header-control-padding);
-  border: 1px solid var(--line-dark);
-  border-radius: var(--control-radius);
-  background: var(--surface);
-  color: var(--ink);
-  font: inherit;
-  cursor: pointer;
+.user-dialog-content {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  padding: var(--control-capsule-gap);
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
-.user-logout-button:disabled { opacity: .45; cursor: default; }
 .user-dialog-status { margin: var(--control-capsule-gap) 0 0; color: var(--muted); }
 .user-dialog-status:empty { display: none; }
 .user-dialog-status[data-error="true"] { color: var(--accent-strong); }
@@ -1362,6 +1353,22 @@
   max-inline-size: 100%;
   max-block-size: 100%;
   fill: currentColor;
+}
+:root:lang(he) .login-control-label {
+  font-family: var(--font-interface-hebrew), var(--font-interface);
+}
+
+/* Optional labelled row; ordinary Comments and account-linking still wrap. */
+.comment-providers[data-login-inline] {
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  inline-size: max-content;
+}
+.login-control-label {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-family: var(--font-interface);
 }
 
 /* Mobile-only header control sizing.
@@ -2299,7 +2306,7 @@
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-:root .surface-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active) {
+:root .surface-control:not(:disabled):not([aria-disabled="true"]):is(:hover, :focus-visible, :active, [aria-pressed="true"]) {
   box-shadow: var(--control-shadow-gradient), var(--control-rest-shadow);
   outline: none;
 }
@@ -2314,3 +2321,4 @@
     outline-offset: 2px;
   }
 }
+

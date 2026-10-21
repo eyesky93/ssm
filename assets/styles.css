@@ -2152,6 +2152,18 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 .read-toggle.round-control:is(:hover, :focus-visible) { border-color: var(--accent-strong); }
 .read-toggle.round-control.is-read::before { color: var(--ink); }
 
+/* A reusable inline dialog row keeps the shared boxed close in normal flow. */
+.dialog-control-row {
+  display: flex;
+  align-items: center;
+  gap: var(--control-capsule-gap);
+  min-inline-size: 0;
+}
+.dialog-control-row > .dialog-close {
+  position: static;
+  flex: 0 0 var(--control-size);
+}
+
 /* The shared .tooltip class marks native title hints on their controls.
    Do not style it: the browser retains the site's original tooltip appearance.
    These message colors also serve reader feedback and are not tooltip paint. */
