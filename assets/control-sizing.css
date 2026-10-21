@@ -1655,16 +1655,17 @@
   margin: 0;
 }
 
-/* Settings trigger glyph. */
-:root .framed-control[data-framed-role~="settings-toggle"] > svg {
+/* Settings trigger glyph is shared by the full-size frame and compact card
+   rail. Only the control class chooses its dimensions and hover behavior. */
+:root :is(.framed-control, .quiet-control)[data-framed-role~="settings-toggle"] > svg {
   fill: none;
   stroke: currentColor;
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-:root .framed-control[data-framed-role~="settings-toggle"] > svg path { fill: currentColor; }
-:root .framed-control[data-framed-role~="settings-toggle"] > svg circle {
+:root :is(.framed-control, .quiet-control)[data-framed-role~="settings-toggle"] > svg path { fill: currentColor; }
+:root :is(.framed-control, .quiet-control)[data-framed-role~="settings-toggle"] > svg circle {
   fill: var(--surface);
   stroke: none;
 }
