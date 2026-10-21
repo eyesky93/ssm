@@ -981,9 +981,10 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-control-active-color: var(--ink);
   --quiet-share-color: var(--ink);
   --quiet-pin-color: var(--ink);
-  --quiet-pin-underline-width: calc(var(--quiet-control-icon-size) * .70);
-  --quiet-pin-underline-thickness: calc(var(--quiet-control-icon-size) / 16);
-  --quiet-pin-underline-shift: calc(var(--quiet-control-icon-size) * .46);
+  --quiet-pin-badge-size: calc(var(--quiet-control-icon-size) * .6);
+  --quiet-pin-badge-stroke: calc(var(--quiet-control-icon-size) / 16);
+  --quiet-pin-badge-offset: calc(var(--quiet-control-icon-size) * .25);
+  --quiet-pin-badge-background: var(--paper);
   --quiet-checkbox-color: var(--line);
   --quiet-checkbox-hover-color: var(--line-dark);
   --quiet-checkbox-hover-background: var(--code-bg);
@@ -1044,24 +1045,33 @@ html[lang="he"] .reader-controls .reader-number-error {
   justify-self: center;
   align-self: center;
 }
-/* Pin state styling is class-driven. Unpinned hover changes only currentColor,
-   pinned fills the head, and pinned hover adds a compact underline that stays
-   inside the icon's visual bounds. */
+/* Keep the original pin glyph and fill states. Only the unpin affordance is
+   overlaid: a small circled X on pinned hover or keyboard focus. The opaque
+   theme surface masks the pin underneath without adding lines to its shape. */
 .pin-toggle.quiet-control.is-unpinned .pin-head {
   fill: none;
 }
 .pin-toggle.quiet-control.is-pinned .pin-head {
   fill: currentColor;
 }
-.pin-toggle.quiet-control.is-pinned:hover::after {
+.pin-toggle.quiet-control.is-pinned:not(:disabled):is(:hover, :focus-visible)::after {
   content: "";
+  box-sizing: border-box;
   position: absolute;
-  left: 50%;
-  top: calc(50% + var(--quiet-pin-underline-shift));
-  inline-size: var(--quiet-pin-underline-width);
-  block-size: var(--quiet-pin-underline-thickness);
-  border-radius: var(--quiet-control-radius);
-  background: var(--quiet-pin-color);
+  /* Physical lower-right follows the glyph, which is not mirrored in RTL. */
+  left: calc(50% + var(--quiet-pin-badge-offset));
+  top: calc(50% + var(--quiet-pin-badge-offset));
+  inline-size: var(--quiet-pin-badge-size);
+  block-size: var(--quiet-pin-badge-size);
+  border: var(--quiet-pin-badge-stroke) solid var(--quiet-pin-color);
+  border-radius: 50%;
+  background-color: var(--quiet-pin-badge-background);
+  background-image:
+    linear-gradient(45deg, transparent calc(50% - var(--quiet-pin-badge-stroke) / 2), var(--quiet-pin-color) 0, var(--quiet-pin-color) calc(50% + var(--quiet-pin-badge-stroke) / 2), transparent 0),
+    linear-gradient(-45deg, transparent calc(50% - var(--quiet-pin-badge-stroke) / 2), var(--quiet-pin-color) 0, var(--quiet-pin-color) calc(50% + var(--quiet-pin-badge-stroke) / 2), transparent 0);
+  background-size: 60% 60%;
+  background-position: center;
+  background-repeat: no-repeat;
   pointer-events: none;
   transform: translate(-50%, -50%);
 }
