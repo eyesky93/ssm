@@ -23,6 +23,7 @@
   --control-icon-stroke-linecap: round;
   --control-icon-stroke-linejoin: round;
   --control-padding: max(0px, calc((var(--control-size) - var(--control-icon-size) - 2px) / 2));
+  --wordmark-padding-inline: calc(var(--control-size) / 4);
   /* Navigation glyphs share global variables without changing any current
      component geometry. Variant sizes remain proportional to this one base. */
   --navigation-icon-size: var(--control-icon-size);
@@ -90,7 +91,7 @@
   min-height: var(--control-size);
   border-radius: var(--control-radius);
 }
-:root .wordmark { height: var(--control-size); padding-block: 0; }
+:root .wordmark { height: var(--control-size); padding-block: 0; padding-inline: var(--wordmark-padding-inline); }
 
 /* One compact tag model for filters, post layouts, search and Directory.
    Count badges fit inside the frame; selection and scrolling stay shared.
