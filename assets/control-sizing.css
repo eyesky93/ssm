@@ -23,11 +23,12 @@
   --control-icon-stroke-linecap: round;
   --control-icon-stroke-linejoin: round;
   --control-padding: max(0px, calc((var(--control-size) - var(--control-icon-size) - 2px) / 2));
-  /* One site-wide wordmark object. The ratios preserve the established full
-     logo proportions while scaling with the owner's canonical control size. */
-  --wordmark-height: calc(var(--control-size) * 1.15);
+  /* One site-wide wordmark object at its original compact size: as tall as
+     the header controls and tag capsules, with three interface gaps of side
+     inset (phones use two header gaps; see mobile-control-sizing.css). */
+  --wordmark-height: var(--control-size);
   --wordmark-font-size: calc(var(--control-size) * .562);
-  --wordmark-padding-inline: calc(var(--control-size) * .65);
+  --wordmark-padding-inline: calc(3 * var(--interface-gap));
   /* Navigation glyphs share global variables without changing any current
      component geometry. Variant sizes remain proportional to this one base. */
   --navigation-icon-size: var(--control-icon-size);
@@ -868,8 +869,7 @@
    controls-to-rule comes from padding; rule-to-first-card comes from margin. */
 :root body .site-header {
   min-height: 0;
-  padding-block: var(--interface-gap);
-  gap: var(--interface-gap);
+  padding-block: var(--interface-edge-gap);
 }
 :root body .browser-toolbar {
   padding-block: var(--interface-edge-gap);
@@ -1400,6 +1400,9 @@
 }
 
 @media (max-width: 700px) {
+  /* The phone SSM wordmark keeps its original wider inset. */
+  :root { --wordmark-padding-inline: calc(2 * var(--mobile-header-control-gap)); }
+
   /* Keep both header groups on one centered line and use the same spacing token
      between SSM/About and the Search/Language/Settings controls. */
   :root body .site-header {

@@ -618,7 +618,10 @@ html[lang="he"] :is(.search-dialog-header h2, .search-submit) { font-family: var
 .breadcrumbs { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-block-end: 1.5rem; font-size: 0.95rem; color: var(--muted); }
 .breadcrumbs a { color: var(--accent-strong); text-underline-offset: 0.15em; }
 .page-heading + .subject-nav { border-block-start: 0; }
-.page-heading h1, .card-tag, .article-tag, .tag-chip, .post-card h2 { overflow-wrap: anywhere; }
+/* Summaries too: a long unhyphenated run (e.g. Hebrew joined by maqaf) must
+   wrap inside its card or reader column instead of widening the whole page. */
+.page-heading h1, .card-tag, .article-tag, .tag-chip, .post-card h2,
+.post-card > p, .article-summary { overflow-wrap: anywhere; }
 .tag-chip > span:first-child { min-width: 0; }
 .tag-count { flex-shrink: 0; }
 .post-card > p { max-width: 85ch; }
@@ -797,6 +800,9 @@ h3 {
 .tag-option:has(.tag-count:hover, .tag-exclude:hover) .tag-count { opacity: 0; transition: opacity 0s 0.7s; }
 .tag-option:has(:focus-visible) .tag-exclude, .tag-option.is-excluded .tag-exclude { opacity: 1; visibility: visible; transition: none; }
 .tag-option:has(:focus-visible) .tag-count, .tag-option.is-excluded .tag-count { opacity: 0; transition: none; }
+/* site.js holds this class across the label-to-X keyboard focus transfer. */
+:root .tag-option.is-keyboard-active .tag-exclude { opacity: 1; visibility: visible; transition: none; }
+:root .tag-option.is-keyboard-active .tag-count { opacity: 0; transition: none; }
 .tag-exclude:hover { background: var(--line-dark); }
 /* The count remains the hover target until the pointer moves. Use that same
    target for the delayed message so revealing X never needs another movement. */
@@ -1432,7 +1438,10 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 .subscribe-dialog .form-status:empty { display: none; }
 .subscribe-dialog .form-status[data-state="success"] { color: var(--accent-strong); font-weight: 700; }
 .subscribe-dialog .form-status[data-state="error"] { border-inline-start: 3px solid var(--accent-strong); color: var(--ink); padding-inline-start: 0.65rem; }
-.subscribe-dialog .form-trap { position: absolute !important; inset-inline-start: -10000px !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important; }
+/* Every honeypot, including the standalone Newsletter settings recovery form:
+   a visible trap invites real readers to type in it, and the Worker then
+   silently discards their request. */
+.form-trap { position: absolute !important; inset-inline-start: -10000px !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important; }
 
 .back-to-top {
   position: fixed;
