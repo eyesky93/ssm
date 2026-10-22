@@ -220,7 +220,7 @@
   min-inline-size: var(--monograph-order-size);
   block-size: var(--monograph-order-size);
   padding-inline: .3em;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--soft-accent);
   color: var(--accent-strong);
   font-family: var(--font-interface);

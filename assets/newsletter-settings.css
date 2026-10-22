@@ -59,7 +59,7 @@
   max-width: 100%;
   cursor: pointer;
   border: 1px solid var(--line-dark);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--ink);
 }
@@ -83,7 +83,7 @@
 .newsletter-settings .topic-option:has(input:checked):hover { color: var(--accent-strong); border-color: var(--accent-strong); }
 .newsletter-settings button {
   border: 1px solid var(--line-dark);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--ink);
   padding: 10px 16px;
@@ -133,7 +133,7 @@
   height: var(--settings-control-size);
   padding: 0;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--surface);
   isolation: isolate;
   flex: 0 0 auto;
@@ -153,7 +153,7 @@
   inset-inline-start: 0;
   width: var(--settings-theme-auto-size);
   height: var(--settings-control-size);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--inverse-bg);
   pointer-events: none;
   transition: transform .18s ease, width .18s ease;
@@ -174,7 +174,7 @@
   color: var(--ink);
   font-weight: 600;
 }
-.settings-theme-track .settings-theme-auto { width: var(--settings-theme-auto-size); border-radius: 999px; }
+.settings-theme-track .settings-theme-auto { width: var(--settings-theme-auto-size); border-radius: var(--radius-pill); }
 .settings-theme-track .settings-theme-choice:has(input:checked) { color: var(--inverse-ink); cursor: default; }
 .settings-theme-track .settings-theme-choice:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 3px; }
 .settings-theme-track .settings-theme-choice:not(:has(input:checked)):hover { color: var(--accent); }
@@ -192,7 +192,7 @@
   flex: 0 0 var(--settings-color-track-size);
   padding: 0;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--surface);
   isolation: isolate;
 }
@@ -232,7 +232,7 @@
   color: var(--ink);
   font-family: inherit;
 }
-.settings-confirm::backdrop { background: rgb(0 0 0 / .5); }
+.settings-confirm::backdrop { background: var(--dialog-backdrop); }
 .settings-confirm h2 { margin: 0; font-size: 23px; line-height: 1.4; }
 .settings-confirm .settings-actions { justify-content: flex-end; }
 @media (prefers-reduced-motion: reduce) { .settings-theme-thumb { transition: none; } }

@@ -78,20 +78,23 @@
   root.setAttribute("data-home-starting", "");
 })();
 </script>
-<link rel="preload" as="script" href="/ssm/assets/site.js?v=83f0ab1cdd66">
+<link rel="preload" as="script" href="/ssm/assets/site.js?v=9bae5a344df1">
 <link rel="modulepreload" href="/ssm/assets/pins.js?v=87fbf5a13b08">
-<link rel="modulepreload" href="/ssm/assets/post-browser.js?v=ce87c0c89068">
+<link rel="modulepreload" href="/ssm/assets/post-browser.js?v=a8f92b35614f">
 <link rel="modulepreload" href="/ssm/assets/read-status.js?v=e0ae2e9b5721">
 <link rel="modulepreload" href="/ssm/assets/post-votes.js?v=babf44d37416">
 <link rel="modulepreload" href="/ssm/assets/post-tag-scroll.js?v=8af3738348c3">
-<script data-home-appearance-src="/ssm/assets/appearance.js?v=8dfe17594b12">(() => {
+<script data-home-appearance-src="/ssm/assets/appearance.js?v=1c15dc66a6a8">(() => {
   const root = document.documentElement;
   const themeMedia = window.matchMedia?.("(prefers-color-scheme: dark)");
   const themeSequence = ["light", "dark", "auto"];
-  const defaults = {
-    light: { background: "#ffffff", text: "#171717", accent: "#1c9ae9" },
-    dark: { background: "#000000", text: "#f5f5f5", accent: "#1c9ae9" },
-  };
+  // The only JavaScript copy of the base palette. It must run before any CSS
+  // loads, so it cannot read design-tokens.css; design-tokens.test.mjs keeps
+  // these values equal to the token sheet. Other scripts read SSMAppearance.defaults.
+  const defaults = Object.freeze({
+    light: Object.freeze({ background: "#ffffff", text: "#171717", accent: "#1c9ae9" }),
+    dark: Object.freeze({ background: "#000000", text: "#f5f5f5", accent: "#1c9ae9" }),
+  });
   const valid = (value) => typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value);
   const normalizeThemePreference = (value) => themeSequence.includes(value) ? value : "auto";
   const readThemePreference = () => {
@@ -239,6 +242,7 @@
   }
 
   window.SSMAppearance = {
+    defaults,
     apply,
     applyPreference,
     colors,
@@ -362,11 +366,11 @@
 </script>
 <!-- ssm-home-first-paint:end -->
   <script src="/ssm/assets/tooltips.js?v=f81771d4e784" defer></script>
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=e3750b5b256c">
-  <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=5702f9ccb74a" data-post-layout-styles>
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=7a44f9800156">
+  <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=a1a44df01ad7" data-post-layout-styles>
   <link rel="stylesheet" href="/ssm/assets/read-filter.css?v=492ebe8e573e">
-  <link rel="stylesheet" href="/ssm/assets/hierarchy.css?v=137a51441934">
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=0cb238043fed" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/hierarchy.css?v=b1858dfd2b31">
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=9aa9154424a6" data-control-sizing-styles>
 </head>
 <body data-engagement-snapshot="/ssm/engagement.json" data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="https://ssm-pin-stats.eyesky93.workers.dev/pins" data-read-storage="ssm-read:/ssm">
   <header class="site-header">
@@ -1199,13 +1203,13 @@
     </div>
     <p class="user-dialog-status" data-user-status role="status" aria-live="polite"></p>
   </dialog>
-  <script data-home-state-script="site" src="/ssm/assets/site.js?v=83f0ab1cdd66" data-clipboard-copied="הועתק" defer></script>
+  <script data-home-state-script="site" src="/ssm/assets/site.js?v=9bae5a344df1" data-clipboard-copied="הועתק" defer></script>
   <script src="/ssm/assets/user-account.js?v=14ac24bd3670" defer></script>
   <script src="/ssm/assets/hierarchy.js?v=8e1f5d6781ee" defer></script>
   <p class="visually-hidden" id="post-vote-privacy">אין צורך בחשבון. מזהה הדפדפן, כתובת ה־IP, המדינה, הזמן והפעולה נשמרים באופן פרטי וללא הגבלת זמן לצורכי סטטיסטיקה ומניעת שימוש לרעה.</p>
   <p class="visually-hidden" role="status" data-pin-status data-saved="הפוסט הוצמד." data-removed="הצמדת הפוסט בוטלה." data-temporary="הדפדפן אינו מאפשר לשמור את הבחירה. היא תישמר רק בעמוד הזה."></p>
   <script data-home-state-script="pins" type="module" src="/ssm/assets/pins.js?v=87fbf5a13b08"></script>
-  <script data-home-state-script="post-browser" type="module" src="/ssm/assets/post-browser.js?v=ce87c0c89068"></script>
+  <script data-home-state-script="post-browser" type="module" src="/ssm/assets/post-browser.js?v=a8f92b35614f"></script>
   <p class="visually-hidden" role="status" data-read-status data-read="הפוסט סומן כנקרא." data-unread="הפוסט סומן כלא נקרא." data-temporary="הדפדפן אינו מאפשר לשמור את הבחירה. היא תישמר רק בעמוד הזה."></p>
   <script data-home-state-script="read-status" type="module" src="/ssm/assets/read-status.js?v=e0ae2e9b5721"></script>
   <p class="visually-hidden" role="status" aria-live="polite" data-post-vote-status data-saved="ההצבעה בעד נוספה." data-removed="ההצבעה בעד בוטלה." data-unavailable="ההצבעות אינן זמינות"></p>

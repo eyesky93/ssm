@@ -78,15 +78,18 @@
   root.setAttribute("data-home-starting", "");
 })();
 </script>
-<link rel="preload" as="script" href="/ssm/assets/site.js?v=83f0ab1cdd66">
-<script data-home-appearance-src="/ssm/assets/appearance.js?v=8dfe17594b12">(() => {
+<link rel="preload" as="script" href="/ssm/assets/site.js?v=9bae5a344df1">
+<script data-home-appearance-src="/ssm/assets/appearance.js?v=1c15dc66a6a8">(() => {
   const root = document.documentElement;
   const themeMedia = window.matchMedia?.("(prefers-color-scheme: dark)");
   const themeSequence = ["light", "dark", "auto"];
-  const defaults = {
-    light: { background: "#ffffff", text: "#171717", accent: "#1c9ae9" },
-    dark: { background: "#000000", text: "#f5f5f5", accent: "#1c9ae9" },
-  };
+  // The only JavaScript copy of the base palette. It must run before any CSS
+  // loads, so it cannot read design-tokens.css; design-tokens.test.mjs keeps
+  // these values equal to the token sheet. Other scripts read SSMAppearance.defaults.
+  const defaults = Object.freeze({
+    light: Object.freeze({ background: "#ffffff", text: "#171717", accent: "#1c9ae9" }),
+    dark: Object.freeze({ background: "#000000", text: "#f5f5f5", accent: "#1c9ae9" }),
+  });
   const valid = (value) => typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value);
   const normalizeThemePreference = (value) => themeSequence.includes(value) ? value : "auto";
   const readThemePreference = () => {
@@ -234,6 +237,7 @@
   }
 
   window.SSMAppearance = {
+    defaults,
     apply,
     applyPreference,
     colors,
@@ -357,10 +361,11 @@
 </script>
 <!-- ssm-home-first-paint:end -->
   <script src="/ssm/assets/tooltips.js?v=f81771d4e784" defer></script>
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=e3750b5b256c">
-  
-  
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=0cb238043fed" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=7a44f9800156">
+  <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=a1a44df01ad7" data-post-layout-styles>
+  <link rel="stylesheet" href="/ssm/assets/read-filter.css?v=492ebe8e573e">
+  <link rel="stylesheet" href="/ssm/assets/hierarchy.css?v=b1858dfd2b31">
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=9aa9154424a6" data-control-sizing-styles>
 </head>
 <body>
   <header class="site-header">
@@ -522,7 +527,7 @@
     </div>
     <p class="user-dialog-status" data-user-status role="status" aria-live="polite"></p>
   </dialog>
-  <script data-home-state-script="site" src="/ssm/assets/site.js?v=83f0ab1cdd66" data-clipboard-copied="Copied" defer></script>
+  <script data-home-state-script="site" src="/ssm/assets/site.js?v=9bae5a344df1" data-clipboard-copied="Copied" defer></script>
   <script src="/ssm/assets/user-account.js?v=14ac24bd3670" defer></script>
   
   
