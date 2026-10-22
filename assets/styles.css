@@ -162,6 +162,9 @@ html {
   font-family: var(--font-interface);
   font-size: var(--site-text-scale);
   scroll-behavior: smooth;
+  /* Every page reserves the scrollbar, so short pages such as About keep the
+     same header, content and footer width as long ones. */
+  scrollbar-gutter: stable;
 }
 
 /* Hebrew interface copy uses Frank Ruhl Libre. Content that explicitly uses
@@ -251,7 +254,6 @@ html[lang="he"] .tag-chip,
 html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-interface-hebrew), var(--font-content); }
 .site-main.home-main { padding-block-start: 0; }
 .home-main > .subject-nav { border-block-start: 0; }
-.about-page { max-width: 65rem; }
 .about-page .page-heading h1 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.025em; }
 .about-copy { font-family: var(--font-content); font-size: clamp(1.15rem, 2vw, 1.5rem); line-height: 1.75; }
 .about-copy p { margin-block: 1.5rem; }

@@ -1,6 +1,3 @@
-/* Reserve the same page width when a view adds/removes the vertical scrollbar. */
-html { scrollbar-gutter: stable; }
-
 .post-heading,
 .post-tools { min-width: 0; }
 
