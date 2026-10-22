@@ -67,24 +67,8 @@ html[lang="he"] [data-directory] .map-stage > :is(.map-filter-bar, .map-mode-con
   margin-inline-start: 0;
 }
 
-/* One global spacing token owns the compact interface chrome: header-to-rule,
-   rule-to-tags, inter-control/inter-tag spacing, and tag-row edge spacing.
-   Post rows deliberately keep their own geometry because their engagement tabs
-   live outside the card border; post-layout.css reserves that space and gives
-   only Directory -> first post the reduced row distance. */
-:root {
-  --interface-gap: var(--tag-capsule-gap, .25rem);
-}
-:root .site-header {
-  min-height: 0;
-  padding-block: var(--interface-gap);
-  gap: var(--interface-gap);
-}
-:root .header-controls {
-  --header-control-gap: var(--control-item-gap, var(--interface-gap)) !important;
-  --header-control-half-gap: calc(var(--header-control-gap) / 2) !important;
-  gap: var(--header-control-gap);
-}
+/* Catalogue-only tag and toolbar spacing. The shared --interface-gap token,
+   site header and wordmark live in control-spacing.css on every route. */
 :root .toolbar-view > .view-switch {
   gap: var(--interface-gap) !important;
 }
@@ -94,14 +78,4 @@ html[lang="he"] [data-directory] .map-stage > :is(.map-filter-bar, .map-mode-con
 :root .browser-toolbar {
   padding-block: var(--interface-gap);
   margin-block-end: var(--interface-gap);
-}
-
-/* The brand uses the same compact height as the header controls instead of the
-   full-size control family. Width stays content-driven for the SSM lettering. */
-:root .wordmark {
-  min-height: var(--compact-control-size) !important;
-  height: var(--compact-control-size) !important;
-  padding-block: 0 !important;
-  padding-inline: calc(3 * var(--interface-gap)) !important;
-  border-radius: var(--control-radius) !important;
 }

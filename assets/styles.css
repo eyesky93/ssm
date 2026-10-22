@@ -221,19 +221,16 @@ select:focus-visible {
   gap: 1.25rem;
 }
 
+/* Paint and label semantics only: shared control-sizing.css owns all brand
+   dimensions across Home, About, posts, Directory and both languages. */
 .wordmark {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: var(--minimum-touch-target);
-  border-radius: 999px;
-  padding: 0.65rem 1rem;
   background: var(--inverse-bg);
   color: var(--inverse-ink);
-  font-size: 1.1rem;
   font-weight: 800;
   letter-spacing: 0.035em;
-  line-height: 1;
   text-decoration: none;
 }
 

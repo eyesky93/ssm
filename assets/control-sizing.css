@@ -23,7 +23,11 @@
   --control-icon-stroke-linecap: round;
   --control-icon-stroke-linejoin: round;
   --control-padding: max(0px, calc((var(--control-size) - var(--control-icon-size) - 2px) / 2));
-  --wordmark-padding-inline: calc(var(--control-size) / 4);
+  /* One site-wide wordmark object. The ratios preserve the established full
+     logo proportions while scaling with the owner's canonical control size. */
+  --wordmark-height: calc(var(--control-size) * 1.15);
+  --wordmark-font-size: calc(var(--control-size) * .562);
+  --wordmark-padding-inline: calc(var(--control-size) * .65);
   /* Navigation glyphs share global variables without changing any current
      component geometry. Variant sizes remain proportional to this one base. */
   --navigation-icon-size: var(--control-icon-size);
@@ -78,7 +82,6 @@
 
 /* Full-size capsules. Text may wrap rather than clip at extreme zoom. */
 :root .control-capsule,
-:root .wordmark,
 :root .search-submit,
 :root .primary-button,
 :root .language-nav a,
@@ -91,7 +94,18 @@
   min-height: var(--control-size);
   border-radius: var(--control-radius);
 }
-:root .wordmark { height: var(--control-size); padding-block: 0; padding-inline: var(--wordmark-padding-inline); }
+:root .wordmark {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: max-content;
+  min-height: var(--wordmark-height);
+  height: var(--wordmark-height);
+  padding-block: 0;
+  padding-inline: var(--wordmark-padding-inline);
+  border-radius: var(--control-radius);
+  font-size: var(--wordmark-font-size);
+  line-height: 1;
+}
 
 /* One compact tag model for filters, post layouts, search and Directory.
    Count badges fit inside the frame; selection and scrolling stay shared.
@@ -756,6 +770,8 @@
   /* Visible catalogue spacing: tag-to-tag gaps, toolbar breathing room and
      card gutters in every homepage layout all consume this one shared token. */
   --interface-edge-gap: 0.5rem;
+  /* Shared header/rule rhythm, identical on pages with and without a post browser. */
+  --interface-gap: var(--tag-capsule-gap, .25rem);
 
   /* Fixed viewport controls share one logical edge contract. The safe-area
      source switches with document direction, so RTL mirrors without per-control
@@ -834,19 +850,17 @@
   gap: var(--interface-edge-gap);
 }
 
-/* Brand navigation has one deliberate larger step, still derived from the same
-   global control gap. SSM and About occupy the same control-height box. */
+/* Brand navigation uses the single shared wordmark height. About follows
+   its baseline without constraining the wordmark or creating another size. */
 :root body .primary-nav {
   gap: var(--brand-item-gap);
 }
-:root body .primary-nav > :is(.wordmark, .about-link) {
+:root body .primary-nav > .about-link {
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
-  min-height: var(--control-size);
-  height: var(--control-size);
-}
-:root body .primary-nav > .about-link {
+  min-height: var(--wordmark-height);
+  height: var(--wordmark-height);
   padding-block: 0;
 }
 
@@ -854,7 +868,8 @@
    controls-to-rule comes from padding; rule-to-first-card comes from margin. */
 :root body .site-header {
   min-height: 0;
-  padding-block: var(--interface-edge-gap);
+  padding-block: var(--interface-gap);
+  gap: var(--interface-gap);
 }
 :root body .browser-toolbar {
   padding-block: var(--interface-edge-gap);
@@ -1380,9 +1395,6 @@
   --mobile-header-control-size: var(--control-size);
   --mobile-header-control-gap: var(--control-item-gap, var(--control-capsule-gap));
   --mobile-header-group-gap: var(--mobile-header-control-gap);
-  --mobile-wordmark-size: var(--mobile-header-control-size);
-  --mobile-wordmark-padding-inline: calc(2 * var(--mobile-header-control-gap));
-  --mobile-wordmark-radius: var(--control-radius);
   --mobile-settings-panel-gap: var(--mobile-header-control-gap);
   --mobile-settings-panel-z: 60;
 }
@@ -1493,17 +1505,6 @@
     height: var(--control-icon-size);
     margin: 0;
     flex: 0 0 var(--control-icon-size);
-  }
-
-  /* The mobile brand frame belongs to the same global geometry family as the
-     header controls. Desktop and mobile therefore keep one compact rhythm. */
-  :root body .wordmark {
-    flex: 0 0 auto;
-    min-height: var(--mobile-wordmark-size) !important;
-    height: var(--mobile-wordmark-size) !important;
-    padding-block: 0 !important;
-    padding-inline: var(--mobile-wordmark-padding-inline) !important;
-    border-radius: var(--mobile-wordmark-radius) !important;
   }
 
   /* Settings is a true popover on phones. The content columns are not merely
