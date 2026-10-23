@@ -686,12 +686,12 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 .comment-line-editor .comment-edit-line { min-block-size: var(--editor-line-size); unicode-bidi: isolate; }
 .comment-layout-root .comment-layout-line { display: block; unicode-bidi: isolate; }
-:is(.comment-line-editor, .comment-body) .comment-align-start { text-align: start; }
-:is(.comment-line-editor, .comment-body) .comment-align-left { text-align: left; }
-:is(.comment-line-editor, .comment-body) .comment-align-center { text-align: center; }
-:is(.comment-line-editor, .comment-body) .comment-align-right { text-align: right; }
-.comment-body .comment-layout-block .katex-display { text-align: inherit; }
-.comment-body .katex, .comment-body pre, .comment-body code { direction: ltr; unicode-bidi: isolate; }
+:is(.comment-line-editor, .comment-body, .about-copy) .comment-align-start { text-align: start; }
+:is(.comment-line-editor, .comment-body, .about-copy) .comment-align-left { text-align: left; }
+:is(.comment-line-editor, .comment-body, .about-copy) .comment-align-center { text-align: center; }
+:is(.comment-line-editor, .comment-body, .about-copy) .comment-align-right { text-align: right; }
+:is(.comment-body, .about-copy) .comment-layout-block .katex-display { text-align: inherit; }
+:is(.comment-body, .about-copy) :is(.katex, pre, code) { direction: ltr; unicode-bidi: isolate; }
 :root [data-ssm-comments] .comment-toolbar > button[data-format][aria-pressed="true"]:not([data-format="help"]) { color: var(--accent-strong); background: var(--soft-accent); }
 
 /* Reserve the same title-row height before the controls mount, rather than

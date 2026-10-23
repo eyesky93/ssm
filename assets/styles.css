@@ -2277,6 +2277,39 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   flex: 0 0 var(--control-size);
 }
 
+/* One confirmation prompt (src/confirm-dialog.js) for every destructive action,
+   in the site's dialog style: the shared surface, frame, backdrop and the same
+   button frame and highlight as the comment controls. */
+.site-confirm {
+  box-sizing: border-box;
+  inline-size: min(var(--dialog-width-sm), calc(100vw - var(--space-4xl)));
+  max-block-size: calc(100dvh - var(--space-4xl));
+  overflow: auto;
+  padding: var(--space-2xl);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-interface);
+}
+.site-confirm::backdrop { background: var(--dialog-backdrop); }
+.site-confirm-message { margin: 0; font: var(--font-size-heading-sm)/1.5 var(--font-content); }
+.site-confirm-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--space-xs); margin-block-start: var(--space-2xl); }
+.site-confirm-actions > button {
+  box-sizing: border-box;
+  min-block-size: var(--control-size);
+  padding: 0 var(--space-lg);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--control-radius);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--font-size-ui);
+  cursor: pointer;
+}
+.site-confirm-actions > [data-confirm-primary] { border-color: var(--ink); background: var(--ink); color: var(--paper); font-weight: 600; }
+.site-confirm-actions > button:is(:hover, :focus-visible) { outline: none; box-shadow: 0 0 0 var(--ring-width) var(--control-highlight-color); }
+
 /* The shared .tooltip class marks native title hints on their controls.
    Do not style it: the browser retains the site's original tooltip appearance.
    These message colors also serve reader feedback and are not tooltip paint. */
