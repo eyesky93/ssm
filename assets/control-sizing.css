@@ -10,35 +10,35 @@
   --control-capsule-gap: var(--site-control-gap);
   --control-switch-duration: .18s;
   --control-switch-easing: cubic-bezier(.2, .8, .2, 1);
-  --control-switch-icon-size: 1.25rem;
+  --control-switch-icon-size: var(--icon-size-md);
   --directory-control-spacing: var(--control-capsule-gap);
-  --control-inner-size: calc(var(--control-size) - 2px);
+  --control-inner-size: calc(var(--control-size) - 2 * var(--border-width-thin));
   --header-control-size: var(--control-size);
   --header-control-row-gap: var(--control-item-gap, var(--control-capsule-gap));
   --header-control-extra-row-offset: 0px;
   --reader-control-size: var(--control-size);
   --surface-padding: calc(var(--control-capsule-gap) * 2);
-  --control-icon-size: 1.35rem;
+  --control-icon-size: var(--icon-size-lg);
   --control-icon-stroke-width: 1.8;
   --control-icon-stroke-linecap: round;
   --control-icon-stroke-linejoin: round;
-  --control-padding: max(0px, calc((var(--control-size) - var(--control-icon-size) - 2px) / 2));
+  --control-padding: max(0px, calc((var(--control-size) - var(--control-icon-size) - 2 * var(--border-width-thin)) / 2));
   /* One site-wide wordmark object at its original compact size: as tall as
-     the header controls and tag capsules, with three interface gaps of side
+     the header controls and tag capsules, with three tight gaps of side
      inset (phones use two header gaps; see mobile-control-sizing.css). */
   --wordmark-height: var(--control-size);
   --wordmark-font-size: calc(var(--control-size) * .562);
-  --wordmark-padding-inline: calc(3 * var(--interface-gap));
+  --wordmark-padding-inline: calc(3 * var(--tight-gap));
   /* Navigation glyphs share global variables without changing any current
      component geometry. Variant sizes remain proportional to this one base. */
   --navigation-icon-size: var(--control-icon-size);
   --navigation-icon-stroke-width: 1.8;
   --navigation-post-icon-size: calc(var(--navigation-icon-size) * .962962963);
   --navigation-inline-icon-size: calc(var(--navigation-icon-size) * .666666667);
-  --reader-navigation-padding: max(0px, calc((var(--reader-control-size) - var(--navigation-icon-size) - 2px) / 2));
-  --reader-position-font-size: .625rem;
-  --reader-position-stacked-font-size: .5625rem;
-  --directory-zoom-toggle-font-size: .625rem;
+  --reader-navigation-padding: max(0px, calc((var(--reader-control-size) - var(--navigation-icon-size) - 2 * var(--border-width-thin)) / 2));
+  --reader-position-font-size: var(--font-size-tiny);
+  --reader-position-stacked-font-size: var(--font-size-micro);
+  --directory-zoom-toggle-font-size: var(--font-size-tiny);
   --directory-zoom-entry-font-size: var(--directory-zoom-toggle-font-size);
   /* Every tag surface uses the same compact frame with no vertical padding. */
   --tag-capsule-size: var(--control-size);
@@ -52,7 +52,7 @@
   --post-tag-capsule-content-gap: .2rem;
   --post-tag-count-size: calc(var(--post-tag-capsule-size) - .2rem);
   --post-tag-count-font-size: calc(var(--post-tag-label-font-size) - .05rem);
-  --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2px);
+  --tag-capsule-inner-size: calc(var(--tag-capsule-size) - 2 * var(--border-width-thin));
   --tag-capsule-radius: var(--control-radius);
   --tag-capsule-padding-block: 0;
   --tag-capsule-padding-inline: var(--control-capsule-gap);
@@ -280,10 +280,10 @@
   border-radius: var(--control-inner-radius);
 }
 :root .search-clear { margin-inline-end: 0; }
-:root .subscription-intro { padding-inline-end: calc(var(--control-size) + .5rem); }
+:root .subscription-intro { padding-inline-end: calc(var(--control-size) + var(--space-xs)); }
 .post-navigation { grid-template-columns: var(--control-size) minmax(0, 1fr) var(--control-size); }
 @media (min-width: 701px) {
-  .post-stream[data-layout="list"] .post-card > p { padding-inline-end: calc(var(--control-size) + .8rem); }
+  .post-stream[data-layout="list"] .post-card > p { padding-inline-end: calc(var(--control-size) + var(--space-md)); }
 }
 
 /* Layout and Tags/Library are the same capsule: one outside frame, rounded
@@ -344,7 +344,7 @@
   position: absolute;
   inset: 0;
   z-index: 2;
-  border: 1px solid var(--line-dark);
+  border: 1px solid var(--line-strong);
   border-radius: inherit;
   pointer-events: none;
 }
@@ -383,8 +383,8 @@
 /* Keep keyboard focus inside the clipped capsule rather than losing its ring. */
 :root .toolbar-view .view-switch > button:focus-visible,
 :root [data-directory] .map-switch > a:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: -4px;
+  outline: var(--focus-outline-width) solid currentColor;
+  outline-offset: var(--focus-outline-inset);
 }
 :root .toolbar-view .view-switch svg,
 :root .map-switch svg {
@@ -429,13 +429,13 @@
 /* Reader number/input typography has its own responsive overrides. */
 :root [data-directory] .map-toolbar :is(.map-history-button, [data-map-zoom-toggle]) {
   font-family: var(--font-interface);
-  font-size: .75rem;
+  font-size: var(--font-size-caption);
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 :root [data-directory] .map-toolbar .map-history-button { padding: var(--control-padding); }
 :root [data-directory] .map-toolbar [data-map-zoom-toggle] {
-  padding: .25rem;
+  padding: var(--space-3xs);
   font-size: var(--directory-zoom-toggle-font-size);
   white-space: nowrap;
 }
@@ -452,9 +452,9 @@
   width: var(--control-size);
   min-height: var(--control-size);
   height: calc(5 * var(--control-size));
-  padding-block-end: calc(var(--control-size) + .5rem);
+  padding-block-end: calc(var(--control-size) + var(--space-xs));
   border-radius: var(--control-radius);
-  border-color: var(--line-dark);
+  border-color: var(--line-strong);
   background: var(--inverse-bg);
   color: var(--inverse-ink);
   box-shadow: var(--popover-shadow);
@@ -515,31 +515,31 @@
 /* Newsletter appearance capsules: replace every fixed track width and thumb
    offset, not just the button height. Logical positioning mirrors in RTL. */
 :root .settings-theme-track {
-  gap: .5rem;
-  grid-template-columns: calc(var(--control-size) + 2.5rem) repeat(2, var(--control-size));
-  width: calc(3 * var(--control-size) + 3.5rem);
+  gap: var(--space-xs);
+  grid-template-columns: calc(var(--control-size) + var(--space-4xl)) repeat(2, var(--control-size));
+  width: calc(3 * var(--control-size) + var(--space-4xl) + 2 * var(--space-xs));
   height: var(--control-size);
 }
 :root .settings-theme-track .settings-theme-auto,
 :root .settings-theme-thumb {
-  width: calc(var(--control-size) + 2.5rem);
+  width: calc(var(--control-size) + var(--space-4xl));
   height: var(--control-size);
 }
 :root .settings-theme-track:has([value="light"]:checked) .settings-theme-thumb {
   width: var(--control-size);
-  inset-inline-start: calc(var(--control-size) + 3rem);
+  inset-inline-start: calc(var(--control-size) + var(--space-4xl) + var(--space-xs));
   transform: none;
 }
 :root .settings-theme-track:has([value="dark"]:checked) .settings-theme-thumb {
   width: var(--control-size);
-  inset-inline-start: calc(2 * var(--control-size) + 3.5rem);
+  inset-inline-start: calc(2 * var(--control-size) + var(--space-4xl) + 2 * var(--space-xs));
   transform: none;
 }
 :root .settings-color-group {
-  gap: .5rem;
-  width: calc(2 * var(--control-size) + .5rem);
+  gap: var(--space-xs);
+  width: calc(2 * var(--control-size) + var(--space-xs));
   height: var(--control-size);
-  flex-basis: calc(2 * var(--control-size) + .5rem);
+  flex-basis: calc(2 * var(--control-size) + var(--space-xs));
 }
 
 :root .settings-theme-thumb {
@@ -581,7 +581,7 @@
   :root .reader-controls .reader-number-error {
     inset-inline-end: 0;
     inset-block-end: calc(100% + var(--control-capsule-gap));
-    max-inline-size: min(20rem, calc(100vw - 2rem - env(safe-area-inset-left) - env(safe-area-inset-right)));
+    max-inline-size: min(var(--reader-error-max-width), calc(100vw - var(--space-3xl) - env(safe-area-inset-left) - env(safe-area-inset-right)));
   }
 
   /* The toolbar keeps its ordinary wrapped flow and one shared control height.
@@ -601,7 +601,7 @@
     min-inline-size: 0;
     block-size: var(--control-size);
     min-block-size: var(--control-size);
-    padding-inline: .2rem;
+    padding-inline: var(--space-3xs);
   }
   :root [data-ssm-comments] .comment-toolbar > button[data-format="help"] {
     flex: 1 1 var(--comment-tool-size);
@@ -663,8 +663,8 @@
 }
 :root .header-controls {
   --header-control-size: var(--compact-control-size);
-  --header-control-inner-size: calc(var(--header-control-size) - 2px);
-  --header-control-padding: max(0px, calc((var(--header-control-size) - var(--control-icon-size) - 2px) / 2));
+  --header-control-inner-size: calc(var(--header-control-size) - 2 * var(--border-width-thin));
+  --header-control-padding: max(0px, calc((var(--header-control-size) - var(--control-icon-size) - 2 * var(--border-width-thin)) / 2));
 }
 
 :root .subject-nav :is(.clear-filter, .filter-reset-slot) {
@@ -765,30 +765,31 @@
 :root {
   --control-item-gap: .45rem;
   --brand-item-gap: calc(2 * var(--control-item-gap));
-  --navigation-border-inset: .5rem;
-  --control-frame-width: 1px;
+  --navigation-border-inset: var(--space-xs);
+  --control-frame-width: var(--border-width-thin);
 
-  /* Visible catalogue spacing: tag-to-tag gaps, toolbar breathing room and
-     card gutters in every homepage layout all consume this one shared token. */
-  --interface-edge-gap: 0.5rem;
-  /* Shared header/rule rhythm, identical on pages with and without a post browser. */
-  --interface-gap: var(--tag-capsule-gap, .25rem);
+  /* Space between layout blocks: card gutters and rows in every homepage
+     layout, header and toolbar padding, and floating panels below their buttons. */
+  --layout-gap: var(--space-xs);
+  /* Half the owner's control gap: catalogue tag rows, the layout switch and
+     the wordmark's side inset, identical on pages with and without a post browser. */
+  --tight-gap: var(--tag-capsule-gap);
 
   /* Fixed viewport controls share one logical edge contract. The safe-area
      source switches with document direction, so RTL mirrors without per-control
      left/right patches. */
   --viewport-inline-end-safe-inset: env(safe-area-inset-right);
-  --floating-control-edge-offset: calc(2 * var(--interface-edge-gap));
+  --floating-control-edge-offset: calc(2 * var(--layout-gap));
   --floating-control-inline-end: max(var(--floating-control-edge-offset), var(--viewport-inline-end-safe-inset));
   --floating-control-block-end: max(var(--floating-control-edge-offset), env(safe-area-inset-bottom));
 
   /* Ordinary post rows need room for their detached engagement tabs. Tiled
      layouts keep that reserve on each ordinary post card so every visible
      edge gap, both between columns and below Directory, comes from the same
-     global interface-edge spacing token. */
-  --post-stream-row-gap: calc(var(--engagement-tab-height, 2rem) + var(--interface-edge-gap));
-  --post-stream-column-gap: var(--interface-edge-gap);
-  --post-stream-compact-column-gap: var(--interface-edge-gap);
+     global --layout-gap token. */
+  --post-stream-row-gap: calc(var(--engagement-tab-height) + var(--layout-gap));
+  --post-stream-column-gap: var(--layout-gap);
+  --post-stream-compact-column-gap: var(--layout-gap);
 
   /* Layout aliases consume the global linear post-card typography scale. */
   --grid-post-title-size: var(--post-card-title-font-size);
@@ -823,7 +824,7 @@
      group returns all unused room to the title. Long labels retain their
      min-content floor and rows remain unrestricted. */
   --list-post-title-share: 3;
-  --list-post-heading-gap: var(--interface-edge-gap);
+  --list-post-heading-gap: var(--layout-gap);
   --list-post-title-wrap: wrap;
   --list-post-tags-share: 1;
   --list-post-tags-max-inline-size: calc((100% - var(--list-post-heading-gap)) * var(--list-post-tags-share) / (var(--list-post-title-share) + var(--list-post-tags-share)));
@@ -831,7 +832,7 @@
   /* Floating neutral controls use the same surface as their surrounding card;
      distinction comes from the shared control frame, never an accent tint. */
   --neutral-control-surface: var(--surface);
-  --neutral-control-frame: var(--line-dark);
+  --neutral-control-frame: var(--line-strong);
 }
 
 :root[dir="rtl"] {
@@ -848,7 +849,7 @@
 /* Main tags, descendant rows and the reset control share the catalogue gap. */
 :root body .subject-nav,
 :root body .subject-nav .tag-list {
-  gap: var(--interface-edge-gap);
+  gap: var(--layout-gap);
 }
 
 /* Brand navigation uses the single shared wordmark height. About follows
@@ -869,11 +870,11 @@
    controls-to-rule comes from padding; rule-to-first-card comes from margin. */
 :root body .site-header {
   min-height: 0;
-  padding-block: var(--interface-edge-gap);
+  padding-block: var(--layout-gap);
 }
 :root body .browser-toolbar {
-  padding-block: var(--interface-edge-gap);
-  margin-block-end: var(--interface-edge-gap);
+  padding-block: var(--layout-gap);
+  margin-block-end: var(--layout-gap);
 }
 
 /* All catalogue layouts use the same visible row gap. Post engagement is
@@ -887,16 +888,16 @@
   --active-post-stream-column-gap: var(--post-stream-compact-column-gap);
 }
 :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) {
-  row-gap: var(--interface-edge-gap);
+  row-gap: var(--layout-gap);
 }
 :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .post-card:not(.directory-card) {
-  margin-block-end: calc(var(--post-stream-row-gap) - var(--interface-edge-gap));
+  margin-block-end: calc(var(--post-stream-row-gap) - var(--layout-gap));
 }
 
 /* Directory and ordinary cards now use the same row gap because ordinary
    engagement controls no longer extend below the card border. */
 :root body .post-stream[data-layout="list"] > .directory-card:not([hidden]) {
-  margin-block-end: calc(var(--interface-edge-gap) - var(--post-stream-row-gap));
+  margin-block-end: calc(var(--layout-gap) - var(--post-stream-row-gap));
 }
 :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .directory-card:not([hidden]):has([data-pin-toggle][aria-pressed="true"]) {
   margin-block-end: 0;
@@ -1137,7 +1138,7 @@
 :root .header-actions {
   --settings-cell: var(--header-control-size);
   --settings-gap: var(--header-control-gap);
-  --settings-padding: var(--interface-edge-gap);
+  --settings-padding: var(--layout-gap);
   --settings-color-width: var(--settings-cell);
   --settings-color-height: auto;
   --settings-layout-width: max-content;
@@ -1145,7 +1146,7 @@
   /* Keep the panel frame padded by half a shared gap while aligning the actual
      grid cells with the last three header-control columns. */
   inset-inline-end: calc(0px - var(--settings-padding));
-  inset-block-start: calc(100% + var(--interface-edge-gap));
+  inset-block-start: calc(100% + var(--layout-gap));
   inline-size: max-content;
   min-inline-size: 0;
   padding: var(--settings-padding);
@@ -1165,10 +1166,10 @@
   position: absolute;
   z-index: 0;
   inset: 0;
-  border: 1px solid var(--line-dark);
+  border: 1px solid var(--line-strong);
   border-radius: var(--control-radius);
   background: var(--surface);
-  box-shadow: var(--shadow);
+  box-shadow: var(--raised-shadow);
   pointer-events: none;
 }
 :root .header-actions > * { position: relative; z-index: 1; }
@@ -1211,7 +1212,7 @@
   box-sizing: border-box;
   inline-size: var(--settings-cell);
   block-size: var(--settings-cell);
-  border: 1px solid var(--line-dark);
+  border: 1px solid var(--line-strong);
   border-radius: var(--control-radius);
   background: var(--surface);
   pointer-events: none;
@@ -1302,7 +1303,7 @@
   position: absolute;
   z-index: 4;
   inset: 0;
-  border: 1px solid var(--line-dark);
+  border: 1px solid var(--line-strong);
   border-radius: inherit;
   pointer-events: none;
 }
@@ -1317,14 +1318,14 @@
   margin: auto;
   inline-size: max-content;
   max-inline-size: calc(100vw - 2 * var(--control-capsule-gap));
-  max-block-size: min(85vh, 40rem);
+  max-block-size: min(85vh, var(--dialog-max-height));
   overflow: auto;
   padding: var(--control-capsule-gap);
-  border: 1px solid var(--line-dark);
+  border: 1px solid var(--line-strong);
   border-radius: var(--control-radius);
   background: var(--paper);
   color: var(--ink);
-  box-shadow: var(--shadow);
+  box-shadow: var(--raised-shadow);
 }
 .user-dialog::backdrop { background: var(--dialog-backdrop); }
 .user-dialog-content {
@@ -1432,8 +1433,8 @@
   }
   :root body .header-controls {
     --header-control-size: var(--mobile-header-control-size);
-    --header-control-inner-size: calc(var(--mobile-header-control-size) - 2px);
-    --header-control-padding: max(0px, calc((var(--mobile-header-control-size) - var(--control-icon-size) - 2px) / 2));
+    --header-control-inner-size: calc(var(--mobile-header-control-size) - 2 * var(--border-width-thin));
+    --header-control-padding: max(0px, calc((var(--mobile-header-control-size) - var(--control-icon-size) - 2 * var(--border-width-thin)) / 2));
     --header-control-gap: var(--mobile-header-control-gap) !important;
     --header-control-half-gap: calc(var(--mobile-header-control-gap) / 2) !important;
     flex: 0 0 auto;
@@ -1517,10 +1518,10 @@
   :root body .header-settings .header-actions {
     --settings-cell: var(--mobile-header-control-size);
     --settings-gap: var(--mobile-header-control-gap);
-    --settings-padding: var(--interface-edge-gap);
+    --settings-padding: var(--layout-gap);
     z-index: var(--mobile-settings-panel-z);
     inset-inline-end: calc(0px - var(--settings-padding));
-    inset-block-start: calc(100% + var(--interface-edge-gap));
+    inset-block-start: calc(100% + var(--layout-gap));
   }
   :root body .header-settings .settings-lower,
   :root body .header-settings .header-actions .accent-panel {
@@ -1628,7 +1629,7 @@
   min-block-size: var(--header-control-size);
   max-block-size: var(--header-control-size);
   padding: var(--header-control-padding, var(--control-padding));
-  border: 1px solid var(--line-dark);
+  border: 1px solid var(--line-strong);
   border-radius: var(--control-radius);
   background: var(--surface);
   color: var(--ink);
@@ -1993,24 +1994,24 @@
    state. Keep it as an outside shadow so toggling read state never changes
    card dimensions. RTL mirrors the ribbon to the right. */
 :root .unread-card {
-  box-shadow: calc(-1 * var(--card-accent-bar-width)) 0 0 var(--accent), var(--shadow) !important;
+  box-shadow: calc(-1 * var(--card-accent-bar-width)) 0 0 var(--accent), var(--raised-shadow) !important;
 }
 :root[dir="rtl"] .unread-card {
-  box-shadow: var(--card-accent-bar-width) 0 0 var(--accent), var(--shadow) !important;
+  box-shadow: var(--card-accent-bar-width) 0 0 var(--accent), var(--raised-shadow) !important;
 }
 :root .unread-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
-  box-shadow: calc(-1 * var(--card-accent-bar-width)) 0 0 var(--accent-strong), var(--shadow) !important;
+  box-shadow: calc(-1 * var(--card-accent-bar-width)) 0 0 var(--accent-strong), var(--raised-shadow) !important;
 }
 :root[dir="rtl"] .unread-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
-  box-shadow: var(--card-accent-bar-width) 0 0 var(--accent-strong), var(--shadow) !important;
+  box-shadow: var(--card-accent-bar-width) 0 0 var(--accent-strong), var(--raised-shadow) !important;
 }
 :root .unread-card:has(.post-engagement:hover),
 :root .unread-card:has(.post-engagement:focus-within) {
-  box-shadow: calc(-1 * var(--card-accent-bar-width)) 0 0 var(--accent), var(--shadow) !important;
+  box-shadow: calc(-1 * var(--card-accent-bar-width)) 0 0 var(--accent), var(--raised-shadow) !important;
 }
 :root[dir="rtl"] .unread-card:has(.post-engagement:hover),
 :root[dir="rtl"] .unread-card:has(.post-engagement:focus-within) {
-  box-shadow: var(--card-accent-bar-width) 0 0 var(--accent), var(--shadow) !important;
+  box-shadow: var(--card-accent-bar-width) 0 0 var(--accent), var(--raised-shadow) !important;
 }
 
 :root .post-engagement .post-vote[data-selected="true"] {
@@ -2034,14 +2035,6 @@
 :root .post-engagement .post-vote[data-selected="true"]:is(:hover, :focus-visible):not(:disabled) .post-vote-count {
   border-inline-start-color: var(--accent-strong);
 }
-/* Neutral hover shades strengthen toward the foreground, not toward
-   black in both themes. Keep the existing light-mode grey unchanged. */
-:root {
-  --line-strong: var(--line-emphasis);
-}
-:root[data-theme="dark"] {
-  --line-strong: color-mix(in srgb, var(--line-dark) 72%, var(--ink));
-}
 
 /* One interaction-ring contract for existing and new controls. The
    reusable class opts a control into this highlight without changing
@@ -2049,7 +2042,7 @@
    Only the shared color token changes in dark mode; never specialize
    the highlight for individual controls or pin/open states. */
 :root {
-  --control-highlight-width: 3px;
+  --control-highlight-width: var(--border-width-thick);
   --control-highlight-color: var(--soft-accent);
 }
 :root[data-theme="dark"] {
@@ -2062,12 +2055,12 @@
   box-shadow: none;
 }
 :root .post-card:not(.unread-card):has(.pin-toggle.is-pinned):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
-  --post-frame-color: var(--line-strong);
-  border-color: var(--line-strong) !important;
-  box-shadow: calc(-1 * var(--card-accent-bar-width)) 0 0 var(--line-strong), var(--card-rest-shadow);
+  --post-frame-color: var(--line-emphasis);
+  border-color: var(--line-emphasis) !important;
+  box-shadow: calc(-1 * var(--card-accent-bar-width)) 0 0 var(--line-emphasis), var(--card-rest-shadow);
 }
 :root[dir="rtl"] .post-card:not(.unread-card):has(.pin-toggle.is-pinned):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
-  box-shadow: var(--card-accent-bar-width) 0 0 var(--line-strong), var(--card-rest-shadow);
+  box-shadow: var(--card-accent-bar-width) 0 0 var(--line-emphasis), var(--card-rest-shadow);
 }
 :root .post-card:hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > .post-engagement::before {
   z-index: 8;
@@ -2136,11 +2129,11 @@
 }
 :root[dir="rtl"] .post-card:not(.unread-card):has(.pin-toggle.is-pinned):has(> .post-engagement:hover),
 :root[dir="rtl"] .post-card:not(.unread-card):has(.pin-toggle.is-pinned):has(> .post-engagement:focus-within) {
-  box-shadow: var(--card-accent-bar-width) 0 0 var(--line-dark), var(--card-rest-shadow) !important;
+  box-shadow: var(--card-accent-bar-width) 0 0 var(--line-strong), var(--card-rest-shadow) !important;
 }
 :root[dir="rtl"] .unread-card:has(.pin-toggle.is-pinned):has(> .post-engagement:hover),
 :root[dir="rtl"] .unread-card:has(.pin-toggle.is-pinned):has(> .post-engagement:focus-within) {
-  box-shadow: var(--card-accent-bar-width) 0 0 var(--accent), var(--shadow) !important;
+  box-shadow: var(--card-accent-bar-width) 0 0 var(--accent), var(--raised-shadow) !important;
 }
 
 /* Subscription topic pills indicate selection only through their existing
@@ -2185,11 +2178,11 @@
   justify-self: end;
   margin: 0;
   margin-inline: var(--accent-hue-panel-gap);
-  inline-size: min(var(--accent-hue-panel-size), calc(var(--accent-hue-available-inline-size) - 2 * var(--interface-edge-gap)));
+  inline-size: min(var(--accent-hue-panel-size), calc(var(--accent-hue-available-inline-size) - 2 * var(--layout-gap)));
   max-inline-size: none;
   block-size: var(--control-size);
   padding: var(--accent-hue-panel-padding);
-  border: var(--control-frame-width) solid var(--line-dark);
+  border: var(--control-frame-width) solid var(--line-strong);
   border-radius: var(--control-radius);
   background: var(--surface);
   color: var(--ink);
@@ -2279,9 +2272,9 @@
   --surface-control-ink: var(--inverse-ink);
   --surface-control-radius: var(--control-radius, calc(var(--minimum-touch-target) * .16));
   --surface-control-disabled-opacity: .45;
-  --control-rest-shadow: 0 8px 24px rgb(0 0 0 / .18);
+  --control-rest-shadow: var(--popover-shadow);
   --control-shadow-color: var(--accent-strong);
-  --control-shadow-width: calc(2 * var(--control-highlight-width, 3px));
+  --control-shadow-width: calc(2 * var(--control-highlight-width));
   /* Nested alpha 1/n yields an evenly falling COMPOSITE opacity: 100% at
      the inner edge to 0% outside the last sample. Half-pixel default steps
      follow the actual rounded rectangle, including native input/select boxes.
@@ -2323,8 +2316,8 @@
 /* System high-contrast modes suppress shadows. Keep a visible focus fallback. */
 @media (forced-colors: active) {
   :root .surface-control:not(:disabled):not([aria-disabled="true"]):focus-visible {
-    outline: 2px solid Highlight;
-    outline-offset: 2px;
+    outline: var(--focus-outline-width) solid Highlight;
+    outline-offset: var(--focus-outline-offset);
   }
 }
 

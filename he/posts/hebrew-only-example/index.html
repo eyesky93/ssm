@@ -83,7 +83,7 @@
 <link rel="modulepreload" href="/ssm/assets/read-status.js?v=e0ae2e9b5721">
 <link rel="modulepreload" href="/ssm/assets/post-votes.js?v=babf44d37416">
 <link rel="modulepreload" href="/ssm/assets/post-tag-scroll.js?v=8af3738348c3">
-<script data-home-appearance-src="/ssm/assets/appearance.js?v=1c15dc66a6a8">(() => {
+<script data-home-appearance-src="/ssm/assets/appearance.js?v=33d7023ae457">(() => {
   const root = document.documentElement;
   const themeMedia = window.matchMedia?.("(prefers-color-scheme: dark)");
   const themeSequence = ["light", "dark", "auto"];
@@ -213,9 +213,8 @@
       paper: background, ink: text, accent,
       "accent-strong": readableAccent(accent, text, [background, mix(background, text, settings.codeMix), mix(background, accent, settings.softMix)], mode),
       surface: mix(background, text, settings.surfaceMix),
-      "surface-translucent": mix(background, text, settings.surfaceMix),
       muted: mix(background, text, 0.68),
-      line: mix(background, text, 0.2), "line-dark": mix(background, text, 0.4),
+      line: mix(background, text, 0.2), "line-strong": mix(background, text, 0.4),
       "inverse-bg": text, "inverse-ink": background,
       "soft-accent": mix(background, accent, settings.softMix),
       "code-bg": mix(background, text, settings.codeMix),
@@ -365,11 +364,11 @@
 </script>
 <!-- ssm-home-first-paint:end -->
   <script src="/ssm/assets/tooltips.js?v=f81771d4e784" defer></script>
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=7a44f9800156">
-  <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=a1a44df01ad7" data-post-layout-styles>
-  <link rel="stylesheet" href="/ssm/assets/read-filter.css?v=492ebe8e573e">
-  <link rel="stylesheet" href="/ssm/assets/hierarchy.css?v=b1858dfd2b31">
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=9aa9154424a6" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=29b32457cf7d">
+  <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=69445b02f48c" data-post-layout-styles>
+  <link rel="stylesheet" href="/ssm/assets/read-filter.css?v=82aac20ab72d">
+  <link rel="stylesheet" href="/ssm/assets/hierarchy.css?v=59e99ebd8448">
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=e861db7095d3" data-control-sizing-styles>
 </head>
 <body data-engagement-snapshot="/ssm/engagement.json" data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="https://ssm-pin-stats.eyesky93.workers.dev/pins" data-read-storage="ssm-read:/ssm">
   <header class="site-header">

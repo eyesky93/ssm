@@ -1,5 +1,5 @@
 /* Personal Read reuses the normal pill, count, selected and exclude states. */
-[data-personal-read-filter] .tag-count { font-variant-numeric: tabular-nums; width: auto; padding-inline: .3em; }
+[data-personal-read-filter] .tag-count { font-variant-numeric: tabular-nums; width: auto; padding-inline: var(--badge-padding-inline); }
 [data-personal-read-filter] > .tag-chip:disabled { cursor: default; }
 /* Read and the mode switch share a row independent of Library subject filters. */
 [data-directory] .map-stage > .map-filter-bar {
@@ -11,7 +11,7 @@
 }
 [data-directory] .map-stage > :is(.map-filter-bar, .map-mode-controls) {
   font-family: var(--font-interface);
-  font-size: 1rem;
+  font-size: var(--font-size-body);
   line-height: normal;
 }
 html[lang="he"] [data-directory] .map-stage > :is(.map-filter-bar, .map-mode-controls) { font-family: var(--font-interface-hebrew), var(--font-content); }
@@ -21,7 +21,7 @@ html[lang="he"] [data-directory] .map-stage > :is(.map-filter-bar, .map-mode-con
 /* Preserve native Tab transfer while focus moves between the two buttons. */
 :root .map-read-filter.tag-option.is-keyboard-active .tag-exclude { opacity: 1; visibility: visible; transition: none; }
 :root .map-read-filter.tag-option.is-keyboard-active .tag-count { opacity: 0; transition: none; }
-[data-directory] .map-filter-bar > .map-filters { flex: 1 1 10rem; min-width: 0; }
+[data-directory] .map-filter-bar > .map-filters { flex: 1 1 var(--map-filter-basis); min-width: 0; }
 /* Dimming is visual only: node links, count links, branches and connectors remain. */
 [data-hierarchy-map][data-dim-read="true"] .map-node[data-read-complete="true"],
 [data-hierarchy-map][data-dim-unread="true"] .map-node[data-unread-complete="true"] {
@@ -67,15 +67,15 @@ html[lang="he"] [data-directory] .map-stage > :is(.map-filter-bar, .map-mode-con
   margin-inline-start: 0;
 }
 
-/* Catalogue-only tag and toolbar spacing. The shared --interface-gap token,
+/* Catalogue-only tag and toolbar spacing. The shared --tight-gap token,
    site header and wordmark live in control-spacing.css on every route. */
 :root .toolbar-view > .view-switch {
-  gap: var(--interface-gap) !important;
+  gap: var(--tight-gap) !important;
 }
 :root :is(.subject-nav, .tag-list) {
-  gap: var(--interface-gap) !important;
+  gap: var(--tight-gap) !important;
 }
 :root .browser-toolbar {
-  padding-block: var(--interface-gap);
-  margin-block-end: var(--interface-gap);
+  padding-block: var(--tight-gap);
+  margin-block-end: var(--tight-gap);
 }

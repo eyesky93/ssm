@@ -49,9 +49,9 @@
   scrollbar-width: none;
   touch-action: auto;
   /* Leave room for the existing focus/hover outlines without moving the pills. */
-  padding: 3px;
-  margin: -3px;
-  scroll-padding-inline: 3px;
+  padding: var(--control-highlight-width);
+  margin: calc(-1 * var(--control-highlight-width));
+  scroll-padding-inline: var(--control-highlight-width);
 }
 .card-tags::-webkit-scrollbar,
 .article-tags::-webkit-scrollbar { display: none; }
@@ -123,25 +123,25 @@
 .post-stream[data-layout="list"] > .directory-card {
   grid-column: 1 / -1;
   min-height: 0;
-  padding-block: .4rem;
+  padding-block: var(--space-2xs);
 }
-.directory-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.directory-heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-lg); }
 .post-stream[data-layout] .directory-heading h2 { margin: 0; }
 .post-stream[data-layout] .directory-heading h2 a { display: block; }
 .directory-heading > .pin-toggle { flex: 0 0 auto; }
 
 /* Keep the Directory frame near its heading. */
-[data-reader-article][data-directory] > .article-header { padding-block-end: .75rem; }
-[data-reader-article][data-directory] > .article-body { padding-block-start: .75rem; }
+[data-reader-article][data-directory] > .article-header { padding-block-end: var(--space-md); }
+[data-reader-article][data-directory] > .article-body { padding-block-start: var(--space-md); }
 [data-reader-article][data-directory] .hierarchy-map { margin-block-start: 0; }
 [data-reader-article][data-directory] .hierarchy-map { margin-block-end: 0; }
 [data-reader-article][data-directory] > .article-body { padding-block-end: 0; }
-.site-main:has(> [data-reader-article][data-directory]:not([hidden])) { padding-block-end: 1rem; }
+.site-main:has(> [data-reader-article][data-directory]:not([hidden])) { padding-block-end: var(--space-lg); }
 
 /* Keep the count's existing inner circle. Its highlight stays inside the
    badge; no outer halo may paint over the tag's own border. */
 [data-directory] .map-node > a[data-map-count]:is(:hover, :focus-visible) {
-  box-shadow: inset 0 0 0 2px var(--accent);
+  box-shadow: inset 0 0 0 var(--border-width-medium) var(--accent);
   background: var(--soft-accent);
   color: var(--accent-strong);
 }
@@ -219,7 +219,7 @@
   flex: 0 0 auto;
   min-inline-size: var(--monograph-order-size);
   block-size: var(--monograph-order-size);
-  padding-inline: .3em;
+  padding-inline: var(--badge-padding-inline);
   border-radius: var(--radius-pill);
   background: var(--soft-accent);
   color: var(--accent-strong);
@@ -256,10 +256,10 @@
    more room; then widen the track rather than spill into a neighboring post.
    Both sides' padding and borders are included, with the same rule in RTL. */
 .post-stream[data-layout="grid"] {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(18rem, calc(var(--engagement-strip-min-width, 0px) + 2 * var(--surface-padding) + 2px))), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(var(--grid-column-min-width), calc(var(--engagement-strip-min-width, 0px) + 2 * var(--surface-padding) + 2 * var(--border-width-thin)))), 1fr));
 }
 .post-stream[data-layout="compact"] {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(15rem, calc(var(--engagement-strip-min-width, 0px) + 2 * var(--surface-padding) + 2px))), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(var(--grid-column-min-width-compact), calc(var(--engagement-strip-min-width, 0px) + 2 * var(--surface-padding) + 2 * var(--border-width-thin)))), 1fr));
 }
 
 /* Keep the reader title on its own row, then keep subtitle and Published date
@@ -269,8 +269,8 @@
 [data-reader-article]:not([data-directory]) > .article-header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) max-content;
-  column-gap: 1.5rem;
-  padding-block-end: .5rem;
+  column-gap: var(--space-2xl);
+  padding-block-end: var(--space-xs);
 }
 [data-reader-article]:not([data-directory]) > .article-header > .article-heading {
   grid-column: 1 / -1;
@@ -289,7 +289,7 @@
   min-width: 0;
   max-width: 100%;
   align-self: last baseline;
-  margin-block-start: .85rem;
+  margin-block-start: var(--space-md);
 }
 [data-reader-article]:not([data-directory]) > .article-header > .article-topline .article-meta {
   flex-wrap: nowrap;
@@ -297,7 +297,7 @@
 }
 /* Tighten only the visible reader, not the home/inline catalogue or Directory. */
 .site-main:has(> [data-reader-article]:not([hidden], [data-directory])) {
-  padding-block-start: 1rem;
+  padding-block-start: var(--space-lg);
 }
 
 /* One body-level viewport dock: top, previous, next, then position. It stays
@@ -311,12 +311,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .5rem;
+  gap: var(--space-xs);
   width: var(--reader-control-size);
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(.5rem);
+  transform: translateY(var(--space-xs));
   transition: opacity .16s, visibility 0s .16s, transform .16s;
 }
 .reader-controls[data-reader-visible="true"] {
@@ -329,7 +329,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: .5rem;
+  gap: var(--space-xs);
   margin: 0;
   padding: 0;
   border: 0;
@@ -369,7 +369,7 @@
    The caret/selection stays within the unchanged circle when editing. */
 .reader-controls .post-position,
 .reader-controls .post-position:is(:hover, :focus, :focus-visible, :active) {
-  padding: .25rem;
+  padding: var(--space-3xs);
   font-weight: 400;
   font-style: normal;
   letter-spacing: normal;
@@ -379,7 +379,7 @@
 }
 .reader-controls .post-position[data-reader-position-stacked="true"] {
   flex-direction: column;
-  gap: .1rem;
+  gap: var(--space-4xs);
   font-size: var(--reader-position-stacked-font-size);
 }
 .reader-controls svg {
@@ -394,7 +394,7 @@
 /* Editing replaces the bottom number, using exactly the same circular box.
    Labels remain in native hover tooltips and accessible names, not a panel. */
 .reader-controls input.reader-position-input {
-  padding: .25rem;
+  padding: var(--space-3xs);
   text-align: center;
   cursor: text;
   caret-color: var(--inverse-ink);
@@ -409,7 +409,7 @@
 @media (scripting: none) {
   .reader-controls {
     position: static;
-    margin: 1rem;
+    margin: var(--space-lg);
     margin-inline-start: auto;
     opacity: 1;
     visibility: visible;
@@ -434,7 +434,7 @@
 [data-reader-article]:not([data-directory]) > .article-body:has(> .article-end-engagement-dock) {
   position: relative;
   border-block-end: 1px solid var(--line);
-  margin-block-end: 2rem;
+  margin-block-end: var(--space-3xl);
 }
 .article-body > .article-end-engagement-dock {
   position: absolute;
@@ -445,7 +445,7 @@
   padding: 0;
   z-index: 2;
   font-family: var(--font-interface);
-  font-size: 1rem;
+  font-size: var(--font-size-body);
   line-height: normal;
 }
 [data-reader-article] > .article-body:has(> .article-end-engagement-dock) + .comments-shell {
@@ -488,17 +488,17 @@
    The initially empty live region has no box, padding or visible label. */
 .reader-controls .reader-number-error {
   position: absolute;
-  inset-inline-end: calc(100% + .5rem);
-  inset-block-end: .5rem;
+  inset-inline-end: calc(100% + var(--space-xs));
+  inset-block-end: var(--space-xs);
   inline-size: max-content;
-  max-inline-size: max(0px, calc(100vw - var(--reader-control-size) - 2.5rem - env(safe-area-inset-left) - env(safe-area-inset-right)));
+  max-inline-size: max(0px, calc(100vw - var(--reader-control-size) - var(--space-4xl) - env(safe-area-inset-left) - env(safe-area-inset-right)));
   margin: 0;
   padding: 0;
   border: 0;
   background: var(--message-bg);
   color: var(--message-ink);
   box-shadow: none;
-  font: .75rem/1.4 var(--font-interface);
+  font: var(--font-size-caption)/1.4 var(--font-interface);
   text-align: end;
   overflow-wrap: anywhere;
   pointer-events: none;
@@ -511,10 +511,10 @@ html[lang="he"] .reader-controls .reader-number-error {
    regular post rows keep the existing space for their attached statistics. */
 .post-stream[data-layout] {
   --post-row-gap: 2.45rem;
-  --directory-row-gap: 1rem;
+  --directory-row-gap: var(--space-lg);
   row-gap: var(--post-row-gap);
 }
-.post-stream[data-layout="compact"] { --directory-row-gap: .75rem; }
+.post-stream[data-layout="compact"] { --directory-row-gap: var(--space-md); }
 .post-stream[data-layout] > .directory-card:has([data-pin-toggle][aria-pressed="true"]),
 .post-stream[data-layout="list"] > .directory-card {
   margin-block-end: calc(var(--directory-row-gap) - var(--post-row-gap));
@@ -573,7 +573,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):where(:not(.surface-control)) {
   box-sizing: border-box;
   min-block-size: var(--control-size);
-  border: 1px solid var(--line-dark);
+  border: 1px solid var(--line-strong);
   border-radius: var(--control-radius);
   background: var(--comment-control-bg, var(--surface));
   color: var(--comment-control-ink, var(--ink));
@@ -583,7 +583,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):where(:not(.surface-control)):not(:disabled):is(:hover, :focus-visible) {
   background: var(--comment-control-bg, var(--surface));
   color: var(--comment-control-ink, var(--ink));
-  border-color: var(--line-dark);
+  border-color: var(--line-strong);
   box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
 }
 :root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):where(:not(.surface-control)):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
@@ -627,7 +627,7 @@ html[lang="he"] .reader-controls .reader-number-error {
    The base toolbar owns wrapping, spacing and the full-width bottom divider. */
 :root [data-ssm-comments] .comment-toolbar [data-format="help"] {
   font-family: var(--font-interface);
-  font-size: 1.15rem;
+  font-size: var(--font-size-heading-sm);
   font-weight: 600;
   line-height: 1;
 }
@@ -637,16 +637,16 @@ html[lang="he"] .reader-controls .reader-number-error {
    Inset edges do not alter any target, spacing, corner or font dimensions.
    Help, sorting, refresh and provider buttons retain their separate styles. */
 :root [data-ssm-comments] .comment-toolbar {
-  border-block-end-color: var(--line-dark);
+  border-block-end-color: var(--line-strong);
 }
 :root [data-ssm-comments] .comment-toolbar > button[data-format]:not([data-format="help"]) {
   background: var(--line);
   color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--line-dark);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
   opacity: 1;
 }
 :root [data-ssm-comments] .comment-toolbar > button[data-format]:not([data-format="help"]):not(:disabled):is(:hover, :focus-visible) {
-  background: var(--line-dark);
+  background: var(--line-strong);
   color: var(--ink);
   box-shadow: inset 0 0 0 1px var(--muted);
 }
@@ -670,17 +670,17 @@ html[lang="he"] .reader-controls .reader-number-error {
 .comment-composer > textarea[hidden] { display: none; }
 .comment-line-editor {
   display: block; position: relative; box-sizing: border-box; width: 100%;
-  min-block-size: max(10rem, calc(var(--comment-editor-rows, 6) * 1.65em + 2rem));
-  padding: 1rem; border: 0; font: inherit; font-size: 1rem; line-height: 1.65;
+  min-block-size: max(var(--editor-min-height), calc(var(--comment-editor-rows, 6) * var(--editor-line-size) + 2 * var(--space-lg)));
+  padding: var(--space-lg); border: 0; font: inherit; font-size: var(--font-size-body); line-height: 1.65;
   white-space: pre-wrap; overflow-wrap: anywhere; text-align: start;
   color: var(--ink); background: var(--paper);
 }
-.comment-line-editor:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: -3px; }
+.comment-line-editor:focus-visible { outline: var(--focus-outline-width) solid var(--accent-strong); outline-offset: var(--focus-outline-inset); }
 .comment-line-editor[data-empty="true"]::before {
-  content: attr(data-placeholder); position: absolute; inset-inline-start: 1rem;
+  content: attr(data-placeholder); position: absolute; inset-inline-start: var(--space-lg);
   color: var(--muted); pointer-events: none;
 }
-.comment-line-editor .comment-edit-line { min-block-size: 1.65em; unicode-bidi: isolate; }
+.comment-line-editor .comment-edit-line { min-block-size: var(--editor-line-size); unicode-bidi: isolate; }
 .comment-layout-root .comment-layout-line { display: block; unicode-bidi: isolate; }
 :is(.comment-line-editor, .comment-body) .comment-align-start { text-align: start; }
 :is(.comment-line-editor, .comment-body) .comment-align-left { text-align: left; }
@@ -698,7 +698,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   align-items: center;
   min-block-size: var(--control-size);
   gap: var(--control-capsule-gap);
-  margin-block: 0 1rem;
+  margin-block: 0 var(--space-lg);
 }
 .comments-shell > .comment-section-heading > h2 {
   flex: 1 1 auto;
@@ -716,11 +716,11 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* Preserve a single row on narrow phones without shrinking any control. */
 @media (max-width: 360px) {
   .comments-shell > h2,
-  .comments-shell > .comment-section-heading > h2 { font-size: 1.5rem; }
+  .comments-shell > .comment-section-heading > h2 { font-size: var(--font-size-heading-lg); }
 }
 
 /* Paint an empty Markdown quote immediately; no placeholder enters the text. */
-.comment-preview blockquote { min-block-size: 1.75em; }
+.comment-preview blockquote { min-block-size: var(--editor-line-size); }
 
 /* Authentication changes visibility, not the lifetime of the editor or draft. */
 :root [data-ssm-comments] .comment-composer[hidden] { display: none; }
@@ -736,7 +736,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   display: flex;
   align-items: center;
   flex: 0 0 auto;
-  gap: var(--comment-tool-gap, .2rem);
+  gap: var(--comment-tool-gap, var(--space-3xs));
   margin-inline-start: auto;
 }
 :root [data-ssm-comments] .comment-toolbar-session > button {
@@ -745,11 +745,11 @@ html[lang="he"] .reader-controls .reader-number-error {
   padding: 0;
 }
 :root [data-ssm-comments] .comment-toolbar-session [data-format="help"] { margin-inline: 0; }
-:root [data-ssm-comments] [data-comment-logout] > svg { inline-size: 1.35rem; block-size: 1.35rem; }
+:root [data-ssm-comments] [data-comment-logout] > svg { inline-size: var(--icon-size-lg); block-size: var(--icon-size-lg); }
 :root [data-ssm-comments] [data-comment-logout]:dir(rtl) > svg { transform: scaleX(-1); }
 @media (max-width: 700px) {
   :root [data-ssm-comments] .comment-toolbar-session {
-    flex: 1 0 calc(2 * var(--control-size) + var(--comment-tool-gap, .2rem));
+    flex: 1 0 calc(2 * var(--control-size) + var(--comment-tool-gap, var(--space-3xs)));
   }
   :root [data-ssm-comments] .comment-toolbar-session > button[data-format="help"] {
     flex: 1 1 var(--control-size);
@@ -779,18 +779,18 @@ html[lang="he"] .reader-controls .reader-number-error {
   border: 0;
   min-inline-size: 0;
 }
-.comment-item + .comment-item { margin-block-start: 1rem; }
+.comment-item + .comment-item { margin-block-start: var(--space-lg); }
 .comment-box {
   display: flow-root;
   box-sizing: border-box;
   min-inline-size: 0;
-  padding: clamp(.75rem, 2vw, 1rem);
-  border: 1px solid var(--line-dark);
-  border-radius: .75rem;
+  padding: clamp(var(--space-md), 2vw, var(--space-lg));
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
   background: var(--surface);
 }
 .comment-box > :last-child { margin-block-end: 0; }
-.comment-item > .comment-replies { padding-block-start: .75rem; }
+.comment-item > .comment-replies { padding-block-start: var(--space-md); }
 .comment-box .comment-byline { min-inline-size: 0; }
 
 /* Signup explanations are removed at build time. Keep actual feedback
@@ -908,7 +908,7 @@ html[lang="he"] .reader-controls .reader-number-error {
    articles and swallow the normal gap before the following comment. */
 .comment-thread .comment-item { display: flow-root; }
 .comment-box {
-  --post-card-padding-inline: clamp(.75rem, 2vw, 1rem);
+  --post-card-padding-inline: clamp(var(--space-md), 2vw, var(--space-lg));
   --post-frame-color: var(--line);
   position: relative;
   overflow: visible;
@@ -944,8 +944,8 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* The neutral card frame responds to its body, not to its detached tabs.
    Pinned/unread posts retain their existing specialized frame/ribbon states. */
 :root :is(.post-card:not(.unread-card):not(:has([data-pin-toggle][aria-pressed="true"])), .comment-box):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) {
-  --post-frame-color: var(--line-dark);
-  border-color: var(--line-dark);
+  --post-frame-color: var(--line-strong);
+  border-color: var(--line-strong);
 }
 :root :is(.post-card, .comment-box):has(.post-engagement:is(:hover, :focus-within)) {
   --post-frame-color: var(--line);
@@ -962,7 +962,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 :root .comment-engagement { min-inline-size: calc(2 * var(--stat-segment-width) - var(--engagement-border-width)); }
 /* Hash destinations stay native: no simulated navigation or click interception. */
-.comments-shell { scroll-margin-block-start: 1rem; }
+.comments-shell { scroll-margin-block-start: var(--space-lg); }
 
 /* Quiet controls are a separate variant, not miniature round controls. Every
    homepage layout uses the same geometry and neutral palette. Card sharing
@@ -974,7 +974,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-control-padding: calc(var(--control-capsule-gap) * var(--quiet-control-spacing-scale));
   --quiet-control-target-size: calc(var(--quiet-control-icon-size) + 2 * var(--quiet-control-padding));
   --quiet-control-gap: var(--quiet-control-padding);
-  --quiet-control-color: var(--line-dark);
+  --quiet-control-color: var(--line-strong);
   --quiet-control-active-color: var(--ink);
   --quiet-share-color: var(--ink);
   --quiet-pin-color: var(--ink);
@@ -983,7 +983,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-pin-badge-offset: calc(var(--quiet-control-icon-size) * .25);
   --quiet-pin-badge-background: var(--paper);
   --quiet-checkbox-color: var(--line);
-  --quiet-checkbox-hover-color: var(--line-dark);
+  --quiet-checkbox-hover-color: var(--line-strong);
   --quiet-checkbox-hover-background: var(--code-bg);
   --quiet-read-color: var(--quiet-control-color);
   --quiet-read-hover-color: var(--quiet-control-active-color);
@@ -1364,7 +1364,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root body:has([data-reader-article]:not([hidden], [data-directory])) .header-controls > .article-actions {
   position: absolute;
   inset-inline-end: 0;
-  inset-block-start: calc(100% + var(--interface-edge-gap));
+  inset-block-start: calc(100% + var(--layout-gap));
   display: grid;
   grid-template-columns: repeat(var(--reader-header-action-columns), var(--header-control-size));
   grid-template-rows: var(--header-control-size);
@@ -1523,7 +1523,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   overflow-y: hidden;
   overscroll-behavior-inline: contain;
   scrollbar-width: none;
-  padding: 3px;
+  padding: var(--control-highlight-width);
   margin: 0;
 }
 :root .article-heading .article-tags::-webkit-scrollbar { display: none; }
@@ -1542,7 +1542,7 @@ html[lang="he"] .reader-controls .reader-number-error {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
     align-items: start;
-    column-gap: 1.5rem;
+    column-gap: var(--space-2xl);
   }
   :root .article-heading.post-heading > h1 {
     grid-column: 1;

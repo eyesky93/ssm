@@ -13,11 +13,11 @@
   --site-card-title-ratio: 1.5;
   --site-card-summary-ratio: 1;
 }
-/* Global design tokens: the one definition of the palette, fonts and shared
-   visual values. The build places this file, after the generated site
+/* Global design tokens: the one definition of the palette, fonts, sizes and
+   shared visual values. The build places this file, after the generated site
    settings, in front of styles.css and gate.css, so every page (site pages,
    the language gate and 404) reads the same variables. Components use these
-   names; they never repeat the values. */
+   names; they never repeat the values. Pixel notes assume the 16px root. */
 :root {
   color-scheme: light;
   --accent-default: #1c9ae9;
@@ -26,9 +26,9 @@
   --paper: #ffffff;
   --white: #ffffff;
   --surface: #fafafa;
-  --surface-translucent: #fafafa;
   --line: #d1d1d1;
-  --line-dark: #a2a2a2;
+  --line-strong: #a2a2a2;
+  --line-emphasis: color-mix(in srgb, var(--line-strong) 72%, #000);
   --accent: var(--accent-default);
   --accent-strong: #1476b3;
   --inverse-bg: #171717;
@@ -39,8 +39,7 @@
   --notice-border: #a2a2a2;
   --notice-ink: #171717;
   --unread-bg: #f2f2f2;
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-  --minimum-touch-target: 2.75rem;
+  --raised-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
 
   /* Fonts come from the owner's site settings (--site-font-*). */
   --font-content: var(--site-font-content);
@@ -48,13 +47,129 @@
   --font-interface-hebrew: var(--site-font-hebrew);
   --font-code: var(--site-font-code);
 
-  /* Shared visual objects. */
+  /* Spacing scale: every margin, padding, gap and offset is one of these steps. */
+  --space-4xs: .125rem; /* 2px */
+  --space-3xs: .25rem;  /* 4px */
+  --space-2xs: .375rem; /* 6px */
+  --space-xs: .5rem;    /* 8px */
+  --space-sm: .625rem;  /* 10px */
+  --space-md: .75rem;   /* 12px */
+  --space-lg: 1rem;     /* 16px */
+  --space-xl: 1.25rem;  /* 20px */
+  --space-2xl: 1.5rem;  /* 24px */
+  --space-3xl: 2rem;    /* 32px */
+  --space-4xl: 2.5rem;  /* 40px */
+  --space-5xl: 3rem;    /* 48px */
+  --space-6xl: 4rem;    /* 64px */
+  --space-7xl: 5rem;    /* 80px */
+
+  /* Type scale, named by role. */
+  --font-size-micro: .5625rem;      /* 9px: stacked reader position */
+  --font-size-tiny: .625rem;        /* 10px: labels inside compact controls */
+  --font-size-caption: .75rem;      /* 12px: captions, compact tags, error tips */
+  --font-size-small: .8125rem;      /* 13px: notes and metadata */
+  --font-size-ui: .875rem;          /* 14px: default interface text */
+  --font-size-ui-large: .9375rem;   /* 15px: breadcrumbs, menus, names */
+  --font-size-body: 1rem;           /* 16px: reading and form text */
+  --font-size-lead: 1.0625rem;      /* 17px: summaries and introductions */
+  --font-size-heading-sm: 1.125rem; /* 18px */
+  --font-size-heading-md: 1.25rem;  /* 20px */
+  --font-size-heading-lg: 1.5rem;   /* 24px */
+  /* Fluid display sizes grow with the viewport between their two limits. */
+  --font-size-page-title: clamp(2.5rem, 4vw, 4rem);
+  --font-size-about-title: clamp(2rem, 4vw, 3rem);
+  --font-size-about-copy: clamp(1.15rem, 2vw, 1.5rem);
+  --font-size-gate-title: clamp(2.4rem, 7vw, 4.5rem);
+  --font-size-section-title: clamp(1.8rem, 4vw, 2.6rem);
+  --font-size-settings-title: clamp(1.125rem, 4vw, 2.25rem);
+  --font-size-settings-notice-title: clamp(1.5rem, 5vw, 2.25rem);
+  --font-size-article: clamp(calc(1.08rem * var(--site-article-scale)), calc(1.6vw * var(--site-article-scale)), calc(1.22rem * var(--site-article-scale)));
+  --letter-spacing-tightest: -.055em; /* page titles */
+  --letter-spacing-tighter: -.045em;  /* article titles */
+  --letter-spacing-tight: -.025em;    /* About title and Hebrew titles */
+  --letter-spacing-wide: .035em;      /* wordmark and Hebrew eyebrows */
+  --letter-spacing-caps: .14em;       /* uppercase eyebrow labels */
+  --underline-offset-sm: .125em;
+  --underline-offset-md: .15em;
+  --underline-offset-lg: .25em;
+  --underline-thickness: .08em;
+
+  /* Article prose, relative to the article text size. */
+  --prose-heading-space-before: 2.4em;
+  --prose-heading-space-after: .7em;
+  --prose-h2-font-size: 1.7em;
+  --prose-math-font-size: 1.05em;
+  --prose-code-font-size: .88em;
+  --badge-padding-inline: .3em;
+
+  /* Corners, borders and focus indicators. */
+  --radius-2xs: .125rem; /* 2px */
+  --radius-xs: .25rem;   /* 4px */
+  --radius-sm: .375rem;  /* 6px */
+  --radius-md: .5rem;    /* 8px */
+  --radius-lg: .75rem;   /* 12px */
+  --radius-xl: 1rem;     /* 16px */
+  --radius-2xl: 1.5rem;  /* 24px */
   --radius-pill: 999px;
-  --focus-ring-width: 3px;
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+  --border-width-thick: 3px;
+  --border-width-heavy: 4px;
+  --focus-ring-width: var(--border-width-thick);
   --focus-ring-offset: 4px;
+  --focus-outline-width: var(--border-width-medium);
+  --focus-outline-offset: 3px;
+  --focus-outline-inset: -3px;
+
+  /* Icons and clickable targets. Owner-sized controls use --control-size. */
+  --icon-size-2xs: .75rem;  /* 12px */
+  --icon-size-xs: 1rem;     /* 16px */
+  --icon-size-sm: 1.125rem; /* 18px */
+  --icon-size-md: 1.25rem;  /* 20px */
+  --icon-size-lg: 1.35rem;  /* 21.6px: the shared control glyph */
+  --icon-size-xl: 1.5rem;   /* 24px */
+  --target-size-xs: 1.875rem; /* 30px */
+  --target-size-sm: 2rem;     /* 32px */
+  --target-size-md: 2.25rem;  /* 36px */
+  --target-size-lg: 2.5rem;   /* 40px */
+  --target-size-xl: 3rem;     /* 48px */
+  --minimum-touch-target: 2.75rem;
+
+  /* Page layout and component dimensions. */
+  --page-margin: clamp(2rem, 6vw, 8rem); /* both sides of header, main and footer together */
+  --page-margin-phone: var(--space-xl);
+  --header-min-height: 4.5rem;
+  --summary-max-width: 44rem;
+  --intro-max-width: 38rem;
+  --grid-column-min-width: 18rem;
+  --grid-column-min-width-compact: 15rem;
+  --gate-card-width: 42rem;
+  --settings-page-width: 48.75rem;
+  --dialog-width-lg: 46rem;
+  --dialog-width-md: 32rem;
+  --dialog-width-sm: 28rem;
+  --dialog-max-height: 40rem;
+  --field-max-width: 27.5rem;
+  --button-min-width: 8rem;
+  --select-max-width: 12rem;
+  --feedback-max-width: 16rem;
+  --feedback-viewport-reserve: 7rem;
+  --reader-error-max-width: 20rem;
+  --topic-list-max-height: 16rem;
+  --placeholder-min-height: 8rem;
+  --editor-min-height: 10rem;
+  --editor-line-size: 1.65em;
+  --map-viewport-min-height: 12rem;
+  --map-viewport-max-height: clamp(22rem, 60vh, 38rem);
+  --map-stage-height: clamp(33rem, 90vh, 57rem);
+  --map-node-max-width: 20rem;
+  --map-overlay-clearance: 7.5rem;
+  --map-filter-basis: 10rem;
+  --offscreen-offset: -10000px;
+
+  /* Shared visual objects. */
   --card-rest-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
   --card-accent-bar-width: .32rem;
-  --line-emphasis: color-mix(in srgb, var(--line-dark) 72%, #000);
   --popover-shadow: 0 8px 24px rgb(0 0 0 / .18);
   --panel-shadow: 0 18px 50px rgb(0 0 0 / 0.24);
   --settings-drop-shadow: drop-shadow(0 4px 10px rgb(0 0 0 / 0.12));
@@ -70,9 +185,10 @@
   --muted: #a7a7a7;
   --paper: #000000;
   --surface: #060606;
-  --surface-translucent: #060606;
   --line: #313131;
-  --line-dark: #626262;
+  --line-strong: #626262;
+  /* Neutral emphasis strengthens toward the foreground, not toward black. */
+  --line-emphasis: color-mix(in srgb, var(--line-strong) 72%, var(--ink));
   --accent: var(--accent-default);
   --accent-strong: var(--accent-default);
   --inverse-bg: #f5f5f5;
@@ -83,7 +199,7 @@
   --notice-border: #626262;
   --notice-ink: #f5f5f5;
   --unread-bg: #0d0d0d;
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --raised-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -93,9 +209,10 @@
     --muted: #a7a7a7;
     --paper: #000000;
     --surface: #060606;
-    --surface-translucent: #060606;
     --line: #313131;
-    --line-dark: #626262;
+    --line-strong: #626262;
+    /* Neutral emphasis strengthens toward the foreground, not toward black. */
+    --line-emphasis: color-mix(in srgb, var(--line-strong) 72%, var(--ink));
     --accent: var(--accent-default);
     --accent-strong: var(--accent-default);
     --inverse-bg: #f5f5f5;
@@ -106,7 +223,7 @@
     --notice-border: #626262;
     --notice-ink: #f5f5f5;
     --unread-bg: #0d0d0d;
-    --shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    --raised-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -123,7 +240,7 @@ body.language-gate {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 1rem;
+  padding: var(--space-lg);
   background: var(--paper);
 }
 a { color: inherit; }
@@ -134,8 +251,8 @@ button:focus-visible {
 }
 .gate-tools {
   position: fixed;
-  inset-block-start: 1rem;
-  inset-inline-end: 1rem;
+  inset-block-start: var(--space-lg);
+  inset-inline-end: var(--space-lg);
 }
 .theme-toggle {
   display: inline-flex;
@@ -144,16 +261,16 @@ button:focus-visible {
   width: var(--minimum-touch-target);
   min-height: var(--minimum-touch-target);
   padding: 0;
-  border: 1px solid var(--line-dark);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius-pill);
-  background: var(--surface-translucent);
+  background: var(--surface);
   color: var(--ink);
   cursor: pointer;
 }
 .theme-toggle svg {
   display: none;
-  width: 1.15rem;
-  height: 1.15rem;
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
@@ -165,8 +282,8 @@ button:focus-visible {
 .theme-toggle [data-theme-icon="dark"] { fill: currentColor; stroke: currentColor; }
 .theme-toggle .theme-auto-icon {
   display: none;
-  width: 1.15rem;
-  height: 1.15rem;
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
   background-color: currentColor;
   -webkit-mask: url("./auto-theme-icon.png?v=014c2695b80c") center / contain no-repeat;
   mask: url("./auto-theme-icon.png?v=014c2695b80c") center / contain no-repeat;
@@ -179,26 +296,26 @@ button:focus-visible {
   color: var(--accent-strong);
 }
 .gate-card {
-  width: min(42rem, 100%);
+  width: min(var(--gate-card-width), 100%);
   border: 1px solid var(--line);
-  border-radius: 1rem;
+  border-radius: var(--radius-xl);
   background: var(--surface);
-  box-shadow: var(--shadow);
-  padding: clamp(2rem, 7vw, 5rem);
+  box-shadow: var(--raised-shadow);
+  padding: clamp(var(--space-3xl), 7vw, var(--space-7xl));
   text-align: center;
 }
 .eyebrow {
-  margin: 0 0 .9rem;
+  margin: 0 0 var(--space-lg);
   color: var(--accent-strong);
-  font-size: .875rem;
+  font-size: var(--font-size-ui);
   font-weight: 800;
-  letter-spacing: .14em;
+  letter-spacing: var(--letter-spacing-caps);
   text-transform: uppercase;
 }
 .gate-card h1 {
   margin: 0;
   font-family: var(--font-content);
-  font-size: clamp(2.4rem, 7vw, 4.5rem);
+  font-size: var(--font-size-gate-title);
   font-weight: 500;
   line-height: 1.1;
   text-wrap: balance;
@@ -206,18 +323,18 @@ button:focus-visible {
 .gate-actions {
   display: flex;
   justify-content: center;
-  gap: .75rem;
-  margin-block-start: 2rem;
+  gap: var(--space-md);
+  margin-block-start: var(--space-3xl);
 }
 .primary-button {
   display: inline-grid;
   place-items: center;
-  min-width: 8rem;
-  min-height: 3rem;
+  min-width: var(--button-min-width);
+  min-height: var(--target-size-xl);
   border-radius: var(--radius-pill);
   background: var(--inverse-bg);
   color: var(--inverse-ink);
-  padding-inline: 1.3rem;
+  padding-inline: var(--space-xl);
   font-weight: 800;
   text-decoration: none;
 }

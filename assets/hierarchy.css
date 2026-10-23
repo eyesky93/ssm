@@ -1,39 +1,39 @@
 /* Directory starts just below the site divider, without the article's
    extra heading margin. Hidden inline readers keep their usual spacing. */
 .site-main:has(> [data-reader-article][data-directory]:not([hidden])) {
-  padding-block-start: .75rem;
+  padding-block-start: var(--space-md);
 }
 [data-reader-article][data-directory] > .article-header > .article-heading {
   margin-block-start: 0;
 }
 
-.hierarchy-map { min-width: 0; margin-block: 1.5rem; font-family: var(--font-content); }
+.hierarchy-map { min-width: 0; margin-block: var(--space-2xl); font-family: var(--font-content); }
 .hierarchy-map [hidden] { display: none !important; }
-.map-stage { position: relative; border: 1px solid var(--line-dark); border-radius: .8rem; background: var(--paper); overflow: hidden; }
-.map-toolbar { position: absolute; z-index: 3; inset-inline-start: .75rem; bottom: .75rem; display: flex; flex-direction: column; align-items: stretch; gap: var(--directory-control-spacing); width: var(--control-size); margin: 0; }
+.map-stage { position: relative; border: 1px solid var(--line-strong); border-radius: var(--radius-lg); background: var(--paper); overflow: hidden; }
+.map-toolbar { position: absolute; z-index: 3; inset-inline-start: var(--space-md); bottom: var(--space-md); display: flex; flex-direction: column; align-items: stretch; gap: var(--directory-control-spacing); width: var(--control-size); margin: 0; }
 .map-history-controls { display: flex; justify-content: space-between; gap: var(--directory-control-spacing); }
-.map-toolbar button, .map-toolbar > a { display: inline-flex; justify-content: center; align-items: center; min-width: var(--control-size); min-height: var(--control-size); height: var(--control-size); padding: 4px 8px; font: inherit; font-size: 13px; line-height: 1.2; text-decoration: none; cursor: pointer; }
-.map-toolbar output { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
-.map-viewport { max-width: 100%; min-height: 12rem; max-height: clamp(22rem, 60vh, 38rem); overflow: auto; overscroll-behavior: auto; touch-action: pan-x pan-y; direction: ltr; background: var(--paper); cursor: grab; }
+.map-toolbar button, .map-toolbar > a { display: inline-flex; justify-content: center; align-items: center; min-width: var(--control-size); min-height: var(--control-size); height: var(--control-size); padding: var(--space-3xs) var(--space-xs); font: inherit; font-size: var(--font-size-small); line-height: 1.2; text-decoration: none; cursor: pointer; }
+.map-toolbar output { color: var(--muted); font-size: var(--font-size-ui); font-variant-numeric: tabular-nums; }
+.map-viewport { max-width: 100%; min-height: var(--map-viewport-min-height); max-height: var(--map-viewport-max-height); overflow: auto; overscroll-behavior: auto; touch-action: pan-x pan-y; direction: ltr; background: var(--paper); cursor: grab; }
 .map-viewport.is-panning, .map-viewport.is-panning * { cursor: grabbing; user-select: none; }
 .map-sizer { position: relative; margin-inline: auto; }
-.map-canvas { position: relative; width: max-content; padding: 2rem; transform-origin: left top; }
+.map-canvas { position: relative; width: max-content; padding: var(--space-3xl); transform-origin: left top; }
 .map-enhanced .map-canvas { position: absolute; top: 0; left: 0; }
-.map-levels { display: flex; flex-direction: column; align-items: center; gap: 4rem; }
-.map-level { display: grid; grid-template-columns: repeat(var(--map-columns), max-content); justify-content: center; justify-items: center; align-items: start; gap: 2rem; }
+.map-levels { display: flex; flex-direction: column; align-items: center; gap: var(--space-6xl); }
+.map-level { display: grid; grid-template-columns: repeat(var(--map-columns), max-content); justify-content: center; justify-items: center; align-items: start; gap: var(--space-3xl); }
 html[dir="rtl"] .map-level { direction: rtl; }
-.article-body .map-node { position: relative; max-width: 20rem; color: var(--ink); text-decoration: none; font-family: var(--font-interface); line-height: normal; }
+.article-body .map-node { position: relative; max-width: var(--map-node-max-width); color: var(--ink); text-decoration: none; font-family: var(--font-interface); line-height: normal; }
 .article-body .map-node:is(:hover, :focus-visible), .map-node .tag-count { color: var(--accent); }
 .article-body .map-node:hover { border-color: var(--accent); }
-.map-node-copy { display: flex; flex-direction: column; gap: .2rem; }
+.map-node-copy { display: flex; flex-direction: column; gap: var(--space-3xs); }
 html[lang="he"] .map-node { font-family: var(--font-interface-hebrew), var(--font-content); }
-@media (min-width: 701px) { .map-node { padding-block: .4rem; } }
+@media (min-width: 701px) { .map-node { padding-block: var(--space-2xs); } }
 .article-body .map-external-node { border-style: dashed; }
 .map-edges { position: absolute; inset: 0; overflow: visible; pointer-events: none; color: var(--muted); }
 .map-edges marker path { fill: currentColor; }
 .map-edge { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-dasharray: none; }
-.hierarchy-map :is(a, button, [tabindex]):not(.tag-count):focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 3px; }
-.article-body .map-node > a.tag-count:focus-visible { outline: none; color: var(--accent-strong); text-decoration: underline; text-underline-offset: .15em; }
+.hierarchy-map :is(a, button, [tabindex]):not(.tag-count):focus-visible { outline: var(--focus-outline-width) solid var(--accent-strong); outline-offset: var(--focus-outline-offset); }
+.article-body .map-node > a.tag-count:focus-visible { outline: none; color: var(--accent-strong); text-decoration: underline; text-underline-offset: var(--underline-offset-md); }
 html[lang="he"] .hierarchy-map { font-family: var(--font-interface-hebrew), var(--font-content); }
 
 
@@ -42,38 +42,38 @@ html[lang="he"] .hierarchy-map { font-family: var(--font-interface-hebrew), var(
 .map-history-button .navigation-arrow { width: var(--navigation-icon-size); height: var(--navigation-icon-size); }
 
 .hierarchy-map .map-filter-bar { border: 0; padding-top: 0; }
-.map-filters { font-family: var(--font-interface); font-size: 1rem; line-height: normal; }
+.map-filters { font-family: var(--font-interface); font-size: var(--font-size-body); line-height: normal; }
 .article-body .map-filters .tag-chip { color: var(--ink); text-decoration: none; }
 html[lang="he"] .map-filters { font-family: var(--font-interface-hebrew), var(--font-content); }
-.map-filter-empty { padding: 2rem; margin: 0; font-size: 1.15rem; }
+.map-filter-empty { padding: var(--space-3xl); margin: 0; font-size: var(--font-size-heading-sm); }
 
 .map-zoom-control { position: relative; }
 .map-zoom-control > button { width: 100%; font-variant-numeric: tabular-nums; }
-.map-zoom-panel { position: absolute; z-index: 2; inset-inline-start: calc(100% + .5rem); bottom: 0; display: flex; align-items: center; width: min(12rem, calc(100vw - 10rem)); min-height: var(--minimum-touch-target); padding: .6rem .8rem; border: 1px solid var(--line-dark); border-radius: 1.5rem; background: var(--surface); }
+.map-zoom-panel { position: absolute; z-index: 2; inset-inline-start: calc(100% + var(--space-xs)); bottom: 0; display: flex; align-items: center; min-height: var(--minimum-touch-target); padding: var(--space-sm) var(--space-md); border: 1px solid var(--line-strong); border-radius: var(--radius-2xl); background: var(--surface); }
 .map-zoom-panel input { width: 100%; min-width: 0; margin: 0; accent-color: var(--accent); direction: ltr; cursor: pointer; }
 
-.map-enhanced { overflow: clip; touch-action: pan-x pan-y; min-height: 8rem; }
+.map-enhanced { overflow: clip; touch-action: pan-x pan-y; min-height: var(--placeholder-min-height); }
 .map-enhanced .map-sizer { position: absolute; inset: 0; margin: 0; pointer-events: none; }
 .map-enhanced .map-canvas { pointer-events: auto; }
 .map-viewport { position: relative; }
-.map-filter-empty { min-height: 8rem; }
+.map-filter-empty { min-height: var(--placeholder-min-height); }
 
-.map-filter-empty { display: flex; align-items: center; justify-content: center; padding: 1rem 7.5rem; }
+.map-filter-empty { display: flex; align-items: center; justify-content: center; padding: var(--space-lg) var(--map-overlay-clearance); }
 
-.map-switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: max-content; max-width: 100%; padding: 5px; margin-bottom: 1rem; border: 1px solid var(--line-dark); border-radius: var(--radius-pill); background: var(--surface); }
-.article-body .map-switch a { position: relative; display: flex; justify-content: center; min-width: 3rem; min-height: var(--minimum-touch-target); align-items: center; padding: .5rem .75rem; border: 1px solid transparent; border-radius: var(--radius-pill); background: transparent; color: var(--ink); text-decoration: none; font-family: var(--font-interface); }
+.map-switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: max-content; max-width: 100%; padding: var(--space-3xs); margin-bottom: var(--space-lg); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: var(--surface); }
+.article-body .map-switch a { position: relative; display: flex; justify-content: center; min-width: var(--target-size-xl); min-height: var(--minimum-touch-target); align-items: center; padding: var(--space-xs) var(--space-md); border: 1px solid transparent; border-radius: var(--radius-pill); background: transparent; color: var(--ink); text-decoration: none; font-family: var(--font-interface); }
 /* Mode-state colors are owned by control-sizing.css so this switch follows the shared top-control interaction model. */
 html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-hebrew), var(--font-content); }
 
 /* One stable frame for every Directory view, including empty results. */
-.map-ready .map-stage { height: clamp(33rem, 90vh, 57rem); }
+.map-ready .map-stage { height: var(--map-stage-height); }
 .map-ready [data-map-view], .map-ready .map-viewport, .map-ready .map-filter-empty { height: 100%; }
 .map-ready .map-viewport { min-height: 0; max-height: none; }
 
-.map-switch svg { width: 1.4rem; height: 1.4rem; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.map-switch svg { width: var(--icon-size-lg); height: var(--icon-size-lg); fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
 /* Keep Read beside the mode switch as one stable, direction-aware row. */
-.map-stage > .map-mode-controls { position: absolute; z-index: 4; inset-inline-start: .5rem; top: .5rem; display: flex; align-items: center; gap: var(--directory-control-spacing); max-width: calc(100% - 1rem); margin: 0; }
+.map-stage > .map-mode-controls { position: absolute; z-index: 4; inset-inline-start: var(--space-xs); top: var(--space-xs); display: flex; align-items: center; gap: var(--directory-control-spacing); max-width: calc(100% - var(--space-lg)); margin: 0; }
 .map-mode-controls > :is(.map-switch, .map-read-filter) { flex: 0 0 auto; margin: 0; }
 .map-toolbar { width: var(--control-size); gap: var(--directory-control-spacing); }
 .map-history-controls { flex-direction: column; gap: var(--directory-control-spacing); align-items: center; }
@@ -81,10 +81,10 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 .map-zoom-control { order: -1; display: grid; place-items: center; width: var(--control-size); height: var(--control-size); }
 .map-zoom-control > button { position: relative; width: var(--control-size); height: var(--control-size); min-height: var(--control-size); padding: 0; border-radius: 50%; font-size: var(--directory-zoom-toggle-font-size); white-space: nowrap; }
 .map-zoom-control:has([aria-expanded="true"]) > button { visibility: hidden; }
-.map-zoom-panel { inset-inline-start: 0; bottom: 0; width: var(--control-size); height: calc(5 * var(--control-size)); padding: 14px 0 52px; border-radius: var(--control-radius); justify-content: center; background: var(--paper); transform-origin: bottom; animation: map-zoom-open .16s ease-out; }
-.map-zoom-panel [type="range"] { writing-mode: vertical-lr; direction: rtl; width: 24px; height: 100%; }
+.map-zoom-panel { inset-inline-start: 0; bottom: 0; width: var(--control-size); height: calc(5 * var(--control-size)); padding: var(--space-md) 0 calc(var(--control-size) + var(--space-xs)); border-radius: var(--control-radius); justify-content: center; background: var(--paper); transform-origin: bottom; animation: map-zoom-open .16s ease-out; }
+.map-zoom-panel [type="range"] { writing-mode: vertical-lr; direction: rtl; width: var(--icon-size-xl); height: 100%; }
 .map-zoom-entry { position: absolute; bottom: 0; left: 0; width: var(--control-inner-size); height: var(--control-inner-size); display: flex; align-items: center; justify-content: center; direction: ltr; font-size: var(--directory-zoom-entry-font-size); }
-.map-zoom-entry input { appearance: textfield; width: 26px; padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; text-align: right; }
+.map-zoom-entry input { appearance: textfield; width: calc(var(--directory-zoom-digit-count, 3) * 1ch); padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; text-align: right; }
 .map-zoom-entry input::-webkit-inner-spin-button, .map-zoom-entry input::-webkit-outer-spin-button { appearance: none; margin: 0; }
 @keyframes map-zoom-open { from { clip-path: inset(80% 0 0 round var(--control-radius)); } to { clip-path: inset(0 round var(--control-radius)); } }
 @media (prefers-reduced-motion: reduce) { .map-zoom-panel { animation: none; } }
@@ -103,11 +103,11 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 [data-reader-article][data-directory] .map-stage > .map-filter-bar {
   position: absolute;
   z-index: 4;
-  inset-block-start: .5rem;
+  inset-block-start: var(--space-xs);
   inset-inline-start: var(--directory-control-spacing);
-  inset-inline-end: .75rem;
+  inset-inline-end: var(--space-md);
   margin: 0;
-  padding: 6px 0;
+  padding: var(--space-2xs) 0;
   overflow: visible;
 }
 [data-directory] .map-filter-bar .tag-list { flex-wrap: wrap; }
