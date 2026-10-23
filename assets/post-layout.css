@@ -569,11 +569,12 @@ html[lang="he"] .reader-controls .reader-number-error {
    never offsets tags, reserves footer width, or repositions the controls. */
 
 /* Standalone comment buttons share the pin's neutral states and highlight.
+   Quiet icon actions (a comment's Edit and Delete) keep the card rail's own style.
    Sorting keeps the existing page-layout capsule. Ordinary formatting tools
    keep their original base styles; only Help is a standalone framed button.
    Component palette tokens are consumed here and on hover/focus, so a
    variant never loses its colors to these higher-specificity base rules. */
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):where(:not(.surface-control)) {
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control, .quiet-control):where(:not(.surface-control)) {
   box-sizing: border-box;
   min-block-size: var(--control-size);
   border: 1px solid var(--line-strong);
@@ -583,14 +584,14 @@ html[lang="he"] .reader-controls .reader-number-error {
   box-shadow: none;
   transform: none;
 }
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):where(:not(.surface-control)):not(:disabled):is(:hover, :focus-visible) {
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control, .quiet-control):where(:not(.surface-control)):not(:disabled):is(:hover, :focus-visible) {
   background: var(--comment-control-bg, var(--surface));
   color: var(--comment-control-ink, var(--ink));
   border-color: var(--line-strong);
   box-shadow: 0 0 0 var(--ring-width) var(--control-highlight-color);
 }
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):where(:not(.surface-control)):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):where(:not(.surface-control)):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control, .quiet-control):where(:not(.surface-control)):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control, .quiet-control):where(:not(.surface-control)):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
   background: var(--ink);
   color: var(--paper);
   border-color: var(--ink);
@@ -795,6 +796,24 @@ html[lang="he"] .reader-controls .reader-number-error {
 .comment-box > :last-child { margin-block-end: 0; }
 .comment-item > .comment-replies { padding-block-start: var(--space-md); }
 .comment-box .comment-byline { min-inline-size: 0; }
+
+/* A comment author's Edit and Delete use the post card's quiet action rail:
+   the same icons, target size, gap and bottom inline-end corner inset. The box
+   keeps a column free for the rail, so the comment text never runs beneath it. */
+.comment-box:has(> .comment-action-rail) {
+  padding-inline-end: calc(var(--card-action-rail-inset) + var(--quiet-control-target-size) + var(--quiet-control-gap));
+  min-block-size: calc(2 * (var(--card-action-rail-inset) + var(--quiet-control-target-size)) + var(--quiet-control-gap));
+}
+.comment-box > .comment-action-rail {
+  position: absolute;
+  inset-inline-end: var(--card-action-rail-inset);
+  inset-block-end: var(--card-action-rail-inset);
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  gap: var(--quiet-control-gap);
+  margin: 0;
+}
 
 /* Signup explanations are removed at build time. Keep actual feedback
    legible in the normal foreground; the email example is untouched. */
