@@ -133,6 +133,11 @@
 /* Keep the Directory frame near its heading. */
 [data-reader-article][data-directory] > .article-header { padding-block-end: var(--space-md); }
 [data-reader-article][data-directory] > .article-body { padding-block-start: var(--space-md); }
+/* Its Views strip hangs below the title rule like a post's statistics; the map
+   frame starts below the strip instead of under it. */
+[data-reader-article][data-directory]:has(> .article-header > .article-engagement-dock) > .article-body {
+  padding-block-start: calc(var(--engagement-tab-height) + var(--space-md));
+}
 [data-reader-article][data-directory] .hierarchy-map { margin-block-start: 0; }
 [data-reader-article][data-directory] .hierarchy-map { margin-block-end: 0; }
 [data-reader-article][data-directory] > .article-body { padding-block-end: 0; }
@@ -1346,7 +1351,16 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root body:has([data-reader-article]:not([hidden], [data-directory])) .header-controls {
   width: max-content;
 }
-:root body:has([data-reader-article]:not([hidden], [data-directory])) .header-controls > .article-actions {
+/* Directory has one action, Pin, at the logical end of its title row: the place
+   a post keeps Pin/Share/Read. Its short title leaves that end free, so it needs
+   no reserved header row. */
+:root body:has([data-reader-article][data-directory]:not([hidden])) .site-header {
+  position: relative;
+}
+:root body:has([data-reader-article][data-directory]:not([hidden])) .header-controls > .article-actions {
+  --reader-header-action-columns: 1;
+}
+:root body:has([data-reader-article]:not([hidden])) .header-controls > .article-actions {
   position: absolute;
   inset-inline-end: 0;
   inset-block-start: calc(100% + var(--layout-gap));

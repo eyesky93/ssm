@@ -155,7 +155,7 @@
   --editor-line-size: 1.65em;
   --map-viewport-min-height: 12rem;
   --map-viewport-max-height: clamp(22rem, 60vh, 38rem);
-  --map-stage-height: clamp(33rem, 90vh, 57rem);
+  --map-stage-height: clamp(min(33rem, 90vh), 90vh, 57rem); /* never taller than a short screen */
   --map-node-max-width: 20rem;
   --map-overlay-clearance: 7.5rem;
   --map-filter-basis: 10rem;
