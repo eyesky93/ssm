@@ -83,7 +83,7 @@
 <link rel="modulepreload" href="/ssm/assets/read-status.js?v=e0ae2e9b5721">
 <link rel="modulepreload" href="/ssm/assets/post-votes.js?v=babf44d37416">
 <link rel="modulepreload" href="/ssm/assets/post-tag-scroll.js?v=8af3738348c3">
-<script data-home-appearance-src="/ssm/assets/appearance.js?v=33d7023ae457">(() => {
+<script data-home-appearance-src="/ssm/assets/appearance.js?v=38c465f6a676">(() => {
   const root = document.documentElement;
   const themeMedia = window.matchMedia?.("(prefers-color-scheme: dark)");
   const themeSequence = ["light", "dark", "auto"];
@@ -215,12 +215,8 @@
       surface: mix(background, text, settings.surfaceMix),
       muted: mix(background, text, 0.68),
       line: mix(background, text, 0.2), "line-strong": mix(background, text, 0.4),
-      "inverse-bg": text, "inverse-ink": background,
       "soft-accent": mix(background, accent, settings.softMix),
-      "code-bg": mix(background, text, settings.codeMix),
-      "notice-bg": mix(background, text, settings.codeMix),
-      "notice-border": mix(background, text, 0.4), "notice-ink": text,
-      "unread-bg": mix(background, text, settings.codeMix),
+      "surface-strong": mix(background, text, settings.codeMix),
     };
     for (const [name, value] of Object.entries(tokens)) root.style.setProperty(`--${name}`, value);
     document.querySelector('meta[name="theme-color"]')?.setAttribute("content", background);
@@ -364,11 +360,11 @@
 </script>
 <!-- ssm-home-first-paint:end -->
   <script src="/ssm/assets/tooltips.js?v=f81771d4e784" defer></script>
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=29b32457cf7d">
-  <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=69445b02f48c" data-post-layout-styles>
-  <link rel="stylesheet" href="/ssm/assets/read-filter.css?v=82aac20ab72d">
-  <link rel="stylesheet" href="/ssm/assets/hierarchy.css?v=59e99ebd8448">
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=e861db7095d3" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=64484b08e717">
+  <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=539c059c6d17" data-post-layout-styles>
+  <link rel="stylesheet" href="/ssm/assets/read-filter.css?v=1a3b409ee2ef">
+  <link rel="stylesheet" href="/ssm/assets/hierarchy.css?v=bbbf34dfee71">
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=fcf533af9fdd" data-control-sizing-styles>
 </head>
 <body data-engagement-snapshot="/ssm/engagement.json" data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="https://ssm-pin-stats.eyesky93.workers.dev/pins" data-read-storage="ssm-read:/ssm">
   <header class="site-header">

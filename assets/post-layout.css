@@ -49,9 +49,9 @@
   scrollbar-width: none;
   touch-action: auto;
   /* Leave room for the existing focus/hover outlines without moving the pills. */
-  padding: var(--control-highlight-width);
-  margin: calc(-1 * var(--control-highlight-width));
-  scroll-padding-inline: var(--control-highlight-width);
+  padding: var(--ring-width);
+  margin: calc(-1 * var(--ring-width));
+  scroll-padding-inline: var(--ring-width);
 }
 .card-tags::-webkit-scrollbar,
 .article-tags::-webkit-scrollbar { display: none; }
@@ -176,7 +176,7 @@
 .post-engagement .post-vote-count,
 .post-engagement .post-comment-count,
 .post-engagement .post-view-count {
-  min-inline-size: max(calc(var(--stat-segment-width) / 2 - 1px), calc((var(--stat-count-chars, 2) + 1) * 1ch + 1px));
+  min-inline-size: max(calc(var(--space-5xl) / 2 - 1px), calc((var(--stat-count-chars, 2) + 1) * 1ch + 1px));
   /* Use the system interface stack for numerals in both languages, so the
      asynchronously loaded Hebrew text font cannot resize the digit slots. */
   font-family: var(--font-interface);
@@ -208,17 +208,16 @@
    the position with an X. Its badge follows the shared tag size and spacing
    settings. Extra digits can widen it. */
 .tag-chip:is(.card-tag, .article-tag)[data-monograph-order] {
-  --monograph-order-size: var(--tag-count-size);
-  gap: var(--tag-capsule-content-gap);
-  padding-block: var(--tag-capsule-padding-block);
-  padding-inline-end: var(--tag-capsule-count-inset);
+  gap: var(--tag-capsule-inset);
+  padding-block: 0;
+  padding-inline-end: var(--tag-capsule-inset);
 }
 .post-monograph-order {
   display: inline-grid;
   place-items: center;
   flex: 0 0 auto;
-  min-inline-size: var(--monograph-order-size);
-  block-size: var(--monograph-order-size);
+  min-inline-size: var(--tag-count-size);
+  block-size: var(--tag-count-size);
   padding-inline: var(--badge-padding-inline);
   border-radius: var(--radius-pill);
   background: var(--soft-accent);
@@ -312,7 +311,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-xs);
-  width: var(--reader-control-size);
+  width: var(--control-size);
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
@@ -333,7 +332,7 @@
   margin: 0;
   padding: 0;
   border: 0;
-  width: var(--reader-control-size);
+  width: var(--control-size);
 }
 .reader-controls .post-navigation[hidden],
 .reader-controls [data-reader-jump][hidden],
@@ -346,14 +345,14 @@
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  width: var(--reader-control-size);
-  min-width: var(--reader-control-size);
-  height: var(--reader-control-size);
-  min-height: var(--reader-control-size);
+  width: var(--control-size);
+  min-width: var(--control-size);
+  height: var(--control-size);
+  min-height: var(--control-size);
   margin: 0;
-  padding: var(--reader-navigation-padding);
+  padding: var(--control-padding);
   font-family: var(--font-interface);
-  font-size: var(--reader-position-font-size);
+  font-size: var(--font-size-tiny);
   line-height: 1;
   text-decoration: none;
   font-variant-numeric: tabular-nums;
@@ -380,14 +379,14 @@
 .reader-controls .post-position[data-reader-position-stacked="true"] {
   flex-direction: column;
   gap: var(--space-4xs);
-  font-size: var(--reader-position-stacked-font-size);
+  font-size: var(--font-size-micro);
 }
 .reader-controls svg {
-  width: var(--navigation-icon-size);
-  height: var(--navigation-icon-size);
+  width: var(--control-icon-size);
+  height: var(--control-icon-size);
   fill: none;
   stroke: currentColor;
-  stroke-width: var(--navigation-icon-stroke-width);
+  stroke-width: var(--icon-stroke-width);
   stroke-linecap: round;
   stroke-linejoin: round;
 }
@@ -397,12 +396,12 @@
   padding: var(--space-3xs);
   text-align: center;
   cursor: text;
-  caret-color: var(--inverse-ink);
+  caret-color: var(--paper);
   appearance: none;
 }
 .reader-controls input.reader-position-input::selection {
-  background: color-mix(in srgb, var(--inverse-bg) 70%, var(--inverse-ink));
-  color: var(--inverse-ink);
+  background: color-mix(in srgb, var(--ink) 70%, var(--paper));
+  color: var(--paper);
 }
 /* No-JS readers retain native links at the footer. Scripted navigation waits
    only for the local sequence; only Back to top depends on the home visibility. */
@@ -491,7 +490,7 @@
   inset-inline-end: calc(100% + var(--space-xs));
   inset-block-end: var(--space-xs);
   inline-size: max-content;
-  max-inline-size: max(0px, calc(100vw - var(--reader-control-size) - var(--space-4xl) - env(safe-area-inset-left) - env(safe-area-inset-right)));
+  max-inline-size: max(0px, calc(100vw - var(--control-size) - var(--space-4xl) - env(safe-area-inset-left) - env(safe-area-inset-right)));
   margin: 0;
   padding: 0;
   border: 0;
@@ -523,7 +522,6 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* List and Grid consume the global linear post-card typography contract.
    Compact keeps its smaller title ratio from the same canonical unit. */
 :root {
-  --tag-label-font-size: 0.8rem;
   /* Grid fits each row's content; peers in that row still stretch equally.
      Compact retains its existing catalogue-wide equal-height tracks. */
   --post-stream-row-size: 1fr;
@@ -584,13 +582,13 @@ html[lang="he"] .reader-controls .reader-number-error {
   background: var(--comment-control-bg, var(--surface));
   color: var(--comment-control-ink, var(--ink));
   border-color: var(--line-strong);
-  box-shadow: 0 0 0 var(--control-highlight-width) var(--control-highlight-color);
+  box-shadow: 0 0 0 var(--ring-width) var(--control-highlight-color);
 }
 :root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):where(:not(.surface-control)):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
 :root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control):where(:not(.surface-control)):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
-  background: var(--inverse-bg);
-  color: var(--inverse-ink);
-  border-color: var(--inverse-bg);
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
 }
 /* Low-specificity geometry cannot override the provider's own icon inset.
    Longer text actions remain capsules; the layout capsule sizes its own cells.
@@ -812,7 +810,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   --engagement-layer-active: 7;
   --engagement-layer-hover: calc(var(--engagement-layer-active) + 1);
   --engagement-layer-covered: -1;
-  --engagement-border-width: 1px;
   --engagement-tab-height-ratio: .75;
   --engagement-tab-height: calc(var(--control-size) * var(--engagement-tab-height-ratio));
   /* Restore the former .5rem corners at the canonical 1.9575rem control
@@ -826,23 +823,22 @@ html[lang="he"] .reader-controls .reader-number-error {
    Physical corners mirror because engagement segments retain LTR inside RTL. */
 :root :is(.post-card, .comment-box) { border-radius: var(--post-frame-radius); }
 :root .post-engagement {
-  --stat-segment-height: var(--engagement-tab-height);
-  min-inline-size: calc(3 * var(--stat-segment-width) - 2 * var(--engagement-border-width));
+  min-inline-size: calc(3 * var(--space-5xl) - 2 * var(--border-width-thin));
 }
 :root .post-engagement > :is(.post-vote, .post-comments, .post-views) {
   border-radius: 0;
-  border-inline: var(--engagement-border-width) solid var(--line);
-  border-block-end-width: var(--engagement-border-width);
+  border-inline: var(--border-width-thin) solid var(--line);
+  border-block-end-width: var(--border-width-thin);
 }
 /* Adjacent edges occupy the SAME pixel column. Never hide one neighbor's
    border: the selected/hovered layer must own both of its shared seams. */
 :root .post-engagement > :is(.post-vote, .post-comments, .post-views) + :is(.post-vote, .post-comments, .post-views) {
-  margin-left: calc(-1 * var(--engagement-border-width));
+  margin-left: calc(-1 * var(--border-width-thin));
   margin-right: 0;
 }
 :root[dir="rtl"] .post-engagement > :is(.post-vote, .post-comments, .post-views) + :is(.post-vote, .post-comments, .post-views) {
   margin-left: 0;
-  margin-right: calc(-1 * var(--engagement-border-width));
+  margin-right: calc(-1 * var(--border-width-thin));
 }
 :root .post-engagement > :first-child { border-bottom-left-radius: var(--engagement-tab-radius); }
 :root .post-engagement > :last-child { border-bottom-right-radius: var(--engagement-tab-radius); }
@@ -858,8 +854,8 @@ html[lang="he"] .reader-controls .reader-number-error {
   font: inherit;
   color: var(--ink);
   min-block-size: 0;
-  max-block-size: var(--stat-segment-height);
-  border-block-start: var(--engagement-border-width) solid var(--line);
+  max-block-size: var(--engagement-tab-height);
+  border-block-start: var(--border-width-thin) solid var(--line);
   background: var(--surface);
   background-clip: padding-box;
   text-decoration: none;
@@ -960,7 +956,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root :is(.post-card, .comment-box):hover:not(:has(.post-engagement:hover)):not(:has(.post-engagement:focus-within)) > :is(.post-engagement, .comment-engagement-dock) :is(.post-vote, .post-comments, .post-views):not(:is([aria-pressed="true"], [data-selected="true"], [data-engagement-highlight="true"], [data-replies-unread="true"])) {
   z-index: var(--engagement-layer-covered);
 }
-:root .comment-engagement { min-inline-size: calc(2 * var(--stat-segment-width) - var(--engagement-border-width)); }
+:root .comment-engagement { min-inline-size: calc(2 * var(--space-5xl) - var(--border-width-thin)); }
 /* Hash destinations stay native: no simulated navigation or click interception. */
 .comments-shell { scroll-margin-block-start: var(--space-lg); }
 
@@ -976,24 +972,15 @@ html[lang="he"] .reader-controls .reader-number-error {
   --quiet-control-gap: var(--quiet-control-padding);
   --quiet-control-color: var(--line-strong);
   --quiet-control-active-color: var(--ink);
-  --quiet-share-color: var(--ink);
   --quiet-pin-color: var(--ink);
   --quiet-pin-badge-size: calc(var(--quiet-control-icon-size) * .6);
   --quiet-pin-badge-stroke: calc(var(--quiet-control-icon-size) / 16);
   --quiet-pin-badge-offset: calc(var(--quiet-control-icon-size) * .25);
-  --quiet-pin-badge-background: var(--paper);
-  --quiet-checkbox-color: var(--line);
-  --quiet-checkbox-hover-color: var(--line-strong);
-  --quiet-checkbox-hover-background: var(--code-bg);
-  --quiet-read-color: var(--quiet-control-color);
-  --quiet-read-hover-color: var(--quiet-control-active-color);
   --quiet-read-hover-background: transparent;
   --quiet-read-hover-shadow: none;
   --quiet-control-radius: calc(var(--quiet-control-icon-size) / 6);
-  --card-content-gap: var(--control-capsule-gap);
   /* Subtract the symmetric invisible target padding once, on both axes.
      Pin, Share and Read therefore share the card's visible content inset. */
-  --card-action-inset: var(--card-action-rail-inset);
   --card-action-rail-inset: calc(var(--standard-post-card-edge-inset) - var(--quiet-control-padding));
 }
 :root[data-theme="dark"] {
@@ -1062,7 +1049,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   block-size: var(--quiet-pin-badge-size);
   border: var(--quiet-pin-badge-stroke) solid var(--quiet-pin-color);
   border-radius: 50%;
-  background-color: var(--quiet-pin-badge-background);
+  background-color: var(--paper);
   background-image:
     linear-gradient(45deg, transparent calc(50% - var(--quiet-pin-badge-stroke) / 2), var(--quiet-pin-color) 0, var(--quiet-pin-color) calc(50% + var(--quiet-pin-badge-stroke) / 2), transparent 0),
     linear-gradient(-45deg, transparent calc(50% - var(--quiet-pin-badge-stroke) / 2), var(--quiet-pin-color) 0, var(--quiet-pin-color) calc(50% + var(--quiet-pin-badge-stroke) / 2), transparent 0);
@@ -1099,30 +1086,30 @@ html[lang="he"] .reader-controls .reader-number-error {
   border-radius: var(--quiet-control-radius);
   border-color: var(--quiet-control-color);
   background: transparent;
-  color: var(--quiet-checkbox-color);
+  color: var(--line);
   box-shadow: none;
   transform: none;
 }
 :root .post-stream[data-layout] [data-card-actions] .quiet-control--checkbox:not(.read-toggle):not(:disabled):is(:hover, :focus-visible, :active)::before {
-  border-color: var(--quiet-checkbox-hover-color);
-  background: var(--quiet-checkbox-hover-background);
-  color: var(--quiet-checkbox-hover-color);
+  border-color: var(--line-strong);
+  background: var(--surface-strong);
+  color: var(--line-strong);
 }
 .post-stream .card-actions .read-toggle.quiet-control--checkbox:is(.is-read, .is-unread) {
-  color: var(--quiet-read-color);
+  color: var(--quiet-control-color);
 }
 .post-stream .card-actions .read-toggle.quiet-control--checkbox:is(.is-read, .is-unread)::before {
-  border-color: var(--quiet-read-color);
+  border-color: var(--quiet-control-color);
   background: transparent;
-  color: var(--quiet-read-color);
+  color: var(--quiet-control-color);
 }
 .post-stream .card-actions .read-toggle.quiet-control--checkbox:is(.is-read, .is-unread):not(:disabled):is(:hover, :focus-visible, :active) {
-  color: var(--quiet-read-hover-color);
+  color: var(--quiet-control-active-color);
 }
 .post-stream .card-actions .read-toggle.quiet-control--checkbox:is(.is-read, .is-unread):not(:disabled):is(:hover, :focus-visible, :active)::before {
-  border-color: var(--quiet-read-hover-color);
+  border-color: var(--quiet-control-active-color);
   background: var(--quiet-read-hover-background);
-  color: var(--quiet-read-hover-color);
+  color: var(--quiet-control-active-color);
   /* Ink-only emphasis: no fill, halo or extra stroke. The visible border,
      glyph, hit target and action rail retain their size in every state. */
   box-shadow: var(--quiet-read-hover-shadow);
@@ -1147,10 +1134,13 @@ html[lang="he"] .reader-controls .reader-number-error {
   align-self: end;
   justify-self: end;
   justify-content: flex-end;
-  margin-inline-end: calc(var(--post-card-action-inline-inset) - var(--post-card-action-padding-inline));
+}
+/* Hidden (filtered-out) cards keep a zero offset until they are shown again. */
+:root .post-stream[data-layout] .post-card:not(.directory-card, [hidden]) > [data-card-actions] {
+  margin-inline-end: calc(var(--card-action-rail-inset) - var(--standard-post-card-edge-inset));
   margin-block-end: calc(
-    var(--post-card-action-block-inset)
-    - var(--post-card-action-padding-block)
+    var(--card-action-rail-inset)
+    - var(--standard-post-card-edge-inset)
   );
 }
 
@@ -1194,7 +1184,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   padding: var(--quiet-control-gap);
   border: 0;
   border-radius: var(--control-radius);
-  background: var(--code-bg);
+  background: var(--surface-strong);
   box-shadow: none;
   overflow: visible;
 }
@@ -1216,7 +1206,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 :root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-heading > h2 {
   order: 0;
-  margin-block: 0 var(--card-content-gap);
+  margin-block: 0 var(--control-capsule-gap);
 }
 :root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-card > p {
   order: 1;
@@ -1225,7 +1215,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .post-tools {
   order: 2;
   justify-content: flex-start;
-  margin-block-start: var(--card-content-gap);
+  margin-block-start: var(--control-capsule-gap);
 }
 :root .post-stream:is([data-layout="grid"], [data-layout="compact"]) .card-tags > :nth-child(1 of :not([hidden])) {
   margin-inline-start: 0;
@@ -1241,7 +1231,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   display: contents;
 }
 :root .post-stream[data-layout="list"] .post-heading > h2 {
-  margin-block: 0 var(--card-content-gap);
+  margin-block: 0 var(--control-capsule-gap);
 }
 :root .post-stream[data-layout="list"] .post-card:not(.directory-card) > p {
   margin-block: 0;
@@ -1251,7 +1241,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   max-width: 100%;
   min-width: 0;
   justify-content: flex-end;
-  margin-block-start: var(--card-content-gap);
+  margin-block-start: var(--control-capsule-gap);
 }
 :root .post-stream[data-layout="list"] .card-tags {
   display: flex;
@@ -1287,7 +1277,7 @@ html[lang="he"] .reader-controls .reader-number-error {
     inset-block-start: 0;
     inset-block-end: auto;
     transform: none;
-    flex-direction: var(--share-layout-mobile-direction);
+    flex-direction: var(--share-layout-stack-direction);
   }
 
   :root .post-stream[data-layout] .post-card:not(.directory-card) > .post-heading {
@@ -1295,7 +1285,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   }
   :root .post-stream[data-layout] .post-heading > h2 {
     order: 0;
-    margin-block: 0 var(--card-content-gap);
+    margin-block: 0 var(--control-capsule-gap);
   }
   :root .post-stream[data-layout] .post-card:not(.directory-card) > p {
     order: 1;
@@ -1304,7 +1294,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   :root .post-stream[data-layout] .post-tools {
     order: 2;
     justify-content: flex-start;
-    margin-block-start: var(--card-content-gap);
+    margin-block-start: var(--control-capsule-gap);
   }
   :root .post-stream[data-layout] .card-tags > :nth-child(1 of :not([hidden])) {
     margin-inline-start: 0;
@@ -1320,7 +1310,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root .post-stream[data-layout] .directory-heading > [data-card-actions] {
   align-self: center;
   justify-content: center;
-  margin-inline-end: calc(var(--card-action-inset) - var(--post-card-padding-inline));
+  margin-inline-end: calc(var(--card-action-rail-inset) - var(--post-card-padding-inline));
 }
 
 /* Reader-header rules own reader-specific content and layout. The common
@@ -1330,10 +1320,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   /* Reader sharing is derived from the same global control model as its Share
      trigger. Change the control tokens once and both trigger and destinations
      resize together. */
-  --reader-share-option-size: var(--control-size);
-  --reader-share-icon-size: var(--control-icon-size);
-  --reader-share-gap: var(--control-item-gap);
-  --reader-share-padding: calc(var(--control-item-gap) / 2);
   --reader-header-action-columns: 3;
 
   /* Read is also tokenized: unchecked uses the outline mask and checked swaps
@@ -1344,7 +1330,6 @@ html[lang="he"] .reader-controls .reader-number-error {
      outline and filled states. Only the line color changes with read state. */
   --reader-book-page-lines-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.15 8.161C7.568 8.098 8.905 8.371 10.15 8.954M6.15 11.161C7.568 11.098 8.905 11.371 10.15 11.954M6.15 14.161C7.568 14.098 8.905 14.371 10.15 14.954M17.85 8.161C16.432 8.098 15.095 8.371 13.85 8.954M17.85 11.161C16.432 11.098 15.095 11.371 13.85 11.954M17.85 14.161C16.432 14.098 15.095 14.371 13.85 14.954' fill='none' stroke='black' stroke-width='1.15' stroke-linecap='round'/%3E%3C/svg%3E");
   --reader-book-page-lines-color: currentColor;
-  --reader-book-selected-page-lines-color: var(--surface);
 }
 
 
@@ -1354,7 +1339,7 @@ html[lang="he"] .reader-controls .reader-number-error {
    reserved row, rule-to-control inset and Settings panel padding are all
    derived from the shared header/control spacing tokens. */
 :root body:has([data-reader-article]:not([hidden], [data-directory])) .site-header {
-  --header-control-extra-row-offset: calc(var(--header-control-size) + var(--header-control-half-gap));
+  --header-control-extra-row-offset: calc(var(--control-size) + var(--header-control-half-gap));
   position: relative;
   margin-block-end: var(--header-control-extra-row-offset);
 }
@@ -1366,8 +1351,8 @@ html[lang="he"] .reader-controls .reader-number-error {
   inset-inline-end: 0;
   inset-block-start: calc(100% + var(--layout-gap));
   display: grid;
-  grid-template-columns: repeat(var(--reader-header-action-columns), var(--header-control-size));
-  grid-template-rows: var(--header-control-size);
+  grid-template-columns: repeat(var(--reader-header-action-columns), var(--control-size));
+  grid-template-rows: var(--control-size);
   gap: var(--header-control-gap);
   align-items: stretch;
   justify-items: center;
@@ -1381,18 +1366,18 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root body:has([data-reader-article]:not([hidden], [data-directory])) .header-controls > .article-actions > .share-menu {
   box-sizing: border-box;
   display: block;
-  width: var(--header-control-size);
-  min-width: var(--header-control-size);
-  max-width: var(--header-control-size);
-  height: var(--header-control-size);
-  min-height: var(--header-control-size);
-  max-height: var(--header-control-size);
-  inline-size: var(--header-control-size);
-  min-inline-size: var(--header-control-size);
-  max-inline-size: var(--header-control-size);
-  block-size: var(--header-control-size);
-  min-block-size: var(--header-control-size);
-  max-block-size: var(--header-control-size);
+  width: var(--control-size);
+  min-width: var(--control-size);
+  max-width: var(--control-size);
+  height: var(--control-size);
+  min-height: var(--control-size);
+  max-height: var(--control-size);
+  inline-size: var(--control-size);
+  min-inline-size: var(--control-size);
+  max-inline-size: var(--control-size);
+  block-size: var(--control-size);
+  min-block-size: var(--control-size);
+  max-block-size: var(--control-size);
   margin: 0;
   line-height: 0;
 }
@@ -1420,7 +1405,7 @@ html[lang="he"] .reader-controls .reader-number-error {
    token-derived inset instead of the former large popover padding. */
 :root body .header-controls .share-menu > .share-options {
   inset-inline-start: auto;
-  inset-inline-end: calc(100% + var(--reader-share-gap));
+  inset-inline-end: calc(100% + var(--control-item-gap));
   inset-block-start: 0;
   inset-block-end: auto;
   display: flex;
@@ -1430,8 +1415,8 @@ html[lang="he"] .reader-controls .reader-number-error {
   justify-content: flex-end;
   width: max-content;
   max-width: none;
-  gap: var(--reader-share-gap);
-  padding: var(--reader-share-padding);
+  gap: var(--control-item-gap);
+  padding: 0;
   border-radius: var(--control-radius);
 }
 :root body .header-controls .share-menu[data-share-side="above"] > .share-options {
@@ -1440,25 +1425,25 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 :root body .header-controls .share-menu > .share-options > :is(a, button) {
   box-sizing: border-box;
-  flex: 0 0 var(--reader-share-option-size);
-  width: var(--reader-share-option-size);
-  min-width: var(--reader-share-option-size);
-  max-width: var(--reader-share-option-size);
-  height: var(--reader-share-option-size);
-  min-height: var(--reader-share-option-size);
-  max-height: var(--reader-share-option-size);
-  inline-size: var(--reader-share-option-size);
-  min-inline-size: var(--reader-share-option-size);
-  max-inline-size: var(--reader-share-option-size);
-  block-size: var(--reader-share-option-size);
-  min-block-size: var(--reader-share-option-size);
-  max-block-size: var(--reader-share-option-size);
+  flex: 0 0 var(--control-size);
+  width: var(--control-size);
+  min-width: var(--control-size);
+  max-width: var(--control-size);
+  height: var(--control-size);
+  min-height: var(--control-size);
+  max-height: var(--control-size);
+  inline-size: var(--control-size);
+  min-inline-size: var(--control-size);
+  max-inline-size: var(--control-size);
+  block-size: var(--control-size);
+  min-block-size: var(--control-size);
+  max-block-size: var(--control-size);
   padding: var(--control-padding);
   border-radius: var(--control-radius);
 }
 :root body .header-controls .share-menu > .share-options > :is(a, button) > svg {
-  width: var(--reader-share-icon-size);
-  height: var(--reader-share-icon-size);
+  width: var(--control-icon-size);
+  height: var(--control-icon-size);
 }
 
 /* Read contributes only its semantic glyph state. framed-control owns the
@@ -1473,7 +1458,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 :root .header-controls .framed-control.is-read {
   --reader-book-icon: var(--reader-book-selected-icon);
-  --reader-book-lines-color: var(--reader-book-selected-page-lines-color);
+  --reader-book-lines-color: var(--surface);
 }
 :root .header-controls .framed-control[data-framed-role~="read-toggle"]::before {
   content: "";
@@ -1523,7 +1508,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   overflow-y: hidden;
   overscroll-behavior-inline: contain;
   scrollbar-width: none;
-  padding: var(--control-highlight-width);
+  padding: var(--ring-width);
   margin: 0;
 }
 :root .article-heading .article-tags::-webkit-scrollbar { display: none; }
@@ -1587,10 +1572,6 @@ html[lang="he"] .reader-controls .reader-number-error {
    Desktop expands toward logical inline-start (left in LTR, right in RTL);
    mobile uses the shared vertical stack. No runtime translation or reflow. */
 :root {
-  --reader-share-option-size: var(--control-size);
-  --reader-share-icon-size: var(--control-icon-size);
-  --reader-share-gap: var(--header-control-gap);
-  --reader-share-padding: 0;
   --reader-share-layer: 1000;
 }
 
@@ -1604,23 +1585,21 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* Keep the details host exactly one control wide while open. The destination
    strip is absolutely positioned and must never change this flex item's width. */
 :root body .header-controls .share-menu {
-  --reader-share-option-size: var(--header-control-size, var(--control-size));
-  --reader-share-gap: var(--header-control-gap, var(--control-item-gap));
-  --quiet-control-target-size: var(--reader-share-option-size);
-  --quiet-control-icon-size: var(--reader-share-icon-size);
-  --quiet-control-gap: var(--reader-share-gap);
+  --quiet-control-target-size: var(--control-size);
+  --quiet-control-icon-size: var(--control-icon-size);
+  --quiet-control-gap: var(--control-item-gap);
   --quiet-control-color: var(--ink);
   --quiet-control-active-color: var(--accent-strong);
   --quiet-control-radius: var(--control-radius);
   position: relative;
   box-sizing: border-box;
-  flex: 0 0 var(--reader-share-option-size);
-  width: var(--reader-share-option-size);
-  min-width: var(--reader-share-option-size);
-  max-width: var(--reader-share-option-size);
-  height: var(--reader-share-option-size);
-  min-height: var(--reader-share-option-size);
-  max-height: var(--reader-share-option-size);
+  flex: 0 0 var(--control-size);
+  width: var(--control-size);
+  min-width: var(--control-size);
+  max-width: var(--control-size);
+  height: var(--control-size);
+  min-height: var(--control-size);
+  max-height: var(--control-size);
   overflow: visible;
 }
 
@@ -1628,19 +1607,19 @@ html[lang="he"] .reader-controls .reader-number-error {
    borderless .quiet-control component with the full-size tokens above. */
 :root body .header-controls .share-menu > summary {
   box-sizing: border-box;
-  flex: 0 0 var(--reader-share-option-size);
-  width: var(--reader-share-option-size);
-  min-width: var(--reader-share-option-size);
-  max-width: var(--reader-share-option-size);
-  height: var(--reader-share-option-size);
-  min-height: var(--reader-share-option-size);
-  max-height: var(--reader-share-option-size);
-  inline-size: var(--reader-share-option-size);
-  min-inline-size: var(--reader-share-option-size);
-  max-inline-size: var(--reader-share-option-size);
-  block-size: var(--reader-share-option-size);
-  min-block-size: var(--reader-share-option-size);
-  max-block-size: var(--reader-share-option-size);
+  flex: 0 0 var(--control-size);
+  width: var(--control-size);
+  min-width: var(--control-size);
+  max-width: var(--control-size);
+  height: var(--control-size);
+  min-height: var(--control-size);
+  max-height: var(--control-size);
+  inline-size: var(--control-size);
+  min-inline-size: var(--control-size);
+  max-inline-size: var(--control-size);
+  block-size: var(--control-size);
+  min-block-size: var(--control-size);
+  max-block-size: var(--control-size);
   border-radius: var(--control-radius);
 }
 
@@ -1657,25 +1636,25 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root body .header-controls .share-menu > .share-options {
   position: absolute !important;
   inset-inline-start: var(--share-options-inset-inline-start, auto) !important;
-  inset-inline-end: var(--share-options-inset-inline-end, calc(100% + var(--reader-share-gap))) !important;
+  inset-inline-end: var(--share-options-inset-inline-end, calc(100% + var(--control-item-gap))) !important;
   inset-block-start: var(--share-options-inset-block-start, 0) !important;
   inset-block-end: var(--share-options-inset-block-end, auto) !important;
   z-index: var(--reader-share-layer);
   box-sizing: border-box;
-  height: var(--share-options-panel-height, var(--reader-share-option-size));
-  min-height: var(--share-options-panel-min-height, var(--reader-share-option-size));
-  max-height: var(--share-options-panel-max-height, var(--reader-share-option-size));
-  block-size: var(--share-options-panel-height, var(--reader-share-option-size));
-  min-block-size: var(--share-options-panel-min-height, var(--reader-share-option-size));
-  max-block-size: var(--share-options-panel-max-height, var(--reader-share-option-size));
+  height: var(--share-options-panel-height, var(--control-size));
+  min-height: var(--share-options-panel-min-height, var(--control-size));
+  max-height: var(--share-options-panel-max-height, var(--control-size));
+  block-size: var(--share-options-panel-height, var(--control-size));
+  min-block-size: var(--share-options-panel-min-height, var(--control-size));
+  max-block-size: var(--share-options-panel-max-height, var(--control-size));
   display: flex;
   flex-direction: var(--share-options-direction, var(--share-layout-inline-direction));
   flex-wrap: nowrap;
   align-items: center;
   width: max-content;
   max-width: none;
-  gap: var(--reader-share-gap);
-  padding: var(--reader-share-padding);
+  gap: var(--control-item-gap);
+  padding: 0;
   margin: 0;
   border-radius: var(--control-radius);
   transform: var(--share-options-transform, none) !important;
@@ -1687,7 +1666,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 @media (max-width: 700px) {
   :root body .header-controls .share-menu > .share-options {
     inset-inline-start: auto !important;
-    inset-inline-end: calc(100% + var(--reader-share-gap)) !important;
+    inset-inline-end: calc(100% + var(--control-item-gap)) !important;
     inset-block-start: 0 !important;
     inset-block-end: auto !important;
     height: auto;
@@ -1696,6 +1675,6 @@ html[lang="he"] .reader-controls .reader-number-error {
     block-size: auto;
     min-block-size: 0;
     max-block-size: none;
-    flex-direction: var(--share-layout-mobile-direction);
+    flex-direction: var(--share-layout-stack-direction);
   }
 }

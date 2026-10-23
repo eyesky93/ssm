@@ -10,8 +10,8 @@
 .hierarchy-map { min-width: 0; margin-block: var(--space-2xl); font-family: var(--font-content); }
 .hierarchy-map [hidden] { display: none !important; }
 .map-stage { position: relative; border: 1px solid var(--line-strong); border-radius: var(--radius-lg); background: var(--paper); overflow: hidden; }
-.map-toolbar { position: absolute; z-index: 3; inset-inline-start: var(--space-md); bottom: var(--space-md); display: flex; flex-direction: column; align-items: stretch; gap: var(--directory-control-spacing); width: var(--control-size); margin: 0; }
-.map-history-controls { display: flex; justify-content: space-between; gap: var(--directory-control-spacing); }
+.map-toolbar { position: absolute; z-index: 3; inset-inline-start: var(--space-md); bottom: var(--space-md); display: flex; flex-direction: column; align-items: stretch; gap: var(--control-capsule-gap); width: var(--control-size); margin: 0; }
+.map-history-controls { display: flex; justify-content: space-between; gap: var(--control-capsule-gap); }
 .map-toolbar button, .map-toolbar > a { display: inline-flex; justify-content: center; align-items: center; min-width: var(--control-size); min-height: var(--control-size); height: var(--control-size); padding: var(--space-3xs) var(--space-xs); font: inherit; font-size: var(--font-size-small); line-height: 1.2; text-decoration: none; cursor: pointer; }
 .map-toolbar output { color: var(--muted); font-size: var(--font-size-ui); font-variant-numeric: tabular-nums; }
 .map-viewport { max-width: 100%; min-height: var(--map-viewport-min-height); max-height: var(--map-viewport-max-height); overflow: auto; overscroll-behavior: auto; touch-action: pan-x pan-y; direction: ltr; background: var(--paper); cursor: grab; }
@@ -39,7 +39,7 @@ html[lang="he"] .hierarchy-map { font-family: var(--font-interface-hebrew), var(
 
 /* The navigation arrows use the same round frames and accent as post controls. */
 .map-toolbar .map-history-button { flex: 0 0 var(--control-size); width: var(--control-size); height: var(--control-size); padding: var(--control-padding); border-radius: 50%; }
-.map-history-button .navigation-arrow { width: var(--navigation-icon-size); height: var(--navigation-icon-size); }
+.map-history-button .navigation-arrow { width: var(--control-icon-size); height: var(--control-icon-size); }
 
 .hierarchy-map .map-filter-bar { border: 0; padding-top: 0; }
 .map-filters { font-family: var(--font-interface); font-size: var(--font-size-body); line-height: normal; }
@@ -73,17 +73,17 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 .map-switch svg { width: var(--icon-size-lg); height: var(--icon-size-lg); fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
 /* Keep Read beside the mode switch as one stable, direction-aware row. */
-.map-stage > .map-mode-controls { position: absolute; z-index: 4; inset-inline-start: var(--space-xs); top: var(--space-xs); display: flex; align-items: center; gap: var(--directory-control-spacing); max-width: calc(100% - var(--space-lg)); margin: 0; }
+.map-stage > .map-mode-controls { position: absolute; z-index: 4; inset-inline-start: var(--space-xs); top: var(--space-xs); display: flex; align-items: center; gap: var(--control-capsule-gap); max-width: calc(100% - var(--space-lg)); margin: 0; }
 .map-mode-controls > :is(.map-switch, .map-read-filter) { flex: 0 0 auto; margin: 0; }
-.map-toolbar { width: var(--control-size); gap: var(--directory-control-spacing); }
-.map-history-controls { flex-direction: column; gap: var(--directory-control-spacing); align-items: center; }
+.map-toolbar { width: var(--control-size); gap: var(--control-capsule-gap); }
+.map-history-controls { flex-direction: column; gap: var(--control-capsule-gap); align-items: center; }
 .map-toolbar .map-history-button { flex-basis: var(--control-size); }
 .map-zoom-control { order: -1; display: grid; place-items: center; width: var(--control-size); height: var(--control-size); }
-.map-zoom-control > button { position: relative; width: var(--control-size); height: var(--control-size); min-height: var(--control-size); padding: 0; border-radius: 50%; font-size: var(--directory-zoom-toggle-font-size); white-space: nowrap; }
+.map-zoom-control > button { position: relative; width: var(--control-size); height: var(--control-size); min-height: var(--control-size); padding: 0; border-radius: 50%; font-size: var(--font-size-tiny); white-space: nowrap; }
 .map-zoom-control:has([aria-expanded="true"]) > button { visibility: hidden; }
 .map-zoom-panel { inset-inline-start: 0; bottom: 0; width: var(--control-size); height: calc(5 * var(--control-size)); padding: var(--space-md) 0 calc(var(--control-size) + var(--space-xs)); border-radius: var(--control-radius); justify-content: center; background: var(--paper); transform-origin: bottom; animation: map-zoom-open .16s ease-out; }
 .map-zoom-panel [type="range"] { writing-mode: vertical-lr; direction: rtl; width: var(--icon-size-xl); height: 100%; }
-.map-zoom-entry { position: absolute; bottom: 0; left: 0; width: var(--control-inner-size); height: var(--control-inner-size); display: flex; align-items: center; justify-content: center; direction: ltr; font-size: var(--directory-zoom-entry-font-size); }
+.map-zoom-entry { position: absolute; bottom: 0; left: 0; width: var(--control-inner-size); height: var(--control-inner-size); display: flex; align-items: center; justify-content: center; direction: ltr; font-size: var(--font-size-tiny); }
 .map-zoom-entry input { appearance: textfield; width: calc(var(--directory-zoom-digit-count, 3) * 1ch); padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; text-align: right; }
 .map-zoom-entry input::-webkit-inner-spin-button, .map-zoom-entry input::-webkit-outer-spin-button { appearance: none; margin: 0; }
 @keyframes map-zoom-open { from { clip-path: inset(80% 0 0 round var(--control-radius)); } to { clip-path: inset(0 round var(--control-radius)); } }
@@ -104,7 +104,7 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
   position: absolute;
   z-index: 4;
   inset-block-start: var(--space-xs);
-  inset-inline-start: var(--directory-control-spacing);
+  inset-inline-start: var(--control-capsule-gap);
   inset-inline-end: var(--space-md);
   margin: 0;
   padding: var(--space-2xs) 0;
