@@ -1308,16 +1308,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   :root {
     --quiet-control-icon-scale: .5;
   }
-  :root .post-stream[data-layout] [data-card-actions] .card-share-menu > .share-options,
-  :root .post-stream[data-layout] [data-card-actions] .card-share-menu[data-share-side="above"] > .share-options {
-    inset-inline-start: auto;
-    inset-inline-end: calc(100% + var(--quiet-control-gap));
-    inset-block-start: 0;
-    inset-block-end: auto;
-    transform: none;
-    flex-direction: var(--share-layout-stack-direction);
-  }
-
   :root .post-stream[data-layout] .post-card:not(.directory-card) > .post-heading {
     display: contents;
   }

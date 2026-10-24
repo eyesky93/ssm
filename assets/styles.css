@@ -1296,7 +1296,6 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
 .article-actions { display: flex; flex: 0 0 auto; flex-direction: row; align-items: center; gap: var(--control-capsule-gap); }
 body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { display: none; }
 :root {
-  --share-layout-stack-direction: column;
   --share-layout-inline-direction: row;
 }
 .share-menu { position: relative; display: inline-block; font-family: var(--font-interface); font-size: var(--font-size-ui-large); }
