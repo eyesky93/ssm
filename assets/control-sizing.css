@@ -775,7 +775,7 @@
      group returns all unused room to the title. Long labels retain their
      min-content floor and rows remain unrestricted. */
   --list-post-title-share: 3;
-  --list-post-title-wrap: wrap;
+  --post-title-wrap: wrap;
   --list-post-tags-share: 1;
   --list-post-tags-max-inline-size: calc((100% - var(--layout-gap)) * var(--list-post-tags-share) / (var(--list-post-title-share) + var(--list-post-tags-share)));
 
@@ -933,7 +933,7 @@
     order: 0;
     flex: 1 1 auto;
     width: auto;
-    text-wrap: var(--list-post-title-wrap);
+    text-wrap: var(--post-title-wrap);
     margin-block: 0;
   }
   :root body .post-stream[data-layout="list"] .post-card:not(.directory-card) > p:not(.post-monograph) {

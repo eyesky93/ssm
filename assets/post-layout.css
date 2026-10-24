@@ -1564,6 +1564,11 @@ html[lang="he"] .reader-controls .reader-number-error {
     block-size: calc(var(--control-size) + 2 * var(--layout-gap) - var(--space-lg));
     margin-inline-start: var(--space-lg);
   }
+  /* Balancing would even out the lines and stop the title short of the buttons;
+     let the first line run right up to them, as a list card's title does. */
+  :root [data-reader-article]:not([data-directory]) .article-heading.post-heading:not(:has(> .post-tools)) > h1 {
+    text-wrap: var(--post-title-wrap);
+  }
 }
 
 @media (min-width: 701px) {
