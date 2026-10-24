@@ -65,8 +65,9 @@ html[lang="he"] .map-filters { font-family: var(--font-interface-hebrew), var(--
 /* Mode-state colors are owned by control-sizing.css so this switch follows the shared top-control interaction model. */
 html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-hebrew), var(--font-content); }
 
-/* One stable frame for every Directory view, including empty results. */
-.map-ready .map-stage { height: var(--map-stage-height); }
+/* One frame for every Directory view, including empty results: it fits the map
+   (--map-stage-fit-height, set by hierarchy.js) between a floor and the full height. */
+.map-ready .map-stage { height: clamp(var(--map-stage-min-height), var(--map-stage-fit-height, var(--map-stage-height)), var(--map-stage-height)); }
 .map-ready [data-map-view], .map-ready .map-viewport, .map-ready .map-filter-empty { height: 100%; }
 .map-ready .map-viewport { min-height: 0; max-height: none; }
 
