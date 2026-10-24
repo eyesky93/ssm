@@ -285,6 +285,9 @@
   grid-column: 1;
   grid-row: 2;
   min-width: 0;
+  /* The subtitle fills its track up to the Published date instead of stopping at
+     the catalogue measure (--summary-max-width), which left a wide empty gap. */
+  max-width: none;
   align-self: last baseline;
 }
 [data-reader-article]:not([data-directory]) > .article-header > .article-topline {
