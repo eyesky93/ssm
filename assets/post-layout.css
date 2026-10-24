@@ -1615,6 +1615,15 @@ html[lang="he"] .reader-controls .reader-number-error {
   margin: 0;
   font-family: var(--font-interface);
   line-height: normal;
+  /* Unlike a card's one-line strip, the tags under the post wrap onto further rows
+     when the page is narrow or zoomed, so none is cut off behind a hidden scroll. */
+  flex-wrap: wrap;
+  overflow: visible;
+}
+:root [data-reader-article]:not([data-directory]) > .article-body > .article-tags > :not([hidden]) {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 :root [data-reader-article]:not([data-directory]) > .article-body > .article-tags > :nth-child(1 of :not([hidden])) {
   margin-inline-start: 0;
