@@ -134,6 +134,7 @@
   --page-margin: clamp(2rem, 6vw, 8rem); /* both sides of header, main and footer together */
   --header-min-height: 4.5rem;
   --summary-max-width: 44rem;
+  --summary-line-height: 1.35; /* rows of the post subtitle */
   --intro-max-width: 38rem;
   --grid-column-min-width: 18rem;
   --grid-column-min-width-compact: 15rem;

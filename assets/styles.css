@@ -134,6 +134,7 @@
   --page-margin: clamp(2rem, 6vw, 8rem); /* both sides of header, main and footer together */
   --header-min-height: 4.5rem;
   --summary-max-width: 44rem;
+  --summary-line-height: 1.35; /* rows of the post subtitle */
   --intro-max-width: 38rem;
   --grid-column-min-width: 18rem;
   --grid-column-min-width-compact: 15rem;
@@ -1271,7 +1272,7 @@ body:has([data-reader-article]:not([hidden])) [data-view-menu] { display: none; 
   color: var(--muted);
   font-family: var(--font-content);
   font-size: var(--font-size-lead);
-  line-height: 1.6;
+  line-height: var(--summary-line-height);
 }
 
 .article-topline { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md) var(--space-2xl); }
