@@ -1295,6 +1295,15 @@ html[lang="he"] .reader-controls .reader-number-error {
    token only. Geometry remains derived from the shared variables; there are no
    per-control size overrides. */
 
+/* The strip opens sideways from its Share trigger, so it reveals from the trigger's
+   side: the physical right in English, the left in Hebrew. */
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu[open][data-share-ready="true"] > .share-options {
+  animation-name: share-options-reveal-from-right;
+}
+:root[dir="rtl"] .post-stream[data-layout] [data-card-actions] .card-share-menu[open][data-share-ready="true"] > .share-options {
+  animation-name: share-options-reveal-from-left;
+}
+
 @media (max-width: 700px) {
   :root {
     --quiet-control-icon-scale: .5;
@@ -1425,29 +1434,25 @@ html[lang="he"] .reader-controls .reader-number-error {
   border-color: var(--accent-strong);
 }
 
-/* Share destinations form one compact strip that grows toward inline-start:
-   left on English pages and right on Hebrew pages. The destination cells are
-   exactly the same size as Share and the surrounding frame keeps only a small,
-   token-derived inset instead of the former large popover padding. */
+/* Share destinations drop straight down from the Share button as one column.
+   The cells are exactly the same size as Share and the surrounding frame keeps
+   only a small, token-derived inset; the column is centred under the button in
+   both directions through logical insets. */
 :root body .header-controls .share-menu > .share-options {
   inset-inline-start: auto;
-  inset-inline-end: calc(100% + var(--control-item-gap));
-  inset-block-start: 0;
+  inset-inline-end: calc(-1 * var(--border-width-thin));
+  inset-block-start: calc(100% + var(--control-item-gap));
   inset-block-end: auto;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: nowrap;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   width: max-content;
   max-width: none;
   gap: var(--control-item-gap);
   padding: 0;
   border-radius: var(--control-radius);
-}
-:root body .header-controls .share-menu[data-share-side="above"] > .share-options {
-  inset-block-start: 0;
-  inset-block-end: auto;
 }
 :root body .header-controls .share-menu > .share-options > :is(a, button) {
   box-sizing: border-box;
@@ -1610,8 +1615,8 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 
 /* Reader Share geometry.
-   Desktop expands toward logical inline-start (left in LTR, right in RTL);
-   mobile uses the shared vertical stack. No runtime translation or reflow. */
+   The destinations drop below the Share button as one column at every width.
+   No runtime translation or reflow. */
 :root {
   --reader-share-layer: 1000;
 }
@@ -1672,50 +1677,20 @@ html[lang="he"] .reader-controls .reader-number-error {
   z-index: calc(var(--reader-share-layer) + 1);
 }
 
-/* Share stays in its header cell. The destination strip is attached on the
-   logical inline-start side, so direction mirrors automatically in RTL. */
+/* Share stays in its header cell. The destinations hang below it as a column
+   attached to the button, so they follow it in RTL and never reflow the header. */
 :root body .header-controls .share-menu > .share-options {
   position: absolute !important;
-  inset-inline-start: var(--share-options-inset-inline-start, auto) !important;
-  inset-inline-end: var(--share-options-inset-inline-end, calc(100% + var(--control-item-gap))) !important;
-  inset-block-start: var(--share-options-inset-block-start, 0) !important;
-  inset-block-end: var(--share-options-inset-block-end, auto) !important;
   z-index: var(--reader-share-layer);
   box-sizing: border-box;
-  height: var(--share-options-panel-height, var(--control-size));
-  min-height: var(--share-options-panel-min-height, var(--control-size));
-  max-height: var(--share-options-panel-max-height, var(--control-size));
-  block-size: var(--share-options-panel-height, var(--control-size));
-  min-block-size: var(--share-options-panel-min-height, var(--control-size));
-  max-block-size: var(--share-options-panel-max-height, var(--control-size));
-  display: flex;
-  flex-direction: var(--share-options-direction, var(--share-layout-inline-direction));
-  flex-wrap: nowrap;
-  align-items: center;
-  width: max-content;
-  max-width: none;
-  gap: var(--control-item-gap);
-  padding: 0;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  block-size: auto;
+  min-block-size: 0;
+  max-block-size: none;
   margin: 0;
-  border-radius: var(--control-radius);
-  transform: var(--share-options-transform, none) !important;
+  transform: none !important;
   translate: none !important;
   overflow: visible;
-}
-
-
-@media (max-width: 700px) {
-  :root body .header-controls .share-menu > .share-options {
-    inset-inline-start: auto !important;
-    inset-inline-end: calc(100% + var(--control-item-gap)) !important;
-    inset-block-start: 0 !important;
-    inset-block-end: auto !important;
-    height: auto;
-    min-height: 0;
-    max-height: none;
-    block-size: auto;
-    min-block-size: 0;
-    max-block-size: none;
-    flex-direction: var(--share-layout-stack-direction);
-  }
 }

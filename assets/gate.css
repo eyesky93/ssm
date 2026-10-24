@@ -135,6 +135,10 @@
   --header-min-height: 4.5rem;
   --summary-max-width: 44rem;
   --summary-line-height: 1.35; /* rows of the post subtitle */
+  /* One open timing for every control that grows or drops open: the search field
+     and the Share destinations. */
+  --control-open-duration: 200ms;
+  --control-open-easing: ease;
   --intro-max-width: 38rem;
   --grid-column-min-width: 18rem;
   --grid-column-min-width-compact: 15rem;

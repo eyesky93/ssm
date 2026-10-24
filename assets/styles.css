@@ -135,6 +135,10 @@
   --header-min-height: 4.5rem;
   --summary-max-width: 44rem;
   --summary-line-height: 1.35; /* rows of the post subtitle */
+  /* One open timing for every control that grows or drops open: the search field
+     and the Share destinations. */
+  --control-open-duration: 200ms;
+  --control-open-easing: ease;
   --intro-max-width: 38rem;
   --grid-column-min-width: 18rem;
   --grid-column-min-width-compact: 15rem;
@@ -403,7 +407,7 @@ html[lang="he"] .subscribe-dialog .topic-option span { font-family: var(--font-i
   inset-inline-end: 0;
   inset-block-start: 0;
   width: var(--control-size);
-  transition: width 200ms ease;
+  transition: width var(--control-open-duration) var(--control-open-easing);
 }
 .site-search[data-open="true"] .search-shell {
   width: calc(var(--search-width) + var(--control-size));
@@ -1294,17 +1298,14 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 :root {
   --share-layout-stack-direction: column;
   --share-layout-inline-direction: row;
-  --share-trigger-icon-scale-x: 1;
-}
-:root[dir="rtl"] {
-  --share-trigger-icon-scale-x: -1;
 }
 .share-menu { position: relative; display: inline-block; font-family: var(--font-interface); font-size: var(--font-size-ui-large); }
 .share-menu summary { display: grid; place-items: center; width: var(--minimum-touch-target); height: var(--minimum-touch-target); border: 1px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: var(--ink); padding: var(--space-sm); cursor: pointer; list-style: none; }
 .share-menu summary:is(:hover, :focus-visible) { box-shadow: 0 0 0 var(--ring-width) var(--soft-accent); }
 .share-menu[open] { z-index: 20; }
 .share-menu summary::-webkit-details-marker { display: none; }
-.share-menu summary svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.7; transform: scaleX(var(--share-trigger-icon-scale-x)); transform-origin: center; }
+/* The glyph is cropped to sit at the optical centre of the button, and is never mirrored in Hebrew. */
+.share-menu summary svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.85; }
 .share-options { position: absolute; overflow: visible; max-block-size: none; z-index: 5; inset-inline-end: calc(-1 * var(--space-xs) - 1px); inset-block-start: calc(100% + var(--space-xs)); display: flex; flex-direction: column; flex-wrap: nowrap; align-items: flex-end; width: max-content; gap: var(--space-xs); padding: var(--space-sm) var(--space-xs); border: 1px solid var(--line-strong); border-radius: var(--radius-xl); background: var(--surface); box-shadow: var(--raised-shadow); }
 /* Progressive enhancement: without JavaScript, native details still works.
    With JavaScript, never paint the menu before its final opening side is ready. */
@@ -1313,6 +1314,30 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 .share-options a:hover, .share-options button:hover { background: var(--soft-accent); border-color: var(--accent-strong); }
 .share-options svg { width: 100%; height: 100%; fill: currentColor; }
 .share-options [hidden] { display: none; }
+/* Destinations reveal from the Share button the way the search field grows from
+   its icon: the same duration and easing, clipped rather than resized so nothing
+   shifts. They start only once the opening side is chosen, so the first painted
+   frame is the first frame of the reveal. */
+@keyframes share-options-reveal {
+  from { clip-path: inset(0 calc(-1 * var(--space-lg)) 100% calc(-1 * var(--space-lg))); }
+  to { clip-path: inset(calc(-1 * var(--space-lg))); }
+}
+/* Sideways strips reveal from the side their trigger is on. The negative inset
+   at the end keeps a frame's shadow from being clipped as the animation ends. */
+@keyframes share-options-reveal-from-right {
+  from { clip-path: inset(calc(-1 * var(--space-lg)) 0 calc(-1 * var(--space-lg)) 100%); }
+  to { clip-path: inset(calc(-1 * var(--space-lg))); }
+}
+@keyframes share-options-reveal-from-left {
+  from { clip-path: inset(calc(-1 * var(--space-lg)) 100% calc(-1 * var(--space-lg)) 0); }
+  to { clip-path: inset(calc(-1 * var(--space-lg))); }
+}
+.share-menu[open][data-share-ready="true"] > .share-options {
+  animation: share-options-reveal var(--control-open-duration) var(--control-open-easing);
+}
+@media (prefers-reduced-motion: reduce) {
+  .share-menu[open][data-share-ready="true"] > .share-options { animation: none; }
+}
 /* Feedback is a sibling popover, never part of the icon column's width. */
 
 /* Small shared confirmations stay outside cards/menus and never intercept a
