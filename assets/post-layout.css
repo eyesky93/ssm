@@ -266,18 +266,19 @@
   grid-template-columns: repeat(auto-fill, minmax(min(100%, max(var(--grid-column-min-width-compact), calc(var(--engagement-strip-min-width, 0px) + 2 * var(--surface-padding) + 2 * var(--border-width-thin)))), 1fr));
 }
 
-/* Keep the reader title on its own row, then keep subtitle and Published date
-   on the same baseline at every responsive width. Browser zoom reduces the CSS
-   viewport width, so this geometry must not switch to a stacked mobile flow.
-   The subtitle owns the flexible track; the date stays at logical end. */
+/* Keep the reader title on its own row. The Published date ends the subtitle's
+   own text flow as a float at the logical end: every subtitle row above it runs
+   the full width, and only the last row shares a line with the date, on the
+   subtitle's own baseline. A last row too long to leave room puts the date on a
+   row of its own at the end instead, so no width, zoom or language squeezes the
+   subtitle into a narrow column. */
 [data-reader-article]:not([data-directory]) > .article-header {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) max-content;
-  column-gap: var(--space-2xl);
+  grid-template-columns: minmax(0, 1fr);
   padding-block-end: var(--space-xs);
 }
 [data-reader-article]:not([data-directory]) > .article-header > .article-heading {
-  grid-column: 1 / -1;
+  grid-column: 1;
   grid-row: 1;
   margin-block-start: 0;
 }
@@ -285,22 +286,23 @@
   grid-column: 1;
   grid-row: 2;
   min-width: 0;
-  /* The subtitle fills its track up to the Published date instead of stopping at
-     the catalogue measure (--summary-max-width), which left a wide empty gap. */
+  /* The subtitle fills the whole row instead of stopping at the catalogue
+     measure (--summary-max-width). It contains its date float. */
   max-width: none;
-  align-self: last baseline;
+  display: flow-root;
 }
-[data-reader-article]:not([data-directory]) > .article-header > .article-topline {
-  grid-column: 2;
-  grid-row: 2;
-  min-width: 0;
-  max-width: 100%;
-  align-self: last baseline;
-  margin-block-start: var(--space-md);
+[data-reader-article]:not([data-directory]) > .article-header > .article-summary > .article-topline {
+  float: inline-end;
+  display: block;
+  margin-inline-start: var(--space-2xl);
+  /* The float inherits the subtitle's font and line height, so its line box has
+     the subtitle's own strut and the date lands on the last row's baseline. */
 }
-[data-reader-article]:not([data-directory]) > .article-header > .article-topline .article-meta {
+[data-reader-article]:not([data-directory]) > .article-header > .article-summary > .article-topline .article-meta {
+  display: inline-flex;
   flex-wrap: nowrap;
   white-space: nowrap;
+  font-family: var(--font-interface);
 }
 /* Tighten only the visible reader, not the home/inline catalogue or Directory. */
 .site-main:has(> [data-reader-article]:not([hidden], [data-directory])) {
