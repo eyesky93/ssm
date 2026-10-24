@@ -1360,30 +1360,21 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 
 
-/* On a visible post reader, the site header keeps only the persistent menu
-   controls above its border. Pin/Share/Read sit outside the header, just below
-   that rule, over the first title row. They reserve no row of their own: the
-   title wraps around them (see the h1 float below), so it rises to the top of
-   the page and its first line ends where the buttons begin. */
-:root body:has([data-reader-article]:not([hidden], [data-directory])) .site-header {
-  position: relative;
-}
+/* Pin/Share/Read live in the site header row at every width, between Search
+   and the language control, exactly as on a phone. They take their own cells
+   there, so the title below keeps the full width and nothing floats or wraps
+   around them. A narrow header lets the group wrap onto a second row. */
 :root body:has([data-reader-article]:not([hidden], [data-directory])) .header-controls {
-  width: max-content;
+  width: auto;
+  max-width: 100%;
+  flex-wrap: wrap;
 }
-/* Directory has one action, Pin, at the logical end of its title row: the place
-   a post keeps Pin/Share/Read. Its short title leaves that end free, so it needs
-   no reserved header row. */
-:root body:has([data-reader-article][data-directory]:not([hidden])) .site-header {
-  position: relative;
-}
+/* Directory has one action, Pin. */
 :root body:has([data-reader-article][data-directory]:not([hidden])) .header-controls > .article-actions {
   --reader-header-action-columns: 1;
 }
 :root body:has([data-reader-article]:not([hidden])) .header-controls > .article-actions {
-  position: absolute;
-  inset-inline-end: 0;
-  inset-block-start: calc(100% + var(--layout-gap));
+  position: static;
   display: grid;
   grid-template-columns: repeat(var(--reader-header-action-columns), var(--control-size));
   grid-template-rows: var(--control-size);
@@ -1391,7 +1382,6 @@ html[lang="he"] .reader-controls .reader-number-error {
   align-items: stretch;
   justify-items: center;
   width: max-content;
-  z-index: 20;
 }
 
 /* Keep Details from contributing intrinsic width/height at high browser zoom.
@@ -1553,25 +1543,10 @@ html[lang="he"] .reader-controls .reader-number-error {
   white-space: nowrap;
 }
 
-@media (min-width: 701px) {
-  /* The three post actions float over the first title row at the logical end.
-     A float of exactly their footprint makes only the lines beside them wrap
-     short; every later line, and the subtitle, keep the full width. Width is
-     the action columns plus their gaps; height reaches from the title's top to
-     the buttons' bottom plus one layout gap. Logical float follows RTL. Phones
-     put the actions in the header row and need no float. */
-  :root [data-reader-article]:not([data-directory]) .article-heading.post-heading:not(:has(> .post-tools)) > h1::before {
-    content: "";
-    float: inline-end;
-    inline-size: calc(var(--reader-header-action-columns) * var(--control-size) + (var(--reader-header-action-columns) - 1) * var(--control-item-gap));
-    block-size: calc(var(--control-size) + 2 * var(--layout-gap) - var(--space-lg));
-    margin-inline-start: var(--space-lg);
-  }
-  /* Balancing would even out the lines and stop the title short of the buttons;
-     let the first line run right up to them, as a list card's title does. */
-  :root [data-reader-article]:not([data-directory]) .article-heading.post-heading:not(:has(> .post-tools)) > h1 {
-    text-wrap: var(--post-title-wrap);
-  }
+/* Balancing would even out the lines and stop the title short of the full
+   width; let each line run to the end, as a list card's title does. */
+:root [data-reader-article]:not([data-directory]) .article-heading.post-heading:not(:has(> .post-tools)) > h1 {
+  text-wrap: var(--post-title-wrap);
 }
 
 @media (min-width: 701px) {

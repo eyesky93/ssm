@@ -1373,16 +1373,6 @@
     margin-inline-start: 0;
   }
 
-  :root body:has([data-reader-article]:not([hidden], [data-directory])) .header-controls {
-    width: auto;
-    max-width: 100%;
-    flex-wrap: wrap;
-  }
-  :root body:has([data-reader-article]:not([hidden])) .header-controls > .article-actions {
-    position: static;
-    inset: auto;
-  }
-
   /* Search, language, settings, layout/navigation hosts and the settings panel
      all consume the header aliases above, so their tracks, hit areas, popup grid
      and offsets scale together. Keep the tag row on its compact tag geometry. */
