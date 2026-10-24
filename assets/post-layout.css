@@ -1358,14 +1358,12 @@ html[lang="he"] .reader-controls .reader-number-error {
 
 
 /* On a visible post reader, the site header keeps only the persistent menu
-   controls above its border. Pin/Share/Read sit outside the header, below that
-   rule, while retaining the exact same three shared control tracks. The
-   reserved row, rule-to-control inset and Settings panel padding are all
-   derived from the shared header/control spacing tokens. */
+   controls above its border. Pin/Share/Read sit outside the header, just below
+   that rule, over the first title row. They reserve no row of their own: the
+   title wraps around them (see the h1 float below), so it rises to the top of
+   the page and its first line ends where the buttons begin. */
 :root body:has([data-reader-article]:not([hidden], [data-directory])) .site-header {
-  --header-control-extra-row-offset: calc(var(--control-size) + var(--header-control-half-gap));
   position: relative;
-  margin-block-end: var(--header-control-extra-row-offset);
 }
 :root body:has([data-reader-article]:not([hidden], [data-directory])) .header-controls {
   width: max-content;
@@ -1550,6 +1548,22 @@ html[lang="he"] .reader-controls .reader-number-error {
   max-width: none;
   flex: 0 0 auto;
   white-space: nowrap;
+}
+
+@media (min-width: 701px) {
+  /* The three post actions float over the first title row at the logical end.
+     A float of exactly their footprint makes only the lines beside them wrap
+     short; every later line, and the subtitle, keep the full width. Width is
+     the action columns plus their gaps; height reaches from the title's top to
+     the buttons' bottom plus one layout gap. Logical float follows RTL. Phones
+     put the actions in the header row and need no float. */
+  :root [data-reader-article]:not([data-directory]) .article-heading.post-heading:not(:has(> .post-tools)) > h1::before {
+    content: "";
+    float: inline-end;
+    inline-size: calc(var(--reader-header-action-columns) * var(--control-size) + (var(--reader-header-action-columns) - 1) * var(--control-item-gap));
+    block-size: calc(var(--control-size) + 2 * var(--layout-gap) - var(--space-lg));
+    margin-inline-start: var(--space-lg);
+  }
 }
 
 @media (min-width: 701px) {
