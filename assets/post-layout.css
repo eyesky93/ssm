@@ -579,7 +579,7 @@ html[lang="he"] .reader-controls .reader-number-error {
    keep their original base styles; only Help is a standalone framed button.
    Component palette tokens are consumed here and on hover/focus, so a
    variant never loses its colors to these higher-specificity base rules. */
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control, .quiet-control):where(:not(.surface-control)) {
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control, .quiet-control, .comment-replies-toggle):where(:not(.surface-control)) {
   box-sizing: border-box;
   min-block-size: var(--control-size);
   border: 1px solid var(--line-strong);
@@ -589,14 +589,14 @@ html[lang="he"] .reader-controls .reader-number-error {
   box-shadow: none;
   transform: none;
 }
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control, .quiet-control):where(:not(.surface-control)):not(:disabled):is(:hover, :focus-visible) {
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control, .quiet-control, .comment-replies-toggle):where(:not(.surface-control)):not(:disabled):is(:hover, :focus-visible) {
   background: var(--comment-control-bg, var(--surface));
   color: var(--comment-control-ink, var(--ink));
   border-color: var(--line-strong);
   box-shadow: 0 0 0 var(--ring-width) var(--control-highlight-color);
 }
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control, .quiet-control):where(:not(.surface-control)):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
-:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control, .quiet-control):where(:not(.surface-control)):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control, .quiet-control, .comment-replies-toggle):where(:not(.surface-control)):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit),
+:root :is([data-ssm-comments], .comment-section-heading) button:not([data-comment-sort]):where(:not([data-format]), [data-format="help"]):not([data-comment-vote]):not([data-comment-reply]):not(.framed-control, .quiet-control, .comment-replies-toggle):where(:not(.surface-control)):is([aria-pressed="true"], [aria-expanded="true"], .comment-submit):not(:disabled):is(:hover, :focus-visible) {
   background: var(--ink);
   color: var(--paper);
   border-color: var(--ink);
@@ -800,6 +800,26 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 .comment-box > :last-child { margin-block-end: 0; }
 .comment-item > .comment-replies { padding-block-start: var(--space-md); }
+/* Replies fold away behind one quiet toggle under their parent's box. */
+.comment-replies[hidden] { display: none; }
+:root .comment-replies-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2xs);
+  margin-block-start: var(--space-sm);
+  padding: var(--space-2xs) var(--space-xs);
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: var(--font-size-ui);
+  cursor: pointer;
+}
+:root .comment-replies-toggle:is(:hover, :focus-visible) { color: var(--accent-strong); }
+.comment-replies-toggle > svg { inline-size: var(--icon-size-sm); block-size: var(--icon-size-sm); transition: transform var(--control-open-duration) var(--control-open-easing); }
+.comment-replies-toggle[aria-expanded="false"] > svg { transform: rotate(-90deg); }
+:root[dir="rtl"] .comment-replies-toggle[aria-expanded="false"] > svg { transform: rotate(90deg); }
+@media (prefers-reduced-motion: reduce) { .comment-replies-toggle > svg { transition: none; } }
 .comment-box .comment-byline { min-inline-size: 0; }
 
 /* A comment author's Edit and Delete use the post card's quiet action rail:
@@ -1302,6 +1322,13 @@ html[lang="he"] .reader-controls .reader-number-error {
 }
 :root[dir="rtl"] .post-stream[data-layout] [data-card-actions] .card-share-menu[open][data-share-ready="true"] > .share-options {
   animation-name: share-options-reveal-from-left;
+}
+/* ...and conceals toward it when it closes. */
+:root .post-stream[data-layout] [data-card-actions] .card-share-menu[open][data-closing="true"][data-share-ready="true"] > .share-options {
+  animation-name: share-options-conceal-to-right;
+}
+:root[dir="rtl"] .post-stream[data-layout] [data-card-actions] .card-share-menu[open][data-closing="true"][data-share-ready="true"] > .share-options {
+  animation-name: share-options-conceal-to-left;
 }
 
 @media (max-width: 700px) {

@@ -674,6 +674,13 @@ html[lang="he"] :is(.search-dialog-header h2, .search-submit) { font-family: var
   padding: var(--layout-gap);
 }
 .header-settings[data-open="true"] .header-actions { display: grid; }
+/* Settings drops open from its cogwheel the way Share drops open from its button:
+   the one shared reveal, with the same duration and easing. */
+.header-settings[data-open="true"] > .header-actions { animation: share-options-reveal var(--control-open-duration) var(--control-open-easing); }
+.header-settings[data-open="true"][data-closing="true"] > .header-actions {
+  animation-name: share-options-conceal;
+  animation-fill-mode: forwards;
+}
 .header-actions .settings-outline {
   display: block;
   position: absolute;
@@ -1331,11 +1338,30 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   from { clip-path: inset(calc(-1 * var(--space-lg)) 100% calc(-1 * var(--space-lg)) 0); }
   to { clip-path: inset(calc(-1 * var(--space-lg))); }
 }
+@keyframes share-options-conceal {
+  from { clip-path: inset(calc(-1 * var(--space-lg))); }
+  to { clip-path: inset(0 calc(-1 * var(--space-lg)) 100% calc(-1 * var(--space-lg))); }
+}
+@keyframes share-options-conceal-to-right {
+  from { clip-path: inset(calc(-1 * var(--space-lg))); }
+  to { clip-path: inset(calc(-1 * var(--space-lg)) 0 calc(-1 * var(--space-lg)) 100%); }
+}
+@keyframes share-options-conceal-to-left {
+  from { clip-path: inset(calc(-1 * var(--space-lg))); }
+  to { clip-path: inset(calc(-1 * var(--space-lg)) 100% calc(-1 * var(--space-lg)) 0); }
+}
 .share-menu[open][data-share-ready="true"] > .share-options {
   animation: share-options-reveal var(--control-open-duration) var(--control-open-easing);
 }
+/* Closing plays the reveal backwards (site.js sets data-closing while it runs) and holds the
+   concealed frame until the menu is closed. A new animation name restarts it from the open frame. */
+.share-menu[open][data-closing="true"][data-share-ready="true"] > .share-options {
+  animation-name: share-options-conceal;
+  animation-fill-mode: forwards;
+}
 @media (prefers-reduced-motion: reduce) {
-  .share-menu[open][data-share-ready="true"] > .share-options { animation: none; }
+  .share-menu[open][data-share-ready="true"] > .share-options,
+  .header-settings[data-open="true"] > .header-actions { animation: none; }
 }
 /* Feedback is a sibling popover, never part of the icon column's width. */
 
