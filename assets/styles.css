@@ -139,6 +139,8 @@
      and the Share destinations. */
   --control-open-duration: 200ms;
   --control-open-easing: ease;
+  /* How much of a partly read Directory branch is read: the grey fill behind its tag. */
+  --tree-read-fill: color-mix(in srgb, var(--muted) 32%, transparent);
   --intro-max-width: 38rem;
   --grid-column-min-width: 18rem;
   --grid-column-min-width-compact: 15rem;

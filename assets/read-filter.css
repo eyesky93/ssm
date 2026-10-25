@@ -29,6 +29,22 @@ html[lang="he"] [data-directory] .map-stage > :is(.map-filter-bar, .map-mode-con
   opacity: .6;
 }
 
+/* A branch that is only partly read shows how much: a grey fill behind its tag as wide as the share
+   that is read (or, with unread dimmed, the share that is not). Fully read or unread branches dim as
+   above, and the tag, its count and its links stay as they are. */
+[data-hierarchy-map][data-dim-read="true"] .map-node[data-read-partial="true"] {
+  background-image: linear-gradient(to right, var(--tree-read-fill) calc(var(--tree-read-share) * 100%), transparent 0);
+}
+[data-hierarchy-map][data-dim-unread="true"] .map-node[data-read-partial="true"] {
+  background-image: linear-gradient(to right, var(--tree-read-fill) calc((1 - var(--tree-read-share)) * 100%), transparent 0);
+}
+html[dir="rtl"] [data-hierarchy-map][data-dim-read="true"] .map-node[data-read-partial="true"] {
+  background-image: linear-gradient(to left, var(--tree-read-fill) calc(var(--tree-read-share) * 100%), transparent 0);
+}
+html[dir="rtl"] [data-hierarchy-map][data-dim-unread="true"] .map-node[data-read-partial="true"] {
+  background-image: linear-gradient(to left, var(--tree-read-fill) calc((1 - var(--tree-read-share)) * 100%), transparent 0);
+}
+
 /* The reset slot is only a layout host. The button owns the shared compact
    control inset, so adding the wrapper must never offset it from adjacent tags. */
 :root .subject-nav .tag-list > .filter-reset-slot {
