@@ -67,7 +67,7 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 
 /* One frame for every Directory view, including empty results: it fits the map
    (--map-stage-fit-height, set by hierarchy.js) between a floor and the full height. */
-.map-ready .map-stage { height: clamp(var(--map-stage-min-height), var(--map-stage-fit-height, var(--map-stage-height)), var(--map-stage-height)); }
+.map-ready .map-stage { height: var(--map-stage-user-height, clamp(var(--map-stage-min-height), var(--map-stage-fit-height, var(--map-stage-height)), var(--map-stage-height))); }
 .map-ready [data-map-view], .map-ready .map-viewport, .map-ready .map-filter-empty { height: 100%; }
 .map-ready .map-viewport { min-height: 0; max-height: none; }
 
@@ -115,3 +115,8 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 [data-directory] .map-filter-bar .tag-list.tag-subgroup { display: flex; flex-basis: 100%; }
 [data-directory] .map-filter-bar .tag-option { flex: 0 0 auto; }
 [data-directory] .map-filter-bar .tag-descendant-list:empty { display: none; }
+
+/* The bottom edge of the frame is pulled to set its height; the choice is kept (hierarchy.js). */
+.map-stage-grip { position: absolute; z-index: 5; inset-inline: 0; inset-block-end: 0; block-size: var(--space-md); cursor: ns-resize; touch-action: none; }
+.map-stage-grip::after { content: ""; position: absolute; inset-block-end: var(--space-3xs); inset-inline-start: 50%; inline-size: var(--space-2xl); margin-inline-start: calc(var(--space-2xl) / -2); block-size: var(--border-width-medium); border-radius: var(--radius-pill); background: var(--line-strong); }
+.map-stage-grip:is(:hover, :focus-visible, .is-dragging)::after { background: var(--accent-strong); }

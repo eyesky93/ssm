@@ -163,6 +163,7 @@
   --map-viewport-min-height: 12rem;
   --map-viewport-max-height: clamp(22rem, 60vh, 38rem);
   --map-stage-height: clamp(min(33rem, 90vh), 90vh, 57rem); /* never taller than a short screen */
+  --map-stage-max-height: 150vh; /* the most a pulled frame may grow to */
   --map-stage-min-height: calc(9 * var(--control-size)); /* room for the zoom and history controls */
   --map-node-max-width: 20rem;
   --map-overlay-clearance: 7.5rem;
