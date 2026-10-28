@@ -2002,6 +2002,11 @@
   border-left: 1px solid var(--line);
   border-right: 1px solid var(--line);
 }
+/* The only segment of a strip is the one at its right edge as well, so it keeps that edge's line, which a
+   neighbouring segment would otherwise draw. */
+:root[dir="rtl"] .post-engagement > :only-child:is(.post-vote, .post-comments, .post-views) {
+  border-right-color: var(--line);
+}
 :root[dir="rtl"] .post-engagement :is(.post-vote, .post-comments, .post-views) > svg {
   grid-column: 2;
   grid-row: 1;

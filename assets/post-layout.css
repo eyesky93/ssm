@@ -899,6 +899,12 @@ html[lang="he"] .reader-controls .reader-number-error {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: var(--engagement-tab-radius);
 }
+/* A strip of one segment is its own first and last: in RTL the two rules above would take each other's corner
+   away, so it has both of its bottom corners here as it does in English. */
+:root[dir="rtl"] .post-engagement > :only-child:is(.post-vote, .post-comments, .post-views) {
+  border-bottom-left-radius: var(--engagement-tab-radius);
+  border-bottom-right-radius: var(--engagement-tab-radius);
+}
 :root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments) {
   font: inherit;
   color: var(--ink);
