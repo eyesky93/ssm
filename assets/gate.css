@@ -35,7 +35,7 @@
   --surface-strong: #f2f2f2;
   --raised-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
 
-  /* Fonts come from the owner's site settings (--site-font-*). */
+  /* Fonts come from the site settings (--site-font-*). */
   --font-content: var(--site-font-content);
   --font-interface: var(--site-font-interface);
   --font-interface-hebrew: var(--site-font-hebrew);
@@ -116,7 +116,7 @@
   --focus-outline-offset: 3px;
   --focus-outline-inset: calc(-1 * var(--focus-outline-offset));
 
-  /* Icons and clickable targets. Owner-sized controls use --control-size. */
+  /* Icons and clickable targets. Controls use --control-size. */
   --icon-size-2xs: .75rem;  /* 12px */
   --icon-size-xs: 1rem;     /* 16px */
   --icon-size-sm: 1.125rem; /* 18px */

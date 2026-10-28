@@ -738,7 +738,7 @@
   /* Space between layout blocks: card gutters and rows in every homepage
      layout, header and toolbar padding, and floating panels below their buttons. */
   --layout-gap: var(--space-xs);
-  /* Half the owner's control gap: catalogue tag rows, the layout switch and
+  /* Half the control gap: catalogue tag rows, the layout switch and
      the wordmark's side inset, identical on pages with and without a post browser. */
   --tight-gap: calc(var(--control-capsule-gap) / 2);
 
@@ -838,20 +838,13 @@
   margin-block-end: calc(var(--post-stream-row-gap) - var(--layout-gap));
 }
 
-/* A Directory card without statistics reclaims the row clearance ordinary
-   cards keep for their attached strip. One that shows a Views strip keeps the
-   ordinary clearance, so the strip never overlaps the next row. */
-:root body .post-stream[data-layout="list"] > .directory-card:not([hidden]):not(:has(> .post-engagement)) {
+/* The Directory card has no stats strip, so it reclaims the row clearance ordinary
+   cards keep for their attached strip. */
+:root body .post-stream[data-layout="list"] > .directory-card:not([hidden]) {
   margin-block-end: calc(var(--layout-gap) - var(--post-stream-row-gap));
-}
-:root body .post-stream[data-layout="list"] > .directory-card:not([hidden]):has(> .post-engagement) {
-  margin-block-end: 0;
 }
 :root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .directory-card:not([hidden]):has([data-pin-toggle][aria-pressed="true"]) {
   margin-block-end: 0;
-}
-:root body .post-stream:is([data-layout="grid"], [data-layout="compact"]) > .directory-card:not([hidden]):has([data-pin-toggle][aria-pressed="true"]):has(> .post-engagement) {
-  margin-block-end: calc(var(--post-stream-row-gap) - var(--layout-gap));
 }
 
 /* Grid, Compact and List share the same vertical card inset. PSR is a sibling
@@ -2001,11 +1994,6 @@
 :root[dir="rtl"] .post-engagement .post-vote {
   border-left: 1px solid var(--line);
   border-right: 1px solid var(--line);
-}
-/* The only segment of a strip is the one at its right edge as well, so it keeps that edge's line, which a
-   neighbouring segment would otherwise draw. */
-:root[dir="rtl"] .post-engagement > :only-child:is(.post-vote, .post-comments, .post-views) {
-  border-right-color: var(--line);
 }
 :root[dir="rtl"] .post-engagement :is(.post-vote, .post-comments, .post-views) > svg {
   grid-column: 2;

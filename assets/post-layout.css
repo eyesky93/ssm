@@ -133,11 +133,6 @@
 /* Keep the Directory frame near its heading. */
 [data-reader-article][data-directory] > .article-header { padding-block-end: var(--space-md); }
 [data-reader-article][data-directory] > .article-body { padding-block-start: var(--space-md); }
-/* Its Views strip hangs below the title rule like a post's statistics; the map
-   frame starts below the strip instead of under it. */
-[data-reader-article][data-directory]:has(> .article-header > .article-engagement-dock) > .article-body {
-  padding-block-start: calc(var(--engagement-tab-height) + var(--space-md));
-}
 [data-reader-article][data-directory] .hierarchy-map { margin-block-start: 0; }
 [data-reader-article][data-directory] .hierarchy-map { margin-block-end: 0; }
 [data-reader-article][data-directory] > .article-body { padding-block-end: 0; }
@@ -151,7 +146,7 @@
   color: var(--accent-strong);
 }
 
-/* Every Directory graph control uses the same circular var(--minimum-touch-target) target. */
+/* Every Directory map control uses the same circular var(--minimum-touch-target) target. */
 [data-directory] .map-switch > a,
 [data-directory] .map-toolbar .map-history-button,
 [data-directory] .map-zoom-control > button {
@@ -310,7 +305,7 @@
 }
 
 /* One body-level viewport dock: top, previous, next, then position. It stays
-   above scrolling page/graph content without inheriting article transforms.
+   above scrolling page/map content without inheriting article transforms.
    All controls inherit the shared reader size, inverse fill and shadow. */
 .reader-controls {
   position: fixed;
@@ -898,12 +893,6 @@ html[lang="he"] .reader-controls .reader-number-error {
 :root[dir="rtl"] .post-engagement > :last-child {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: var(--engagement-tab-radius);
-}
-/* A strip of one segment is its own first and last: in RTL the two rules above would take each other's corner
-   away, so it has both of its bottom corners here as it does in English. */
-:root[dir="rtl"] .post-engagement > :only-child:is(.post-vote, .post-comments, .post-views) {
-  border-bottom-left-radius: var(--engagement-tab-radius);
-  border-bottom-right-radius: var(--engagement-tab-radius);
 }
 :root .post-engagement > :is(.post-vote, a.post-comments, button.post-comments) {
   font: inherit;
