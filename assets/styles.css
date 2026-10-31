@@ -317,7 +317,6 @@ a {
   color: inherit;
 }
 
-/* A focused control is shown by its own frame and colour, never by an outline around it: no ring anywhere. */
 :where(*):is(:focus, :focus-visible) { outline: none; }
 
 .site-header,
