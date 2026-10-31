@@ -679,7 +679,7 @@ html[lang="he"] .reader-controls .reader-number-error {
   white-space: pre-wrap; overflow-wrap: anywhere; text-align: start;
   color: var(--ink); background: var(--paper);
 }
-.comment-line-editor:focus-visible { outline: var(--focus-outline-width) solid var(--accent-strong); outline-offset: var(--focus-outline-inset); }
+.comment-line-editor:focus-visible { outline: none; outline-offset: var(--focus-outline-inset); }
 .comment-line-editor[data-empty="true"]::before {
   content: attr(data-placeholder); position: absolute; inset-inline-start: var(--space-lg);
   color: var(--muted); pointer-events: none;
@@ -1117,7 +1117,7 @@ html[lang="he"] .reader-controls .reader-number-error {
 /* Keyboard focus remains visible but neutral and rectangular; mouse hovering
    changes the glyph only. No focus-within ring on the stack or menu host. */
 :root .post-stream[data-layout] [data-card-actions] .quiet-control:focus-visible {
-  outline: 1px solid var(--quiet-control-color);
+  outline: none;
   outline-offset: 0;
 }
 :root .post-stream[data-layout] [data-card-actions] .quiet-control--checkbox::before {

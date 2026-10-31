@@ -32,7 +32,7 @@ html[lang="he"] .map-node { font-family: var(--font-interface-hebrew), var(--fon
 .map-edges { position: absolute; inset: 0; overflow: visible; pointer-events: none; color: var(--muted); }
 .map-edges marker path { fill: currentColor; }
 .map-edge { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-dasharray: none; }
-.hierarchy-map :is(a, button, [tabindex]):not(.tag-count):focus-visible { outline: var(--focus-outline-width) solid var(--accent-strong); outline-offset: var(--focus-outline-offset); }
+.hierarchy-map :is(a, button, [tabindex]):not(.tag-count):focus-visible { outline: none; outline-offset: var(--focus-outline-offset); }
 .article-body .map-node > a.tag-count:focus-visible { outline: none; color: var(--accent-strong); text-decoration: underline; text-underline-offset: var(--underline-offset-md); }
 html[lang="he"] .hierarchy-map { font-family: var(--font-interface-hebrew), var(--font-content); }
 

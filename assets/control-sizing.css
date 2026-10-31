@@ -361,7 +361,7 @@
 /* Keep keyboard focus inside the clipped capsule rather than losing its ring. */
 :root .toolbar-view .view-switch > button:focus-visible,
 :root [data-directory] .map-switch > a:focus-visible {
-  outline: var(--focus-outline-width) solid currentColor;
+  outline: none;
   outline-offset: var(--focus-outline-inset);
 }
 :root .toolbar-view .view-switch svg,
@@ -1508,7 +1508,7 @@
   transform: none;
 }
 :root .quiet-control:focus-visible {
-  outline: 1px solid currentColor;
+  outline: none;
   outline-offset: 0;
 }
 
@@ -2151,7 +2151,7 @@
   background: var(--accent-hue-preview);
 }
 :root .accent-hue-range:focus-visible {
-  outline: var(--border-width-thin) solid var(--ink);
+  outline: none;
   outline-offset: 0;
   border-radius: var(--control-inner-radius);
 }

@@ -237,7 +237,7 @@ body.language-gate {
 a { color: inherit; }
 a:focus-visible,
 button:focus-visible {
-  outline: var(--ring-width) solid var(--ink);
+  outline: none;
   outline-offset: var(--focus-ring-offset);
 }
 .gate-tools {

@@ -76,7 +76,7 @@
   border-color: var(--accent);
   color: var(--accent);
 }
-.newsletter-settings .topic-option:has(input:focus-visible) { outline: var(--focus-outline-width) solid var(--ink); outline-offset: var(--focus-outline-offset); }
+.newsletter-settings .topic-option:has(input:focus-visible) { outline: none; outline-offset: var(--focus-outline-offset); }
 .newsletter-settings .topic-option:hover { border-color: var(--accent); color: var(--accent); }
 .newsletter-settings .topic-option:has(input:checked):hover { color: var(--accent-strong); border-color: var(--accent-strong); }
 .newsletter-settings button {
@@ -174,7 +174,7 @@
 }
 .settings-theme-track .settings-theme-auto { width: var(--settings-theme-auto-size); border-radius: var(--radius-pill); }
 .settings-theme-track .settings-theme-choice:has(input:checked) { color: var(--paper); cursor: default; }
-.settings-theme-track .settings-theme-choice:has(input:focus-visible) { outline: var(--focus-outline-width) solid var(--accent); outline-offset: var(--focus-outline-offset); }
+.settings-theme-track .settings-theme-choice:has(input:focus-visible) { outline: none; outline-offset: var(--focus-outline-offset); }
 .settings-theme-track .settings-theme-choice:not(:has(input:checked)):hover { color: var(--accent); }
 .settings-theme-track svg { display: block; width: var(--icon-size-md); height: var(--icon-size-md); stroke: currentColor; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 /* Horizontal swatch/reset capsule, mirrored by the inherited direction. */

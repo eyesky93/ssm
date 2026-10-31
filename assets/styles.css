@@ -317,14 +317,8 @@ a {
   color: inherit;
 }
 
-a:focus-visible,
-button:focus-visible,
-summary:focus-visible,
-input:focus-visible,
-select:focus-visible {
-  outline: var(--ring-width) solid var(--ink);
-  outline-offset: var(--focus-ring-offset);
-}
+/* A focused control is shown by its own frame and colour, never by an outline around it: no ring anywhere. */
+:where(*):is(:focus, :focus-visible) { outline: none; }
 
 .site-header,
 .site-main,
@@ -1595,7 +1589,7 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 .subscribe-dialog .topic-option span::before { content: ""; flex: 0 0 var(--space-xs); width: var(--space-xs); height: var(--space-md); border-right: var(--border-width-medium) solid currentColor; border-bottom: var(--border-width-medium) solid currentColor; opacity: 0; transform: translateY(calc(-1 * var(--space-4xs))) rotate(45deg); }
 .subscribe-dialog .topic-option input:checked + span { border-color: var(--accent-strong); background: var(--soft-accent); color: var(--accent-strong); box-shadow: inset 0 0 0 1px var(--accent-strong); }
 .subscribe-dialog .topic-option input:checked + span::before { opacity: 1; }
-.subscribe-dialog .topic-option input:focus-visible + span { outline: var(--ring-width) solid var(--ink); outline-offset: var(--focus-ring-offset); }
+.subscribe-dialog .topic-option input:focus-visible + span { outline: none; outline-offset: var(--focus-ring-offset); }
 .subscribe-dialog .consent-row { display: grid; grid-template-columns: var(--icon-size-xs) minmax(0, 1fr); gap: var(--space-sm); align-items: start; margin-block-start: var(--space-lg); color: var(--muted); font-size: var(--font-size-ui); line-height: 1.5; }
 .subscribe-dialog .consent-row input { width: var(--icon-size-xs); height: var(--icon-size-xs); margin: var(--space-4xs) 0 0; accent-color: var(--accent-strong); }
 .subscribe-dialog .form-note, .subscribe-dialog .form-status { margin: var(--space-md) 0 0; color: var(--muted); font-size: var(--font-size-small); line-height: 1.5; }
@@ -1812,9 +1806,9 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 .comment-toolbar [data-format="italic"] { font-style: italic; }
 .comment-toolbar [data-format="help"] { margin-inline-start: auto; border: 1px solid var(--line-strong); border-radius: 50%; }
 .comment-toolbar [aria-expanded="true"] { background: var(--soft-accent); color: var(--accent-strong); }
-[data-ssm-comments] button:where(:not(.surface-control)):focus-visible { outline: var(--focus-outline-width) solid var(--accent-strong); outline-offset: var(--focus-outline-offset); }
+[data-ssm-comments] button:where(:not(.surface-control)):focus-visible { outline: none; outline-offset: var(--focus-outline-offset); }
 .comment-composer textarea { display: block; width: 100%; min-height: var(--editor-min-height); resize: vertical; border: 0; padding: var(--space-lg); font: inherit; font-size: var(--font-size-body); line-height: 1.65; color: var(--ink); background: var(--paper); }
-.comment-composer textarea:focus-visible { outline: var(--focus-outline-width) solid var(--accent-strong); outline-offset: var(--focus-outline-inset); }
+.comment-composer textarea:focus-visible { outline: none; outline-offset: var(--focus-outline-inset); }
 .comment-preview-panel { padding: var(--space-md) var(--space-lg); border-block-start: 1px solid var(--line); }
 .comment-preview-title { font-size: var(--font-size-caption); color: var(--muted); }
 .comment-preview { min-block-size: var(--target-size-lg); margin-block-start: var(--space-xs); }
