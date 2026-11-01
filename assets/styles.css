@@ -1573,7 +1573,6 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 .subscribe-dialog .email-field { display: grid; gap: var(--space-xs); font-size: var(--font-size-ui); font-weight: 800; }
 .subscribe-dialog .subscribe-row input { min-width: 0; min-height: var(--target-size-xl); border: 1px solid var(--line-strong); border-radius: var(--radius-md); background: var(--paper); color: var(--ink); padding-inline: var(--space-md); font: inherit; font-size: var(--font-size-body); direction: ltr; text-align: left; }
 .subscribe-dialog .subscribe-row button { min-height: var(--target-size-xl); border: 1px solid var(--ink); border-radius: var(--radius-md); background: var(--ink); color: var(--paper); cursor: pointer; padding-inline: var(--space-lg); font: inherit; font-weight: 800; }
-.subscribe-dialog .subscribe-row button:hover { border-color: var(--accent-strong); background: var(--accent-strong); color: var(--paper); }
 .subscribe-dialog .subscribe-row button:disabled { cursor: wait; opacity: 0.62; }
 .subscribe-dialog .subscribe-unavailable { margin: 0; border: 1px dashed var(--line-strong); border-radius: var(--radius-md); padding: var(--space-lg); color: var(--muted); line-height: 1.6; }
 .subscribe-dialog .topic-picker { min-width: 0; margin: var(--space-lg) 0 0; border: 0; padding: 0; }

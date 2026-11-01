@@ -2168,7 +2168,7 @@
 }
 :root .accent-hue-popover[data-manual-position][data-positioned] { visibility: visible; }
 
-/* Only navigation and sign-in providers opt into this shadow component.
+/* Only navigation, sign-in providers and the subscription button opt into this shadow component.
    Menus, resets, forms and other button families keep their existing styles. */
 :root {
   --surface-control-radius: var(--control-radius, calc(var(--minimum-touch-target) * .16));
