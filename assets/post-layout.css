@@ -1082,8 +1082,9 @@ html[lang="he"] .reader-controls .reader-number-error {
 .pin-toggle.quiet-control.is-pinned .pin-head {
   fill: currentColor;
 }
-.pin-toggle.quiet-control.is-pinned:not(:disabled):is(:hover, :focus-visible)::after {
+.pin-toggle.quiet-control.is-pinned:not(:disabled)::after {
   content: "";
+  opacity: 0;
   box-sizing: border-box;
   position: absolute;
   /* Physical lower-right follows the glyph, which is not mirrored in RTL. */
@@ -1102,6 +1103,9 @@ html[lang="he"] .reader-controls .reader-number-error {
   background-repeat: no-repeat;
   pointer-events: none;
   transform: translate(-50%, -50%);
+}
+.pin-toggle.quiet-control.is-pinned:not(:disabled):is(:hover, :focus-visible)::after {
+  opacity: 1;
 }
 .pin-toggle.quiet-control:is(:hover, :focus-visible) {
   box-shadow: none;

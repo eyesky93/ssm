@@ -1811,6 +1811,13 @@
     transition-timing-function: var(--hover-highlight-easing);
     transition-delay: var(--hover-highlight-instant);
   }
+  /* The pinned card's remove-pin X fades in with the same timing as the other buttons. */
+  :root .pin-toggle.is-pinned::after {
+    transition-property: opacity;
+    transition-duration: var(--hover-highlight-duration);
+    transition-timing-function: var(--hover-highlight-easing);
+    transition-delay: var(--hover-highlight-instant);
+  }
   /* Native focus/press feedback is immediate, including inherited icon/count
      colors and checkbox pseudo-elements. This never delays the actual action. */
   :root :is(:focus-visible, :active, :disabled, [aria-disabled="true"]),
