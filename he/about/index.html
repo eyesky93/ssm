@@ -360,15 +360,15 @@
   <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=468feed4ba90" data-post-layout-styles>
   <link rel="stylesheet" href="/ssm/assets/read-filter.css?v=163d5a1101d3">
   <link rel="stylesheet" href="/ssm/assets/hierarchy.css?v=2f28d73c77be">
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=34df236a1b86" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=021fdbab5cdd" data-control-sizing-styles>
 </head>
 <body>
-  <header class="site-header">
-    <nav class="primary-nav" aria-label="ניווט ראשי">
-      <a class="wordmark" data-filter-context-link href="/ssm/he/">SSM</a>
-      <a class="about-link" data-filter-context-link href="/ssm/he/about/" aria-current="page">אודות</a>
+  <header class="site-header" data-ui="HeaderBar Bar Container Component">
+    <nav class="primary-nav" data-slot="header.brand" aria-label="ניווט ראשי">
+      <a class="wordmark" data-filter-context-link data-ui="BrandLabel Component" href="/ssm/he/"><span>SSM</span><span data-sizer lang="en" aria-hidden="true">SSM</span></a>
+      <a class="about-link" data-filter-context-link data-ui="BrandLabel Component" href="/ssm/he/about/" aria-current="page"><span>אודות</span><span data-sizer lang="en" aria-hidden="true">About</span></a>
     </nav>
-    <div class="header-controls">
+    <div class="header-controls" data-slot="header.actions">
       
       
       

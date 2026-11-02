@@ -807,8 +807,6 @@
 }
 :root body .primary-nav > .about-link {
   box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
   min-height: var(--control-size);
   height: var(--control-size);
   padding-block: 0;
@@ -2227,3 +2225,90 @@
   }
 }
 
+
+/* Generated from config/design-tree.json by scripts/design-tree.mjs. Do not edit: change the tree and run npm run design-tree. */
+
+/* Component: Root. Everything on the page. Owns the box model. */
+:root [data-ui~="Component"] {
+  box-sizing: border-box;
+}
+
+/* Control: Anything a person can press. One target size and one corner radius for the whole site. */
+:root [data-ui~="Control"] {
+  block-size: var(--control-size);
+  min-block-size: var(--control-size);
+  max-block-size: var(--control-size);
+  border-radius: var(--control-radius);
+}
+
+/* IconControl: A square control that shows one glyph from the site's icon set. */
+:root [data-ui~="IconControl"] {
+  inline-size: var(--control-size);
+  min-inline-size: var(--control-size);
+  max-inline-size: var(--control-size);
+}
+
+/* BrandLabel: A label whose box is as wide as its widest language, so the header lays out the same in every language. It is the visible text plus an invisible copy of each other language's text, stacked in one grid cell. */
+:root [data-ui~="BrandLabel"] {
+  display: inline-grid;
+  align-items: center;
+}
+:root [data-ui~="BrandLabel"] > * {
+  grid-area: 1 / 1;
+}
+:root [data-ui~="BrandLabel"] > [data-sizer] {
+  visibility: hidden;
+  block-size: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+:root [data-ui~="BrandLabel"] > [data-sizer] {
+  font-family: var(--font-interface);
+}
+:root [data-ui~="BrandLabel"] > [data-sizer]:lang(he) {
+  font-family: var(--font-interface-hebrew), var(--font-content);
+}
+
+/* A hidden tree object is hidden, whatever display its node gives it. */
+:root [data-ui][hidden] {
+  display: none !important;
+}
+
+/* slot header.brand: The wordmark and the page links, at the start of the header row. */
+:root [data-slot="header.brand"] {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--brand-item-gap);
+}
+
+/* slot header.actions: Every action of the page's header: one row, one control size, one gap, in every language and at every width. */
+:root [data-slot="header.actions"] {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: var(--control-item-gap);
+}
+
+:root [data-slot="header.actions"] > * {
+  block-size: var(--control-size);
+  min-block-size: var(--control-size);
+  max-block-size: var(--control-size);
+}
+
+/* slot page.float: Controls fixed to the viewport. They yield (fade out) while they would cover a node they name in yields. */
+:root [data-slot="page.float"] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Floating yields to [data-ui~="Strip"]: it fades out while it would cover it. */
+:root [data-ui~="Floating"] {
+  transition: opacity var(--control-open-duration) var(--control-open-easing);
+}
+:root [data-ui~="Floating"][data-yielding] {
+  opacity: 0;
+  pointer-events: none;
+}
