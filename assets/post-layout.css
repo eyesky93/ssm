@@ -350,10 +350,6 @@
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  width: var(--control-size);
-  min-width: var(--control-size);
-  height: var(--control-size);
-  min-height: var(--control-size);
   margin: 0;
   padding: var(--control-padding);
   font-family: var(--font-interface);

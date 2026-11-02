@@ -142,57 +142,9 @@
   gap: var(--tight-gap);
 }
 
-/* The framed variant belongs to this size family; quiet controls own
-   their neutral geometry. All standalone framed controls, dialogs, comment
-   sign-in providers, Directory controls and newsletter appearance controls. */
-:root .round-control,
-:root .settings-toggle,
-:root .settings-action,
-:root .accent-control,
-:root .view-control,
-:root .accent-picker,
-:root .accent-reset,
-:root .random-post,
-:root .theme-toggle,
-:root .header-controls > .language-nav,
-:root .header-controls > .language-nav > a,
-:root .header-controls > .language-nav > select,
-:root .view-switch button,
-:root .clear-filter,
-:root .filter-reset-slot,
-:root .pin-toggle:where(:not(.quiet-control)),
-:root .post-stream[data-layout] .pin-toggle:where(:not(.quiet-control)),
-:root .share-menu summary:where(:not(.quiet-control)),
-:root .share-options a,
-:root .share-options button,
-:root .search-dialog-close,
-:root .dialog-close,
-:root .back-to-top,
-:root .post-navigation > a,
-:root .reader-controls .post-position,
-:root [data-ssm-comments] .comment-toolbar [data-format="help"],
-:root [data-directory] .map-switch > a,
-:root .map-toolbar .map-history-button,
-:root .map-zoom-control > button,
-:root .settings-theme-track .settings-theme-choice:not(.settings-theme-auto),
-:root .newsletter-settings button.settings-color-reset {
-  box-sizing: border-box;
-  width: var(--control-size);
-  min-width: var(--control-size);
-  max-width: var(--control-size);
-  height: var(--control-size);
-  min-height: var(--control-size);
-  max-height: var(--control-size);
-  inline-size: var(--control-size);
-  min-inline-size: var(--control-size);
-  max-inline-size: var(--control-size);
-  block-size: var(--control-size);
-  min-block-size: var(--control-size);
-  max-block-size: var(--control-size);
-  flex: 0 0 var(--control-size);
-  border-radius: var(--control-radius);
-}
-
+/* The size, the corner radius and the place in a row of every standalone icon control (framed, header, menu,
+   navigation and segment cells, dialog closes, Directory controls) are the design tree's: config/design-tree.json
+   claims the classes, src/design-tree.css states it once. Only the content inset (below) is still here. */
 /* Every standalone icon frame uses the same content inset. Text labels,
    nested tracks and native color swatches retain their own content layout. */
 :root .round-control,
@@ -1149,22 +1101,7 @@
 /* Every settings button consumes the exact same geometry contract as the
    Search/Layout/Language/Settings controls in the header. */
 :root .header-actions :is(.settings-action, .random-post, .theme-toggle, .accent-picker, .accent-reset) {
-  box-sizing: border-box;
-  inline-size: var(--control-size);
-  min-inline-size: var(--control-size);
-  max-inline-size: var(--control-size);
-  block-size: var(--control-size);
-  min-block-size: var(--control-size);
-  max-block-size: var(--control-size);
-  width: var(--control-size);
-  min-width: var(--control-size);
-  max-width: var(--control-size);
-  height: var(--control-size);
-  min-height: var(--control-size);
-  max-height: var(--control-size);
-  flex: 0 0 var(--control-size);
   padding: var(--control-padding);
-  border-radius: var(--control-radius);
 }
 :root :is(.settings-toggle, .header-actions .settings-action, .header-actions .random-post, .header-actions .theme-toggle, .header-actions .accent-reset) > svg {
   inline-size: var(--control-icon-size);
@@ -1447,27 +1384,12 @@
    token-driven so compact card controls and full-size reader controls can share
    the same class without duplicating hover/focus styling. */
 :root .quiet-control {
-  box-sizing: border-box;
   position: relative;
   display: inline-grid;
   place-items: center;
-  flex: 0 0 var(--quiet-control-target-size, var(--control-size));
-  width: var(--quiet-control-target-size, var(--control-size));
-  min-width: var(--quiet-control-target-size, var(--control-size));
-  max-width: var(--quiet-control-target-size, var(--control-size));
-  height: var(--quiet-control-target-size, var(--control-size));
-  min-height: var(--quiet-control-target-size, var(--control-size));
-  max-height: var(--quiet-control-target-size, var(--control-size));
-  inline-size: var(--quiet-control-target-size, var(--control-size));
-  min-inline-size: var(--quiet-control-target-size, var(--control-size));
-  max-inline-size: var(--quiet-control-target-size, var(--control-size));
-  block-size: var(--quiet-control-target-size, var(--control-size));
-  min-block-size: var(--quiet-control-target-size, var(--control-size));
-  max-block-size: var(--quiet-control-target-size, var(--control-size));
   margin: 0;
   padding: 0;
   border: 0;
-  border-radius: var(--quiet-control-radius, var(--control-radius));
   background: transparent;
   color: var(--quiet-control-color, var(--ink));
   box-shadow: none;
@@ -1511,32 +1433,18 @@
 }
 
 /* Every standalone framed control uses exactly class="framed-control".
-   Functional identity is metadata, never an extra CSS class. The crossed grouped
+   Functional identity is metadata, never an extra CSS class. Its size, radius and
+   place in a row are the design tree's (FramedAction). The crossed grouped
    controls (layout selector and accent-color capsule) deliberately stay outside
    this component. */
 :root .framed-control,
 :root .framed-control[aria-pressed],
 :root .framed-control[aria-checked],
 :root .framed-control[aria-expanded] {
-  box-sizing: border-box;
   display: inline-grid;
   place-items: center;
-  flex: 0 0 var(--control-size);
-  width: var(--control-size);
-  min-width: var(--control-size);
-  max-width: var(--control-size);
-  height: var(--control-size);
-  min-height: var(--control-size);
-  max-height: var(--control-size);
-  inline-size: var(--control-size);
-  min-inline-size: var(--control-size);
-  max-inline-size: var(--control-size);
-  block-size: var(--control-size);
-  min-block-size: var(--control-size);
-  max-block-size: var(--control-size);
   padding: var(--control-padding);
   border: 1px solid var(--line-strong);
-  border-radius: var(--control-radius);
   background: var(--surface);
   color: var(--ink);
   box-shadow: none;
@@ -2233,11 +2141,49 @@
 :root [data-ui="Control"],
 :root [data-ui="IconControl"],
 :root [data-ui="FramedAction"],
+:root .framed-control,
+:root .framed-control[aria-pressed],
+:root .framed-control[aria-checked],
+:root .framed-control[aria-expanded],
+:root .round-control,
+:root .clear-filter,
+:root .filter-reset-slot,
+:root .share-options a,
+:root .share-options button,
+:root .search-dialog-close,
+:root .dialog-close,
+:root .map-toolbar .map-history-button,
+:root .map-zoom-control > button,
 :root [data-ui="HeaderAction"],
+:root .settings-toggle,
+:root .view-control,
+:root .header-controls > .language-nav,
+:root .header-controls > .language-nav > a,
+:root .header-controls > .language-nav > select,
+:root .pin-toggle:where(:not(.quiet-control)),
+:root .post-stream[data-layout] .pin-toggle:where(:not(.quiet-control)),
+:root .share-menu summary:where(:not(.quiet-control)),
 :root [data-ui="MenuAction"],
+:root .settings-action,
+:root .accent-control,
+:root .accent-picker,
+:root .accent-reset,
+:root .random-post,
+:root .theme-toggle,
+:root .settings-theme-track .settings-theme-choice:not(.settings-theme-auto),
+:root .newsletter-settings button.settings-color-reset,
 :root [data-ui="QuietAction"],
+:root .quiet-control,
 :root [data-ui="ToolbarAction"],
+:root [data-ui="ToolbarHelp"],
+:root [data-ssm-comments] .comment-toolbar [data-format="help"],
 :root [data-ui="NavigationAction"],
+:root .back-to-top,
+:root .post-navigation > a,
+:root .reader-controls .post-position,
+:root [data-ui="SegmentCell"],
+:root .view-switch button,
+:root [data-directory] .map-switch > a,
 :root [data-ui="SegmentedControl"],
 :root [data-ui="Chip"],
 :root [data-ui="Field"],
@@ -2257,11 +2203,49 @@
 :root [data-ui="Control"],
 :root [data-ui="IconControl"],
 :root [data-ui="FramedAction"],
+:root .framed-control,
+:root .framed-control[aria-pressed],
+:root .framed-control[aria-checked],
+:root .framed-control[aria-expanded],
+:root .round-control,
+:root .clear-filter,
+:root .filter-reset-slot,
+:root .share-options a,
+:root .share-options button,
+:root .search-dialog-close,
+:root .dialog-close,
+:root .map-toolbar .map-history-button,
+:root .map-zoom-control > button,
 :root [data-ui="HeaderAction"],
+:root .settings-toggle,
+:root .view-control,
+:root .header-controls > .language-nav,
+:root .header-controls > .language-nav > a,
+:root .header-controls > .language-nav > select,
+:root .pin-toggle:where(:not(.quiet-control)),
+:root .post-stream[data-layout] .pin-toggle:where(:not(.quiet-control)),
+:root .share-menu summary:where(:not(.quiet-control)),
 :root [data-ui="MenuAction"],
+:root .settings-action,
+:root .accent-control,
+:root .accent-picker,
+:root .accent-reset,
+:root .random-post,
+:root .theme-toggle,
+:root .settings-theme-track .settings-theme-choice:not(.settings-theme-auto),
+:root .newsletter-settings button.settings-color-reset,
 :root [data-ui="QuietAction"],
+:root .quiet-control,
 :root [data-ui="ToolbarAction"],
+:root [data-ui="ToolbarHelp"],
+:root [data-ssm-comments] .comment-toolbar [data-format="help"],
 :root [data-ui="NavigationAction"],
+:root .back-to-top,
+:root .post-navigation > a,
+:root .reader-controls .post-position,
+:root [data-ui="SegmentCell"],
+:root .view-switch button,
+:root [data-directory] .map-switch > a,
 :root [data-ui="SegmentedControl"],
 :root [data-ui="Chip"],
 :root [data-ui="Field"] {
@@ -2271,17 +2255,74 @@
 /* IconControl: A square control that shows one glyph from the site's icon set, one target size for the whole site. */
 :root [data-ui="IconControl"],
 :root [data-ui="FramedAction"],
+:root .framed-control,
+:root .framed-control[aria-pressed],
+:root .framed-control[aria-checked],
+:root .framed-control[aria-expanded],
+:root .round-control,
+:root .clear-filter,
+:root .filter-reset-slot,
+:root .share-options a,
+:root .share-options button,
+:root .search-dialog-close,
+:root .dialog-close,
+:root .map-toolbar .map-history-button,
+:root .map-zoom-control > button,
 :root [data-ui="HeaderAction"],
+:root .settings-toggle,
+:root .view-control,
+:root .header-controls > .language-nav,
+:root .header-controls > .language-nav > a,
+:root .header-controls > .language-nav > select,
+:root .pin-toggle:where(:not(.quiet-control)),
+:root .post-stream[data-layout] .pin-toggle:where(:not(.quiet-control)),
+:root .share-menu summary:where(:not(.quiet-control)),
 :root [data-ui="MenuAction"],
+:root .settings-action,
+:root .accent-control,
+:root .accent-picker,
+:root .accent-reset,
+:root .random-post,
+:root .theme-toggle,
+:root .settings-theme-track .settings-theme-choice:not(.settings-theme-auto),
+:root .newsletter-settings button.settings-color-reset,
 :root [data-ui="QuietAction"],
+:root .quiet-control,
 :root [data-ui="ToolbarAction"],
-:root [data-ui="NavigationAction"] {
+:root [data-ui="ToolbarHelp"],
+:root [data-ssm-comments] .comment-toolbar [data-format="help"],
+:root [data-ui="NavigationAction"],
+:root .back-to-top,
+:root .post-navigation > a,
+:root .reader-controls .post-position,
+:root [data-ui="SegmentCell"],
+:root .view-switch button,
+:root [data-directory] .map-switch > a {
   block-size: var(--control-size);
   min-block-size: var(--control-size);
   max-block-size: var(--control-size);
   inline-size: var(--control-size);
   min-inline-size: var(--control-size);
   max-inline-size: var(--control-size);
+  flex: 0 0 var(--control-size);
+}
+
+/* QuietAction: A borderless icon control (the cards' own actions). Its size is the one a card sets for them, or the control size where none does. */
+:root [data-ui="QuietAction"],
+:root .quiet-control {
+  block-size: var(--quiet-control-target-size, var(--control-size));
+  min-block-size: var(--quiet-control-target-size, var(--control-size));
+  max-block-size: var(--quiet-control-target-size, var(--control-size));
+  inline-size: var(--quiet-control-target-size, var(--control-size));
+  min-inline-size: var(--quiet-control-target-size, var(--control-size));
+  max-inline-size: var(--quiet-control-target-size, var(--control-size));
+  flex: 0 0 var(--quiet-control-target-size, var(--control-size));
+  border-radius: var(--quiet-control-radius, var(--control-radius));
+}
+
+/* ToolbarAction: A button of an editor toolbar. It is a Control, so it has the Control's size and no size of its own, but it gives way when the row is narrow. */
+:root [data-ui="ToolbarAction"] {
+  flex: 0 1 auto;
 }
 
 /* BrandLabel: A label whose box is as wide as its widest language, so the header lays out the same in every language. It is the visible text plus an invisible copy of each other language's text, stacked in one grid cell. */
