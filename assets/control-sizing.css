@@ -2375,19 +2375,9 @@
   max-block-size: var(--control-size);
 }
 
-/* slot page.float: Controls fixed to the viewport. They yield (fade out) while they would cover a node they name in yields. */
+/* slot page.float: Controls fixed to the viewport. They stay where they are and are always visible. */
 :root [data-slot="page.float"] {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-/* Floating yields to Strip: it fades out while it would cover it. */
-:root [data-ui="Floating"] {
-  transition: opacity var(--control-open-duration) var(--control-open-easing);
-}
-
-:root [data-ui="Floating"][data-yielding] {
-  opacity: 0;
-  pointer-events: none;
 }
