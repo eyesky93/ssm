@@ -147,9 +147,11 @@
   --grid-column-min-width-compact: 15rem;
   --gate-card-width: 42rem;
   --settings-page-width: 48.75rem;
-  --dialog-width-lg: 46rem;
   --dialog-width-md: 32rem;
   --dialog-width-sm: 28rem;
+  --dialog-width-form: 60vw;        /* a form is a share of the window, not of its content, so it is the same at every zoom; a phone: the whole window */
+  --dialog-height-form: 90dvh;      /* same, and the form's own body scrolls */
+  --dialog-padding-form: clamp(var(--space-xl), 4vw, var(--space-3xl)); /* the room around what a form holds */
   --dialog-max-height: 40rem;
   --field-max-width: 27.5rem;
   --button-min-width: 8rem;
@@ -157,7 +159,6 @@
   --feedback-max-width: 16rem;
   --feedback-viewport-reserve: 7rem;
   --reader-error-max-width: 20rem;
-  --topic-list-max-height: 16rem;
   --placeholder-min-height: 8rem;
   --editor-min-height: 10rem;
   --editor-line-size: 1.65em;
@@ -182,6 +183,9 @@
 /* ::backdrop does not inherit in every supported browser, so it receives the
    token directly. One backdrop for every dialog. */
 :root, ::backdrop { --dialog-backdrop: rgb(0 0 0 / .55); }
+
+/* On a phone a form takes the whole window. */
+@media (max-width: 700px) { :root { --dialog-width-form: 100vw; --dialog-height-form: 100dvh; } }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
@@ -1547,27 +1551,26 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
   font-size: var(--font-size-heading-md);
 }
 
-.subscribe-dialog {
-  width: min(var(--dialog-width-lg), calc(100vw - var(--space-3xl)));
-  max-width: none;
-  max-height: calc(100dvh - var(--space-3xl));
-  border: 0;
-  background: transparent;
-  color: var(--ink);
-  padding: 0;
-  overflow: visible;
-}
+/* The form (design tree node Form): a modal surface whose size is the window's share (the tree gives it), so what it holds never changes it.
+   The head and the foot stay; the body scrolls inside the form and the page behind it does not scroll, with the wheel, the touch or the
+   end of the body's own scroll. Where the form is used says how it looks. */
+.form-dialog[open] { display: flex; flex-direction: column; overflow: hidden; }
+.form-dialog > form { display: contents; }
+.form-dialog :is(.dialog-head, .dialog-foot) { flex: none; }
+.form-dialog .dialog-body { flex: 1 1 auto; min-block-size: 0; overflow-y: auto; overscroll-behavior: contain; align-content: start; }
+html:has(.form-dialog[open]) { overflow: hidden; }
 
+.subscribe-dialog { border: 1px solid var(--line-strong); border-radius: var(--radius-xl); background: var(--paper); color: var(--ink); box-shadow: var(--panel-shadow); padding: 0; }
 .subscribe-dialog::backdrop { background: var(--dialog-backdrop); }
-.subscription-card { position: relative; max-height: calc(100dvh - var(--space-3xl)); overflow-y: auto; border: 1px solid var(--line-strong); border-radius: var(--radius-xl); background: var(--paper); box-shadow: var(--panel-shadow); padding: clamp(var(--space-xl), 4vw, var(--space-3xl)); }
+.subscribe-dialog .dialog-head { align-items: flex-start; padding: var(--dialog-padding-form) var(--dialog-padding-form) var(--space-xl); border-block-end: 1px solid var(--line); }
+.subscribe-dialog .dialog-body { padding: var(--space-xl) var(--dialog-padding-form) var(--dialog-padding-form); }
 :root { --dialog-close-offset: 0.8rem; }
 .dialog-close { position: absolute; inset-block-start: var(--dialog-close-offset); inset-inline-end: var(--dialog-close-offset); display: grid; place-items: center; width: var(--target-size-lg); height: var(--target-size-lg); border: 1px solid var(--line-strong); border-radius: 50%; background: var(--surface); color: var(--ink); padding: var(--space-sm); cursor: pointer; }
 .dialog-close:hover { border-color: var(--accent-strong); color: var(--accent-strong); }
 .dialog-close svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
-.subscription-intro { padding-inline-end: var(--space-5xl); }
+.subscription-intro { min-inline-size: 0; flex: 1 1 auto; }
 .subscription-intro h2 { margin: 0; font-size: var(--font-size-section-title); font-weight: 500; line-height: 1.1; }
 .subscription-intro > p:not(.eyebrow) { max-width: var(--intro-max-width); margin: var(--space-lg) 0 0; color: var(--muted); font-family: var(--font-content); font-size: var(--font-size-lead); line-height: 1.65; }
-.updates-subscription { margin-block-start: var(--space-2xl); border-block-start: 1px solid var(--line); padding-block-start: var(--space-xl); }
 .updates-subscription h3 { margin: 0 0 var(--space-lg); font-size: var(--font-size-heading-sm); }
 .subscribe-dialog .subscribe-form { position: relative; min-width: 0; }
 .subscribe-dialog .subscribe-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-sm); align-items: end; }
@@ -1580,7 +1583,7 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 .subscribe-dialog .topic-picker legend { margin-block-end: var(--space-sm); padding: 0; font-size: var(--font-size-ui); font-weight: 800; }
 .subscribe-dialog .topic-scopes, .subscribe-dialog .topic-options { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
 .subscribe-dialog .topic-scopes { margin-block: var(--space-sm); }
-.subscribe-dialog .topic-options { max-height: min(var(--topic-list-max-height), 35dvh); overflow-y: auto; padding-block-start: var(--space-sm); border-block-start: 1px solid var(--line); }
+.subscribe-dialog .topic-options { padding-block-start: var(--space-sm); border-block-start: 1px solid var(--line); }
 .subscribe-dialog .topic-subject-row { display: flex; flex: 0 0 100%; flex-wrap: wrap; min-width: 0; gap: inherit; }
 .subscribe-dialog .topic-option { position: relative; max-width: 100%; cursor: pointer; }
 .subscribe-dialog .topic-option input { position: absolute; width: 1px; height: 1px; margin: calc(-1 * var(--border-width-thin)); overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

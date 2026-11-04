@@ -356,11 +356,11 @@
 </script>
 <!-- ssm-home-first-paint:end -->
   <script src="/ssm/assets/tooltips.js?v=f81771d4e784" defer></script>
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=3fe16d09235b">
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=30278d774e02">
   <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=1f25c0066c2a" data-post-layout-styles>
   <link rel="stylesheet" href="/ssm/assets/read-filter.css?v=163d5a1101d3">
   <link rel="stylesheet" href="/ssm/assets/hierarchy.css?v=2f28d73c77be">
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=c4e62fb849db" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=52a767f4a0db" data-control-sizing-styles>
 </head>
 <body>
   <header class="site-header" data-ui="HeaderBar">
@@ -432,13 +432,15 @@
     <span>© 2026 SSM</span>
   </footer>
   <button class="back-to-top surface-control" type="button" data-back-to-top data-visible="false" hidden aria-label="Back to top" title="Back to top"><svg class="navigation-arrow navigation-arrow-up" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 14 6-6 6 6"/></svg></button>
-  <dialog class="subscribe-dialog" id="subscription-dialog" data-subscribe-dialog aria-labelledby="subscription-title" aria-describedby="subscription-description">
-    <div class="subscription-card">
-      <button class="dialog-close" type="button" data-subscribe-close aria-label="Dismiss"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+  <dialog class="subscribe-dialog form-dialog" id="subscription-dialog" data-subscribe-dialog aria-labelledby="subscription-title" aria-describedby="subscription-description">
+    <div class="dialog-head dialog-control-row">
       <div class="subscription-intro">
         <h2 id="subscription-title">Subscribe <span class="eyebrow">Stay up to date</span></h2>
         <p id="subscription-description">Use RSS, or receive new notes by email in the languages and subjects you choose.</p>
       </div>
+      <button class="dialog-close" type="button" data-subscribe-close aria-label="Dismiss"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="dialog-body">
       <div class="updates-subscription">
       <h3>Email notifications</h3>
         <form class="subscribe-form" data-subscribe-form action="https://ssm-newsletter.eyesky93.workers.dev/api/subscriptions/v2" method="post"

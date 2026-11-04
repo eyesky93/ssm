@@ -147,9 +147,11 @@
   --grid-column-min-width-compact: 15rem;
   --gate-card-width: 42rem;
   --settings-page-width: 48.75rem;
-  --dialog-width-lg: 46rem;
   --dialog-width-md: 32rem;
   --dialog-width-sm: 28rem;
+  --dialog-width-form: 60vw;        /* a form is a share of the window, not of its content, so it is the same at every zoom; a phone: the whole window */
+  --dialog-height-form: 90dvh;      /* same, and the form's own body scrolls */
+  --dialog-padding-form: clamp(var(--space-xl), 4vw, var(--space-3xl)); /* the room around what a form holds */
   --dialog-max-height: 40rem;
   --field-max-width: 27.5rem;
   --button-min-width: 8rem;
@@ -157,7 +159,6 @@
   --feedback-max-width: 16rem;
   --feedback-viewport-reserve: 7rem;
   --reader-error-max-width: 20rem;
-  --topic-list-max-height: 16rem;
   --placeholder-min-height: 8rem;
   --editor-min-height: 10rem;
   --editor-line-size: 1.65em;
@@ -182,6 +183,9 @@
 /* ::backdrop does not inherit in every supported browser, so it receives the
    token directly. One backdrop for every dialog. */
 :root, ::backdrop { --dialog-backdrop: rgb(0 0 0 / .55); }
+
+/* On a phone a form takes the whole window. */
+@media (max-width: 700px) { :root { --dialog-width-form: 100vw; --dialog-height-form: 100dvh; } }
 
 :root[data-theme="dark"] {
   color-scheme: dark;

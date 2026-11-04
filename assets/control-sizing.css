@@ -2194,6 +2194,8 @@
 :root [data-ui="Strip"],
 :root [data-ui="Menu"],
 :root [data-ui="Dialog"],
+:root [data-ui="Form"],
+:root .form-dialog,
 :root [data-ui="Card"],
 :root [data-ui="Floating"] {
   box-sizing: border-box;
@@ -2323,6 +2325,15 @@
 /* ToolbarAction: A button of an editor toolbar. It is a Control, so it has the Control's size and no size of its own, but it gives way when the row is narrow. */
 :root [data-ui="ToolbarAction"] {
   flex: 0 1 auto;
+}
+
+/* Form: A modal form whose content changes: the same share of the window whatever it holds and at every zoom, the whole window on a phone. Its body scrolls inside it and the page behind does not. */
+:root [data-ui="Form"],
+:root .form-dialog {
+  inline-size: var(--dialog-width-form);
+  max-inline-size: none;
+  block-size: var(--dialog-height-form);
+  max-block-size: none;
 }
 
 /* BrandLabel: A label whose box is as wide as its widest language, so the header lays out the same in every language. It is the visible text plus an invisible copy of each other language's text, stacked in one grid cell. */

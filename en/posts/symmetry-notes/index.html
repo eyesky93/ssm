@@ -361,11 +361,11 @@
 </script>
 <!-- ssm-home-first-paint:end -->
   <script src="/ssm/assets/tooltips.js?v=f81771d4e784" defer></script>
-  <link rel="stylesheet" href="/ssm/assets/styles.css?v=3fe16d09235b">
+  <link rel="stylesheet" href="/ssm/assets/styles.css?v=30278d774e02">
   <link rel="stylesheet" href="/ssm/assets/post-layout.css?v=1f25c0066c2a" data-post-layout-styles>
   <link rel="stylesheet" href="/ssm/assets/read-filter.css?v=163d5a1101d3">
   <link rel="stylesheet" href="/ssm/assets/hierarchy.css?v=2f28d73c77be">
-  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=c4e62fb849db" data-control-sizing-styles>
+  <link rel="stylesheet" href="/ssm/assets/control-sizing.css?v=52a767f4a0db" data-control-sizing-styles>
 </head>
 <body data-engagement-snapshot="/ssm/engagement.json" data-statistics-endpoint="https://ssm-comments.eyesky93.workers.dev" data-statistics-visitor-storage="ssm-statistics-follower:/ssm" data-post-votes-endpoint="https://ssm-comments.eyesky93.workers.dev" data-vote-storage="ssm-statistics-follower:/ssm" data-pin-storage="ssm-pins:/ssm" data-pin-stats-endpoint="https://ssm-pin-stats.eyesky93.workers.dev/pins" data-read-storage="ssm-read:/ssm">
   <header class="site-header" data-ui="HeaderBar">
@@ -1016,7 +1016,7 @@
     
     <section class="comments-shell" id="comments" aria-labelledby="comments-title">
     <h2 id="comments-title">Comments</h2>
-    <div data-ssm-comments data-comments-module="/ssm/assets/comments.js?v=99760faa4dc9" data-comments-style="/ssm/assets/katex.min.css?v=0289a02cf451" data-post-id="symmetry-notes" data-endpoint="https://ssm-comments.eyesky93.workers.dev" data-lang="en">
+    <div data-ssm-comments data-comments-module="/ssm/assets/comments.js?v=017837f13805" data-comments-style="/ssm/assets/katex.min.css?v=0289a02cf451" data-post-id="symmetry-notes" data-endpoint="https://ssm-comments.eyesky93.workers.dev" data-lang="en">
       <p class="comments-intro">Comments support Markdown and LaTeX. All translations share one discussion.</p>
     </div>
     <noscript><p>JavaScript is required to load comments.</p></noscript>
@@ -1027,13 +1027,15 @@
     <span>© 2026 SSM</span>
   </footer>
   <div class="reader-controls" data-reader-controls data-ui="Floating" data-reader-visible="false"><a class="back-to-top surface-control" aria-label="Back to top" title="Back to top" href="#" data-reader-top><svg class="navigation-arrow navigation-arrow-up" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 14 6-6 6 6"/></svg></a><nav class="post-navigation" data-post-navigation data-label-prev="Previous post" data-label-next="Next post" data-position-label="Post {current} of {total} selected posts" data-outside-label="This post is outside the selection; {total} selected posts" aria-label="Post navigation" data-reader-navigation-ready="false"><a class="post-prev surface-control" data-post-prev href="/ssm/en/posts/welcome/" rel="prev" aria-label="Previous post: A place for connected ideas" title="Previous post: A place for connected ideas"><svg class="navigation-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m14 6-6 6 6 6"/></svg></a><a class="post-next surface-control" data-post-next href="/ssm/en/posts/layout-stress-long-title-one/" rel="next" aria-label="Next post: An Extremely Long Title Designed to Test What Happens When a Catalogue Card Must Accommodate Several Lines of Text Without Collapsing Its Actions, Tags, Counters, Spacing, or Overall Reading Rhythm" title="Next post: An Extremely Long Title Designed to Test What Happens When a Catalogue Card Must Accommodate Several Lines of Text Without Collapsing Its Actions, Tags, Counters, Spacing, or Overall Reading Rhythm"><svg class="navigation-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m10 6 6 6-6 6"/></svg></a><button class="post-position surface-control" data-post-position aria-label="Post 2 of 12 selected posts" dir="ltr" type="button" data-reader-jump disabled title="Go to post" data-reader-position-stacked="false">2/12</button><input class="post-position reader-position-input surface-control" data-reader-jump-input type="text" inputmode="numeric" enterkeyhint="go" autocomplete="off" spellcheck="false" aria-label="Go to post" title="Go to post" dir="ltr" hidden><span class="reader-number-error" id="reader-number-error" data-reader-number-error data-message="Enter an integer between 1 and {total}" role="status" aria-live="polite" aria-atomic="true"></span></nav></div>
-  <dialog class="subscribe-dialog" id="subscription-dialog" data-subscribe-dialog aria-labelledby="subscription-title">
-    <div class="subscription-card">
-      <button class="dialog-close" type="button" data-subscribe-close aria-label="Dismiss"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+  <dialog class="subscribe-dialog form-dialog" id="subscription-dialog" data-subscribe-dialog aria-labelledby="subscription-title">
+    <div class="dialog-head dialog-control-row">
       <div class="subscription-intro">
         <h2 id="subscription-title">Subscribe <span class="eyebrow">Stay up to date</span></h2>
         
       </div>
+      <button class="dialog-close" type="button" data-subscribe-close aria-label="Dismiss"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="dialog-body">
       <div class="updates-subscription">
       <h3>Email notifications</h3>
         <form class="subscribe-form" data-subscribe-form action="https://ssm-newsletter.eyesky93.workers.dev/api/subscriptions/v2" method="post"
