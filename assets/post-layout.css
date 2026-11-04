@@ -212,17 +212,9 @@
   padding-block: 0;
   padding-inline-end: var(--tag-capsule-inset);
 }
-/* A tag cited in the text (\tag{…}) looks like a tag: the same outline, fill and pill, sized to the line it sits in. */
-a.ssm-tag-reference {
-  display: inline-block;
-  padding-inline: var(--space-sm);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-pill);
-  background: var(--surface);
-  color: var(--ink);
-  text-decoration: none;
-}
-a.ssm-tag-reference:is(:hover, :focus-visible) { border-color: var(--accent-strong); color: var(--accent-strong); }
+/* A tag cited in the text (\tag{…}) is the site's tag chip, set in the interface font like every other chip, not in the text's. */
+.tag-chip.ssm-tag-reference { font-family: var(--font-interface); color: var(--ink); }
+html[lang="he"] .tag-chip.ssm-tag-reference { font-family: var(--font-interface-hebrew), var(--font-content); }
 .post-monograph-order {
   display: inline-grid;
   place-items: center;
