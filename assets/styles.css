@@ -78,6 +78,7 @@
   --font-size-settings-title: clamp(1.125rem, 4vw, 2.25rem);
   --font-size-settings-notice-title: clamp(1.5rem, 5vw, 2.25rem);
   --font-size-article: clamp(calc(1.08rem * var(--site-article-scale)), calc(1.6vw * var(--site-article-scale)), calc(1.22rem * var(--site-article-scale)));
+  --line-height-interface: normal;    /* the line of a control's text: never the tall line of the prose around it */
   --letter-spacing-tightest: -.055em; /* page titles */
   --letter-spacing-tighter: -.045em;  /* article titles */
   --letter-spacing-tight: -.025em;    /* About title and Hebrew titles */
@@ -1798,7 +1799,9 @@ body:not(:has([data-reader-article]:not([hidden]))) [data-article-actions] { dis
 [data-ssm-comments] button:where(:not(.surface-control)):hover:not(:disabled), [data-ssm-comments] button:where(:not(.surface-control))[data-selected="true"] { border-color: var(--accent-strong); color: var(--accent-strong); background: var(--surface); }
 [data-ssm-comments] button:where(:not(.surface-control)):disabled { opacity: .48; cursor: not-allowed; }
 .comment-composer { border: 1px solid var(--line-strong); border-radius: var(--radius-lg); overflow: hidden; background: var(--paper); }
-.comment-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3xs); padding: var(--space-xs); background: var(--surface); border-block-end: 1px solid var(--line); }
+/* The editor is one object wherever it stands: the toolbar sets its own type, so the serif and the tall lines of the article it may stand
+   in never reach the tools. */
+.comment-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3xs); padding: var(--space-xs); font-family: var(--font-interface); line-height: var(--line-height-interface); background: var(--surface); border-block-end: 1px solid var(--line); }
 .comment-toolbar > button { display: grid; place-items: center; border: 0; min-inline-size: var(--target-size-lg); min-block-size: var(--target-size-lg); padding: var(--space-2xs); font-weight: 600; }
 .comment-toolbar svg { inline-size: var(--icon-size-sm); block-size: var(--icon-size-sm); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
 .comment-toolbar [data-format="italic"] { font-style: italic; }

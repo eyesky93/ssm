@@ -78,6 +78,7 @@
   --font-size-settings-title: clamp(1.125rem, 4vw, 2.25rem);
   --font-size-settings-notice-title: clamp(1.5rem, 5vw, 2.25rem);
   --font-size-article: clamp(calc(1.08rem * var(--site-article-scale)), calc(1.6vw * var(--site-article-scale)), calc(1.22rem * var(--site-article-scale)));
+  --line-height-interface: normal;    /* the line of a control's text: never the tall line of the prose around it */
   --letter-spacing-tightest: -.055em; /* page titles */
   --letter-spacing-tighter: -.045em;  /* article titles */
   --letter-spacing-tight: -.025em;    /* About title and Hebrew titles */
