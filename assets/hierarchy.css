@@ -100,8 +100,8 @@ html[lang="he"] .article-body .map-switch a { font-family: var(--font-interface-
 .article-body .map-node > a.tag-count { position: relative; z-index: 1; color: var(--accent); text-decoration: none; cursor: pointer; }
 .article-body .map-node:focus-within { color: var(--accent); border-color: var(--accent); }
 
-/* Library filters overlay the frame beside the mode switch. */
-[data-reader-article][data-directory] .map-stage > .map-filter-bar {
+/* Library filters overlay the frame beside the mode switch, wherever the Directory's map is (its page, the console's tag menu). */
+[data-directory] .map-stage > .map-filter-bar {
   position: absolute;
   z-index: 4;
   inset-block-start: var(--space-xs);

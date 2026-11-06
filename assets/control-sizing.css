@@ -429,7 +429,7 @@
   color: var(--paper);
   caret-color: var(--paper);
 }
-:root [data-reader-article][data-directory] .map-stage > .map-filter-bar {
+:root [data-directory] .map-stage > .map-filter-bar {
   inset-block-start: calc(var(--control-capsule-gap) + var(--control-size) + var(--control-capsule-gap));
   inset-inline-start: var(--control-capsule-gap);
   inset-inline-end: var(--control-capsule-gap);
