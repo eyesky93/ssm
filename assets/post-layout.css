@@ -1619,6 +1619,9 @@ html[lang="he"] .reader-controls .reader-number-error {
      when the page is narrow or zoomed, so none is cut off behind a hidden scroll. */
   flex-wrap: wrap;
   overflow: visible;
+  /* Nothing is clipped, so the room a scrolling row keeps for focus rings is not needed at its sides: the chips start
+     on the post's own edge, in line with the text above them, not a ring's width inside it. */
+  padding-inline: 0;
 }
 :root [data-reader-article]:not([data-directory]) > .article-body > .article-tags > :not([hidden]) {
   max-width: 100%;
